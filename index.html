@@ -27,11 +27,9 @@
     <meta name="apple-mobile-web-app-title" content="بازارنا">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com">
-    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
         tailwind.config = {
@@ -60,421 +58,163 @@
 
     <style>
         /* ===== التنسيقات الأساسية ===== */
-        * {
-            font-family: 'Cairo', sans-serif;
-        }
-        body {
-            background: #F8F9FA;
-            direction: rtl;
-            overflow-x: hidden;
-        }
+        * { font-family: 'Cairo', sans-serif; }
+        body { background: #F8F9FA; direction: rtl; overflow-x: hidden; }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #FF7A00;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #E06B00;
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E06B00; }
 
-        .store-card,
-        .product-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .store-card, .product-card {
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             cursor: pointer;
             background: white;
             border-radius: 1rem;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             flex-shrink: 0;
         }
-        .store-card {
-            width: 260px;
-        }
-        .store-card:hover,
-        .product-card:hover {
+        .store-card { width: 260px; }
+        .store-card:hover, .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 122, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 15px rgba(255,122,0,0.2);
         }
-        .store-card .cover-image {
-            height: 140px;
-            width: 100%;
-            object-fit: cover;
-        }
+        .store-card .cover-image { height: 140px; width: 100%; object-fit: cover; }
         .store-card .store-logo {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 4px solid white;
-            object-fit: cover;
-            margin-top: -35px;
-            margin-right: 20px;
-            position: relative;
-            z-index: 2;
-            background: white;
+            width: 70px; height: 70px; border-radius: 50%; border: 4px solid white;
+            object-fit: cover; margin-top: -35px; margin-right: 20px;
+            position: relative; z-index: 2; background: white;
         }
-        .store-card .store-info {
-            padding: 0 20px 20px 20px;
-            text-align: right;
-        }
+        .store-card .store-info { padding: 0 20px 20px 20px; text-align: right; }
         .store-card .store-name {
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: #1A1A1A;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-weight: 800; font-size: 1.1rem; color: #1A1A1A;
+            display: flex; align-items: center; gap: 5px;
         }
-        .store-card .store-category {
-            color: #666;
-            font-size: 0.85rem;
-        }
+        .store-card .store-category { color: #666; font-size: 0.85rem; }
 
         .product-image-container {
-            background-color: #fafafa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border-radius: 0.75rem;
-            margin: 0.5rem;
+            background-color: #fafafa; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; border-radius: 0.75rem; margin: 0.5rem;
         }
         .product-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 0.5rem;
+            width: 100%; height: 100%; object-fit: contain; border-radius: 0.5rem;
             transition: transform 0.3s ease;
         }
-        .product-image-container img:hover {
-            transform: scale(1.05);
-        }
+        .product-image-container img:hover { transform: scale(1.05); }
 
         .verified-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 18px;
-            height: 18px;
-            background-color: #FF7A00;
-            border-radius: 50%;
-            color: white;
-            font-size: 10px;
-            flex-shrink: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 18px; height: 18px; background-color: #FF7A00; border-radius: 50%;
+            color: white; font-size: 10px; flex-shrink: 0;
         }
 
         .stores-scroll-container {
-            overflow-x: auto;
-            scroll-behavior: auto;
-            display: flex;
-            gap: 1rem;
-            padding-bottom: 1rem;
-            scrollbar-width: thin;
-            scrollbar-color: #FF7A00 #f1f1f1;
+            overflow-x: auto; scroll-behavior: auto; display: flex; gap: 1rem;
+            padding-bottom: 1rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
             direction: ltr;
         }
-        .stores-scroll-container>* {
-            direction: rtl;
-        }
-        .stores-scroll-container::-webkit-scrollbar {
-            height: 8px;
-        }
-        .stores-scroll-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        .stores-scroll-container::-webkit-scrollbar-thumb {
-            background: #FF7A00;
-            border-radius: 4px;
-        }
+        .stores-scroll-container > * { direction: rtl; }
+        .stores-scroll-container::-webkit-scrollbar { height: 8px; }
+        .stores-scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .stores-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
 
         .categories-scroll-container {
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            display: flex;
-            gap: 0.75rem;
-            padding-bottom: 0.5rem;
-            scrollbar-width: thin;
-            scrollbar-color: #FF7A00 #f1f1f1;
+            overflow-x: auto; scroll-behavior: smooth; display: flex; gap: 0.75rem;
+            padding-bottom: 0.5rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
             direction: rtl;
         }
-        .categories-scroll-container::-webkit-scrollbar {
-            height: 6px;
-        }
-        .categories-scroll-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        .categories-scroll-container::-webkit-scrollbar-thumb {
-            background: #FF7A00;
-            border-radius: 4px;
-        }
+        .categories-scroll-container::-webkit-scrollbar { height: 6px; }
+        .categories-scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .categories-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
 
         .scroll-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            border: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
+            width: 40px; height: 40px; border-radius: 50%; background: white;
+            border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s;
         }
-        .scroll-btn:hover {
-            background: #FF7A00;
-            color: white;
-            border-color: #FF7A00;
-        }
+        .scroll-btn:hover { background: #FF7A00; color: white; border-color: #FF7A00; }
 
-        .btn-primary {
-            background: #FF7A00;
-            color: white;
-            transition: all 0.3s;
-        }
-        .btn-primary:hover {
-            background: #E06B00;
-            box-shadow: 0 4px 15px rgba(255, 122, 0, 0.3);
-            transform: translateY(-2px);
-        }
-        .btn-whatsapp {
-            background: #25D366;
-            color: white;
-            transition: all 0.3s;
-        }
-        .btn-whatsapp:hover {
-            background: #128C7E;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-            transform: translateY(-2px);
-        }
-        .btn-call {
-            background: #2196F3;
-            color: white;
-            transition: all 0.3s;
-        }
-        .btn-call:hover {
-            background: #0b7dda;
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
-            transform: translateY(-2px);
-        }
+        .btn-primary { background: #FF7A00; color: white; transition: all 0.3s; }
+        .btn-primary:hover { background: #E06B00; box-shadow: 0 4px 15px rgba(255,122,0,0.3); transform: translateY(-2px); }
+        .btn-whatsapp { background: #25D366; color: white; transition: all 0.3s; }
+        .btn-whatsapp:hover { background: #128C7E; box-shadow: 0 4px 15px rgba(37,211,102,0.3); transform: translateY(-2px); }
+        .btn-call { background: #2196F3; color: white; transition: all 0.3s; }
+        .btn-call:hover { background: #0b7dda; box-shadow: 0 4px 15px rgba(33,150,243,0.3); transform: translateY(-2px); }
 
         /* ===== زر المتابعة المربع ===== */
         .follow-btn-square {
-            background-color: #FF7A00;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            background-color: #FF7A00; color: white; border: none; border-radius: 0.5rem;
+            padding: 0.6rem 1.2rem; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px;
         }
-        .follow-btn-square:hover {
-            background-color: #E06B00;
-        }
-        .follow-btn-square.following {
-            background-color: #28a745;
-        }
-        .follow-btn-square.following i {
-            color: white;
-        }
+        .follow-btn-square:hover { background-color: #E06B00; }
+        .follow-btn-square.following { background-color: #28a745; }
+        .follow-btn-square.following i { color: white; }
+        .follow-btn-square:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .modal-backdrop {
-            backdrop-filter: blur(5px);
-            background: rgba(0, 0, 0, 0.5);
-        }
-        .top-bar {
-            background: #FF7A00;
-            color: white;
-            font-size: 0.85rem;
-        }
+        .modal-backdrop { backdrop-filter: blur(5px); background: rgba(0,0,0,0.5); }
+        .top-bar { background: #FF7A00; color: white; font-size: 0.85rem; }
 
         .fullscreen-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s;
+            position: fixed; inset: 0; z-index: 1000; display: flex;
+            align-items: center; justify-content: center; animation: fadeIn 0.3s;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .fullscreen-modal .modal-content {
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-            background: white;
-            overflow-y: auto;
-            border-radius: 0;
-            animation: slideUp 0.3s;
+            width: 100%; height: 100%; max-width: 100%; max-height: 100%;
+            background: white; overflow-y: auto; border-radius: 0; animation: slideUp 0.3s;
         }
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .product-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.2s;
+            position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
+            padding: 1rem; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); animation: fadeIn 0.2s;
         }
         .product-modal .product-modal-content {
-            background: white;
-            border-radius: 1.5rem;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 1.5rem;
-            animation: zoomIn 0.3s;
+            background: white; border-radius: 1.5rem; max-width: 600px; width: 100%;
+            max-height: 90vh; overflow-y: auto; padding: 1.5rem; animation: zoomIn 0.3s;
         }
-        @keyframes zoomIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        #productModalImage {
-            width: 100%;
-            height: 280px;
-            object-fit: contain;
-            background-color: #fafafa;
-            border-radius: 1rem;
-        }
-        @media (min-width: 768px) {
-            #productModalImage {
-                height: 320px;
-            }
-        }
+        #productModalImage { width: 100%; height: 280px; object-fit: contain; background-color: #fafafa; border-radius: 1rem; }
+        @media (min-width: 768px) { #productModalImage { height: 320px; } }
 
-        .cart-item-image {
-            width: 56px;
-            height: 56px;
-            object-fit: contain;
-            background-color: #fafafa;
-            border-radius: 0.75rem;
-            flex-shrink: 0;
-        }
+        .cart-item-image { width: 56px; height: 56px; object-fit: contain; background-color: #fafafa; border-radius: 0.75rem; flex-shrink: 0; }
 
-        .cart-badge-animate {
-            animation: pulse 0.3s ease-in-out;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
-        }
-        .btn-adding {
-            background: #28a745 !important;
-            color: white !important;
-            pointer-events: none;
-            transition: all 0.2s;
-        }
+        .cart-badge-animate { animation: pulse 0.3s ease-in-out; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+        .btn-adding { background: #28a745 !important; color: white !important; pointer-events: none; transition: all 0.2s; }
 
-        /* ===== زر التثبيت الاحترافي (عائم أسفل) ===== */
+        /* ===== زر التثبيت العائم ===== */
         #installButtonFloating {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
+            position: fixed; bottom: 20px; right: 20px; z-index: 9999;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: white;
-            border: none;
-            border-radius: 9999px;
-            padding: 0.8rem 1.5rem;
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(255, 122, 0, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(20px);
+            color: white; border: none; border-radius: 9999px; padding: 0.8rem 1.5rem;
+            font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(255,122,0,0.4); transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(20px);
         }
-        #installButtonFloating.show {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
+        #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
         #installButtonFloating:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 122, 0, 0.6);
+            transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,122,0,0.6);
             background: linear-gradient(135deg, #E06B00 0%, #FF8C1A 100%);
         }
-        #installButtonFloating:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(255, 122, 0, 0.4);
-        }
-        #installButtonFloating i {
-            font-size: 1.2rem;
-            transition: transform 0.3s;
-        }
-        #installButtonFloating:hover i {
-            transform: rotate(180deg);
-        }
+        #installButtonFloating:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(255,122,0,0.4); }
+        #installButtonFloating i { font-size: 1.2rem; transition: transform 0.3s; }
+        #installButtonFloating:hover i { transform: rotate(180deg); }
 
-        /* ===== إصلاح سلة التسوق للهاتف ===== */
+        /* ===== سلة التسوق ===== */
         #cartSidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            box-shadow: -4px 0 25px rgba(0, 0, 0, 0.2);
-            z-index: 1500;
-            transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            visibility: visible;
-            pointer-events: auto;
+            position: fixed; top: 0; left: 0; height: 100%; width: 100%; max-width: 400px;
+            background: white; box-shadow: -4px 0 25px rgba(0,0,0,0.2); z-index: 1500;
+            transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+            display: flex; flex-direction: column; visibility: visible; pointer-events: auto;
         }
-        #cartSidebar.open {
-            transform: translateX(0);
-        }
-        #cartSidebar .cart-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: -1;
-        }
-        #cartSidebar.open .cart-overlay {
-            display: block;
-        }
-        @media (max-width: 640px) {
-            #cartSidebar {
-                max-width: 85%;
-            }
-        }
+        #cartSidebar.open { transform: translateX(0); }
+        #cartSidebar .cart-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: -1; }
+        #cartSidebar.open .cart-overlay { display: block; }
+        @media (max-width: 640px) { #cartSidebar { max-width: 85%; } }
     </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -499,9 +239,7 @@
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <div class="w-12 h-12 rounded-full shadow-neon-glow overflow-hidden bg-white">
-                    <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" 
-                         class="w-full h-full object-contain rounded-full" 
-                         alt="شعار بازارنا">
+                    <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارنا">
                 </div>
                 <span class="text-2xl font-extrabold flex items-center gap-1">
                     <span class="text-text-main">بازارنا</span>
@@ -546,9 +284,7 @@
 
         <div class="flex justify-center mb-8">
             <div class="w-40 h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[512px] lg:h-[512px] rounded-full overflow-hidden shadow-neon-glow bg-white">
-                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" 
-                     class="w-full h-full object-contain" 
-                     alt="شعار بازارنا">
+                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain" alt="شعار بازارنا">
             </div>
         </div>
 
@@ -644,7 +380,6 @@
                     <span class="bg-white px-3 py-1 rounded-full shadow-sm"><i class="fas fa-users"></i> <span id="storeFollowers">0</span> متابع</span>
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
-                    <!-- زر المتابعة المربع -->
                     <button id="storeFollowButton" class="follow-btn-square">
                         <i class="fas fa-heart"></i>
                         <span id="storeFollowText">متابعة</span>
@@ -731,9 +466,7 @@
                 <div>
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-10 h-10 rounded-full bg-white overflow-hidden">
-                            <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" 
-                                 class="w-full h-full object-contain rounded-full" 
-                                 alt="شعار بازارنا">
+                            <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارنا">
                         </div>
                         <span class="text-xl font-bold flex items-center gap-1">
                             <span>بازارنا</span>
@@ -779,7 +512,6 @@
         // ===== إعدادات Supabase =====
         const SUPABASE_URL = 'https://orrqlpyntygvrjpzhlpy.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs';
-
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
         // ===== الحالة =====
@@ -789,12 +521,14 @@
         let cart = JSON.parse(localStorage.getItem('myStoresCart')) || [];
         let autoScrollInterval = null;
         let allProducts = [];
+        let currentCategory = null;
 
         // ===== إدارة المتابعة =====
         const FOLLOWED_STORES_KEY = 'bazrenaFollowedStores';
         let currentStoreId = null;
         let originalFollowers = 0;
         let isFollowing = false;
+        let isUpdatingFollow = false; // لمنع الضغط المتكرر
 
         function getFollowedStores() {
             try {
@@ -868,20 +602,13 @@
                 localStorage.getItem('bazrenaInstalled') === 'true';
         }
 
-        function hideInstallButtons() {
-            if (installButtonFloating) installButtonFloating.classList.remove('show');
-        }
-
-        function showInstallButtons() {
-            if (installButtonFloating) installButtonFloating.classList.add('show');
-        }
+        function hideInstallButtons() { if (installButtonFloating) installButtonFloating.classList.remove('show'); }
+        function showInstallButtons() { if (installButtonFloating) installButtonFloating.classList.add('show'); }
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (!isAppInstalled()) {
-                showInstallButtons();
-            }
+            if (!isAppInstalled()) showInstallButtons();
         });
 
         window.addEventListener('appinstalled', () => {
@@ -905,21 +632,14 @@
         }
 
         if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
-
-        if (isAppInstalled()) {
-            hideInstallButtons();
-        }
+        if (isAppInstalled()) hideInstallButtons();
 
         // ===== تسجيل Service Worker =====
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registered:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                    });
+                    .then(reg => console.log('Service Worker registered:', reg.scope))
+                    .catch(err => console.error('Service Worker registration failed:', err));
             });
         }
 
@@ -967,9 +687,7 @@
                         .in('store_name', storeNames);
                     if (!countError && productCounts) {
                         const counts = {};
-                        productCounts.forEach(p => {
-                            counts[p.store_name] = (counts[p.store_name] || 0) + 1;
-                        });
+                        productCounts.forEach(p => { counts[p.store_name] = (counts[p.store_name] || 0) + 1; });
                         stores = stores.map(s => ({ ...s, products_count: counts[s.name] || 0 }));
                     }
                 }
@@ -992,26 +710,21 @@
 
         retryStoresBtn.addEventListener('click', loadStores);
 
-        // دالة فرز المتاجر حسب المتابعة (الأحدث متابعة يظهر أولاً)
         function getSortedStores(storeList) {
-            const followed = getFollowedStores(); // العنصر الأول = آخر متجر تمت متابعته
-            const followedStores = [];
-            const otherStores = [];
-            storeList.forEach(s => {
-                const key = s.id || s.name;
-                if (followed.includes(key)) {
-                    followedStores.push(s);
-                } else {
-                    otherStores.push(s);
-                }
-            });
-            // ترتيب المتاجر المتابَعة حسب أحدث متابعة (الأحدث يظهر أولاً)
-            followedStores.sort((a, b) => {
-                const keyA = a.id || a.name;
-                const keyB = b.id || b.name;
-                return followed.indexOf(keyA) - followed.indexOf(keyB);
-            });
+            const followed = getFollowedStores();
+            const followedStores = storeList.filter(s => followed.includes(s.id || s.name));
+            const otherStores = storeList.filter(s => !followed.includes(s.id || s.name));
             return [...followedStores, ...otherStores];
+        }
+
+        function refreshCurrentView() {
+            if (currentCategory) {
+                filterStoresByCategory(currentCategory);
+            } else {
+                displayStores();
+            }
+            stopAutoScroll();
+            startAutoScroll();
         }
 
         function displayStores() {
@@ -1022,11 +735,9 @@
                 card.className = 'store-card';
                 card.innerHTML = `
                     <img src="${sanitizeHTML(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'}" 
-                         alt="${sanitizeHTML(store.name)}" 
-                         class="cover-image" loading="lazy">
+                         alt="${sanitizeHTML(store.name)}" class="cover-image" loading="lazy">
                     <img src="${sanitizeHTML(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'}" 
-                         alt="${sanitizeHTML(store.name)}" 
-                         class="store-logo" loading="lazy">
+                         alt="${sanitizeHTML(store.name)}" class="store-logo" loading="lazy">
                     <div class="store-info">
                         <div class="store-name">
                             ${sanitizeHTML(store.name)}
@@ -1044,30 +755,24 @@
             });
         }
 
-        // دالة تحديث قائمة المتاجر بعد تغيير المتابعة
         function refreshStoresDisplay() {
-            displayStores();
-            // إعادة تشغيل الحركة التلقائية من البداية (المتجر المتابَع يظهر فوراً)
-            stopAutoScroll();
-            startAutoScroll();
+            refreshCurrentView();
         }
 
         // ===== الحركة التلقائية =====
         function startAutoScroll() {
             stopAutoScroll();
             const maxScroll = () => storesScrollContainer.scrollWidth - storesScrollContainer.clientWidth;
-            // نبدأ دائماً من أول عنصر (المتجر المتابَع/الأحدث) ليظهر فوراً بدون أي تمرير
-            storesScrollContainer.scrollLeft = 0;
+            storesScrollContainer.scrollLeft = maxScroll();
 
             autoScrollInterval = setInterval(() => {
                 if (!storesScrollContainer) return;
                 const max = maxScroll();
                 if (max <= 0) return;
-
-                if (storesScrollContainer.scrollLeft >= max) {
-                    storesScrollContainer.scrollLeft = 0;
+                if (storesScrollContainer.scrollLeft <= 0) {
+                    storesScrollContainer.scrollLeft = max;
                 } else {
-                    storesScrollContainer.scrollLeft += 2;
+                    storesScrollContainer.scrollLeft -= 2;
                 }
             }, 50);
         }
@@ -1082,25 +787,16 @@
         storesScrollContainer.addEventListener('mouseenter', stopAutoScroll);
         storesScrollContainer.addEventListener('mouseleave', startAutoScroll);
         storesScrollContainer.addEventListener('touchstart', stopAutoScroll);
-        storesScrollContainer.addEventListener('touchend', () => {
-            setTimeout(startAutoScroll, 2000);
-        });
+        storesScrollContainer.addEventListener('touchend', () => setTimeout(startAutoScroll, 2000));
 
-        prevStoresBtn.addEventListener('click', () => {
-            stopAutoScroll();
-            storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
-            setTimeout(startAutoScroll, 3000);
-        });
-        nextStoresBtn.addEventListener('click', () => {
-            stopAutoScroll();
-            storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
-            setTimeout(startAutoScroll, 3000);
-        });
+        prevStoresBtn.addEventListener('click', () => { stopAutoScroll(); storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' }); setTimeout(startAutoScroll, 3000); });
+        nextStoresBtn.addEventListener('click', () => { stopAutoScroll(); storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' }); setTimeout(startAutoScroll, 3000); });
 
         // ===== فتح نافذة المتجر =====
         function openStoreModal(store) {
             currentStore = store;
             currentStoreId = store.id || store.name;
+            // جلب العدد الحالي للمتابعين من البيانات المخزنة (سيتم تحديثه عند فتح النافذة)
             originalFollowers = parseInt(store.followers) || 0;
             isFollowing = isStoreFollowed(currentStoreId);
 
@@ -1157,25 +853,92 @@
             storeFollowers.textContent = displayFollowers.toLocaleString();
         }
 
-        function handleFollowToggle() {
-            if (!currentStoreId) return;
-            const followedList = getFollowedStores();
-            if (isFollowing) {
-                const index = followedList.indexOf(currentStoreId);
-                if (index > -1) followedList.splice(index, 1);
-                isFollowing = false;
-            } else {
-                if (!followedList.includes(currentStoreId)) {
-                    followedList.unshift(currentStoreId);
+        // ===== تعديل دالة المتابعة لتشمل التحديث إلى قاعدة البيانات =====
+        async function handleFollowToggle() {
+            if (!currentStoreId || isUpdatingFollow) return; // منع الضغط المتكرر
+
+            // تعطيل الزر مؤقتاً
+            isUpdatingFollow = true;
+            storeFollowButton.disabled = true;
+            storeFollowText.textContent = 'جاري...';
+
+            // حالة المتابعة الحالية (قبل التغيير)
+            const wasFollowing = isFollowing;
+
+            try {
+                // 1. جلب القيمة الحالية للمتابعين من قاعدة البيانات لضمان الدقة
+                const { data: storeData, error: fetchError } = await supabaseClient
+                    .from('Stores')
+                    .select('followers')
+                    .eq('id', currentStoreId)
+                    .maybeSingle();
+
+                if (fetchError) throw fetchError;
+
+                const currentFollowers = parseInt(storeData?.followers) || 0;
+                let newFollowers;
+
+                // 2. تحديد العملية (زيادة أو نقصان) بناءً على الحالة الحالية
+                if (wasFollowing) {
+                    // إلغاء المتابعة: إنقاص 1 (بشرط ألا يقل عن 0)
+                    newFollowers = Math.max(0, currentFollowers - 1);
+                } else {
+                    // متابعة: زيادة 1
+                    newFollowers = currentFollowers + 1;
                 }
-                isFollowing = true;
+
+                // 3. تحديث قاعدة البيانات
+                const { error: updateError } = await supabaseClient
+                    .from('Stores')
+                    .update({ followers: newFollowers })
+                    .eq('id', currentStoreId);
+
+                if (updateError) throw updateError;
+
+                // 4. تحديث الحالة المحلية
+                if (wasFollowing) {
+                    isFollowing = false;
+                    // إزالة من قائمة المتابعة المحلية
+                    const followedList = getFollowedStores();
+                    const index = followedList.indexOf(currentStoreId);
+                    if (index > -1) followedList.splice(index, 1);
+                    saveFollowedStores(followedList);
+                } else {
+                    isFollowing = true;
+                    // إضافة إلى قائمة المتابعة المحلية
+                    const followedList = getFollowedStores();
+                    if (!followedList.includes(currentStoreId)) {
+                        followedList.push(currentStoreId);
+                        saveFollowedStores(followedList);
+                    }
+                }
+
+                // 5. تحديث واجهة المستخدم
+                originalFollowers = newFollowers; // تحديث العدد الأصلي ليعكس القيمة الجديدة
+                updateFollowersDisplay();
+                updateFollowButtonUI();
+                showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
+
+                // 6. إعادة ترتيب قائمة المتاجر فوراً
+                refreshStoresDisplay();
+
+                // 7. تحديث كائن المتجر الحالي في الذاكرة إذا لزم الأمر
+                if (currentStore) {
+                    currentStore.followers = newFollowers;
+                }
+
+            } catch (err) {
+                console.error('خطأ في تحديث المتابعة:', err);
+                showToast('حدث خطأ، حاول مرة أخرى');
+                // إعادة الحالة السابقة
+                isFollowing = wasFollowing;
+                updateFollowButtonUI();
+                updateFollowersDisplay();
+            } finally {
+                // إعادة تفعيل الزر
+                isUpdatingFollow = false;
+                storeFollowButton.disabled = false;
             }
-            saveFollowedStores(followedList);
-            updateFollowButtonUI();
-            updateFollowersDisplay();
-            showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
-            // إعادة ترتيب قائمة المتاجر وعرضها فوراً من البداية
-            refreshStoresDisplay();
         }
 
         // ربط زر المتابعة
@@ -1193,8 +956,7 @@
 
         // ===== تحميل منتجات المتجر =====
         async function loadStoreProducts(storeName) {
-            storeProductsGrid.innerHTML =
-                '<div class="col-span-full text-center py-8"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>';
+            storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-8"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>';
             try {
                 const { data, error } = await supabaseClient
                     .from('products')
@@ -1203,15 +965,13 @@
                     .order('created_at', { ascending: false });
                 if (error) throw error;
                 if (!data || data.length === 0) {
-                    storeProductsGrid.innerHTML =
-                        '<div class="col-span-full text-center py-6 text-text-light">لا توجد منتجات</div>';
+                    storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-6 text-text-light">لا توجد منتجات</div>';
                 } else {
                     displayProductsGrid(storeProductsGrid, data, false);
                 }
             } catch (err) {
                 console.error('تفاصيل خطأ المنتجات:', err.message, err.details, err.hint);
-                storeProductsGrid.innerHTML =
-                    `<div class="col-span-full text-center py-6 text-text-light">تعذر تحميل المنتجات: ${err.message}</div>`;
+                storeProductsGrid.innerHTML = `<div class="col-span-full text-center py-6 text-text-light">تعذر تحميل المنتجات: ${err.message}</div>`;
             }
         }
 
@@ -1237,8 +997,7 @@
                 card.innerHTML = `
                     <div class="product-image-container relative h-32 sm:h-40">
                         <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" 
-                             class="w-full h-full object-contain" 
-                             loading="lazy" alt="${sanitizeHTML(product.name)}">
+                             class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
                         ${originalPrice ? '<span class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">خصم</span>' : ''}
                     </div>
                     <div class="p-3">
@@ -1275,12 +1034,8 @@
         // ===== فتح نافذة المنتج =====
         function openProductModal(product) {
             productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
-            productModalImage.onload = function() {
-                this.style.objectFit = 'contain';
-            };
-            productModalImage.onerror = function() {
-                this.src = 'https://via.placeholder.com/600';
-            };
+            productModalImage.onload = function() { this.style.objectFit = 'contain'; };
+            productModalImage.onerror = function() { this.src = 'https://via.placeholder.com/600'; };
             productModalName.textContent = product.name;
             productModalRating.textContent = product.ratting || 0;
             productModalStore.textContent = product.store_name || 'غير محدد';
@@ -1305,7 +1060,7 @@
             document.body.style.overflow = 'auto';
         });
 
-        // إضافة للسلة من نافذة المنتج
+        // إضافة للسلة
         addToCartFromModal.addEventListener('click', (e) => {
             const btn = e.currentTarget;
             const product = JSON.parse(btn.dataset.product);
@@ -1329,8 +1084,7 @@
                 showToast('رقم الواتساب غير متوفر لهذا المتجر');
                 return;
             }
-            const message =
-                `مرحباً، أريد شراء هذا المنتج:\n\n${product.name}\nالسعر: ${(product.price || 0).toLocaleString()} ج.س\n${product.store_name ? 'من متجر: ' + product.store_name : ''}`;
+            const message = `مرحباً، أريد شراء هذا المنتج:\n\n${product.name}\nالسعر: ${(product.price || 0).toLocaleString()} ج.س\n${product.store_name ? 'من متجر: ' + product.store_name : ''}`;
             const url = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank', 'noopener,noreferrer');
         });
@@ -1356,15 +1110,13 @@
             cartCount.textContent = totalItems;
             cartItems.innerHTML = '';
             if (cart.length === 0) {
-                cartItems.innerHTML =
-                    '<div class="text-center text-text-light py-10"><i class="fas fa-shopping-cart text-5xl mb-3"></i><p>السلة فارغة</p></div>';
+                cartItems.innerHTML = '<div class="text-center text-text-light py-10"><i class="fas fa-shopping-cart text-5xl mb-3"></i><p>السلة فارغة</p></div>';
             } else {
                 cart.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'flex items-center gap-3 p-3 border-b';
                     div.innerHTML = `
-                        <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" 
-                             class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
+                        <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
                         <div class="flex-1 min-w-0">
                             <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
                             ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
@@ -1381,10 +1133,8 @@
                     `;
                     cartItems.appendChild(div);
                 });
-                document.querySelectorAll('.decrease-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset
-                    .id, -1));
-                document.querySelectorAll('.increase-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset
-                    .id, 1));
+                document.querySelectorAll('.decrease-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, -1));
+                document.querySelectorAll('.increase-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, 1));
                 document.querySelectorAll('.remove-btn').forEach(btn => btn.onclick = () => removeFromCart(btn.dataset.id));
             }
             const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
@@ -1440,22 +1190,18 @@
                 const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
                 message += `\nالمجموع: ${total.toLocaleString()} ج.س`;
                 const finalWa = wa === 'default' ? '0924299798' : wa;
-                window.open(`https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`,
-                    '_blank');
+                window.open(`https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
             } else {
                 showToast('يتم إرسال الطلب لكل متجر على حدة...');
                 whatsappNumbers.forEach((wa, index) => {
                     setTimeout(() => {
                         let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
                         groupedByWhatsApp[wa].forEach(item => {
-                            message +=
-                                `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+                            message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
                             if (item.store_name) message += `من متجر: ${item.store_name}\n`;
                         });
                         const finalWa = wa === 'default' ? '0924299798' : wa;
-                        window.open(
-                            `https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`,
-                            '_blank');
+                        window.open(`https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
                     }, index * 500);
                 });
             }
@@ -1488,17 +1234,20 @@
             allBtn.className = 'px-6 py-2 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition flex-shrink-0';
             allBtn.textContent = 'الكل';
             allBtn.addEventListener('click', () => {
+                currentCategory = null;
                 displayStores();
                 highlightCategory(allBtn);
+                stopAutoScroll();
+                startAutoScroll();
             });
             categoriesContainer.appendChild(allBtn);
 
             categories.forEach(cat => {
                 const btn = document.createElement('button');
-                btn.className =
-                    'px-6 py-2 rounded-full bg-white border border-gray-200 hover:bg-primary hover:text-white transition font-semibold flex-shrink-0';
+                btn.className = 'px-6 py-2 rounded-full bg-white border border-gray-200 hover:bg-primary hover:text-white transition font-semibold flex-shrink-0';
                 btn.textContent = cat;
                 btn.addEventListener('click', () => {
+                    currentCategory = cat;
                     filterStoresByCategory(cat);
                     highlightCategory(btn);
                 });
@@ -1516,12 +1265,12 @@
         }
 
         function filterStoresByCategory(category) {
+            currentCategory = category;
             const filtered = stores.filter(s => s.category === category);
             const sortedFiltered = getSortedStores(filtered);
             storesScrollContainer.innerHTML = '';
             if (sortedFiltered.length === 0) {
-                storesScrollContainer.innerHTML =
-                    '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>';
+                storesScrollContainer.innerHTML = '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>';
             } else {
                 sortedFiltered.forEach(store => {
                     const card = document.createElement('div');
@@ -1548,12 +1297,8 @@
             startAutoScroll();
         }
 
-        prevCategoriesBtn.addEventListener('click', () => {
-            categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' });
-        });
-        nextCategoriesBtn.addEventListener('click', () => {
-            categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' });
-        });
+        prevCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' }));
+        nextCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' }));
 
         // ===== تحميل جميع المنتجات =====
         async function loadAllProducts() {
@@ -1589,12 +1334,8 @@
                     productModal.classList.add('hidden');
                     document.body.style.overflow = 'auto';
                 }
-                if (!storeModal.classList.contains('hidden')) {
-                    closeStoreModal();
-                }
-                if (cartSidebar.classList.contains('open')) {
-                    closeCart();
-                }
+                if (!storeModal.classList.contains('hidden')) closeStoreModal();
+                if (cartSidebar.classList.contains('open')) closeCart();
             }
         });
 
