@@ -992,11 +992,25 @@
 
         retryStoresBtn.addEventListener('click', loadStores);
 
-        // دالة فرز المتاجر حسب المتابعة
+        // دالة فرز المتاجر حسب المتابعة (الأحدث متابعة يظهر أولاً)
         function getSortedStores(storeList) {
-            const followed = getFollowedStores();
-            const followedStores = storeList.filter(s => followed.includes(s.id || s.name));
-            const otherStores = storeList.filter(s => !followed.includes(s.id || s.name));
+            const followed = getFollowedStores(); // العنصر الأول = آخر متجر تمت متابعته
+            const followedStores = [];
+            const otherStores = [];
+            storeList.forEach(s => {
+                const key = s.id || s.name;
+                if (followed.includes(key)) {
+                    followedStores.push(s);
+                } else {
+                    otherStores.push(s);
+                }
+            });
+            // ترتيب المتاجر المتابَعة حسب أحدث متابعة (الأحدث يظهر أولاً)
+            followedStores.sort((a, b) => {
+                const keyA = a.id || a.name;
+                const keyB = b.id || b.name;
+                return followed.indexOf(keyA) - followed.indexOf(keyB);
+            });
             return [...followedStores, ...otherStores];
         }
 
@@ -1033,7 +1047,7 @@
         // دالة تحديث قائمة المتاجر بعد تغيير المتابعة
         function refreshStoresDisplay() {
             displayStores();
-            // إعادة تشغيل الحركة التلقائية من البداية
+            // إعادة تشغيل الحركة التلقائية من البداية (المتجر المتابَع يظهر فوراً)
             stopAutoScroll();
             startAutoScroll();
         }
@@ -1042,17 +1056,18 @@
         function startAutoScroll() {
             stopAutoScroll();
             const maxScroll = () => storesScrollContainer.scrollWidth - storesScrollContainer.clientWidth;
-            storesScrollContainer.scrollLeft = maxScroll();
+            // نبدأ دائماً من أول عنصر (المتجر المتابَع/الأحدث) ليظهر فوراً بدون أي تمرير
+            storesScrollContainer.scrollLeft = 0;
 
             autoScrollInterval = setInterval(() => {
                 if (!storesScrollContainer) return;
                 const max = maxScroll();
                 if (max <= 0) return;
 
-                if (storesScrollContainer.scrollLeft <= 0) {
-                    storesScrollContainer.scrollLeft = max;
+                if (storesScrollContainer.scrollLeft >= max) {
+                    storesScrollContainer.scrollLeft = 0;
                 } else {
-                    storesScrollContainer.scrollLeft -= 2;
+                    storesScrollContainer.scrollLeft += 2;
                 }
             }, 50);
         }
@@ -1151,7 +1166,7 @@
                 isFollowing = false;
             } else {
                 if (!followedList.includes(currentStoreId)) {
-                    followedList.push(currentStoreId);
+                    followedList.unshift(currentStoreId);
                 }
                 isFollowing = true;
             }
@@ -1159,7 +1174,7 @@
             updateFollowButtonUI();
             updateFollowersDisplay();
             showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
-            // إعادة ترتيب قائمة المتاجر
+            // إعادة ترتيب قائمة المتاجر وعرضها فوراً من البداية
             refreshStoresDisplay();
         }
 
