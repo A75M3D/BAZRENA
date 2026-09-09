@@ -110,18 +110,27 @@
         }
 
         .stores-scroll-container {
-            overflow-x: auto; scroll-behavior: auto; display: flex; gap: 1rem;
-            padding-bottom: 1rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
-            direction: ltr;
+            overflow-x: auto;
+            scroll-behavior: auto;
+            display: flex;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: #FF7A00 #f1f1f1;
+            direction: rtl; /* RTL */
         }
-        .stores-scroll-container > * { direction: rtl; }
         .stores-scroll-container::-webkit-scrollbar { height: 8px; }
         .stores-scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .stores-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
 
         .categories-scroll-container {
-            overflow-x: auto; scroll-behavior: smooth; display: flex; gap: 0.75rem;
-            padding-bottom: 0.5rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            display: flex;
+            gap: 0.75rem;
+            padding-bottom: 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #FF7A00 #f1f1f1;
             direction: rtl;
         }
         .categories-scroll-container::-webkit-scrollbar { height: 6px; }
@@ -142,10 +151,10 @@
         .btn-call { background: #2196F3; color: white; transition: all 0.3s; }
         .btn-call:hover { background: #0b7dda; box-shadow: 0 4px 15px rgba(33,150,243,0.3); transform: translateY(-2px); }
 
-        /* ===== زر المتابعة المربع ===== */
+        /* زر المتابعة */
         .follow-btn-square {
             background-color: #FF7A00; color: white; border: none; border-radius: 0.5rem;
-            padding: 0.6rem 1.2rem; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            padding: 0.5rem 1rem; font-weight: 700; font-size: 0.85rem; cursor: pointer;
             transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px;
         }
         .follow-btn-square:hover { background-color: #E06B00; }
@@ -186,7 +195,6 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
         .btn-adding { background: #28a745 !important; color: white !important; pointer-events: none; transition: all 0.2s; }
 
-        /* ===== زر التثبيت العائم ===== */
         #installButtonFloating {
             position: fixed; bottom: 20px; right: 20px; z-index: 9999;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
@@ -204,7 +212,6 @@
         #installButtonFloating i { font-size: 1.2rem; transition: transform 0.3s; }
         #installButtonFloating:hover i { transform: rotate(180deg); }
 
-        /* ===== سلة التسوق ===== */
         #cartSidebar {
             position: fixed; top: 0; left: 0; height: 100%; width: 100%; max-width: 400px;
             background: white; box-shadow: -4px 0 25px rgba(0,0,0,0.2); z-index: 1500;
@@ -374,16 +381,17 @@
             </div>
             <div class="p-6 border-b bg-gray-50">
                 <p id="storeDescription" class="text-text-light"></p>
-                <div class="flex flex-wrap gap-3 mt-3 text-sm">
+                <div class="flex flex-wrap gap-3 mt-3 text-sm items-center">
                     <span class="bg-white px-3 py-1 rounded-full shadow-sm"><i class="fas fa-star text-yellow-400"></i> <span id="storeRating">0.0</span></span>
                     <span class="bg-white px-3 py-1 rounded-full shadow-sm"><i class="fas fa-shopping-bag"></i> <span id="storeProductsCount">0</span> منتج</span>
                     <span class="bg-white px-3 py-1 rounded-full shadow-sm"><i class="fas fa-users"></i> <span id="storeFollowers">0</span> متابع</span>
-                </div>
-                <div class="mt-4 flex flex-wrap gap-2">
+                    <!-- زر المتابعة بجانب عدد المتابعين -->
                     <button id="storeFollowButton" class="follow-btn-square">
                         <i class="fas fa-heart"></i>
                         <span id="storeFollowText">متابعة</span>
                     </button>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2">
                     <a id="storeCallButton" href="#" class="btn-call px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
                         <i class="fas fa-phone-alt"></i> اتصل بالمتجر
                     </a>
@@ -418,7 +426,7 @@
                         <span class="text-text-light">|</span>
                         <span id="productModalStore" class="text-primary font-semibold"></span>
                     </div>
-                    <p id="productModalDescription" class="text-text-light mb-4 flex-1"></p>
+                    <!-- تم حذف وصف المنتج من النافذة أيضاً حسب الطلب (اختياري) -->
                     <div class="flex items-center gap-3 mb-4">
                         <span id="productModalPrice" class="text-3xl font-extrabold text-primary"></span>
                         <span id="productModalOriginalPrice" class="text-lg line-through text-text-light"></span>
@@ -526,9 +534,9 @@
         // ===== إدارة المتابعة =====
         const FOLLOWED_STORES_KEY = 'bazrenaFollowedStores';
         let currentStoreId = null;
-        let originalFollowers = 0;
+        let currentFollowersCount = 0;
         let isFollowing = false;
-        let isUpdatingFollow = false; // لمنع الضغط المتكرر
+        let isUpdatingFollow = false;
 
         function getFollowedStores() {
             try {
@@ -762,17 +770,16 @@
         // ===== الحركة التلقائية =====
         function startAutoScroll() {
             stopAutoScroll();
-            const maxScroll = () => storesScrollContainer.scrollWidth - storesScrollContainer.clientWidth;
-            storesScrollContainer.scrollLeft = maxScroll();
-
+            const container = storesScrollContainer;
+            container.scrollLeft = 0;
             autoScrollInterval = setInterval(() => {
-                if (!storesScrollContainer) return;
-                const max = maxScroll();
-                if (max <= 0) return;
-                if (storesScrollContainer.scrollLeft <= 0) {
-                    storesScrollContainer.scrollLeft = max;
+                if (!container) return;
+                const maxScroll = container.scrollWidth - container.clientWidth;
+                if (maxScroll <= 0) return;
+                if (container.scrollLeft >= maxScroll) {
+                    container.scrollLeft = 0;
                 } else {
-                    storesScrollContainer.scrollLeft -= 2;
+                    container.scrollLeft += 2;
                 }
             }, 50);
         }
@@ -796,8 +803,7 @@
         function openStoreModal(store) {
             currentStore = store;
             currentStoreId = store.id || store.name;
-            // جلب العدد الحالي للمتابعين من البيانات المخزنة (سيتم تحديثه عند فتح النافذة)
-            originalFollowers = parseInt(store.followers) || 0;
+            currentFollowersCount = parseInt(store.followers) || 0;
             isFollowing = isStoreFollowed(currentStoreId);
 
             storeCoverImage.src = store.cover_url || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
@@ -849,24 +855,20 @@
         }
 
         function updateFollowersDisplay() {
-            const displayFollowers = isFollowing ? originalFollowers + 1 : originalFollowers;
-            storeFollowers.textContent = displayFollowers.toLocaleString();
+            storeFollowers.textContent = currentFollowersCount.toLocaleString();
         }
 
-        // ===== تعديل دالة المتابعة لتشمل التحديث إلى قاعدة البيانات =====
+        // ===== دالة المتابعة =====
         async function handleFollowToggle() {
-            if (!currentStoreId || isUpdatingFollow) return; // منع الضغط المتكرر
+            if (!currentStoreId || isUpdatingFollow) return;
 
-            // تعطيل الزر مؤقتاً
             isUpdatingFollow = true;
             storeFollowButton.disabled = true;
             storeFollowText.textContent = 'جاري...';
 
-            // حالة المتابعة الحالية (قبل التغيير)
             const wasFollowing = isFollowing;
 
             try {
-                // 1. جلب القيمة الحالية للمتابعين من قاعدة البيانات لضمان الدقة
                 const { data: storeData, error: fetchError } = await supabaseClient
                     .from('Stores')
                     .select('followers')
@@ -875,19 +877,15 @@
 
                 if (fetchError) throw fetchError;
 
-                const currentFollowers = parseInt(storeData?.followers) || 0;
+                const currentDbFollowers = parseInt(storeData?.followers) || 0;
                 let newFollowers;
 
-                // 2. تحديد العملية (زيادة أو نقصان) بناءً على الحالة الحالية
                 if (wasFollowing) {
-                    // إلغاء المتابعة: إنقاص 1 (بشرط ألا يقل عن 0)
-                    newFollowers = Math.max(0, currentFollowers - 1);
+                    newFollowers = Math.max(0, currentDbFollowers - 1);
                 } else {
-                    // متابعة: زيادة 1
-                    newFollowers = currentFollowers + 1;
+                    newFollowers = currentDbFollowers + 1;
                 }
 
-                // 3. تحديث قاعدة البيانات
                 const { error: updateError } = await supabaseClient
                     .from('Stores')
                     .update({ followers: newFollowers })
@@ -895,17 +893,14 @@
 
                 if (updateError) throw updateError;
 
-                // 4. تحديث الحالة المحلية
                 if (wasFollowing) {
                     isFollowing = false;
-                    // إزالة من قائمة المتابعة المحلية
                     const followedList = getFollowedStores();
                     const index = followedList.indexOf(currentStoreId);
                     if (index > -1) followedList.splice(index, 1);
                     saveFollowedStores(followedList);
                 } else {
                     isFollowing = true;
-                    // إضافة إلى قائمة المتابعة المحلية
                     const followedList = getFollowedStores();
                     if (!followedList.includes(currentStoreId)) {
                         followedList.push(currentStoreId);
@@ -913,16 +908,13 @@
                     }
                 }
 
-                // 5. تحديث واجهة المستخدم
-                originalFollowers = newFollowers; // تحديث العدد الأصلي ليعكس القيمة الجديدة
+                currentFollowersCount = newFollowers;
                 updateFollowersDisplay();
                 updateFollowButtonUI();
                 showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
 
-                // 6. إعادة ترتيب قائمة المتاجر فوراً
                 refreshStoresDisplay();
 
-                // 7. تحديث كائن المتجر الحالي في الذاكرة إذا لزم الأمر
                 if (currentStore) {
                     currentStore.followers = newFollowers;
                 }
@@ -930,18 +922,15 @@
             } catch (err) {
                 console.error('خطأ في تحديث المتابعة:', err);
                 showToast('حدث خطأ، حاول مرة أخرى');
-                // إعادة الحالة السابقة
                 isFollowing = wasFollowing;
                 updateFollowButtonUI();
                 updateFollowersDisplay();
             } finally {
-                // إعادة تفعيل الزر
                 isUpdatingFollow = false;
                 storeFollowButton.disabled = false;
             }
         }
 
-        // ربط زر المتابعة
         if (storeFollowButton) {
             storeFollowButton.addEventListener('click', handleFollowToggle);
         }
@@ -994,6 +983,7 @@
                     store_name: product.store_name,
                     description: product.description || ''
                 };
+                // إزالة أي وصف من البطاقة (لا نضيف وصف هنا)
                 card.innerHTML = `
                     <div class="product-image-container relative h-32 sm:h-40">
                         <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" 
@@ -1039,7 +1029,10 @@
             productModalName.textContent = product.name;
             productModalRating.textContent = product.ratting || 0;
             productModalStore.textContent = product.store_name || 'غير محدد';
-            productModalDescription.textContent = product.description || 'لا يوجد وصف';
+            // حذف وصف المنتج نهائياً من النافذة
+            if (productModalDescription) {
+                productModalDescription.style.display = 'none';
+            }
             productModalPrice.textContent = `${(product.price || 0).toLocaleString()} ج.س`;
             if (product.original_price) {
                 productModalOriginalPrice.textContent = `${product.original_price.toLocaleString()} ج.س`;
