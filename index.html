@@ -7,7 +7,6 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
@@ -21,16 +20,9 @@
     ">
     <title>BAZRENA – بازارنا | أفضل المتاجر، في مكان واحد</title>
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
@@ -94,6 +86,22 @@
             display: flex; align-items: center; gap: 5px;
         }
         .store-card .store-category { color: #666; font-size: 0.85rem; }
+
+        /* ⬇️ تعديل: صور المنتجات تظهر كاملة مع خلفية خفيفة */
+        .product-image-container {
+            background-color: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .product-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        .product-image-container img:hover { transform: scale(1.05); }
 
         .verified-icon {
             display: inline-flex; align-items: center; justify-content: center;
@@ -166,6 +174,28 @@
             padding: 1.5rem; animation: zoomIn 0.3s;
         }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* ⬇️ تعديل: صورة المنتج في النافذة المنبثقة تظهر كاملة */
+        #productModalImage {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            background-color: #fafafa;
+            border-radius: 1rem;
+        }
+        @media (min-width: 768px) {
+            #productModalImage { height: 320px; }
+        }
+
+        /* ⬇️ تعديل: صورة المنتج في سلة التسوق تظهر كاملة */
+        .cart-item-image {
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            background-color: #fafafa;
+            border-radius: 0.5rem;
+            flex-shrink: 0;
+        }
 
         .cart-badge-animate { animation: pulse 0.3s ease-in-out; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
@@ -342,7 +372,8 @@
             </button>
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="md:w-1/2">
-                    <img id="productModalImage" src="" class="w-full h-64 md:h-80 object-cover rounded-2xl" alt="صورة المنتج">
+                    <!-- ⬇️ تعديل: صورة المنتج تظهر كاملة -->
+                    <img id="productModalImage" src="" class="w-full object-contain bg-gray-50 rounded-2xl" alt="صورة المنتج">
                 </div>
                 <div class="md:w-1/2 flex flex-col">
                     <h2 id="productModalName" class="text-2xl font-extrabold mb-2"></h2>
@@ -725,9 +756,9 @@
                     description: product.description || ''
                 };
                 card.innerHTML = `
-                    <div class="relative h-32 sm:h-40 overflow-hidden">
+                    <div class="product-image-container relative h-32 sm:h-40">
                         <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition" 
+                             class="w-full h-full object-contain" 
                              loading="lazy" alt="${sanitizeHTML(product.name)}">
                         ${originalPrice ? '<span class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">خصم</span>' : ''}
                     </div>
@@ -765,7 +796,15 @@
 
         // ===== فتح نافذة المنتج =====
         function openProductModal(product) {
+            // ⬇️ تعديل: صورة المنتج تظهر كاملة داخل الحاوية
             productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
+            productModalImage.onload = function() {
+                // تأكد من أن الصورة تظهر كاملة
+                this.style.objectFit = 'contain';
+            };
+            productModalImage.onerror = function() {
+                this.src = 'https://via.placeholder.com/600';
+            };
             productModalName.textContent = product.name;
             productModalRating.textContent = product.ratting || 0;
             productModalStore.textContent = product.store_name || 'غير محدد';
@@ -846,10 +885,11 @@
                     const div = document.createElement('div');
                     div.className = 'flex items-center gap-3 p-3 border-b';
                     div.innerHTML = `
+                        <!-- ⬇️ تعديل: صورة المنتج في السلة تظهر كاملة -->
                         <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" 
-                             class="w-14 h-14 rounded-lg object-cover" alt="${sanitizeHTML(item.name)}">
-                        <div class="flex-1">
-                            <h5 class="font-semibold text-sm">${sanitizeHTML(item.name)}</h5>
+                             class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
+                        <div class="flex-1 min-w-0">
+                            <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
                             ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
                             <div class="flex items-center gap-2 mt-1">
                                 <button class="decrease-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">-</button>
@@ -857,7 +897,7 @@
                                 <button class="increase-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">+</button>
                             </div>
                         </div>
-                        <div class="text-left">
+                        <div class="text-left flex-shrink-0">
                             <div class="font-bold text-primary">${(item.price * item.quantity).toLocaleString()} ج.س</div>
                             <button class="remove-btn text-red-500 mt-1" data-id="${item.id}"><i class="fas fa-trash"></i></button>
                         </div>
