@@ -17,14 +17,8 @@
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
-        worker-src 'self';
     ">
-    <title>BAZRENA – بازارنا | أفضل المتاجر والبراندات في مكان واحد</title>
-
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="بازارنا">
+    <title>BAZRENA – بازارنا | أفضل المتاجر في مكان واحد</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -59,13 +53,14 @@
     <style>
         * { font-family: 'Cairo', sans-serif; }
         body { background: #F8F9FA; direction: rtl; overflow-x: hidden; }
+
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #E06B00; }
 
         .store-card, .product-card {
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             background: white;
             border-radius: 1rem;
@@ -80,27 +75,25 @@
         }
         .store-card .cover-image { height: 140px; width: 100%; object-fit: cover; }
         .store-card .store-logo {
-            width: 70px; height: 70px; border-radius: 50%; border: 4px solid white;
-            object-fit: cover; margin-top: -35px; margin-right: 20px;
+            width: 70px; height: 70px; border-radius: 50%;
+            border: 4px solid white; object-fit: cover;
+            margin-top: -35px; margin-right: 20px;
             position: relative; z-index: 2; background: white;
         }
         .store-card .store-info { padding: 0 20px 20px 20px; text-align: right; }
-        .store-card .store-name { font-weight: 800; font-size: 1.1rem; color: #1A1A1A; display: flex; align-items: center; gap: 5px; }
-        .store-card .store-category { color: #666; font-size: 0.85rem; }
-
-        .product-image-container {
-            background-color: #fafafa; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; border-radius: 0.75rem; margin: 0.5rem;
+        .store-card .store-name {
+            font-weight: 800; font-size: 1.1rem; color: #1A1A1A;
+            display: flex; align-items: center; gap: 5px;
         }
-        .product-image-container img { width: 100%; height: 100%; object-fit: contain; border-radius: 0.5rem; transition: transform 0.3s ease; }
-        .product-image-container img:hover { transform: scale(1.05); }
+        .store-card .store-category { color: #666; font-size: 0.85rem; }
 
         .verified-icon {
             display: inline-flex; align-items: center; justify-content: center;
-            width: 18px; height: 18px; background-color: #FF7A00; border-radius: 50%;
-            color: white; font-size: 10px; flex-shrink: 0;
+            width: 18px; height: 18px; background-color: #FF7A00;
+            border-radius: 50%; color: white; font-size: 10px; flex-shrink: 0;
         }
 
+        /* ===== حاوية المتاجر: RTL ليكون المتابَع في اليمين ===== */
         .stores-scroll-container {
             overflow-x: auto;
             scroll-behavior: auto;
@@ -109,22 +102,32 @@
             padding-bottom: 1rem;
             scrollbar-width: thin;
             scrollbar-color: #FF7A00 #f1f1f1;
-            direction: rtl;
+            direction: rtl; /* RTL */
         }
         .stores-scroll-container::-webkit-scrollbar { height: 8px; }
         .stores-scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .stores-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
 
         .categories-scroll-container {
-            overflow-x: auto; scroll-behavior: smooth; display: flex; gap: 0.75rem;
-            padding-bottom: 0.5rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            display: flex;
+            gap: 0.75rem;
+            padding-bottom: 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #FF7A00 #f1f1f1;
             direction: rtl;
         }
         .categories-scroll-container::-webkit-scrollbar { height: 6px; }
         .categories-scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .categories-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
 
-        .scroll-btn { width: 40px; height: 40px; border-radius: 50%; background: white; border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
+        .scroll-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: white; border: 1px solid #e5e7eb;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s;
+        }
         .scroll-btn:hover { background: #FF7A00; color: white; border-color: #FF7A00; }
 
         .btn-primary { background: #FF7A00; color: white; transition: all 0.3s; }
@@ -134,6 +137,7 @@
         .btn-call { background: #2196F3; color: white; transition: all 0.3s; }
         .btn-call:hover { background: #0b7dda; box-shadow: 0 4px 15px rgba(33,150,243,0.3); transform: translateY(-2px); }
 
+        /* زر المتابعة */
         .follow-btn-square {
             background-color: #FF7A00; color: white; border: none; border-radius: 0.5rem;
             padding: 0.5rem 1rem; font-weight: 700; font-size: 0.85rem; cursor: pointer;
@@ -147,13 +151,31 @@
         .modal-backdrop { backdrop-filter: blur(5px); background: rgba(0,0,0,0.5); }
         .top-bar { background: #FF7A00; color: white; font-size: 0.85rem; }
 
-        .fullscreen-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
+        .fullscreen-modal {
+            position: fixed; inset: 0; z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.3s;
+        }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .fullscreen-modal .modal-content { width: 100%; height: 100%; max-width: 100%; max-height: 100%; background: white; overflow-y: auto; border-radius: 0; animation: slideUp 0.3s; }
+        .fullscreen-modal .modal-content {
+            width: 100%; height: 100%; max-width: 100%; max-height: 100%;
+            background: white; overflow-y: auto; border-radius: 0;
+            animation: slideUp 0.3s;
+        }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .product-modal { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); animation: fadeIn 0.2s; }
-        .product-modal .product-modal-content { background: white; border-radius: 1.5rem; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.5rem; animation: zoomIn 0.3s; }
+        .product-modal {
+            position: fixed; inset: 0; z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px); animation: fadeIn 0.2s;
+        }
+        .product-modal .product-modal-content {
+            background: white; border-radius: 1.5rem;
+            max-width: 600px; width: 100%;
+            max-height: 90vh; overflow-y: auto;
+            padding: 1.5rem; animation: zoomIn 0.3s;
+        }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         #productModalImage { width: 100%; height: 280px; object-fit: contain; background-color: #fafafa; border-radius: 1rem; }
@@ -174,7 +196,10 @@
             cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(20px);
         }
         #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-        #installButtonFloating:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,122,0,0.6); background: linear-gradient(135deg, #E06B00 0%, #FF8C1A 100%); }
+        #installButtonFloating:hover {
+            transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,122,0,0.6);
+            background: linear-gradient(135deg, #E06B00 0%, #FF8C1A 100%);
+        }
         #installButtonFloating:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(255,122,0,0.4); }
         #installButtonFloating i { font-size: 1.2rem; transition: transform 0.3s; }
         #installButtonFloating:hover i { transform: rotate(180deg); }
@@ -212,14 +237,10 @@
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <div class="w-12 h-12 rounded-full shadow-neon-glow overflow-hidden bg-white">
-                    <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارنا">
+                <div class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white text-2xl shadow-neon-glow">
+                    <i class="fas fa-store"></i>
                 </div>
-                <span class="text-2xl font-extrabold flex items-center gap-1">
-                    <span class="text-text-main">بازارنا</span>
-                    <span class="text-text-light text-lg font-bold">-</span>
-                    <span class="text-primary">BAZRENA</span>
-                </span>
+                <span class="text-2xl font-extrabold"><span class="text-primary">BAZRENA</span> بازارنا</span>
             </div>
             <nav class="hidden md:flex gap-6">
                 <a href="#" class="hover:text-primary">الرئيسية</a>
@@ -253,13 +274,8 @@
 
     <!-- قسم الهيرو -->
     <section class="py-16 md:py-24 text-center bg-gradient-to-b from-orange-50 to-white">
-        <h1 class="text-4xl md:text-6xl font-extrabold mb-4">اكتشف أفضل <span class="text-primary">المتاجر</span></h1>
-        <p class="text-text-light max-w-2xl mx-auto mb-8">أفضل المتاجر والبراندات في مكان واحد</p>
-        <div class="flex justify-center mb-8">
-            <div class="w-40 h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[512px] lg:h-[512px] rounded-full overflow-hidden shadow-neon-glow bg-white">
-                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain" alt="شعار بازارنا">
-            </div>
-        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6">اكتشف أفضل <span class="text-primary">المتاجر</span></h1>
+        <p class="text-text-light max-w-2xl mx-auto mb-8">أفضل المتاجر في مكان واحد 🧡</p>
         <a href="#stores" class="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg shadow-neon-glow">
             <i class="fas fa-store"></i> تصفح المتاجر
         </a>
@@ -295,7 +311,9 @@
                     <button id="nextStoresBtn" class="scroll-btn"><i class="fas fa-chevron-left"></i></button>
                 </div>
             </div>
+
             <div id="storesScrollContainer" class="stores-scroll-container"></div>
+
             <div id="storesLoader" class="hidden text-center py-10">
                 <i class="fas fa-spinner fa-spin text-4xl text-primary mb-3"></i>
                 <p>جاري تحميل المتاجر...</p>
@@ -348,6 +366,7 @@
                     <span class="bg-white px-3 py-1 rounded-full shadow-sm"><i class="fas fa-star text-yellow-400"></i> <span id="storeRating">0.0</span></span>
                     <span class="bg-white px-3 py-1 rounded-full shadow-sm"><i class="fas fa-shopping-bag"></i> <span id="storeProductsCount">0</span> منتج</span>
                     <span class="bg-white px-3 py-1 rounded-full shadow-sm"><i class="fas fa-users"></i> <span id="storeFollowers">0</span> متابع</span>
+                    <!-- زر المتابعة بجانب العداد -->
                     <button id="storeFollowButton" class="follow-btn-square">
                         <i class="fas fa-heart"></i>
                         <span id="storeFollowText">متابعة</span>
@@ -388,7 +407,7 @@
                         <span class="text-text-light">|</span>
                         <span id="productModalStore" class="text-primary font-semibold"></span>
                     </div>
-                    <!-- تم حذف وصف المنتج نهائياً من النافذة -->
+                    <!-- تم حذف وصف المنتج نهائياً من العرض -->
                     <div class="flex items-center gap-3 mb-4">
                         <span id="productModalPrice" class="text-3xl font-extrabold text-primary"></span>
                         <span id="productModalOriginalPrice" class="text-lg line-through text-text-light"></span>
@@ -409,12 +428,12 @@
     <!-- سلة التسوق -->
     <div id="cartSidebar">
         <div class="cart-overlay" id="cartOverlay"></div>
-        <div class="p-6 border-b flex justify-between items-center flex-shrink-0">
+        <div class="p-6 border-b flex justify-between items-center">
             <h2 class="text-xl font-bold">سلة التسوق</h2>
-            <button id="closeCart" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
+            <button id="closeCart" class="w-10 h-10 rounded-full bg-gray-100"><i class="fas fa-times"></i></button>
         </div>
         <div id="cartItems" class="flex-1 overflow-y-auto p-6"></div>
-        <div class="p-6 border-t bg-gray-50 flex-shrink-0">
+        <div class="p-6 border-t bg-gray-50">
             <div id="cartTotal" class="flex justify-between font-bold mb-4">
                 <span>المجموع:</span>
                 <span class="text-primary">0 ج.س</span>
@@ -435,16 +454,12 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <div class="w-10 h-10 rounded-full bg-white overflow-hidden">
-                            <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارنا">
+                        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white text-xl">
+                            <i class="fas fa-store"></i>
                         </div>
-                        <span class="text-xl font-bold flex items-center gap-1">
-                            <span>بازارنا</span>
-                            <span class="text-primary font-bold">-</span>
-                            <span class="text-primary">BAZRENA</span>
-                        </span>
+                        <span class="text-xl font-bold">BAZRENA – بازارنا</span>
                     </div>
-                    <p class="text-gray-400 text-sm">أفضل المتاجر والبراندات في مكان واحد</p>
+                    <p class="text-gray-400 text-sm">أفضل المتاجر في مكان واحد 🧡</p>
                 </div>
                 <div>
                     <h5 class="font-bold mb-4">روابط سريعة</h5>
@@ -493,6 +508,7 @@
         let allProducts = [];
         let currentCategory = null;
 
+        // ===== إدارة المتابعة =====
         const FOLLOWED_STORES_KEY = 'bazrenaFollowedStores';
         let currentStoreId = null;
         let currentFollowersCount = 0;
@@ -508,6 +524,7 @@
         function saveFollowedStores(list) { localStorage.setItem(FOLLOWED_STORES_KEY, JSON.stringify(list)); }
         function isStoreFollowed(storeId) { return getFollowedStores().includes(storeId); }
 
+        // عناصر DOM
         const storesScrollContainer = document.getElementById('storesScrollContainer');
         const storesLoader = document.getElementById('storesLoader');
         const storesEmpty = document.getElementById('storesEmpty');
@@ -530,6 +547,7 @@
         const productModalName = document.getElementById('productModalName');
         const productModalRating = document.getElementById('productModalRating');
         const productModalStore = document.getElementById('productModalStore');
+        const productModalDescription = document.getElementById('productModalDescription');
         const productModalPrice = document.getElementById('productModalPrice');
         const productModalOriginalPrice = document.getElementById('productModalOriginalPrice');
         const addToCartFromModal = document.getElementById('addToCartFromModal');
@@ -551,16 +569,43 @@
         const storeFollowButton = document.getElementById('storeFollowButton');
         const storeFollowText = document.getElementById('storeFollowText');
 
+        // ===== PWA Installation =====
         let deferredPrompt = null;
-        function isAppInstalled() { return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true || localStorage.getItem('bazrenaInstalled') === 'true'; }
+        function isAppInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true ||
+                   localStorage.getItem('bazrenaInstalled') === 'true';
+        }
         function hideInstallButtons() { if (installButtonFloating) installButtonFloating.classList.remove('show'); }
         function showInstallButtons() { if (installButtonFloating) installButtonFloating.classList.add('show'); }
-        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if (!isAppInstalled()) showInstallButtons(); });
-        window.addEventListener('appinstalled', () => { localStorage.setItem('bazrenaInstalled', 'true'); hideInstallButtons(); deferredPrompt = null; showToast('تم تثبيت التطبيق بنجاح!'); });
-        async function handleInstallClick() { if (!deferredPrompt) return; deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') { localStorage.setItem('bazrenaInstalled', 'true'); hideInstallButtons(); deferredPrompt = null; } else { showToast('تم إلغاء التثبيت'); } }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isAppInstalled()) showInstallButtons();
+        });
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('bazrenaInstalled', 'true');
+            hideInstallButtons();
+            deferredPrompt = null;
+            showToast('تم تثبيت التطبيق بنجاح!');
+        });
+        async function handleInstallClick() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                localStorage.setItem('bazrenaInstalled', 'true');
+                hideInstallButtons();
+                deferredPrompt = null;
+            } else {
+                showToast('تم إلغاء التثبيت');
+            }
+        }
         if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
         if (isAppInstalled()) hideInstallButtons();
 
+        // ===== تسجيل Service Worker =====
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('service-worker.js')
@@ -569,27 +614,53 @@
             });
         }
 
-        function sanitizeHTML(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
-        function showToast(message) { toast.textContent = message; toast.classList.remove('opacity-0'); toast.classList.add('opacity-100'); if (window.toastTimeout) clearTimeout(window.toastTimeout); window.toastTimeout = setTimeout(() => { toast.classList.add('opacity-0'); toast.classList.remove('opacity-100'); }, 2500); }
-        function animateCartBadge() { cartCount.classList.add('cart-badge-animate'); setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300); }
+        function sanitizeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            if (window.toastTimeout) clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0');
+                toast.classList.remove('opacity-100');
+            }, 2500);
+        }
+        function animateCartBadge() {
+            cartCount.classList.add('cart-badge-animate');
+            setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300);
+        }
 
+        // ===== تحميل المتاجر =====
         async function loadStores() {
             storesLoader.classList.remove('hidden');
             storesEmpty.classList.add('hidden');
             storesScrollContainer.innerHTML = '';
             try {
-                const { data, error } = await supabaseClient.from('Stores').select('*').order('created_at', { ascending: false });
+                const { data, error } = await supabaseClient
+                    .from('Stores')
+                    .select('*')
+                    .order('created_at', { ascending: false });
                 if (error) throw error;
                 stores = data || [];
+
                 if (stores.length > 0) {
                     const storeNames = stores.map(s => s.name);
-                    const { data: productCounts, error: countError } = await supabaseClient.from('products').select('store_name', { count: 'exact' }).in('store_name', storeNames);
+                    const { data: productCounts, error: countError } = await supabaseClient
+                        .from('products')
+                        .select('store_name', { count: 'exact' })
+                        .in('store_name', storeNames);
                     if (!countError && productCounts) {
                         const counts = {};
                         productCounts.forEach(p => { counts[p.store_name] = (counts[p.store_name] || 0) + 1; });
                         stores = stores.map(s => ({ ...s, products_count: counts[s.name] || 0 }));
                     }
                 }
+
                 if (stores.length === 0) {
                     storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
                     storesEmpty.classList.remove('hidden');
@@ -614,7 +685,15 @@
             return [...followedStores, ...otherStores];
         }
 
-        function refreshCurrentView() { if (currentCategory) { filterStoresByCategory(currentCategory); } else { displayStores(); } stopAutoScroll(); startAutoScroll(); }
+        function refreshCurrentView() {
+            if (currentCategory) {
+                filterStoresByCategory(currentCategory);
+            } else {
+                displayStores();
+            }
+            stopAutoScroll();
+            startAutoScroll();
+        }
 
         function displayStores() {
             storesScrollContainer.innerHTML = '';
@@ -623,12 +702,20 @@
                 const card = document.createElement('div');
                 card.className = 'store-card';
                 card.innerHTML = `
-                    <img src="${sanitizeHTML(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'}" alt="${sanitizeHTML(store.name)}" class="cover-image" loading="lazy">
-                    <img src="${sanitizeHTML(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'}" alt="${sanitizeHTML(store.name)}" class="store-logo" loading="lazy">
+                    <img src="${sanitizeHTML(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'}" 
+                         alt="${sanitizeHTML(store.name)}" class="cover-image" loading="lazy">
+                    <img src="${sanitizeHTML(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'}" 
+                         alt="${sanitizeHTML(store.name)}" class="store-logo" loading="lazy">
                     <div class="store-info">
-                        <div class="store-name">${sanitizeHTML(store.name)} ${store.is_verified ? '<span class="verified-icon"><i class="fas fa-check"></i></span>' : ''}</div>
+                        <div class="store-name">
+                            ${sanitizeHTML(store.name)}
+                            ${store.is_verified ? '<span class="verified-icon"><i class="fas fa-check"></i></span>' : ''}
+                        </div>
                         <div class="store-category">${sanitizeHTML(store.category) || 'عام'}</div>
-                        <div class="flex items-center gap-2 mt-1 text-xs text-text-light"><i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span></div>
+                        <div class="flex items-center gap-2 mt-1 text-xs text-text-light">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>${store.products_count || 0} منتج</span>
+                        </div>
                     </div>
                 `;
                 card.addEventListener('click', () => openStoreModal(store));
@@ -638,12 +725,12 @@
 
         function refreshStoresDisplay() { refreshCurrentView(); }
 
-        // ===== الحركة التلقائية (RTL) - الإصلاح =====
+        // ===== الحركة التلقائية (من اليسار إلى اليمين، RTL) =====
         function startAutoScroll() {
             stopAutoScroll();
             const container = storesScrollContainer;
             // نبدأ من أقصى اليسار (نهاية المحتوى في RTL)
-            container.scrollLeft = container.scrollWidth;
+            container.scrollLeft = container.scrollWidth - container.clientWidth;
             autoScrollInterval = setInterval(() => {
                 if (!container) return;
                 const maxScroll = container.scrollWidth - container.clientWidth;
@@ -651,13 +738,17 @@
                 if (container.scrollLeft <= 0) {
                     container.scrollLeft = maxScroll; // العودة إلى النهاية
                 } else {
-                    // التحرك نحو اليمين بمقدار 3 بكسل
-                    container.scrollTo({ left: container.scrollLeft - 3, behavior: 'auto' });
+                    container.scrollLeft -= 2; // التحرك نحو اليمين بسرعة مريحة
                 }
-            }, 40);
+            }, 50);
         }
 
-        function stopAutoScroll() { if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; } }
+        function stopAutoScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+                autoScrollInterval = null;
+            }
+        }
 
         storesScrollContainer.addEventListener('mouseenter', stopAutoScroll);
         storesScrollContainer.addEventListener('mouseleave', startAutoScroll);
@@ -667,11 +758,13 @@
         prevStoresBtn.addEventListener('click', () => { stopAutoScroll(); storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' }); setTimeout(startAutoScroll, 3000); });
         nextStoresBtn.addEventListener('click', () => { stopAutoScroll(); storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' }); setTimeout(startAutoScroll, 3000); });
 
+        // ===== فتح نافذة المتجر =====
         function openStoreModal(store) {
             currentStore = store;
             currentStoreId = store.id || store.name;
             currentFollowersCount = parseInt(store.followers) || 0;
             isFollowing = isStoreFollowed(currentStoreId);
+
             storeCoverImage.src = store.cover_url || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
             storeLogo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
             storeName.textContent = store.name;
@@ -681,40 +774,100 @@
             storeProductsCount.textContent = store.products_count || 0;
             updateFollowersDisplay();
             updateFollowButtonUI();
-            if (store.is_verified) { storeName.innerHTML = `${sanitizeHTML(store.name)} <span class="verified-icon"><i class="fas fa-check"></i></span>`; } else { storeName.innerHTML = sanitizeHTML(store.name); }
+
+            if (store.is_verified) {
+                storeName.innerHTML = `${sanitizeHTML(store.name)} <span class="verified-icon"><i class="fas fa-check"></i></span>`;
+            } else {
+                storeName.innerHTML = sanitizeHTML(store.name);
+            }
+
             const phoneNumber = store.phone_number || '';
             const whatsappNumber = store.whatsapp_number || '';
-            if (phoneNumber) { storeCallButton.href = `tel:${phoneNumber}`; storeCallButton.classList.remove('hidden'); } else { storeCallButton.classList.add('hidden'); }
-            if (whatsappNumber) { storeWhatsAppButton.href = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`; storeWhatsAppButton.classList.remove('hidden'); } else { storeWhatsAppButton.classList.add('hidden'); }
+            if (phoneNumber) {
+                storeCallButton.href = `tel:${phoneNumber}`;
+                storeCallButton.classList.remove('hidden');
+            } else {
+                storeCallButton.classList.add('hidden');
+            }
+            if (whatsappNumber) {
+                storeWhatsAppButton.href = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`;
+                storeWhatsAppButton.classList.remove('hidden');
+            } else {
+                storeWhatsAppButton.classList.add('hidden');
+            }
+
             loadStoreProducts(store.name);
             storeModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
-        function updateFollowButtonUI() { if (!storeFollowButton || !storeFollowText) return; if (isFollowing) { storeFollowButton.classList.add('following'); storeFollowText.textContent = 'متابَع'; } else { storeFollowButton.classList.remove('following'); storeFollowText.textContent = 'متابعة'; } }
-        function updateFollowersDisplay() { storeFollowers.textContent = currentFollowersCount.toLocaleString(); }
+        function updateFollowButtonUI() {
+            if (!storeFollowButton || !storeFollowText) return;
+            if (isFollowing) {
+                storeFollowButton.classList.add('following');
+                storeFollowText.textContent = 'متابَع';
+            } else {
+                storeFollowButton.classList.remove('following');
+                storeFollowText.textContent = 'متابعة';
+            }
+        }
 
+        function updateFollowersDisplay() {
+            storeFollowers.textContent = currentFollowersCount.toLocaleString();
+        }
+
+        // ===== دالة المتابعة =====
         async function handleFollowToggle() {
             if (!currentStoreId || isUpdatingFollow) return;
             isUpdatingFollow = true;
             storeFollowButton.disabled = true;
             storeFollowText.textContent = 'جاري...';
+
             const wasFollowing = isFollowing;
             try {
-                const { data: storeData, error: fetchError } = await supabaseClient.from('Stores').select('followers').eq('id', currentStoreId).maybeSingle();
+                const { data: storeData, error: fetchError } = await supabaseClient
+                    .from('Stores')
+                    .select('followers')
+                    .eq('id', currentStoreId)
+                    .maybeSingle();
                 if (fetchError) throw fetchError;
+
                 const currentDbFollowers = parseInt(storeData?.followers) || 0;
                 let newFollowers;
-                if (wasFollowing) { newFollowers = Math.max(0, currentDbFollowers - 1); } else { newFollowers = currentDbFollowers + 1; }
-                const { error: updateError } = await supabaseClient.from('Stores').update({ followers: newFollowers }).eq('id', currentStoreId);
+                if (wasFollowing) {
+                    newFollowers = Math.max(0, currentDbFollowers - 1);
+                } else {
+                    newFollowers = currentDbFollowers + 1;
+                }
+
+                const { error: updateError } = await supabaseClient
+                    .from('Stores')
+                    .update({ followers: newFollowers })
+                    .eq('id', currentStoreId);
                 if (updateError) throw updateError;
-                if (wasFollowing) { isFollowing = false; const followedList = getFollowedStores(); const index = followedList.indexOf(currentStoreId); if (index > -1) followedList.splice(index, 1); saveFollowedStores(followedList); } else { isFollowing = true; const followedList = getFollowedStores(); if (!followedList.includes(currentStoreId)) { followedList.push(currentStoreId); saveFollowedStores(followedList); } }
+
+                if (wasFollowing) {
+                    isFollowing = false;
+                    const list = getFollowedStores();
+                    const idx = list.indexOf(currentStoreId);
+                    if (idx > -1) list.splice(idx, 1);
+                    saveFollowedStores(list);
+                } else {
+                    isFollowing = true;
+                    const list = getFollowedStores();
+                    if (!list.includes(currentStoreId)) {
+                        list.push(currentStoreId);
+                        saveFollowedStores(list);
+                    }
+                }
+
                 currentFollowersCount = newFollowers;
                 updateFollowersDisplay();
                 updateFollowButtonUI();
                 showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
                 refreshStoresDisplay();
-                if (currentStore) { currentStore.followers = newFollowers; }
+
+                if (currentStore) currentStore.followers = newFollowers;
             } catch (err) {
                 console.error('خطأ في تحديث المتابعة:', err);
                 showToast('حدث خطأ، حاول مرة أخرى');
@@ -730,17 +883,33 @@
 
         document.getElementById('closeStoreModal').addEventListener('click', closeStoreModal);
         document.getElementById('storeModalOverlay').addEventListener('click', closeStoreModal);
-        function closeStoreModal() { storeModal.classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        function closeStoreModal() {
+            storeModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
 
+        // ===== تحميل منتجات المتجر =====
         async function loadStoreProducts(storeName) {
             storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-8"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>';
             try {
-                const { data, error } = await supabaseClient.from('products').select('*').eq('store_name', storeName).order('created_at', { ascending: false });
+                const { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .eq('store_name', storeName)
+                    .order('created_at', { ascending: false });
                 if (error) throw error;
-                if (!data || data.length === 0) { storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-6 text-text-light">لا توجد منتجات</div>'; } else { displayProductsGrid(storeProductsGrid, data, false); }
-            } catch (err) { console.error('تفاصيل خطأ المنتجات:', err.message, err.details, err.hint); storeProductsGrid.innerHTML = `<div class="col-span-full text-center py-6 text-text-light">تعذر تحميل المنتجات: ${err.message}</div>`; }
+                if (!data || data.length === 0) {
+                    storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-6 text-text-light">لا توجد منتجات</div>';
+                } else {
+                    displayProductsGrid(storeProductsGrid, data, false);
+                }
+            } catch (err) {
+                console.error('تفاصيل خطأ المنتجات:', err.message, err.details, err.hint);
+                storeProductsGrid.innerHTML = `<div class="col-span-full text-center py-6 text-text-light">تعذر تحميل المنتجات: ${err.message}</div>`;
+            }
         }
 
+        // ===== عرض شبكة منتجات =====
         function displayProductsGrid(container, products, addStoreName = false) {
             container.innerHTML = '';
             products.forEach(product => {
@@ -749,32 +918,52 @@
                 const rating = parseFloat(product.ratting) || 0;
                 const card = document.createElement('div');
                 card.className = 'product-card bg-white border rounded-xl overflow-hidden hover:shadow-lg transition group';
-                const productForModal = { id: product.id, name: product.name, img_url: product.img_url, price, original_price: originalPrice, ratting: rating, store_name: product.store_name, description: product.description || '' };
+                const productForModal = {
+                    id: product.id,
+                    name: product.name,
+                    img_url: product.img_url,
+                    price: price,
+                    original_price: originalPrice,
+                    ratting: rating,
+                    store_name: product.store_name,
+                    description: product.description || ''
+                };
                 card.innerHTML = `
                     <div class="product-image-container relative h-32 sm:h-40">
-                        <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
+                        <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" 
+                             class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
                         ${originalPrice ? '<span class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">خصم</span>' : ''}
                     </div>
                     <div class="p-3">
                         <h5 class="font-bold text-sm truncate">${sanitizeHTML(product.name)}</h5>
                         ${addStoreName && product.store_name ? `<p class="text-xs text-primary mt-1">${sanitizeHTML(product.store_name)}</p>` : ''}
-                        <div class="flex items-center gap-1 text-xs my-1"><i class="fas fa-star text-yellow-400"></i> ${rating}</div>
+                        <div class="flex items-center gap-1 text-xs my-1">
+                            <i class="fas fa-star text-yellow-400"></i> ${rating}
+                        </div>
                         <div class="flex items-center gap-2 mb-2">
                             <span class="font-bold text-primary">${price.toLocaleString()} ج.س</span>
                             ${originalPrice ? `<span class="text-xs line-through text-text-light">${originalPrice.toLocaleString()} ج.س</span>` : ''}
                         </div>
-                        <button class="open-product-btn w-full bg-primary text-white py-2 rounded-lg text-sm hover:bg-primary-dark transition" data-product='${JSON.stringify(productForModal).replace(/'/g, "&#39;")}'>عرض المنتج</button>
+                        <button class="open-product-btn w-full bg-primary text-white py-2 rounded-lg text-sm hover:bg-primary-dark transition"
+                                data-product='${JSON.stringify(productForModal).replace(/'/g, "&#39;")}'>
+                            عرض المنتج
+                        </button>
                     </div>
                 `;
                 container.appendChild(card);
             });
+
             container.querySelectorAll('.open-product-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    try { const product = JSON.parse(e.currentTarget.dataset.product); openProductModal(product); } catch (err) { console.error('خطأ في قراءة بيانات المنتج:', err); }
+                    try {
+                        const product = JSON.parse(e.currentTarget.dataset.product);
+                        openProductModal(product);
+                    } catch (err) { console.error('خطأ في قراءة بيانات المنتج:', err); }
                 });
             });
         }
 
+        // ===== فتح نافذة المنتج =====
         function openProductModal(product) {
             productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
             productModalImage.onload = function() { this.style.objectFit = 'contain'; };
@@ -782,82 +971,126 @@
             productModalName.textContent = product.name;
             productModalRating.textContent = product.ratting || 0;
             productModalStore.textContent = product.store_name || 'غير محدد';
+            // إخفاء وصف المنتج نهائياً
+            if (productModalDescription) productModalDescription.style.display = 'none';
             productModalPrice.textContent = `${(product.price || 0).toLocaleString()} ج.س`;
-            if (product.original_price) { productModalOriginalPrice.textContent = `${product.original_price.toLocaleString()} ج.س`; productModalOriginalPrice.classList.remove('hidden'); } else { productModalOriginalPrice.textContent = ''; productModalOriginalPrice.classList.add('hidden'); }
+            if (product.original_price) {
+                productModalOriginalPrice.textContent = `${product.original_price.toLocaleString()} ج.س`;
+                productModalOriginalPrice.classList.remove('hidden');
+            } else {
+                productModalOriginalPrice.textContent = '';
+                productModalOriginalPrice.classList.add('hidden');
+            }
             productModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+
             addToCartFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
             buyNowFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
         }
-        document.getElementById('closeProductModal').addEventListener('click', () => { productModal.classList.add('hidden'); document.body.style.overflow = 'auto'; });
 
+        document.getElementById('closeProductModal').addEventListener('click', () => {
+            productModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+
+        // إضافة للسلة
         addToCartFromModal.addEventListener('click', (e) => {
             const btn = e.currentTarget;
             const product = JSON.parse(btn.dataset.product);
             addToCart(product);
             btn.classList.add('btn-adding');
             btn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
-            setTimeout(() => { btn.classList.remove('btn-adding'); btn.innerHTML = '<i class="fas fa-shopping-cart"></i> أضف إلى السلة'; }, 1500);
+            setTimeout(() => {
+                btn.classList.remove('btn-adding');
+                btn.innerHTML = '<i class="fas fa-shopping-cart"></i> أضف إلى السلة';
+            }, 1500);
         });
 
+        // شراء مباشر
         buyNowFromModal.addEventListener('click', (e) => {
-            const btn = e.currentTarget;
-            const product = JSON.parse(btn.dataset.product);
+            const product = JSON.parse(e.currentTarget.dataset.product);
             let whatsappNumber = '';
             const store = stores.find(s => s.name === product.store_name);
             if (store && store.whatsapp_number) whatsappNumber = store.whatsapp_number;
-            if (!whatsappNumber) { showToast('رقم الواتساب غير متوفر لهذا المتجر'); return; }
+            if (!whatsappNumber) {
+                showToast('رقم الواتساب غير متوفر لهذا المتجر');
+                return;
+            }
             const message = `مرحباً، أريد شراء هذا المنتج:\n\n${product.name}\nالسعر: ${(product.price || 0).toLocaleString()} ج.س\n${product.store_name ? 'من متجر: ' + product.store_name : ''}`;
             const url = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank', 'noopener,noreferrer');
         });
 
+        // ===== سلة التسوق =====
         function addToCart(product) {
             const store = stores.find(s => s.name === product.store_name);
             const cartItem = { ...product, quantity: 1, store_whatsapp: store?.whatsapp_number || '' };
             const existing = cart.find(i => i.id === product.id);
-            if (existing) { existing.quantity += 1; } else { cart.push(cartItem); }
+            if (existing) existing.quantity += 1; else cart.push(cartItem);
             updateCartUI();
             localStorage.setItem('myStoresCart', JSON.stringify(cart));
             animateCartBadge();
             showToast('تمت الإضافة إلى السلة');
         }
+
         function updateCartUI() {
             const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
             cartCount.textContent = totalItems;
             cartItems.innerHTML = '';
-            if (cart.length === 0) { cartItems.innerHTML = '<div class="text-center text-text-light py-10"><i class="fas fa-shopping-cart text-5xl mb-3"></i><p>السلة فارغة</p></div>'; return; }
-            cart.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center gap-3 p-3 border-b';
-                div.innerHTML = `
-                    <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
-                    <div class="flex-1 min-w-0">
-                        <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
-                        ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
-                        <div class="flex items-center gap-2 mt-1">
-                            <button class="decrease-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">-</button>
-                            <span>${item.quantity}</span>
-                            <button class="increase-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">+</button>
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="text-center text-text-light py-10"><i class="fas fa-shopping-cart text-5xl mb-3"></i><p>السلة فارغة</p></div>';
+            } else {
+                cart.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center gap-3 p-3 border-b';
+                    div.innerHTML = `
+                        <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
+                        <div class="flex-1 min-w-0">
+                            <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
+                            ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
+                            <div class="flex items-center gap-2 mt-1">
+                                <button class="decrease-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="increase-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">+</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-left flex-shrink-0">
-                        <div class="font-bold text-primary">${(item.price * item.quantity).toLocaleString()} ج.س</div>
-                        <button class="remove-btn text-red-500 mt-1" data-id="${item.id}"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                cartItems.appendChild(div);
-            });
-            document.querySelectorAll('.decrease-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, -1));
-            document.querySelectorAll('.increase-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, 1));
-            document.querySelectorAll('.remove-btn').forEach(btn => btn.onclick = () => removeFromCart(btn.dataset.id));
+                        <div class="text-left flex-shrink-0">
+                            <div class="font-bold text-primary">${(item.price * item.quantity).toLocaleString()} ج.س</div>
+                            <button class="remove-btn text-red-500 mt-1" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    cartItems.appendChild(div);
+                });
+                document.querySelectorAll('.decrease-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, -1));
+                document.querySelectorAll('.increase-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, 1));
+                document.querySelectorAll('.remove-btn').forEach(btn => btn.onclick = () => removeFromCart(btn.dataset.id));
+            }
             const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
             cartTotal.querySelector('span:last-child').textContent = total.toLocaleString() + ' ج.س';
         }
-        function changeQuantity(id, delta) { const item = cart.find(i => i.id === id); if (!item) return; item.quantity = Math.max(1, item.quantity + delta); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); }
-        function removeFromCart(id) { cart = cart.filter(i => i.id !== id); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); showToast('تمت الإزالة'); }
-        function openCart() { cartSidebar.classList.add('open'); document.body.style.overflow = 'hidden'; }
-        function closeCart() { cartSidebar.classList.remove('open'); document.body.style.overflow = 'auto'; }
+
+        function changeQuantity(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.quantity = Math.max(1, item.quantity + delta);
+            updateCartUI();
+            localStorage.setItem('myStoresCart', JSON.stringify(cart));
+        }
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            updateCartUI();
+            localStorage.setItem('myStoresCart', JSON.stringify(cart));
+            showToast('تمت الإزالة');
+        }
+
+        function openCart() {
+            cartSidebar.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeCart() {
+            cartSidebar.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
         document.getElementById('cartButton').addEventListener('click', openCart);
         document.getElementById('closeCart').addEventListener('click', closeCart);
         document.getElementById('cartOverlay').addEventListener('click', closeCart);
@@ -866,12 +1099,19 @@
         document.getElementById('whatsappOrder').addEventListener('click', () => {
             if (cart.length === 0) { showToast('السلة فارغة'); return; }
             const groupedByWhatsApp = {};
-            cart.forEach(item => { const wa = item.store_whatsapp || 'default'; if (!groupedByWhatsApp[wa]) groupedByWhatsApp[wa] = []; groupedByWhatsApp[wa].push(item); });
+            cart.forEach(item => {
+                const wa = item.store_whatsapp || 'default';
+                if (!groupedByWhatsApp[wa]) groupedByWhatsApp[wa] = [];
+                groupedByWhatsApp[wa].push(item);
+            });
             const whatsappNumbers = Object.keys(groupedByWhatsApp);
             if (whatsappNumbers.length === 1) {
                 const wa = whatsappNumbers[0];
                 let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
-                groupedByWhatsApp[wa].forEach(item => { message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`; if (item.store_name) message += `من متجر: ${item.store_name}\n`; });
+                groupedByWhatsApp[wa].forEach(item => {
+                    message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+                    if (item.store_name) message += `من متجر: ${item.store_name}\n`;
+                });
                 const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
                 message += `\nالمجموع: ${total.toLocaleString()} ج.س`;
                 const finalWa = wa === 'default' ? '0924299798' : wa;
@@ -881,7 +1121,10 @@
                 whatsappNumbers.forEach((wa, index) => {
                     setTimeout(() => {
                         let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
-                        groupedByWhatsApp[wa].forEach(item => { message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`; if (item.store_name) message += `من متجر: ${item.store_name}\n`; });
+                        groupedByWhatsApp[wa].forEach(item => {
+                            message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+                            if (item.store_name) message += `من متجر: ${item.store_name}\n`;
+                        });
                         const finalWa = wa === 'default' ? '0924299798' : wa;
                         window.open(`https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
                     }, index * 500);
@@ -889,16 +1132,25 @@
             }
         });
 
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => { document.getElementById('mobileMenu').classList.toggle('hidden'); });
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
 
+        // ===== تحميل الفئات =====
         async function loadCategories() {
             try {
-                const { data, error } = await supabaseClient.from('Stores').select('category').not('category', 'is', null);
+                const { data, error } = await supabaseClient
+                    .from('Stores')
+                    .select('category')
+                    .not('category', 'is', null);
                 if (error) throw error;
                 const uniqueCategories = [...new Set(data.map(d => d.category).filter(c => c && c.trim() !== ''))];
                 categories = uniqueCategories;
                 displayCategories();
-            } catch (err) { console.error('خطأ تحميل الفئات:', err); categoriesContainer.innerHTML = '<p class="text-text-light">تعذر تحميل الفئات</p>'; }
+            } catch (err) {
+                console.error('خطأ تحميل الفئات:', err);
+                categoriesContainer.innerHTML = '<p class="text-text-light">تعذر تحميل الفئات</p>';
+            }
         }
 
         function displayCategories() {
@@ -906,38 +1158,60 @@
             const allBtn = document.createElement('button');
             allBtn.className = 'px-6 py-2 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition flex-shrink-0';
             allBtn.textContent = 'الكل';
-            allBtn.addEventListener('click', () => { currentCategory = null; displayStores(); highlightCategory(allBtn); stopAutoScroll(); startAutoScroll(); });
+            allBtn.addEventListener('click', () => {
+                currentCategory = null;
+                displayStores();
+                highlightCategory(allBtn);
+                stopAutoScroll();
+                startAutoScroll();
+            });
             categoriesContainer.appendChild(allBtn);
+
             categories.forEach(cat => {
                 const btn = document.createElement('button');
                 btn.className = 'px-6 py-2 rounded-full bg-white border border-gray-200 hover:bg-primary hover:text-white transition font-semibold flex-shrink-0';
                 btn.textContent = cat;
-                btn.addEventListener('click', () => { currentCategory = cat; filterStoresByCategory(cat); highlightCategory(btn); });
+                btn.addEventListener('click', () => {
+                    currentCategory = cat;
+                    filterStoresByCategory(cat);
+                    highlightCategory(btn);
+                });
                 categoriesContainer.appendChild(btn);
             });
         }
+
         function highlightCategory(activeBtn) {
-            categoriesContainer.querySelectorAll('button').forEach(b => { b.classList.remove('bg-primary', 'text-white', 'font-bold'); b.classList.add('bg-white', 'border', 'border-gray-200', 'text-text-main'); });
+            categoriesContainer.querySelectorAll('button').forEach(b => {
+                b.classList.remove('bg-primary', 'text-white', 'font-bold');
+                b.classList.add('bg-white', 'border', 'border-gray-200', 'text-text-main');
+            });
             activeBtn.classList.add('bg-primary', 'text-white', 'font-bold');
             activeBtn.classList.remove('bg-white', 'border', 'border-gray-200', 'text-text-main');
         }
+
         function filterStoresByCategory(category) {
             currentCategory = category;
             const filtered = stores.filter(s => s.category === category);
             const sortedFiltered = getSortedStores(filtered);
             storesScrollContainer.innerHTML = '';
-            if (sortedFiltered.length === 0) { storesScrollContainer.innerHTML = '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>'; }
-            else {
+            if (sortedFiltered.length === 0) {
+                storesScrollContainer.innerHTML = '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>';
+            } else {
                 sortedFiltered.forEach(store => {
                     const card = document.createElement('div');
                     card.className = 'store-card';
                     card.innerHTML = `
-                        <img src="${sanitizeHTML(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'}" class="cover-image" alt="${sanitizeHTML(store.name)}" loading="lazy">
-                        <img src="${sanitizeHTML(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'}" class="store-logo" alt="${sanitizeHTML(store.name)}" loading="lazy">
+                        <img src="${sanitizeHTML(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'}" 
+                             class="cover-image" alt="${sanitizeHTML(store.name)}" loading="lazy">
+                        <img src="${sanitizeHTML(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'}" 
+                             class="store-logo" alt="${sanitizeHTML(store.name)}" loading="lazy">
                         <div class="store-info">
                             <div class="store-name">${sanitizeHTML(store.name)} ${store.is_verified ? '<span class="verified-icon"><i class="fas fa-check"></i></span>' : ''}</div>
                             <div class="store-category">${sanitizeHTML(store.category) || 'عام'}</div>
-                            <div class="flex items-center gap-2 mt-1 text-xs text-text-light"><i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span></div>
+                            <div class="flex items-center gap-2 mt-1 text-xs text-text-light">
+                                <i class="fas fa-shopping-bag"></i>
+                                <span>${store.products_count || 0} منتج</span>
+                            </div>
                         </div>
                     `;
                     card.addEventListener('click', () => openStoreModal(store));
@@ -947,29 +1221,56 @@
             stopAutoScroll();
             startAutoScroll();
         }
+
         prevCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' }));
         nextCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' }));
 
+        // ===== تحميل جميع المنتجات =====
         async function loadAllProducts() {
             allProductsLoader.classList.remove('hidden');
             try {
-                const { data, error } = await supabaseClient.from('products').select('*').order('created_at', { ascending: false });
+                const { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .order('created_at', { ascending: false });
                 if (error) throw error;
                 allProducts = data || [];
                 displayProductsGrid(allProductsGrid, allProducts, true);
-            } catch (err) { console.error('خطأ تحميل جميع المنتجات:', err); allProductsGrid.innerHTML = '<p class="col-span-full text-text-light text-center">تعذر تحميل المنتجات</p>'; }
-            finally { allProductsLoader.classList.add('hidden'); }
+            } catch (err) {
+                console.error('خطأ تحميل جميع المنتجات:', err);
+                allProductsGrid.innerHTML = '<p class="col-span-full text-text-light text-center">تعذر تحميل المنتجات</p>';
+            } finally {
+                allProductsLoader.classList.add('hidden');
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => { updateCartUI(); loadStores(); loadCategories(); loadAllProducts(); });
+        // ===== بدء التطبيق =====
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartUI();
+            loadStores();
+            loadCategories();
+            loadAllProducts();
+        });
+
+        // إغلاق النوافذ بمفتاح Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                if (!productModal.classList.contains('hidden')) { productModal.classList.add('hidden'); document.body.style.overflow = 'auto'; }
+                if (!productModal.classList.contains('hidden')) {
+                    productModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
                 if (!storeModal.classList.contains('hidden')) closeStoreModal();
                 if (cartSidebar.classList.contains('open')) closeCart();
             }
         });
-        categoriesContainer.addEventListener('wheel', (e) => { if (e.deltaY !== 0) { e.preventDefault(); categoriesContainer.scrollLeft += e.deltaY; } }, { passive: false });
+
+        // تحسين أداء التمرير للفئات
+        categoriesContainer.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                categoriesContainer.scrollLeft += e.deltaY;
+            }
+        }, { passive: false });
     </script>
 </body>
 </html>
