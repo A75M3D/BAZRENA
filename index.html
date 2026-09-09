@@ -17,8 +17,15 @@
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
+        worker-src 'self';
     ">
     <title>BAZRENA – بازارنا | أفضل المتاجر، في مكان واحد</title>
+
+    <!-- ملفات PWA الخارجية -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="بازارنا">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -51,6 +58,7 @@
     </script>
 
     <style>
+        /* ===== التنسيقات الأساسية ===== */
         * { font-family: 'Cairo', sans-serif; }
         body { background: #F8F9FA; direction: rtl; overflow-x: hidden; }
 
@@ -94,14 +102,14 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border-radius: 0.75rem; /* حواف دائرية للصور */
+            border-radius: 0.75rem;
             margin: 0.5rem;
         }
         .product-image-container img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            border-radius: 0.5rem; /* حواف داخلية دائرية */
+            border-radius: 0.5rem;
             transition: transform 0.3s ease;
         }
         .product-image-container img:hover { transform: scale(1.05); }
@@ -178,31 +186,84 @@
         }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* صورة المنتج في النافذة المنبثقة تظهر كاملة بحواف دائرية */
         #productModalImage {
             width: 100%;
             height: 280px;
             object-fit: contain;
             background-color: #fafafa;
-            border-radius: 1rem; /* حواف دائرية */
+            border-radius: 1rem;
         }
         @media (min-width: 768px) {
             #productModalImage { height: 320px; }
         }
 
-        /* صورة المنتج في سلة التسوق تظهر كاملة بحواف دائرية */
         .cart-item-image {
             width: 56px;
             height: 56px;
             object-fit: contain;
             background-color: #fafafa;
-            border-radius: 0.75rem; /* حواف دائرية */
+            border-radius: 0.75rem;
             flex-shrink: 0;
         }
 
         .cart-badge-animate { animation: pulse 0.3s ease-in-out; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
         .btn-adding { background: #28a745 !important; color: white !important; pointer-events: none; transition: all 0.2s; }
+
+        /* ===== زر التثبيت الاحترافي ===== */
+        #installButton {
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 0.7rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255,122,0,0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        #installButton:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,122,0,0.6);
+            background: linear-gradient(135deg, #E06B00 0%, #FF8C1A 100%);
+        }
+        #installButton:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(255,122,0,0.4);
+        }
+        #installButton i {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        #installButton:hover i {
+            transform: rotate(180deg);
+        }
+        #installButtonMobile {
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255,122,0,0.4);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        #installButtonMobile:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -239,6 +300,11 @@
                 <a href="#" class="hover:text-primary">من نحن</a>
             </nav>
             <div class="flex items-center gap-3">
+                <!-- زر التثبيت (سطح المكتب) -->
+                <button id="installButton" class="hidden" title="تثبيت التطبيق">
+                    <i class="fas fa-download"></i>
+                    <span>تثبيت التطبيق</span>
+                </button>
                 <button id="cartButton" class="relative w-11 h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-xl" aria-label="سلة التسوق">
                     <i class="fas fa-shopping-cart text-gray-700"></i>
                     <span id="cartCount" class="absolute -top-1 -left-1 w-5 h-5 bg-primary text-white rounded-full text-xs flex items-center justify-center font-bold">0</span>
@@ -246,12 +312,17 @@
                 <button id="mobileMenuBtn" class="md:hidden w-11 h-11 rounded-full bg-gray-100"><i class="fas fa-bars"></i></button>
             </div>
         </div>
+        <!-- قائمة الموبايل -->
         <div id="mobileMenu" class="hidden md:hidden bg-white border-t p-4 space-y-2">
             <a href="#" class="block py-2">الرئيسية</a>
             <a href="#stores" class="block py-2">المتاجر</a>
             <a href="#categories" class="block py-2">التصنيفات</a>
             <a href="#all-products" class="block py-2">جميع المنتجات</a>
             <a href="#" class="block py-2">من نحن</a>
+            <!-- زر التثبيت (موبايل) -->
+            <button id="installButtonMobile" class="hidden w-full">
+                <i class="fas fa-download"></i> تثبيت التطبيق
+            </button>
         </div>
     </header>
 
@@ -375,7 +446,6 @@
             </button>
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="md:w-1/2">
-                    <!-- صورة المنتج تظهر كاملة بحواف دائرية -->
                     <img id="productModalImage" src="" class="w-full object-contain bg-gray-50 rounded-2xl" alt="صورة المنتج">
                 </div>
                 <div class="md:w-1/2 flex flex-col">
@@ -526,6 +596,79 @@
         const categoriesContainer = document.getElementById('categoriesContainer');
         const allProductsGrid = document.getElementById('allProductsGrid');
         const allProductsLoader = document.getElementById('allProductsLoader');
+        const installButton = document.getElementById('installButton');
+        const installButtonMobile = document.getElementById('installButtonMobile');
+
+        // ===== PWA Installation =====
+        let deferredPrompt = null;
+
+        function isAppInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true ||
+                   localStorage.getItem('bazrenaInstalled') === 'true';
+        }
+
+        function hideInstallButtons() {
+            if (installButton) installButton.classList.add('hidden');
+            if (installButtonMobile) installButtonMobile.classList.add('hidden');
+        }
+
+        function showInstallButtons() {
+            if (installButton) installButton.classList.remove('hidden');
+            if (installButtonMobile) installButtonMobile.classList.remove('hidden');
+        }
+
+        // إظهار الزر فقط عند توفر حدث beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isAppInstalled()) {
+                showInstallButtons();
+            }
+        });
+
+        // عند اكتمال التثبيت
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('bazrenaInstalled', 'true');
+            hideInstallButtons();
+            deferredPrompt = null;
+            showToast('تم تثبيت التطبيق بنجاح!');
+        });
+
+        // معالجة النقر على زر التثبيت
+        async function handleInstallClick() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                localStorage.setItem('bazrenaInstalled', 'true');
+                hideInstallButtons();
+                deferredPrompt = null;
+            } else {
+                showToast('تم إلغاء التثبيت');
+            }
+        }
+
+        if (installButton) installButton.addEventListener('click', handleInstallClick);
+        if (installButtonMobile) installButtonMobile.addEventListener('click', handleInstallClick);
+
+        // إخفاء الأزرار إذا كان التطبيق مثبتًا بالفعل عند التحميل
+        if (isAppInstalled()) {
+            hideInstallButtons();
+        }
+
+        // ===== تسجيل Service Worker =====
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
 
         // دالة التعقيم
         function sanitizeHTML(str) {
@@ -540,7 +683,6 @@
             toast.textContent = message;
             toast.classList.remove('opacity-0');
             toast.classList.add('opacity-100');
-            // إزالة أي timeout سابق ثم تعيين جديد
             if (window.toastTimeout) clearTimeout(window.toastTimeout);
             window.toastTimeout = setTimeout(() => {
                 toast.classList.add('opacity-0');
@@ -548,7 +690,6 @@
             }, 2500);
         }
 
-        // تفعيل نبض عداد السلة
         function animateCartBadge() {
             cartCount.classList.add('cart-badge-animate');
             setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300);
@@ -567,7 +708,6 @@
                 if (error) throw error;
                 stores = data || [];
 
-                // جلب عدد المنتجات لكل متجر
                 if (stores.length > 0) {
                     const storeNames = stores.map(s => s.name);
                     const { data: productCounts, error: countError } = await supabaseClient
@@ -686,14 +826,12 @@
             storeProductsCount.textContent = store.products_count || 0;
             storeFollowers.textContent = (store.followers || 0).toLocaleString();
 
-            // إضافة علامة التوثيق بجانب الاسم في النافذة
             if (store.is_verified) {
                 storeName.innerHTML = `${sanitizeHTML(store.name)} <span class="verified-icon"><i class="fas fa-check"></i></span>`;
             } else {
                 storeName.innerHTML = sanitizeHTML(store.name);
             }
 
-            // إعداد أزرار الاتصال
             const phoneNumber = store.phone_number || '';
             const whatsappNumber = store.whatsapp_number || '';
             if (phoneNumber) {
@@ -743,7 +881,7 @@
             }
         }
 
-        // ===== عرض شبكة منتجات مع تمرير كائن المنتج كاملاً =====
+        // ===== عرض شبكة منتجات =====
         function displayProductsGrid(container, products, addStoreName = false) {
             container.innerHTML = '';
             products.forEach(product => {
@@ -752,7 +890,6 @@
                 const rating = parseFloat(product.ratting) || 0;
                 const card = document.createElement('div');
                 card.className = 'product-card bg-white border rounded-xl overflow-hidden hover:shadow-lg transition group';
-                // تجهيز كائن المنتج للتمرير في data attribute
                 const productForModal = {
                     id: product.id,
                     name: product.name,
@@ -789,7 +926,6 @@
                 container.appendChild(card);
             });
 
-            // ربط أحداث عرض المنتج
             container.querySelectorAll('.open-product-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     try {
@@ -804,7 +940,6 @@
 
         // ===== فتح نافذة المنتج =====
         function openProductModal(product) {
-            // صورة المنتج تظهر كاملة بحواف دائرية
             productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
             productModalImage.onload = function() {
                 this.style.objectFit = 'contain';
@@ -827,7 +962,6 @@
             productModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
-            // تخزين بيانات المنتج في الأزرار
             addToCartFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
             buyNowFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
         }
@@ -837,15 +971,13 @@
             document.body.style.overflow = 'auto';
         });
 
-        // إضافة للسلة من نافذة المنتج - معالجة الزر الحالي فقط
+        // إضافة للسلة من نافذة المنتج
         addToCartFromModal.addEventListener('click', (e) => {
             const btn = e.currentTarget;
             const product = JSON.parse(btn.dataset.product);
             addToCart(product);
-            // تغيير مظهر الزر الحالي فقط
             btn.classList.add('btn-adding');
             btn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
-            // إعادة الزر لحالته بعد فترة
             setTimeout(() => {
                 btn.classList.remove('btn-adding');
                 btn.innerHTML = '<i class="fas fa-shopping-cart"></i> أضف إلى السلة';
@@ -856,7 +988,6 @@
         buyNowFromModal.addEventListener('click', (e) => {
             const btn = e.currentTarget;
             const product = JSON.parse(btn.dataset.product);
-            // تحديد رقم الواتساب من المتجر
             let whatsappNumber = '';
             const store = stores.find(s => s.name === product.store_name);
             if (store && store.whatsapp_number) whatsappNumber = store.whatsapp_number;
@@ -896,7 +1027,6 @@
                     const div = document.createElement('div');
                     div.className = 'flex items-center gap-3 p-3 border-b';
                     div.innerHTML = `
-                        <!-- صورة المنتج في السلة تظهر كاملة بحواف دائرية -->
                         <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" 
                              class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
                         <div class="flex-1 min-w-0">
@@ -1071,7 +1201,6 @@
             startAutoScroll();
         }
 
-        // أزرار تمرير الفئات
         prevCategoriesBtn.addEventListener('click', () => {
             categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' });
         });
