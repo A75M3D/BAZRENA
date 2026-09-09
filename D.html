@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>لوحة التحكم - My Stores</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { font-family: 'Cairo', sans-serif; }
+        body { background: #F8F9FA; direction: rtl; }
+        .card { background: white; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .btn-primary { background: #FF7A00; color: white; transition: all 0.3s; }
+        .btn-primary:hover { background: #E06B00; box-shadow: 0 4px 15px rgba(255,122,0,0.3); }
+        .btn-success { background: #10b981; color: white; transition: all 0.3s; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: #ef4444; color: white; transition: all 0.3s; }
+        .btn-danger:hover { background: #dc2626; }
+        .input-field { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; font-size: 0.95rem; transition: all 0.3s; }
+        .input-field:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 3px rgba(255,122,0,0.1); }
+        .input-field:disabled { background: #f9fafb; cursor: not-allowed; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 0.75rem 1rem; text-align: right; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f9fafb; font-weight: 700; color: #374151; position: sticky; top: 0; }
+        .action-btn { padding: 0.4rem 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; cursor: pointer; transition: all 0.3s; border: none; }
+        .edit-btn { background: #3b82f6; color: white; }
+        .edit-btn:hover { background: #2563eb; }
+        .delete-btn { background: #ef4444; color: white; }
+        .delete-btn:hover { background: #dc2626; }
+        .hidden { display: none !important; }
+        .status-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 5px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .status-green { background: #10b981; }
+        .status-red { background: #ef4444; }
+        .status-yellow { background: #f59e0b; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 1rem 2rem; border-radius: 0.75rem; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .toast.show { opacity: 1; }
+        .phone-input-group { position: relative; }
+        .phone-prefix { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 0.9rem; }
+        .phone-input { padding-right: 3.5rem; }
+        .image-preview { width: 100%; height: 120px; object-fit: cover; border-radius: 0.5rem; margin-top: 0.5rem; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- شريط الحالة -->
+        <div class="card p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <span id="connectionStatusDot" class="status-dot status-yellow"></span>
+                <span id="connectionStatusText" class="font-semibold text-gray-700">جارٍ فحص الاتصال...</span>
+            </div>
+            <div class="flex gap-2">
+                <button id="checkConnectionBtn" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold">
+                    <i class="fas fa-sync-alt ml-1"></i> إعادة الفحص
+                </button>
+                <button id="refreshDataBtn" class="btn-success px-4 py-2 rounded-lg text-sm font-semibold">
+                    <i class="fas fa-refresh ml-1"></i> تحديث البيانات
+                </button>
+            </div>
+        </div>
+
+        <!-- الهيدر -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white text-2xl">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold">لوحة التحكم</h1>
+                    <p class="text-sm text-gray-500">إدارة المتاجر والمنتجات</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button id="showStoresTab" class="btn-primary px-4 py-2 rounded-lg font-semibold text-sm">
+                    <i class="fas fa-store ml-1"></i> المتاجر
+                </button>
+                <button id="showProductsTab" class="btn-primary px-4 py-2 rounded-lg font-semibold text-sm">
+                    <i class="fas fa-box ml-1"></i> المنتجات
+                </button>
+            </div>
+        </div>
+
+        <!-- محتوى التبويبات -->
+        <div id="storesSection">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- نموذج متجر -->
+                <div class="card p-6">
+                    <h2 class="text-xl font-bold mb-4">
+                        <i class="fas fa-store text-primary ml-2"></i>
+                        <span id="storeFormTitle">إضافة متجر جديد</span>
+                    </h2>
+                    <form id="storeForm" class="space-y-4">
+                        <input type="hidden" id="store_id">
+                        
+                        <!-- معلومات أساسية -->
+                        <div class="border-b pb-4 mb-4">
+                            <h3 class="font-bold text-gray-700 mb-3">المعلومات الأساسية</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">اسم المتجر *</label>
+                                    <input type="text" id="store_name" class="input-field" required placeholder="مثال: متجر الإلكترونيات">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">التصنيف</label>
+                                    <input type="text" id="store_category" class="input-field" placeholder="مثال: إلكترونيات، ملابس، طعام">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">وصف المتجر</label>
+                                    <textarea id="store_description" class="input-field" rows="3" placeholder="وصف مختصر عن المتجر"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- معلومات الاتصال -->
+                        <div class="border-b pb-4 mb-4">
+                            <h3 class="font-bold text-gray-700 mb-3">معلومات الاتصال</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        رقم الواتساب *
+                                        <span class="text-xs text-gray-500">(بصيغة دولية بدون + مثال: 249912345678)</span>
+                                    </label>
+                                    <input type="tel" id="store_whatsapp" class="input-field" required 
+                                           placeholder="249912345678" pattern="[0-9]{10,15}"
+                                           title="أدخل رقم واتساب صحيح بالصيغة الدولية">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        رقم الهاتف
+                                        <span class="text-xs text-gray-500">(للاتصال المباشر)</span>
+                                    </label>
+                                    <input type="tel" id="store_phone" class="input-field" 
+                                           placeholder="+249912345678 أو 249912345678">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- الصور -->
+                        <div class="border-b pb-4 mb-4">
+                            <h3 class="font-bold text-gray-700 mb-3">الصور</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">رابط الشعار</label>
+                                    <input type="url" id="store_logo" class="input-field" placeholder="https://example.com/logo.png">
+                                    <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">رابط الغلاف</label>
+                                    <input type="url" id="store_cover" class="input-field" placeholder="https://example.com/cover.png">
+                                    <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- الإحصائيات -->
+                        <div class="border-b pb-4 mb-4">
+                            <h3 class="font-bold text-gray-700 mb-3">الإحصائيات</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">التقييم</label>
+                                    <input type="number" id="store_ratting" class="input-field" value="0" min="0" max="5" step="0.1">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">عدد المتابعين</label>
+                                    <input type="number" id="store_followers" class="input-field" value="0" min="0">
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="store_is_verified" class="w-5 h-5 text-primary">
+                                    <span class="text-sm font-medium">متجر موثّق</span>
+                                    <i class="fas fa-check-circle text-primary"></i>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="submit" class="btn-primary flex-1 py-3 rounded-lg font-bold text-lg">
+                                <i class="fas fa-save ml-2"></i> حفظ المتجر
+                            </button>
+                            <button type="button" id="cancelEditStore" class="btn-danger px-6 py-3 rounded-lg font-bold hidden">
+                                <i class="fas fa-times ml-2"></i> إلغاء
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- قائمة المتاجر -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">
+                            <i class="fas fa-list ml-2 text-primary"></i>
+                            المتاجر الحالية
+                        </h2>
+                        <span id="storesCount" class="bg-primary text-white px-3 py-1 rounded-full text-sm font-bold">0</span>
+                    </div>
+                    <div id="storesList" class="table-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="productsSection" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- نموذج منتج -->
+                <div class="card p-6">
+                    <h2 class="text-xl font-bold mb-4">
+                        <i class="fas fa-box text-primary ml-2"></i>
+                        <span id="productFormTitle">إضافة منتج جديد</span>
+                    </h2>
+                    <form id="productForm" class="space-y-4">
+                        <input type="hidden" id="product_id">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">اسم المنتج *</label>
+                            <input type="text" id="product_name" class="input-field" required placeholder="مثال: هاتف ذكي">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">اسم المتجر *</label>
+                            <select id="product_store_name" class="input-field" required>
+                                <option value="">اختر المتجر</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">السعر * (بالجنيه السوداني)</label>
+                            <input type="number" id="product_price" class="input-field" required min="0" step="0.01" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">السعر قبل الخصم (اختياري)</label>
+                            <input type="number" id="product_original_price" class="input-field" min="0" step="0.01" placeholder="اتركه فارغاً إذا لا يوجد خصم">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">رابط الصورة</label>
+                            <input type="url" id="product_img_url" class="input-field" placeholder="https://example.com/product.png">
+                            <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">وصف المنتج</label>
+                            <textarea id="product_description" class="input-field" rows="3" placeholder="وصف مختصر للمنتج"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">التقييم (ratting)</label>
+                            <input type="number" id="product_ratting" class="input-field" value="0" min="0" max="5" step="0.1">
+                        </div>
+                        <div class="flex gap-3">
+                            <button type="submit" class="btn-primary flex-1 py-3 rounded-lg font-bold text-lg">
+                                <i class="fas fa-save ml-2"></i> حفظ المنتج
+                            </button>
+                            <button type="button" id="cancelEditProduct" class="btn-danger px-6 py-3 rounded-lg font-bold hidden">
+                                <i class="fas fa-times ml-2"></i> إلغاء
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- قائمة المنتجات -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">
+                            <i class="fas fa-boxes ml-2 text-primary"></i>
+                            المنتجات الحالية
+                        </h2>
+                        <span id="productsCount" class="bg-primary text-white px-3 py-1 rounded-full text-sm font-bold">0</span>
+                    </div>
+                    <div id="productsList" class="table-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== إعدادات Supabase =====
+        const SUPABASE_URL = 'https://orrqlpyntygvrjpzhlpy.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+        // أسماء الجداول
+        let storesTableName = 'Stores';
+        let productsTableName = 'products';
+        let isConnected = false;
+        let storesData = [];
+        let productsData = [];
+
+        // عناصر DOM
+        const storeForm = document.getElementById('storeForm');
+        const productForm = document.getElementById('productForm');
+        const storesList = document.getElementById('storesList');
+        const productsList = document.getElementById('productsList');
+        const productStoreName = document.getElementById('product_store_name');
+        const showStoresTab = document.getElementById('showStoresTab');
+        const showProductsTab = document.getElementById('showProductsTab');
+        const storesSection = document.getElementById('storesSection');
+        const productsSection = document.getElementById('productsSection');
+        const connectionStatusDot = document.getElementById('connectionStatusDot');
+        const connectionStatusText = document.getElementById('connectionStatusText');
+        const checkConnectionBtn = document.getElementById('checkConnectionBtn');
+        const refreshDataBtn = document.getElementById('refreshDataBtn');
+        const storesCount = document.getElementById('storesCount');
+        const productsCount = document.getElementById('productsCount');
+        const toast = document.getElementById('toast');
+
+        // عناصر نموذج المتجر
+        const storeFormTitle = document.getElementById('storeFormTitle');
+        const cancelEditStore = document.getElementById('cancelEditStore');
+        const storeLogoPreview = document.getElementById('store_logo_preview');
+        const storeCoverPreview = document.getElementById('store_cover_preview');
+
+        // عناصر نموذج المنتج
+        const productFormTitle = document.getElementById('productFormTitle');
+        const cancelEditProduct = document.getElementById('cancelEditProduct');
+        const productImgPreview = document.getElementById('product_img_preview');
+
+        // ===== دوال مساعدة =====
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = 'toast show';
+            if (type === 'error') {
+                toast.style.backgroundColor = '#ef4444';
+            } else if (type === 'warning') {
+                toast.style.backgroundColor = '#f59e0b';
+            } else {
+                toast.style.backgroundColor = '#10b981';
+            }
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function sanitizeInput(str) {
+            if (!str) return '';
+            return str.replace(/<[^>]*>/g, '').trim();
+        }
+
+        function toNumber(value, defaultValue = 0) {
+            const num = parseFloat(value);
+            return isNaN(num) ? defaultValue : num;
+        }
+
+        function formatPhoneNumber(phone) {
+            if (!phone) return '';
+            // إزالة كل شيء غير الأرقام
+            return phone.replace(/[^0-9]/g, '');
+        }
+
+        function updateConnectionStatus(success, message) {
+            isConnected = success;
+            if (success) {
+                connectionStatusDot.className = 'status-dot status-green';
+                connectionStatusText.textContent = 'متصل بقاعدة البيانات ✅ ' + message;
+                connectionStatusText.className = 'font-semibold text-green-700';
+            } else {
+                connectionStatusDot.className = 'status-dot status-red';
+                connectionStatusText.textContent = 'فشل الاتصال ❌ ' + message;
+                connectionStatusText.className = 'font-semibold text-red-700';
+            }
+        }
+
+        // ===== تبديل التبويبات =====
+        showStoresTab.addEventListener('click', () => {
+            storesSection.classList.remove('hidden');
+            productsSection.classList.add('hidden');
+            showStoresTab.classList.add('bg-primary-dark');
+            showProductsTab.classList.remove('bg-primary-dark');
+        });
+
+        showProductsTab.addEventListener('click', () => {
+            storesSection.classList.add('hidden');
+            productsSection.classList.remove('hidden');
+            showProductsTab.classList.add('bg-primary-dark');
+            showStoresTab.classList.remove('bg-primary-dark');
+        });
+
+        // ===== فحص الاتصال وتحميل البيانات =====
+        async function checkConnectionAndLoad() {
+            connectionStatusDot.className = 'status-dot status-yellow';
+            connectionStatusText.textContent = 'جارٍ فحص الاتصال...';
+            try {
+                const { data, error } = await supabaseClient.from(storesTableName).select('id').limit(1);
+                if (error) throw error;
+                updateConnectionStatus(true, 'تم الاتصال بنجاح');
+                await loadAllData();
+            } catch (err) {
+                console.error('خطأ الاتصال:', err);
+                if (storesTableName === 'Stores') {
+                    storesTableName = 'stores';
+                    try {
+                        const { data, error } = await supabaseClient.from(storesTableName).select('id').limit(1);
+                        if (!error) {
+                            updateConnectionStatus(true, 'تم الاتصال بنجاح (اسم الجدول: ' + storesTableName + ')');
+                            await loadAllData();
+                            return;
+                        }
+                    } catch (e) {
+                        console.error('محاولة بديلة فشلت:', e);
+                    }
+                }
+                updateConnectionStatus(false, err.message || 'تعذر الوصول لقاعدة البيانات');
+            }
+        }
+
+        async function loadAllData() {
+            await loadStores();
+            await loadProducts();
+        }
+
+        checkConnectionBtn.addEventListener('click', checkConnectionAndLoad);
+        refreshDataBtn.addEventListener('click', loadAllData);
+
+        // ===== تحميل المتاجر =====
+        async function loadStores() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from(storesTableName)
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                storesData = data || [];
+                storesCount.textContent = storesData.length;
+                renderStoresList(storesData);
+                fillStoreSelect(storesData);
+            } catch (err) {
+                console.error('خطأ تحميل المتاجر:', err);
+                storesList.innerHTML = `<div class="text-red-500 p-4">تعذر تحميل المتاجر: ${err.message}</div>`;
+            }
+        }
+
+        function renderStoresList(stores) {
+            if (stores.length === 0) {
+                storesList.innerHTML = '<div class="text-gray-500 p-4 text-center"><i class="fas fa-store-slash text-4xl mb-3"></i><p>لا توجد متاجر بعد</p></div>';
+                return;
+            }
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المتجر</th>
+                            <th>التصنيف</th>
+                            <th>واتساب</th>
+                            <th>هاتف</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            stores.forEach(store => {
+                const whatsapp = store.whatsapp_number ? 
+                    `<a href="https://wa.me/${formatPhoneNumber(store.whatsapp_number)}" target="_blank" class="text-green-600 hover:underline">
+                        <i class="fab fa-whatsapp ml-1"></i>${store.whatsapp_number}
+                    </a>` : '<span class="text-gray-400">غير محدد</span>';
+                
+                const phone = store.phone_number ? 
+                    `<a href="tel:${store.phone_number}" class="text-blue-600 hover:underline">
+                        <i class="fas fa-phone ml-1"></i>${store.phone_number}
+                    </a>` : '<span class="text-gray-400">غير محدد</span>';
+
+                const verifiedBadge = store.is_verified ? 
+                    '<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-bold">موثّق ✓</span>' : 
+                    '<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">غير موثّق</span>';
+
+                html += `
+                    <tr>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                ${store.logo_url ? `<img src="${sanitizeInput(store.logo_url)}" class="w-8 h-8 rounded-full object-cover" alt="${sanitizeInput(store.name)}">` : '<div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center"><i class="fas fa-store text-gray-500"></i></div>'}
+                                <div>
+                                    <div class="font-semibold">${sanitizeInput(store.name)}</div>
+                                    ${store.products_count ? `<div class="text-xs text-gray-500">${store.products_count} منتج</div>` : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td>${sanitizeInput(store.category) || 'عام'}</td>
+                        <td>${whatsapp}</td>
+                        <td>${phone}</td>
+                        <td>${verifiedBadge}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editStore('${store.id}')" title="تعديل">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteStore('${store.id}')" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            html += '</tbody></table>';
+            storesList.innerHTML = html;
+        }
+
+        function fillStoreSelect(stores) {
+            productStoreName.innerHTML = '<option value="">اختر المتجر</option>';
+            stores.forEach(store => {
+                const option = document.createElement('option');
+                option.value = store.name;
+                option.textContent = store.name;
+                productStoreName.appendChild(option);
+            });
+        }
+
+        // ===== إضافة / تعديل متجر =====
+        storeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('store_id').value;
+            const name = sanitizeInput(document.getElementById('store_name').value);
+            const whatsapp = formatPhoneNumber(document.getElementById('store_whatsapp').value);
+            const phone = formatPhoneNumber(document.getElementById('store_phone').value);
+            
+            // التحقق من البيانات
+            if (!name) {
+                showToast('اسم المتجر مطلوب', 'error');
+                return;
+            }
+            if (!whatsapp || whatsapp.length < 10) {
+                showToast('رقم الواتساب مطلوب ويجب أن يكون صحيحاً', 'error');
+                return;
+            }
+
+            const storeData = {
+                name: name,
+                whatsapp_number: whatsapp,
+                phone_number: phone || null,
+                logo_url: sanitizeInput(document.getElementById('store_logo').value),
+                cover_url: sanitizeInput(document.getElementById('store_cover').value),
+                category: sanitizeInput(document.getElementById('store_category').value),
+                description: sanitizeInput(document.getElementById('store_description').value),
+                ratting: toNumber(document.getElementById('store_ratting').value),
+                followers: parseInt(toNumber(document.getElementById('store_followers').value)),
+                is_verified: document.getElementById('store_is_verified').checked
+            };
+
+            try {
+                if (id) {
+                    const { error } = await supabaseClient.from(storesTableName).update(storeData).eq('id', id);
+                    if (error) throw error;
+                    showToast('تم تعديل المتجر بنجاح ✅');
+                } else {
+                    const { error } = await supabaseClient.from(storesTableName).insert([storeData]);
+                    if (error) throw error;
+                    showToast('تمت إضافة المتجر بنجاح ✅');
+                }
+                resetStoreForm();
+                await loadStores();
+            } catch (err) {
+                console.error('خطأ حفظ المتجر:', err);
+                showToast('فشل العملية: ' + err.message, 'error');
+            }
+        });
+
+        function resetStoreForm() {
+            storeForm.reset();
+            document.getElementById('store_id').value = '';
+            storeFormTitle.textContent = 'إضافة متجر جديد';
+            cancelEditStore.classList.add('hidden');
+            storeLogoPreview.classList.add('hidden');
+            storeCoverPreview.classList.add('hidden');
+        }
+
+        window.editStore = async (id) => {
+            try {
+                const { data, error } = await supabaseClient.from(storesTableName).select('*').eq('id', id).single();
+                if (error) throw error;
+                
+                document.getElementById('store_id').value = data.id;
+                document.getElementById('store_name').value = data.name || '';
+                document.getElementById('store_whatsapp').value = data.whatsapp_number || '';
+                document.getElementById('store_phone').value = data.phone_number || '';
+                document.getElementById('store_logo').value = data.logo_url || '';
+                document.getElementById('store_cover').value = data.cover_url || '';
+                document.getElementById('store_category').value = data.category || '';
+                document.getElementById('store_description').value = data.description || '';
+                document.getElementById('store_ratting').value = data.ratting || 0;
+                document.getElementById('store_followers').value = data.followers || 0;
+                document.getElementById('store_is_verified').checked = data.is_verified || false;
+                
+                // عرض المعاينات
+                if (data.logo_url) {
+                    storeLogoPreview.src = data.logo_url;
+                    storeLogoPreview.classList.remove('hidden');
+                }
+                if (data.cover_url) {
+                    storeCoverPreview.src = data.cover_url;
+                    storeCoverPreview.classList.remove('hidden');
+                }
+                
+                storeFormTitle.textContent = 'تعديل المتجر: ' + data.name;
+                cancelEditStore.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                console.error('خطأ تحميل بيانات المتجر:', err);
+                showToast('فشل تحميل بيانات المتجر: ' + err.message, 'error');
+            }
+        };
+
+        cancelEditStore.addEventListener('click', resetStoreForm);
+
+        window.deleteStore = async (id) => {
+            if (!confirm('هل أنت متأكد من حذف هذا المتجر؟ سيتم حذف جميع المنتجات المرتبطة به.')) return;
+            try {
+                // حذف المنتجات المرتبطة أولاً
+                const store = storesData.find(s => s.id === id);
+                if (store) {
+                    await supabaseClient.from(productsTableName).delete().eq('store_name', store.name);
+                }
+                // حذف المتجر
+                const { error } = await supabaseClient.from(storesTableName).delete().eq('id', id);
+                if (error) throw error;
+                showToast('تم حذف المتجر وجميع منتجاته ✅');
+                await loadAllData();
+            } catch (err) {
+                console.error('خطأ الحذف:', err);
+                showToast('فشل الحذف: ' + err.message, 'error');
+            }
+        };
+
+        // ===== تحميل المنتجات =====
+        async function loadProducts() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from(productsTableName)
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                productsData = data || [];
+                productsCount.textContent = productsData.length;
+                renderProductsList(productsData);
+            } catch (err) {
+                console.error('خطأ تحميل المنتجات:', err);
+                productsList.innerHTML = `<div class="text-red-500 p-4">تعذر تحميل المنتجات: ${err.message}</div>`;
+            }
+        }
+
+        function renderProductsList(products) {
+            if (products.length === 0) {
+                productsList.innerHTML = '<div class="text-gray-500 p-4 text-center"><i class="fas fa-box-open text-4xl mb-3"></i><p>لا توجد منتجات بعد</p></div>';
+                return;
+            }
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>المتجر</th>
+                            <th>السعر</th>
+                            <th>التقييم</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            products.forEach(product => {
+                const price = parseFloat(product.price || 0);
+                const originalPrice = product.original_price ? parseFloat(product.original_price) : null;
+                
+                html += `
+                    <tr>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                ${product.img_url ? `<img src="${sanitizeInput(product.img_url)}" class="w-10 h-10 rounded-lg object-cover" alt="${sanitizeInput(product.name)}">` : '<div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center"><i class="fas fa-box text-gray-500"></i></div>'}
+                                <div>
+                                    <div class="font-semibold">${sanitizeInput(product.name)}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${sanitizeInput(product.store_name) || ''}</td>
+                        <td>
+                            <div class="font-bold text-primary">${price.toLocaleString()} ج.س</div>
+                            ${originalPrice ? `<div class="text-xs line-through text-gray-400">${originalPrice.toLocaleString()} ج.س</div>` : ''}
+                        </td>
+                        <td>
+                            <span class="text-yellow-500"><i class="fas fa-star"></i></span>
+                            ${parseFloat(product.ratting || 0)}
+                        </td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editProduct('${product.id}')" title="تعديل">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteProduct('${product.id}')" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            html += '</tbody></table>';
+            productsList.innerHTML = html;
+        }
+
+        // ===== إضافة / تعديل منتج =====
+        productForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('product_id').value;
+            const name = sanitizeInput(document.getElementById('product_name').value);
+            const storeName = document.getElementById('product_store_name').value;
+            const price = toNumber(document.getElementById('product_price').value);
+            
+            if (!name) {
+                showToast('اسم المنتج مطلوب', 'error');
+                return;
+            }
+            if (!storeName) {
+                showToast('يجب اختيار المتجر', 'error');
+                return;
+            }
+            if (price <= 0) {
+                showToast('السعر يجب أن يكون أكبر من صفر', 'error');
+                return;
+            }
+
+            const productData = {
+                name: name,
+                store_name: storeName,
+                price: price,
+                original_price: document.getElementById('product_original_price').value ? 
+                    toNumber(document.getElementById('product_original_price').value) : null,
+                img_url: sanitizeInput(document.getElementById('product_img_url').value),
+                description: sanitizeInput(document.getElementById('product_description').value),
+                ratting: toNumber(document.getElementById('product_ratting').value)
+            };
+
+            try {
+                if (id) {
+                    const { error } = await supabaseClient.from(productsTableName).update(productData).eq('id', id);
+                    if (error) throw error;
+                    showToast('تم تعديل المنتج بنجاح ✅');
+                } else {
+                    const { error } = await supabaseClient.from(productsTableName).insert([productData]);
+                    if (error) throw error;
+                    showToast('تمت إضافة المنتج بنجاح ✅');
+                }
+                resetProductForm();
+                await loadProducts();
+                // تحديث عدد المنتجات في المتاجر
+                await updateStoreProductsCount();
+            } catch (err) {
+                console.error('خطأ حفظ المنتج:', err);
+                showToast('فشل العملية: ' + err.message, 'error');
+            }
+        });
+
+        function resetProductForm() {
+            productForm.reset();
+            document.getElementById('product_id').value = '';
+            productFormTitle.textContent = 'إضافة منتج جديد';
+            cancelEditProduct.classList.add('hidden');
+            productImgPreview.classList.add('hidden');
+        }
+
+        window.editProduct = async (id) => {
+            try {
+                const { data, error } = await supabaseClient.from(productsTableName).select('*').eq('id', id).single();
+                if (error) throw error;
+                
+                document.getElementById('product_id').value = data.id;
+                document.getElementById('product_name').value = data.name || '';
+                document.getElementById('product_store_name').value = data.store_name || '';
+                document.getElementById('product_price').value = data.price || 0;
+                document.getElementById('product_original_price').value = data.original_price || '';
+                document.getElementById('product_img_url').value = data.img_url || '';
+                document.getElementById('product_description').value = data.description || '';
+                document.getElementById('product_ratting').value = data.ratting || 0;
+                
+                if (data.img_url) {
+                    productImgPreview.src = data.img_url;
+                    productImgPreview.classList.remove('hidden');
+                }
+                
+                productFormTitle.textContent = 'تعديل المنتج: ' + data.name;
+                cancelEditProduct.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                console.error('خطأ تحميل بيانات المنتج:', err);
+                showToast('فشل تحميل بيانات المنتج: ' + err.message, 'error');
+            }
+        };
+
+        cancelEditProduct.addEventListener('click', resetProductForm);
+
+        window.deleteProduct = async (id) => {
+            if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
+            try {
+                const { error } = await supabaseClient.from(productsTableName).delete().eq('id', id);
+                if (error) throw error;
+                showToast('تم حذف المنتج ✅');
+                await loadProducts();
+                await updateStoreProductsCount();
+            } catch (err) {
+                console.error('خطأ الحذف:', err);
+                showToast('فشل الحذف: ' + err.message, 'error');
+            }
+        };
+
+        // تحديث عدد المنتجات في المتاجر
+        async function updateStoreProductsCount() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from(productsTableName)
+                    .select('store_name');
+                if (error) throw error;
+                
+                const counts = {};
+                (data || []).forEach(p => {
+                    counts[p.store_name] = (counts[p.store_name] || 0) + 1;
+                });
+                
+                // تحديث كل متجر
+                for (const store of storesData) {
+                    const newCount = counts[store.name] || 0;
+                    if ((store.products_count || 0) !== newCount) {
+                        await supabaseClient
+                            .from(storesTableName)
+                            .update({ products_count: newCount })
+                            .eq('id', store.id);
+                    }
+                }
+                await loadStores();
+            } catch (err) {
+                console.error('خطأ تحديث عدد المنتجات:', err);
+            }
+        }
+
+        // معاينة الصور
+        document.getElementById('store_logo').addEventListener('input', (e) => {
+            if (e.target.value) {
+                storeLogoPreview.src = e.target.value;
+                storeLogoPreview.classList.remove('hidden');
+            } else {
+                storeLogoPreview.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('store_cover').addEventListener('input', (e) => {
+            if (e.target.value) {
+                storeCoverPreview.src = e.target.value;
+                storeCoverPreview.classList.remove('hidden');
+            } else {
+                storeCoverPreview.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('product_img_url').addEventListener('input', (e) => {
+            if (e.target.value) {
+                productImgPreview.src = e.target.value;
+                productImgPreview.classList.remove('hidden');
+            } else {
+                productImgPreview.classList.add('hidden');
+            }
+        });
+
+        // ===== بدء التطبيق =====
+        document.addEventListener('DOMContentLoaded', () => {
+            checkConnectionAndLoad();
+        });
+    </script>
+</body>
+</html>
