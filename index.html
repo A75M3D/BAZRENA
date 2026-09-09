@@ -87,18 +87,21 @@
         }
         .store-card .store-category { color: #666; font-size: 0.85rem; }
 
-        /* ⬇️ تعديل: صور المنتجات تظهر كاملة مع خلفية خفيفة */
+        /* صور المنتجات تظهر كاملة مع خلفية خفيفة وحواف دائرية */
         .product-image-container {
             background-color: #fafafa;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border-radius: 0.75rem; /* حواف دائرية للصور */
+            margin: 0.5rem;
         }
         .product-image-container img {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            border-radius: 0.5rem; /* حواف داخلية دائرية */
             transition: transform 0.3s ease;
         }
         .product-image-container img:hover { transform: scale(1.05); }
@@ -175,25 +178,25 @@
         }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* ⬇️ تعديل: صورة المنتج في النافذة المنبثقة تظهر كاملة */
+        /* صورة المنتج في النافذة المنبثقة تظهر كاملة بحواف دائرية */
         #productModalImage {
             width: 100%;
             height: 280px;
             object-fit: contain;
             background-color: #fafafa;
-            border-radius: 1rem;
+            border-radius: 1rem; /* حواف دائرية */
         }
         @media (min-width: 768px) {
             #productModalImage { height: 320px; }
         }
 
-        /* ⬇️ تعديل: صورة المنتج في سلة التسوق تظهر كاملة */
+        /* صورة المنتج في سلة التسوق تظهر كاملة بحواف دائرية */
         .cart-item-image {
             width: 56px;
             height: 56px;
             object-fit: contain;
             background-color: #fafafa;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem; /* حواف دائرية */
             flex-shrink: 0;
         }
 
@@ -372,7 +375,7 @@
             </button>
             <div class="flex flex-col md:flex-row gap-6">
                 <div class="md:w-1/2">
-                    <!-- ⬇️ تعديل: صورة المنتج تظهر كاملة -->
+                    <!-- صورة المنتج تظهر كاملة بحواف دائرية -->
                     <img id="productModalImage" src="" class="w-full object-contain bg-gray-50 rounded-2xl" alt="صورة المنتج">
                 </div>
                 <div class="md:w-1/2 flex flex-col">
@@ -421,7 +424,7 @@
     </div>
 
     <!-- Toast -->
-    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[110] opacity-0 pointer-events-none transition-opacity"></div>
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[110] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
     <!-- الفوتر -->
     <footer class="bg-gray-900 text-white py-12 mt-16">
@@ -532,12 +535,17 @@
             return div.innerHTML;
         }
 
-        // دالة عرض Toast
+        // دالة عرض Toast مع ضمان الاختفاء
         function showToast(message) {
             toast.textContent = message;
             toast.classList.remove('opacity-0');
             toast.classList.add('opacity-100');
-            setTimeout(() => toast.classList.add('opacity-0'), 2500);
+            // إزالة أي timeout سابق ثم تعيين جديد
+            if (window.toastTimeout) clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0');
+                toast.classList.remove('opacity-100');
+            }, 2500);
         }
 
         // تفعيل نبض عداد السلة
@@ -796,10 +804,9 @@
 
         // ===== فتح نافذة المنتج =====
         function openProductModal(product) {
-            // ⬇️ تعديل: صورة المنتج تظهر كاملة داخل الحاوية
+            // صورة المنتج تظهر كاملة بحواف دائرية
             productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
             productModalImage.onload = function() {
-                // تأكد من أن الصورة تظهر كاملة
                 this.style.objectFit = 'contain';
             };
             productModalImage.onerror = function() {
@@ -830,21 +837,25 @@
             document.body.style.overflow = 'auto';
         });
 
-        // إضافة للسلة من نافذة المنتج
+        // إضافة للسلة من نافذة المنتج - معالجة الزر الحالي فقط
         addToCartFromModal.addEventListener('click', (e) => {
-            const product = JSON.parse(e.currentTarget.dataset.product);
+            const btn = e.currentTarget;
+            const product = JSON.parse(btn.dataset.product);
             addToCart(product);
-            e.currentTarget.classList.add('btn-adding');
-            e.currentTarget.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
+            // تغيير مظهر الزر الحالي فقط
+            btn.classList.add('btn-adding');
+            btn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
+            // إعادة الزر لحالته بعد فترة
             setTimeout(() => {
-                e.currentTarget.classList.remove('btn-adding');
-                e.currentTarget.innerHTML = '<i class="fas fa-shopping-cart"></i> أضف إلى السلة';
+                btn.classList.remove('btn-adding');
+                btn.innerHTML = '<i class="fas fa-shopping-cart"></i> أضف إلى السلة';
             }, 1500);
         });
 
         // شراء مباشر
         buyNowFromModal.addEventListener('click', (e) => {
-            const product = JSON.parse(e.currentTarget.dataset.product);
+            const btn = e.currentTarget;
+            const product = JSON.parse(btn.dataset.product);
             // تحديد رقم الواتساب من المتجر
             let whatsappNumber = '';
             const store = stores.find(s => s.name === product.store_name);
@@ -885,7 +896,7 @@
                     const div = document.createElement('div');
                     div.className = 'flex items-center gap-3 p-3 border-b';
                     div.innerHTML = `
-                        <!-- ⬇️ تعديل: صورة المنتج في السلة تظهر كاملة -->
+                        <!-- صورة المنتج في السلة تظهر كاملة بحواف دائرية -->
                         <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" 
                              class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
                         <div class="flex-1 min-w-0">
