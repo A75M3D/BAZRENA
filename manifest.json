@@ -1,0 +1,22 @@
+{
+  "name": "BAZRENA-بازارنا",
+  "short_name": "BAZRENA",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+  {
+    "src":"file_0000000071c48210a0f724f16c168a7c.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "file_0000000071c48210a0f724f16c168a7c.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+  ]
+}
