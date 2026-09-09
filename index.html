@@ -21,7 +21,6 @@
     ">
     <title>BAZRENA – بازارنا | أفضل المتاجر والبراندات في مكان واحد</title>
 
-    <!-- ملفات PWA الخارجية -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -138,7 +137,6 @@
             font-size: 0.85rem;
         }
 
-        /* صور المنتجات تظهر كاملة مع خلفية خفيفة وحواف دائرية */
         .product-image-container {
             background-color: #fafafa;
             display: flex;
@@ -268,6 +266,31 @@
             transform: translateY(-2px);
         }
 
+        /* ===== زر المتابعة المربع ===== */
+        .follow-btn-square {
+            background-color: #FF7A00;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .follow-btn-square:hover {
+            background-color: #E06B00;
+        }
+        .follow-btn-square.following {
+            background-color: #28a745;
+        }
+        .follow-btn-square.following i {
+            color: white;
+        }
+
         .modal-backdrop {
             backdrop-filter: blur(5px);
             background: rgba(0, 0, 0, 0.5);
@@ -288,12 +311,8 @@
             animation: fadeIn 0.3s;
         }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .fullscreen-modal .modal-content {
             width: 100%;
@@ -306,14 +325,8 @@
             animation: slideUp 0.3s;
         }
         @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .product-modal {
@@ -339,14 +352,8 @@
             animation: zoomIn 0.3s;
         }
         @keyframes zoomIn {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         #productModalImage {
@@ -375,15 +382,9 @@
             animation: pulse 0.3s ease-in-out;
         }
         @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.3);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
         .btn-adding {
             background: #28a745 !important;
@@ -497,13 +498,11 @@
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <!-- شعار بدلاً من أيقونة المتجر -->
                 <div class="w-12 h-12 rounded-full shadow-neon-glow overflow-hidden bg-white">
                     <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" 
                          class="w-full h-full object-contain rounded-full" 
                          alt="شعار بازارنا">
                 </div>
-                <!-- الاسم: العربي يمين والإنجليزي يسار -->
                 <span class="text-2xl font-extrabold flex items-center gap-1">
                     <span class="text-text-main">بازارنا</span>
                     <span class="text-text-light text-lg font-bold">-</span>
@@ -518,7 +517,6 @@
                 <a href="#" class="hover:text-primary">من نحن</a>
             </nav>
             <div class="flex items-center gap-3">
-                <!-- زر السلة أصبح هنا (في مكان زر التثبيت السابق) -->
                 <button id="cartButton" class="relative w-11 h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-xl" aria-label="سلة التسوق">
                     <i class="fas fa-shopping-cart text-gray-700"></i>
                     <span id="cartCount" class="absolute -top-1 -left-1 w-5 h-5 bg-primary text-white rounded-full text-xs flex items-center justify-center font-bold">0</span>
@@ -526,18 +524,16 @@
                 <button id="mobileMenuBtn" class="md:hidden w-11 h-11 rounded-full bg-gray-100"><i class="fas fa-bars"></i></button>
             </div>
         </div>
-        <!-- قائمة الموبايل -->
         <div id="mobileMenu" class="hidden md:hidden bg-white border-t p-4 space-y-2">
             <a href="#" class="block py-2">الرئيسية</a>
             <a href="#stores" class="block py-2">المتاجر</a>
             <a href="#categories" class="block py-2">التصنيفات</a>
             <a href="#all-products" class="block py-2">جميع المنتجات</a>
             <a href="#" class="block py-2">من نحن</a>
-            <!-- لا يوجد زر تثبيت في الموبايل هنا الآن -->
         </div>
     </header>
 
-    <!-- زر التثبيت العائم أسفل الصفحة -->
+    <!-- زر التثبيت العائم -->
     <button id="installButtonFloating" class="hidden" title="تثبيت التطبيق">
         <i class="fas fa-download"></i>
         <span>تثبيت التطبيق</span>
@@ -545,11 +541,9 @@
 
     <!-- قسم الهيرو -->
     <section class="py-16 md:py-24 text-center bg-gradient-to-b from-orange-50 to-white">
-        <!-- النص فوق اللوغو -->
         <h1 class="text-4xl md:text-6xl font-extrabold mb-4">اكتشف أفضل <span class="text-primary">المتاجر</span></h1>
         <p class="text-text-light max-w-2xl mx-auto mb-8">أفضل المتاجر والبراندات في مكان واحد</p>
 
-        <!-- اللوغو الكبير في المنتصف -->
         <div class="flex justify-center mb-8">
             <div class="w-40 h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[512px] lg:h-[512px] rounded-full overflow-hidden shadow-neon-glow bg-white">
                 <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" 
@@ -558,7 +552,6 @@
             </div>
         </div>
 
-        <!-- زر تصفح المتاجر أسفل اللوغو مباشرة -->
         <a href="#stores" class="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg shadow-neon-glow">
             <i class="fas fa-store"></i> تصفح المتاجر
         </a>
@@ -626,7 +619,7 @@
         </div>
     </section>
 
-    <!-- نافذة المتجر (ملء الشاشة) -->
+    <!-- نافذة المتجر -->
     <div id="storeModal" class="fullscreen-modal hidden">
         <div class="modal-content bg-white flex flex-col">
             <div class="relative h-64 md:h-80">
@@ -651,6 +644,11 @@
                     <span class="bg-white px-3 py-1 rounded-full shadow-sm"><i class="fas fa-users"></i> <span id="storeFollowers">0</span> متابع</span>
                 </div>
                 <div class="mt-4 flex flex-wrap gap-2">
+                    <!-- زر المتابعة المربع -->
+                    <button id="storeFollowButton" class="follow-btn-square">
+                        <i class="fas fa-heart"></i>
+                        <span id="storeFollowText">متابعة</span>
+                    </button>
                     <a id="storeCallButton" href="#" class="btn-call px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
                         <i class="fas fa-phone-alt"></i> اتصل بالمتجر
                     </a>
@@ -732,7 +730,6 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <!-- شعار بدلاً من أيقونة المتجر -->
                         <div class="w-10 h-10 rounded-full bg-white overflow-hidden">
                             <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" 
                                  class="w-full h-full object-contain rounded-full" 
@@ -793,6 +790,30 @@
         let autoScrollInterval = null;
         let allProducts = [];
 
+        // ===== إدارة المتابعة =====
+        const FOLLOWED_STORES_KEY = 'bazrenaFollowedStores';
+        let currentStoreId = null;
+        let originalFollowers = 0;
+        let isFollowing = false;
+
+        function getFollowedStores() {
+            try {
+                const stored = localStorage.getItem(FOLLOWED_STORES_KEY);
+                return stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveFollowedStores(list) {
+            localStorage.setItem(FOLLOWED_STORES_KEY, JSON.stringify(list));
+        }
+
+        function isStoreFollowed(storeId) {
+            const list = getFollowedStores();
+            return list.includes(storeId);
+        }
+
         // عناصر DOM
         const storesScrollContainer = document.getElementById('storesScrollContainer');
         const storesLoader = document.getElementById('storesLoader');
@@ -834,7 +855,9 @@
         const categoriesContainer = document.getElementById('categoriesContainer');
         const allProductsGrid = document.getElementById('allProductsGrid');
         const allProductsLoader = document.getElementById('allProductsLoader');
-        const installButtonFloating = document.getElementById('installButtonFloating'); // الزر العائم الجديد
+        const installButtonFloating = document.getElementById('installButtonFloating');
+        const storeFollowButton = document.getElementById('storeFollowButton');
+        const storeFollowText = document.getElementById('storeFollowText');
 
         // ===== PWA Installation =====
         let deferredPrompt = null;
@@ -853,7 +876,6 @@
             if (installButtonFloating) installButtonFloating.classList.add('show');
         }
 
-        // إظهار الزر فقط عند توفر حدث beforeinstallprompt
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -862,7 +884,6 @@
             }
         });
 
-        // عند اكتمال التثبيت
         window.addEventListener('appinstalled', () => {
             localStorage.setItem('bazrenaInstalled', 'true');
             hideInstallButtons();
@@ -870,7 +891,6 @@
             showToast('تم تثبيت التطبيق بنجاح!');
         });
 
-        // معالجة النقر على زر التثبيت العائم
         async function handleInstallClick() {
             if (!deferredPrompt) return;
             deferredPrompt.prompt();
@@ -886,7 +906,6 @@
 
         if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
 
-        // إخفاء الأزرار إذا كان التطبيق مثبتًا بالفعل عند التحميل
         if (isAppInstalled()) {
             hideInstallButtons();
         }
@@ -904,7 +923,6 @@
             });
         }
 
-        // دالة التعقيم
         function sanitizeHTML(str) {
             if (!str) return '';
             const div = document.createElement('div');
@@ -912,7 +930,6 @@
             return div.innerHTML;
         }
 
-        // دالة عرض Toast مع ضمان الاختفاء
         function showToast(message) {
             toast.textContent = message;
             toast.classList.remove('opacity-0');
@@ -975,9 +992,18 @@
 
         retryStoresBtn.addEventListener('click', loadStores);
 
+        // دالة فرز المتاجر حسب المتابعة
+        function getSortedStores(storeList) {
+            const followed = getFollowedStores();
+            const followedStores = storeList.filter(s => followed.includes(s.id || s.name));
+            const otherStores = storeList.filter(s => !followed.includes(s.id || s.name));
+            return [...followedStores, ...otherStores];
+        }
+
         function displayStores() {
             storesScrollContainer.innerHTML = '';
-            stores.forEach(store => {
+            const sortedStores = getSortedStores(stores);
+            sortedStores.forEach(store => {
                 const card = document.createElement('div');
                 card.className = 'store-card';
                 card.innerHTML = `
@@ -1004,7 +1030,15 @@
             });
         }
 
-        // ===== الحركة التلقائية (عكس الاتجاه) =====
+        // دالة تحديث قائمة المتاجر بعد تغيير المتابعة
+        function refreshStoresDisplay() {
+            displayStores();
+            // إعادة تشغيل الحركة التلقائية من البداية
+            stopAutoScroll();
+            startAutoScroll();
+        }
+
+        // ===== الحركة التلقائية =====
         function startAutoScroll() {
             stopAutoScroll();
             const maxScroll = () => storesScrollContainer.scrollWidth - storesScrollContainer.clientWidth;
@@ -1051,6 +1085,10 @@
         // ===== فتح نافذة المتجر =====
         function openStoreModal(store) {
             currentStore = store;
+            currentStoreId = store.id || store.name;
+            originalFollowers = parseInt(store.followers) || 0;
+            isFollowing = isStoreFollowed(currentStoreId);
+
             storeCoverImage.src = store.cover_url || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
             storeLogo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
             storeName.textContent = store.name;
@@ -1058,7 +1096,9 @@
             storeDescription.textContent = store.description || 'متجر مميز';
             storeRating.textContent = store.rating || 0;
             storeProductsCount.textContent = store.products_count || 0;
-            storeFollowers.textContent = (store.followers || 0).toLocaleString();
+
+            updateFollowersDisplay();
+            updateFollowButtonUI();
 
             if (store.is_verified) {
                 storeName.innerHTML = `${sanitizeHTML(store.name)} <span class="verified-icon"><i class="fas fa-check"></i></span>`;
@@ -1084,6 +1124,48 @@
             loadStoreProducts(store.name);
             storeModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+        }
+
+        function updateFollowButtonUI() {
+            if (!storeFollowButton || !storeFollowText) return;
+            if (isFollowing) {
+                storeFollowButton.classList.add('following');
+                storeFollowText.textContent = 'متابَع';
+            } else {
+                storeFollowButton.classList.remove('following');
+                storeFollowText.textContent = 'متابعة';
+            }
+        }
+
+        function updateFollowersDisplay() {
+            const displayFollowers = isFollowing ? originalFollowers + 1 : originalFollowers;
+            storeFollowers.textContent = displayFollowers.toLocaleString();
+        }
+
+        function handleFollowToggle() {
+            if (!currentStoreId) return;
+            const followedList = getFollowedStores();
+            if (isFollowing) {
+                const index = followedList.indexOf(currentStoreId);
+                if (index > -1) followedList.splice(index, 1);
+                isFollowing = false;
+            } else {
+                if (!followedList.includes(currentStoreId)) {
+                    followedList.push(currentStoreId);
+                }
+                isFollowing = true;
+            }
+            saveFollowedStores(followedList);
+            updateFollowButtonUI();
+            updateFollowersDisplay();
+            showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
+            // إعادة ترتيب قائمة المتاجر
+            refreshStoresDisplay();
+        }
+
+        // ربط زر المتابعة
+        if (storeFollowButton) {
+            storeFollowButton.addEventListener('click', handleFollowToggle);
         }
 
         document.getElementById('closeStoreModal').addEventListener('click', closeStoreModal);
@@ -1309,7 +1391,6 @@
             showToast('تمت الإزالة');
         }
 
-        // فتح وإغلاق السلة
         function openCart() {
             cartSidebar.classList.add('open');
             document.body.style.overflow = 'hidden';
@@ -1325,7 +1406,6 @@
         document.getElementById('cartOverlay').addEventListener('click', closeCart);
         document.getElementById('continueShopping').addEventListener('click', closeCart);
 
-        // طلب السلة عبر واتساب
         document.getElementById('whatsappOrder').addEventListener('click', () => {
             if (cart.length === 0) { showToast('السلة فارغة'); return; }
             const groupedByWhatsApp = {};
@@ -1366,7 +1446,6 @@
             }
         });
 
-        // القائمة المنسدلة للموبايل
         document.getElementById('mobileMenuBtn').addEventListener('click', () => {
             document.getElementById('mobileMenu').classList.toggle('hidden');
         });
@@ -1423,12 +1502,13 @@
 
         function filterStoresByCategory(category) {
             const filtered = stores.filter(s => s.category === category);
+            const sortedFiltered = getSortedStores(filtered);
             storesScrollContainer.innerHTML = '';
-            if (filtered.length === 0) {
+            if (sortedFiltered.length === 0) {
                 storesScrollContainer.innerHTML =
                     '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>';
             } else {
-                filtered.forEach(store => {
+                sortedFiltered.forEach(store => {
                     const card = document.createElement('div');
                     card.className = 'store-card';
                     card.innerHTML = `
