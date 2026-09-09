@@ -1,7 +1,7 @@
 const CACHE_NAME = 'BAZRENA-بازارنا';
 const urlsToCache = [
   '/script.js',
-  '/login.html',
+  '/index.html',
   '/manifest.json',
   '/register.html',
   // الملفات الثابتة اللي مش بتتغير
