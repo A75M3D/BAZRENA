@@ -1,0 +1,24 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Inject Supabase keys into build
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          # استبدل placeholders في ملف HTML بالمفاتيح الحقيقية
+          sed -i "s|__SUPABASE_URL__|${SUPABASE_URL}|g" index.html
+          sed -i "s|__SUPABASE_KEY__|${SUPABASE_PUBLISHABLE_KEY}|g" index.html
+      
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
