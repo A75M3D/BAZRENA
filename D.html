@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { font-family: 'Cairo', sans-serif; }
         body { background: #F8F9FA; direction: rtl; }
@@ -253,13 +252,34 @@
         </div>
     </div>
 
-    <script>
-        const SUPABASE_URL = 'https://orrqlpyntygvrjpzhlpy.supabase.co';
-        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    <!-- Firebase Compat SDK (يعمل في file:// و Vercel وأي سيرفر) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-        let storesTableName = 'Stores';
-        let productsTableName = 'products';
+    <script>
+        // ============================================================
+        // ⚠️ مهم: استبدل قيم firebaseConfig بقيم مشروعك من Firebase Console
+        // ============================================================
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
+  authDomain: "bazarena-725e4.firebaseapp.com",
+  databaseURL: "https://bazarena-725e4-default-rtdb.firebaseio.com",
+  projectId: "bazarena-725e4",
+  storageBucket: "bazarena-725e4.firebasestorage.app",
+  messagingSenderId: "977750898059",
+  appId: "1:977750898059:web:247e8513b48490ed622b8e",
+  measurementId: "G-JFL1RLKST6"
+};
+        // التهيئة باستخدام compat
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ===== أسماء المجموعات =====
+        const storesTableName = 'stores';
+        const productsTableName = 'products';
+
+        // ===== الحالة =====
         let isConnected = false;
         let storesData = [];
         let productsData = [];
@@ -315,6 +335,23 @@
             return isNaN(num) ? defaultValue : num;
         }
 
+        // استخراج رقم صحيح من قيمة followers (يدعم "1500" أو "1.5K")
+        function parseFollowers(value) {
+            if (value === null || value === undefined) return 0;
+            const str = String(value).trim();
+            if (!str) return 0;
+            if (str.toUpperCase().includes('K')) {
+                const num = parseFloat(str);
+                return isNaN(num) ? 0 : Math.round(num * 1000);
+            }
+            if (str.toUpperCase().includes('M')) {
+                const num = parseFloat(str);
+                return isNaN(num) ? 0 : Math.round(num * 1000000);
+            }
+            const num = parseInt(str.replace(/[^0-9-]/g, ''));
+            return isNaN(num) ? 0 : num;
+        }
+
         function formatPhoneNumber(phone) {
             if (!phone) return '';
             return phone.replace(/[^0-9]/g, '');
@@ -347,29 +384,16 @@
             showStoresTab.classList.remove('bg-primary-dark');
         });
 
+        // ===== فحص الاتصال + التحميل =====
         async function checkConnectionAndLoad() {
             connectionStatusDot.className = 'status-dot status-yellow';
             connectionStatusText.textContent = 'جارٍ فحص الاتصال...';
             try {
-                const { data, error } = await supabaseClient.from(storesTableName).select('id').limit(1);
-                if (error) throw error;
-                updateConnectionStatus(true, 'تم الاتصال بنجاح');
+                await db.collection(storesTableName).limit(1).get();
+                updateConnectionStatus(true, 'تم الاتصال بـ Firestore بنجاح');
                 await loadAllData();
             } catch (err) {
                 console.error('خطأ الاتصال:', err);
-                if (storesTableName === 'Stores') {
-                    storesTableName = 'stores';
-                    try {
-                        const { data, error } = await supabaseClient.from(storesTableName).select('id').limit(1);
-                        if (!error) {
-                            updateConnectionStatus(true, 'تم الاتصال بنجاح (اسم الجدول: ' + storesTableName + ')');
-                            await loadAllData();
-                            return;
-                        }
-                    } catch (e) {
-                        console.error('محاولة بديلة فشلت:', e);
-                    }
-                }
                 updateConnectionStatus(false, err.message || 'تعذر الوصول لقاعدة البيانات');
             }
         }
@@ -382,14 +406,17 @@
         checkConnectionBtn.addEventListener('click', checkConnectionAndLoad);
         refreshDataBtn.addEventListener('click', loadAllData);
 
+        // ===== تحميل المتاجر =====
         async function loadStores() {
             try {
-                const { data, error } = await supabaseClient
-                    .from(storesTableName)
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                if (error) throw error;
-                storesData = data || [];
+                let snapshot;
+                try {
+                    snapshot = await db.collection(storesTableName).orderBy('created_at', 'desc').get();
+                } catch (e) {
+                    // fallback بدون ترتيب
+                    snapshot = await db.collection(storesTableName).get();
+                }
+                storesData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 storesCount.textContent = storesData.length;
                 renderStoresList(storesData);
                 fillStoreSelect(storesData);
@@ -473,6 +500,7 @@
             });
         }
 
+        // ===== حفظ/تعديل متجر =====
         storeForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -500,18 +528,18 @@
                 category: sanitizeInput(document.getElementById('store_category').value),
                 description: sanitizeInput(document.getElementById('store_description').value),
                 ratting: toNumber(document.getElementById('store_ratting').value),
-                followers: followersValue || '0',
+                followers: parseFollowers(followersValue),
                 is_verified: document.getElementById('store_is_verified').checked
             };
 
             try {
                 if (id) {
-                    const { error } = await supabaseClient.from(storesTableName).update(storeData).eq('id', id);
-                    if (error) throw error;
+                    await db.collection(storesTableName).doc(id).update(storeData);
                     showToast('تم تعديل المتجر بنجاح ✅');
                 } else {
-                    const { error } = await supabaseClient.from(storesTableName).insert([storeData]);
-                    if (error) throw error;
+                    storeData.created_at = firebase.firestore.FieldValue.serverTimestamp();
+                    storeData.products_count = 0;
+                    await db.collection(storesTableName).add(storeData);
                     showToast('تمت إضافة المتجر بنجاح ✅');
                 }
                 resetStoreForm();
@@ -531,10 +559,12 @@
             storeCoverPreview.classList.add('hidden');
         }
 
+        // ===== تعديل متجر =====
         window.editStore = async (id) => {
             try {
-                const { data, error } = await supabaseClient.from(storesTableName).select('*').eq('id', id).single();
-                if (error) throw error;
+                const snap = await db.collection(storesTableName).doc(id).get();
+                if (!snap.exists) throw new Error('المتجر غير موجود');
+                const data = { id: snap.id, ...snap.data() };
                 
                 document.getElementById('store_id').value = data.id;
                 document.getElementById('store_name').value = data.name || '';
@@ -568,15 +598,17 @@
 
         cancelEditStore.addEventListener('click', resetStoreForm);
 
+        // ===== حذف متجر (مع حذف منتجاته) =====
         window.deleteStore = async (id) => {
             if (!confirm('هل أنت متأكد من حذف هذا المتجر؟ سيتم حذف جميع المنتجات المرتبطة به.')) return;
             try {
                 const store = storesData.find(s => s.id === id);
-                if (store) {
-                    await supabaseClient.from(productsTableName).delete().eq('store_name', store.name);
+                if (store && store.name) {
+                    const productsSnap = await db.collection(productsTableName).where('store_name', '==', store.name).get();
+                    const deletePromises = productsSnap.docs.map(d => db.collection(productsTableName).doc(d.id).delete());
+                    await Promise.all(deletePromises);
                 }
-                const { error } = await supabaseClient.from(storesTableName).delete().eq('id', id);
-                if (error) throw error;
+                await db.collection(storesTableName).doc(id).delete();
                 showToast('تم حذف المتجر وجميع منتجاته ✅');
                 await loadAllData();
             } catch (err) {
@@ -585,14 +617,16 @@
             }
         };
 
+        // ===== تحميل المنتجات =====
         async function loadProducts() {
             try {
-                const { data, error } = await supabaseClient
-                    .from(productsTableName)
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                if (error) throw error;
-                productsData = data || [];
+                let snapshot;
+                try {
+                    snapshot = await db.collection(productsTableName).orderBy('created_at', 'desc').get();
+                } catch (e) {
+                    snapshot = await db.collection(productsTableName).get();
+                }
+                productsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 productsCount.textContent = productsData.length;
                 renderProductsList(productsData);
             } catch (err) {
@@ -655,6 +689,7 @@
             productsList.innerHTML = html;
         }
 
+        // ===== حفظ/تعديل منتج =====
         productForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -686,12 +721,11 @@
 
             try {
                 if (id) {
-                    const { error } = await supabaseClient.from(productsTableName).update(productData).eq('id', id);
-                    if (error) throw error;
+                    await db.collection(productsTableName).doc(id).update(productData);
                     showToast('تم تعديل المنتج بنجاح ✅');
                 } else {
-                    const { error } = await supabaseClient.from(productsTableName).insert([productData]);
-                    if (error) throw error;
+                    productData.created_at = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection(productsTableName).add(productData);
                     showToast('تمت إضافة المنتج بنجاح ✅');
                 }
                 resetProductForm();
@@ -711,10 +745,12 @@
             productImgPreview.classList.add('hidden');
         }
 
+        // ===== تعديل منتج =====
         window.editProduct = async (id) => {
             try {
-                const { data, error } = await supabaseClient.from(productsTableName).select('*').eq('id', id).single();
-                if (error) throw error;
+                const snap = await db.collection(productsTableName).doc(id).get();
+                if (!snap.exists) throw new Error('المنتج غير موجود');
+                const data = { id: snap.id, ...snap.data() };
                 
                 document.getElementById('product_id').value = data.id;
                 document.getElementById('product_name').value = data.name || '';
@@ -739,11 +775,11 @@
 
         cancelEditProduct.addEventListener('click', resetProductForm);
 
+        // ===== حذف منتج =====
         window.deleteProduct = async (id) => {
             if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
             try {
-                const { error } = await supabaseClient.from(productsTableName).delete().eq('id', id);
-                if (error) throw error;
+                await db.collection(productsTableName).doc(id).delete();
                 showToast('تم حذف المنتج ✅');
                 await loadProducts();
                 await updateStoreProductsCount();
@@ -753,33 +789,31 @@
             }
         };
 
+        // ===== تحديث عدد المنتجات لكل متجر =====
         async function updateStoreProductsCount() {
             try {
-                const { data, error } = await supabaseClient
-                    .from(productsTableName)
-                    .select('store_name');
-                if (error) throw error;
-                
+                const snapshot = await db.collection(productsTableName).get();
                 const counts = {};
-                (data || []).forEach(p => {
-                    counts[p.store_name] = (counts[p.store_name] || 0) + 1;
+                snapshot.docs.forEach(d => {
+                    const sn = d.data().store_name;
+                    if (sn) counts[sn] = (counts[sn] || 0) + 1;
                 });
                 
+                const updates = [];
                 for (const store of storesData) {
                     const newCount = counts[store.name] || 0;
                     if ((store.products_count || 0) !== newCount) {
-                        await supabaseClient
-                            .from(storesTableName)
-                            .update({ products_count: newCount })
-                            .eq('id', store.id);
+                        updates.push(db.collection(storesTableName).doc(store.id).update({ products_count: newCount }));
                     }
                 }
+                await Promise.all(updates);
                 await loadStores();
             } catch (err) {
                 console.error('خطأ تحديث عدد المنتجات:', err);
             }
         }
 
+        // ===== معاينة الصور =====
         document.getElementById('store_logo').addEventListener('input', (e) => {
             if (e.target.value) {
                 storeLogoPreview.src = e.target.value;
@@ -807,9 +841,16 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // ===== بدء التطبيق =====
+        function initAdmin() {
             checkConnectionAndLoad();
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAdmin);
+        } else {
+            initAdmin();
+        }
     </script>
 </body>
 </html>
