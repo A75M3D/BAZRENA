@@ -11,9 +11,9 @@
         default-src 'self';
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-        script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+        script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com;
         img-src 'self' data: https:;
-        connect-src 'self' https://orrqlpyntygvrjpzhlpy.supabase.co;
+        connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
@@ -29,7 +29,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
         tailwind.config = {
@@ -63,7 +62,6 @@
         ::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #E06B00; }
 
-        /* بطاقات بيضاء ناصعة */
         .store-card, .product-card {
             transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             cursor: pointer;
@@ -211,7 +209,6 @@
         #cartSidebar.open .cart-overlay { display: block; }
         @media (max-width: 640px) { #cartSidebar { max-width: 85%; } }
 
-        /* أزرار عرض المزيد */
         .load-more-btn {
             background: #FFFFFF; color: #FF7A00; border: 2px solid #FF7A00;
             padding: 0.85rem 2.5rem; border-radius: 9999px; font-weight: 800; font-size: 1rem;
@@ -223,141 +220,74 @@
         .load-more-btn i { transition: transform 0.3s; }
         .load-more-btn:hover i { transform: translateY(3px); }
 
-        /* ====== بانر الإعلان الأنيق ====== */
-        .brand-cta-section {
-            position: relative;
-            margin: 3rem auto 0;
-            max-width: 1200px;
-            padding: 0 1rem;
-        }
+        .brand-cta-section { position: relative; margin: 3rem auto 0; max-width: 1200px; padding: 0 1rem; }
         .brand-cta-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 2rem;
+            position: relative; overflow: hidden; border-radius: 2rem;
             background: linear-gradient(135deg, #1A1A1A 0%, #2B2B2B 50%, #1A1A1A 100%);
             box-shadow: 0 25px 60px rgba(0,0,0,0.25), 0 0 40px rgba(255,122,0,0.15);
-            padding: 2.5rem 2rem;
-            color: #fff;
+            padding: 2.5rem 2rem; color: #fff;
         }
-        @media (min-width: 768px) {
-            .brand-cta-card { padding: 3.5rem 3rem; }
-        }
+        @media (min-width: 768px) { .brand-cta-card { padding: 3.5rem 3rem; } }
         .brand-cta-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; right: -20%;
+            content: ''; position: absolute; top: -50%; right: -20%;
             width: 500px; height: 500px;
             background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
+            border-radius: 50%; pointer-events: none;
         }
         .brand-cta-card::after {
-            content: '';
-            position: absolute;
-            bottom: -60%; left: -15%;
+            content: ''; position: absolute; bottom: -60%; left: -15%;
             width: 450px; height: 450px;
             background: radial-gradient(circle, rgba(255,166,77,0.25) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
+            border-radius: 50%; pointer-events: none;
         }
         .brand-cta-content { position: relative; z-index: 2; }
         .brand-cta-badge {
             display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(255,122,0,0.15);
-            border: 1px solid rgba(255,122,0,0.4);
-            color: #FFA64D;
-            padding: 0.5rem 1.1rem;
-            border-radius: 9999px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 1.5rem;
+            background: rgba(255,122,0,0.15); border: 1px solid rgba(255,122,0,0.4);
+            color: #FFA64D; padding: 0.5rem 1.1rem; border-radius: 9999px;
+            font-weight: 700; font-size: 0.85rem; margin-bottom: 1.5rem;
             backdrop-filter: blur(10px);
         }
         .brand-cta-badge i { animation: pulse-icon 2s infinite; }
-        @keyframes pulse-icon {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-        .brand-cta-title {
-            font-size: 1.75rem;
-            font-weight: 900;
-            line-height: 1.35;
-            margin-bottom: 1rem;
-        }
-        @media (min-width: 768px) {
-            .brand-cta-title { font-size: 2.5rem; }
-        }
+        @keyframes pulse-icon { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .brand-cta-title { font-size: 1.75rem; font-weight: 900; line-height: 1.35; margin-bottom: 1rem; }
+        @media (min-width: 768px) { .brand-cta-title { font-size: 2.5rem; } }
         .brand-cta-title .highlight {
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: #FF7A00;
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: #FF7A00;
         }
-        .brand-cta-desc {
-            font-size: 1.05rem;
-            color: #cfcfcf;
-            line-height: 1.9;
-            margin-bottom: 2rem;
-            max-width: 720px;
-        }
+        .brand-cta-desc { font-size: 1.05rem; color: #cfcfcf; line-height: 1.9; margin-bottom: 2rem; max-width: 720px; }
         .brand-cta-desc strong { color: #fff; font-weight: 700; }
-        .brand-cta-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-        }
+        .brand-cta-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
         .cta-btn {
             display: inline-flex; align-items: center; gap: 10px;
-            padding: 1rem 1.75rem;
-            border-radius: 9999px;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
+            padding: 1rem 1.75rem; border-radius: 9999px;
+            font-weight: 800; font-size: 1rem; cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            border: none;
-            text-decoration: none;
-            white-space: nowrap;
+            border: none; text-decoration: none; white-space: nowrap;
         }
         .cta-btn-whatsapp {
             background: linear-gradient(135deg, #25D366 0%, #1EBE5D 100%);
-            color: white;
-            box-shadow: 0 8px 25px rgba(37,211,102,0.35);
+            color: white; box-shadow: 0 8px 25px rgba(37,211,102,0.35);
         }
-        .cta-btn-whatsapp:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(37,211,102,0.5);
-        }
+        .cta-btn-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(37,211,102,0.5); }
         .cta-btn-call {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.08); color: #fff;
+            border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);
         }
-        .cta-btn-call:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-3px);
-            border-color: rgba(255,255,255,0.4);
-        }
+        .cta-btn-call:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); border-color: rgba(255,255,255,0.4); }
         .brand-cta-features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem 1.5rem;
-            margin-top: 2rem;
-            padding-top: 1.75rem;
+            display: flex; flex-wrap: wrap; gap: 1rem 1.5rem;
+            margin-top: 2rem; padding-top: 1.75rem;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
-        .brand-cta-feature {
-            display: flex; align-items: center; gap: 8px;
-            color: #cfcfcf; font-size: 0.9rem; font-weight: 600;
-        }
+        .brand-cta-feature { display: flex; align-items: center; gap: 8px; color: #cfcfcf; font-size: 0.9rem; font-weight: 600; }
         .brand-cta-feature i { color: #FF7A00; font-size: 1rem; }
     </style>
 </head>
 <body class="font-cairo text-text-main">
 
-    <!-- الشريط العلوي -->
     <div class="top-bar hidden md:block">
         <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-sm">
             <div class="flex items-center gap-4">
@@ -372,7 +302,6 @@
         </div>
     </div>
 
-    <!-- الهيدر -->
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -409,13 +338,11 @@
         </div>
     </header>
 
-    <!-- زر التثبيت العائم -->
     <button id="installButtonFloating" class="hidden" title="تثبيت التطبيق">
         <i class="fas fa-download"></i>
         <span>تثبيت التطبيق</span>
     </button>
 
-    <!-- قسم الهيرو -->
     <section class="py-16 md:py-24 text-center bg-gradient-to-b from-orange-50 to-white">
         <h1 class="text-4xl md:text-6xl font-extrabold mb-4">اكتشف أفضل <span class="text-primary">المتاجر</span></h1>
         <p class="text-text-light max-w-2xl mx-auto mb-8">أفضل المتاجر والبراندات في مكان واحد</p>
@@ -431,7 +358,6 @@
         </a>
     </section>
 
-    <!-- قسم الفئات -->
     <section id="categories" class="py-12">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-end mb-6">
@@ -448,7 +374,6 @@
         </div>
     </section>
 
-    <!-- قسم المتاجر -->
     <section id="stores" class="py-12">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-end mb-8">
@@ -476,7 +401,6 @@
         </div>
     </section>
 
-    <!-- جميع المنتجات -->
     <section id="all-products" class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-end mb-8">
@@ -503,7 +427,6 @@
         </div>
     </section>
 
-    <!-- ====== بانر الإعلان الأنيق ====== -->
     <section class="brand-cta-section">
         <div class="brand-cta-card">
             <div class="brand-cta-content">
@@ -544,7 +467,6 @@
         </div>
     </section>
 
-    <!-- نافذة المتجر -->
     <div id="storeModal" class="fullscreen-modal hidden">
         <div class="modal-content bg-white flex flex-col">
             <div class="relative h-64 md:h-80">
@@ -589,7 +511,6 @@
         <div class="modal-backdrop absolute inset-0 -z-10" id="storeModalOverlay"></div>
     </div>
 
-    <!-- نافذة المنتج -->
     <div id="productModal" class="product-modal hidden">
         <div class="product-modal-content relative">
             <button id="closeProductModal" class="absolute top-3 left-3 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition z-10" aria-label="إغلاق">
@@ -624,7 +545,6 @@
         </div>
     </div>
 
-    <!-- سلة التسوق -->
     <div id="cartSidebar">
         <div class="cart-overlay" id="cartOverlay"></div>
         <div class="p-6 border-b flex justify-between items-center flex-shrink-0 bg-white">
@@ -644,10 +564,8 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[3000] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
-    <!-- الفوتر -->
     <footer class="bg-gray-900 text-white py-12 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
@@ -697,12 +615,27 @@
         </div>
     </footer>
 
-    <script>
-        // ===== إعدادات Supabase =====
-const SUPABASE_URL = 'https://orrqlpyntygvrjpzhlpy.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs';
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    <script>
+        // ============================================================
+        // إعدادات Firebase
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
+            authDomain: "bazarena-725e4.firebaseapp.com",
+            databaseURL: "https://bazarena-725e4-default-rtdb.firebaseio.com",
+            projectId: "bazarena-725e4",
+            storageBucket: "bazarena-725e4.firebasestorage.app",
+            messagingSenderId: "977750898059",
+            appId: "1:977750898059:web:247e8513b48490ed622b8e",
+            measurementId: "G-JFL1RLKST6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
         // ===== الحالة =====
         let stores = [];
@@ -710,17 +643,11 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
         let currentStore = null;
         let cart = JSON.parse(localStorage.getItem('myStoresCart')) || [];
         let autoScrollInterval = null;
-        let allProducts = [];              // كل المنتجات المحمّلة
-        let filteredProducts = [];         // المنتجات بعد الفلترة
-        let displayedProductsCount = 0;    // عدد المنتجات المعروضة حالياً
-        let currentCategory = null;        // الفئة المحددة حالياً
-        const PRODUCTS_PER_PAGE = 9;       // عدد المنتجات لكل تحميل
-
-        // ===== إعدادات الكاش =====
-        const PRODUCTS_CACHE_KEY = 'bazrenaProductsCache_v2';
-        const PRODUCTS_SIGNATURE_KEY = 'bazrenaProductsSignature_v2';
-        const CACHE_TTL_MS = 20 * 60 * 1000; // 20 دقيقة
-        const IMAGES_CACHE_NAME = 'bazrena-images-v1';
+        let allProducts = [];
+        let filteredProducts = [];
+        let displayedProductsCount = 0;
+        let currentCategory = null;
+        const PRODUCTS_PER_PAGE = 9;
 
         // ===== إدارة المتابعة =====
         const FOLLOWED_STORES_KEY = 'bazrenaFollowedStores';
@@ -830,107 +757,42 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
         }
         function animateCartBadge() { cartCount.classList.add('cart-badge-animate'); setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300); }
 
-        // ===== كاش الصور الدائم (Cache API) =====
-        async function getCachedImageUrl(url) {
-            if (!url || !('caches' in window)) return url;
-            try {
-                const cache = await caches.open(IMAGES_CACHE_NAME);
-                const cached = await cache.match(url);
-                if (cached) {
-                    const blob = await cached.blob();
-                    return URL.createObjectURL(blob);
-                }
-                // غير موجود - نجلبه ونخزنه
-                const response = await fetch(url, { mode: 'cors' });
-                if (response.ok) {
-                    await cache.put(url, response.clone());
-                    const blob = await response.blob();
-                    return URL.createObjectURL(blob);
-                }
-                return url;
-            } catch (e) { return url; }
-        }
-
-        async function preCacheImages(urls) {
-            if (!('caches' in window)) return;
-            try {
-                const cache = await caches.open(IMAGES_CACHE_NAME);
-                for (const url of urls) {
-                    if (!url) continue;
-                    try {
-                        const existing = await cache.match(url);
-                        if (!existing) {
-                            await cache.add(url).catch(() => {});
-                        }
-                    } catch (e) {}
-                }
-            } catch (e) {}
-        }
-
-        // ===== كاش المنتجات مع بصمة =====
-        function getProductsSignature(products) {
-            if (!products || products.length === 0) return '0';
-            // بصمة بسيطة: العدد + أول ID + آخر ID
-            const firstId = products[0]?.id || '';
-            const lastId = products[products.length - 1]?.id || '';
-            return `${products.length}|${firstId}|${lastId}`;
-        }
-
-        function saveProductsCache(products, signature) {
-            try {
-                const payload = { timestamp: Date.now(), signature, products };
-                localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(payload));
-                localStorage.setItem(PRODUCTS_SIGNATURE_KEY, signature);
-            } catch (e) { console.warn('تعذر حفظ كاش المنتجات', e); }
-        }
-
-        function loadProductsCache() {
-            try {
-                const raw = localStorage.getItem(PRODUCTS_CACHE_KEY);
-                if (!raw) return null;
-                const data = JSON.parse(raw);
-                if (!data || !data.products) return null;
-                return data;
-            } catch (e) { return null; }
-        }
-
-        async function fetchProductSignatureFromDB() {
-            // نجلب فقط آخر منتج مضاف لمعرفة هل تغيرت البيانات
-            try {
-                const { data, error } = await supabaseClient
-                    .from('products')
-                    .select('id')
-                    .order('created_at', { ascending: false })
-                    .limit(50);
-                if (error) throw error;
-                return data || [];
-            } catch (e) {
-                console.warn('فشل جلب بصمة المنتجات', e);
-                return null;
-            }
-        }
-
         // ===== تحميل المتاجر =====
         async function loadStores() {
             storesLoader.classList.remove('hidden'); storesEmpty.classList.add('hidden'); storesScrollContainer.innerHTML = '';
             try {
-                const { data, error } = await supabaseClient.from('Stores').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                stores = data || [];
-                if (stores.length > 0) {
-                    const storeNames = stores.map(s => s.name);
-                    const { data: productCounts, error: countError } = await supabaseClient.from('products').select('store_name', { count: 'exact' }).in('store_name', storeNames);
-                    if (!countError && productCounts) {
-                        const counts = {};
-                        productCounts.forEach(p => { counts[p.store_name] = (counts[p.store_name] || 0) + 1; });
-                        stores = stores.map(s => ({ ...s, products_count: counts[s.name] || 0 }));
-                    }
+                let snapshot;
+                try {
+                    snapshot = await db.collection('stores').orderBy('created_at', 'desc').get();
+                } catch (e) {
+                    snapshot = await db.collection('stores').get();
                 }
-                if (stores.length === 0) { storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً'; storesEmpty.classList.remove('hidden'); }
-                else { displayStores(); startAutoScroll(); }
+                stores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                if (stores.length > 0) {
+                    const productsSnap = await db.collection('products').get();
+                    const counts = {};
+                    productsSnap.docs.forEach(d => {
+                        const sn = d.data().store_name;
+                        if (sn) counts[sn] = (counts[sn] || 0) + 1;
+                    });
+                    stores = stores.map(s => ({ ...s, products_count: counts[s.name] || 0 }));
+                }
+
+                if (stores.length === 0) {
+                    storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
+                    storesEmpty.classList.remove('hidden');
+                } else {
+                    displayStores();
+                    startAutoScroll();
+                }
             } catch (err) {
-                console.error(err); storesErrorMessage.textContent = `تعذر تحميل المتاجر: ${err.message}`; storesEmpty.classList.remove('hidden');
-            } finally { storesLoader.classList.add('hidden'); }
+                console.error(err);
+                storesErrorMessage.textContent = `تعذر تحميل المتاجر: ${err.message}`;
+                storesEmpty.classList.remove('hidden');
+            } finally {
+                storesLoader.classList.add('hidden');
+            }
         }
         retryStoresBtn.addEventListener('click', loadStores);
 
@@ -950,10 +812,6 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
                 card.addEventListener('click', () => openStoreModal(store));
                 storesScrollContainer.appendChild(card);
             });
-            // كاش صور المتاجر بشكل دائم
-            const urls = [];
-            stores.forEach(s => { if (s.cover_url) urls.push(s.cover_url); if (s.logo_url) urls.push(s.logo_url); });
-            preCacheImages(urls);
         }
 
         // ===== الحركة التلقائية =====
@@ -1024,18 +882,16 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
 
             const wasFollowing = isFollowing;
             try {
-                const { data: storeData, error: fetchError } = await supabaseClient
-                    .from('Stores').select('followers').eq('id', currentStoreId).maybeSingle();
-                if (fetchError) throw fetchError;
+                const storeRef = db.collection('stores').doc(currentStoreId);
+                const storeSnap = await storeRef.get();
+                if (!storeSnap.exists) throw new Error('المتجر غير موجود');
 
-                const currentDbFollowers = parseInt(storeData?.followers) || 0;
+                const currentDbFollowers = parseInt(storeSnap.data()?.followers) || 0;
                 let newFollowers;
                 if (wasFollowing) newFollowers = Math.max(0, currentDbFollowers - 1);
                 else newFollowers = currentDbFollowers + 1;
 
-                const { error: updateError } = await supabaseClient
-                    .from('Stores').update({ followers: newFollowers }).eq('id', currentStoreId);
-                if (updateError) throw updateError;
+                await storeRef.update({ followers: newFollowers });
 
                 if (wasFollowing) {
                     isFollowing = false;
@@ -1066,16 +922,28 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
         document.getElementById('storeModalOverlay').addEventListener('click', closeStoreModal);
         function closeStoreModal() { storeModal.classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
-        // ===== تحميل منتجات المتجر =====
-        async function loadStoreProducts(storeName) {
+        // ===== تحميل منتجات المتجر (بدون كاش) =====
+        async function loadStoreProducts(storeNameParam) {
             storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-8"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>';
             try {
-                const { data, error } = await supabaseClient.from('products').select('*').eq('store_name', storeName).order('created_at', { ascending: false });
-                if (error) throw error;
-                if (!data || data.length === 0) storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-6 text-text-light">لا توجد منتجات</div>';
-                else displayProductsGrid(storeProductsGrid, data, false);
+                const snapshot = await db.collection('products').where('store_name', '==', storeNameParam).get();
+                let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                // ترتيب محلياً حسب created_at
+                data.sort((a, b) => {
+                    const ta = a.created_at?.seconds || (a.created_at?.toMillis?.() / 1000) || 0;
+                    const tb = b.created_at?.seconds || (b.created_at?.toMillis?.() / 1000) || 0;
+                    return tb - ta;
+                });
+
+                if (!data || data.length === 0) {
+                    storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-6 text-text-light">لا توجد منتجات</div>';
+                } else {
+                    displayProductsGrid(storeProductsGrid, data, false);
+                }
             } catch (err) {
-                console.error(err); storeProductsGrid.innerHTML = `<div class="col-span-full text-center py-6 text-text-light">تعذر تحميل المنتجات: ${err.message}</div>`;
+                console.error(err);
+                storeProductsGrid.innerHTML = `<div class="col-span-full text-center py-6 text-text-light">تعذر تحميل المنتجات: ${err.message}</div>`;
             }
         }
 
@@ -1088,7 +956,11 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
                 const rating = parseFloat(product.ratting) || 0;
                 const card = document.createElement('div');
                 card.className = 'product-card bg-white border rounded-xl overflow-hidden hover:shadow-lg transition group';
-                const productForModal = { id: product.id, name: product.name, img_url: product.img_url, price, original_price: originalPrice, ratting: rating, store_name: product.store_name, description: product.description || '' };
+                const productForModal = {
+                    id: product.id, name: product.name, img_url: product.img_url,
+                    price, original_price: originalPrice, ratting: rating,
+                    store_name: product.store_name, description: product.description || ''
+                };
                 card.innerHTML = `
                     <div class="product-image-container relative h-32 sm:h-40">
                         <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
@@ -1246,11 +1118,18 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
         // ===== تحميل الفئات =====
         async function loadCategories() {
             try {
-                const { data, error } = await supabaseClient.from('Stores').select('category').not('category', 'is', null);
-                if (error) throw error;
-                const uniqueCategories = [...new Set(data.map(d => d.category).filter(c => c && c.trim() !== ''))];
-                categories = uniqueCategories; displayCategories();
-            } catch (err) { console.error(err); categoriesContainer.innerHTML = '<p class="text-text-light">تعذر تحميل الفئات</p>'; }
+                const snapshot = await db.collection('stores').get();
+                const cats = [];
+                snapshot.docs.forEach(d => {
+                    const c = d.data().category;
+                    if (c && String(c).trim() !== '' && !cats.includes(c)) cats.push(c);
+                });
+                categories = cats;
+                displayCategories();
+            } catch (err) {
+                console.error(err);
+                categoriesContainer.innerHTML = '<p class="text-text-light">تعذر تحميل الفئات</p>';
+            }
         }
         function displayCategories() {
             categoriesContainer.innerHTML = '';
@@ -1262,7 +1141,6 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
                 displayStores();
                 highlightCategory(allBtn);
                 stopAutoScroll(); startAutoScroll();
-                // فلترة المنتجات: عرض الكل
                 applyProductsFilter(null);
             });
             categoriesContainer.appendChild(allBtn);
@@ -1274,7 +1152,6 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
                     currentCategory = cat;
                     filterStoresByCategory(cat);
                     highlightCategory(btn);
-                    // فلترة المنتجات بنفس الفئة
                     applyProductsFilter(cat);
                 });
                 categoriesContainer.appendChild(btn);
@@ -1316,7 +1193,6 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
                 allProductsTitle.textContent = 'جميع المنتجات';
                 allProductsSubtitle.textContent = 'تصفح كل المنتجات المتاحة';
             } else {
-                // نجمع أسماء المتاجر التي تنتمي لهذه الفئة
                 const storeNamesInCategory = stores.filter(s => s.category === category).map(s => s.name);
                 filteredProducts = allProducts.filter(p => storeNamesInCategory.includes(p.store_name));
                 allProductsTitle.textContent = `منتجات فئة: ${category}`;
@@ -1333,7 +1209,6 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
             const nextBatch = filteredProducts.slice(start, end);
 
             if (nextBatch.length > 0) {
-                // نضيف البطاقات الجديدة
                 const tempContainer = document.createElement('div');
                 displayProductsGrid(tempContainer, nextBatch, true);
                 while (tempContainer.firstChild) allProductsGrid.appendChild(tempContainer.firstChild);
@@ -1341,7 +1216,6 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
 
             displayedProductsCount = end;
 
-            // إخفاء حالة الفراغ إذا وجدنا منتجات
             if (filteredProducts.length === 0) {
                 allProductsEmpty.classList.remove('hidden');
                 loadMoreProductsBtn.classList.add('hidden');
@@ -1349,7 +1223,6 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
                 allProductsEmpty.classList.add('hidden');
             }
 
-            // إظهار زر المزيد إذا بقي منتجات
             if (displayedProductsCount < filteredProducts.length) {
                 loadMoreProductsBtn.classList.remove('hidden');
                 loadMoreProductsBtn.innerHTML = `<span>عرض المزيد (${filteredProducts.length - displayedProductsCount} منتج متبقي)</span><i class="fas fa-chevron-down"></i>`;
@@ -1366,7 +1239,7 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
             }, 150);
         });
 
-        // ===== تحميل جميع المنتجات مع نظام الكاش =====
+        // ===== تحميل جميع المنتجات (بدون كاش) =====
         async function loadAllProducts() {
             allProductsLoader.classList.remove('hidden');
             allProductsEmpty.classList.add('hidden');
@@ -1374,65 +1247,38 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VWlvJX_c17bRSz5nhkFR6A_GRI2OxBs
             loadMoreProductsBtn.classList.add('hidden');
 
             try {
-                // 1) نجلب بصمة بسيطة من DB لمعرفة هل تغيرت البيانات
-                const dbSignatureData = await fetchProductSignatureFromDB();
-                const cached = loadProductsCache();
-                const cachedSignature = cached ? cached.signature : null;
-                const currentSignature = dbSignatureData ? getProductsSignature(dbSignatureData) : null;
-
-                // 2) هل الكاش لا يزال صالحاً ومطابقاً؟
-                const cacheIsFresh = cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS;
-                const signatureMatches = currentSignature && cachedSignature === currentSignature;
-
-                if (cached && cacheIsFresh && signatureMatches) {
-                    // الكاش صالح ومطابق - استخدم الكاش
-                    console.log('✅ استخدام كاش المنتجات (طازج + مطابق)');
-                    allProducts = cached.products || [];
-                    applyProductsFilter(currentCategory);
-                    // كاش الصور بشكل دائم
-                    preCacheImages(allProducts.map(p => p.img_url).filter(Boolean));
-                    allProductsLoader.classList.add('hidden');
-                    return;
-                }
-
-                // 3) الكاش قديم أو غير مطابق - نجلب من DB
                 console.log('🔄 جلب المنتجات من قاعدة البيانات...');
-                const { data, error } = await supabaseClient
-                    .from('products').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-
-                allProducts = data || [];
-
-                // 4) خزّن الكاش الجديد مع بصمته
-                const newSignature = getProductsSignature(allProducts.map(p => ({ id: p.id })));
-                saveProductsCache(allProducts, newSignature);
+                let snapshot;
+                try {
+                    snapshot = await db.collection('products').orderBy('created_at', 'desc').get();
+                } catch (e) {
+                    snapshot = await db.collection('products').get();
+                }
+                allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
                 applyProductsFilter(currentCategory);
-                preCacheImages(allProducts.map(p => p.img_url).filter(Boolean));
 
             } catch (err) {
                 console.error('فشل تحميل المنتجات:', err);
-                // في حالة الفشل - استخدم الكاش إن وُجد
-                const cached = loadProductsCache();
-                if (cached && cached.products) {
-                    console.log('⚠️ استخدام الكاش الاحتياطي');
-                    allProducts = cached.products;
-                    applyProductsFilter(currentCategory);
-                } else {
-                    allProductsGrid.innerHTML = '<p class="col-span-full text-text-light text-center">تعذر تحميل المنتجات</p>';
-                }
+                allProductsGrid.innerHTML = '<p class="col-span-full text-text-light text-center">تعذر تحميل المنتجات</p>';
             } finally {
                 allProductsLoader.classList.add('hidden');
             }
         }
 
         // ===== بدء التطبيق =====
-        document.addEventListener('DOMContentLoaded', () => {
+        function initApp() {
             updateCartUI();
             loadStores();
             loadCategories();
             loadAllProducts();
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
