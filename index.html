@@ -11,13 +11,16 @@
         default-src 'self';
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-        script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com;
+        script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com;
         img-src 'self' data: https:;
-        connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com;
+        connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
         worker-src 'self';
+        object-src 'none';
+        media-src 'self' https:;
+        upgrade-insecure-requests;
     ">
     <title>BAZRENA – بازارِنا | أفضل المتاجر والبراندات في مكان واحد</title>
 
@@ -263,9 +266,6 @@
         .load-more-btn i { transition: transform 0.3s; }
         .load-more-btn:hover i { transform: translateY(3px); }
 
-        /* ============================================================
-           ★★★ شعار الهيرو القابل للنقر ★★★
-           ============================================================ */
         .hero-logo-link {
             display: inline-block;
             cursor: pointer;
@@ -281,9 +281,6 @@
             transform: scale(0.98);
         }
 
-        /* ============================================================
-           ★★★ قسم "تعرّف على المنصة" ★★★
-           ============================================================ */
         .about-cta-section {
             max-width: 960px;
             margin: 3rem auto 0;
@@ -496,9 +493,6 @@
             .about-cta-mini-features span { font-size: 0.85rem; padding: 0.5rem 1rem; }
         }
 
-        /* ============================================================
-           بطاقة الإعلان
-           ============================================================ */
         .brand-cta-section { max-width: 960px; margin: 2rem auto 0; padding: 0 1rem; }
         .brand-cta-card {
             position: relative;
@@ -907,1518 +901,1746 @@
 </head>
 <body class="font-cairo text-text-main">
 
-    <div class="top-bar hidden md:block">
-        <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-sm">
-            <div class="flex items-center gap-4">
-                <span><i class="fas fa-phone ml-1"></i> +249 924 299 798</span>
-                <span><i class="fas fa-envelope ml-1"></i> support@bazrena.com</span>
-            </div>
-            <div class="flex gap-3">
-                <a href="#" class="hover:text-orange-100 transition" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="hover:text-orange-100 transition" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="hover:text-orange-100 transition" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            </div>
+<!-- ============================================================
+     🛡️ SECURITY LAYER — طبقة الحماية الكاملة
+     ============================================================ -->
+<script>
+(function() {
+    'use strict';
+
+    // ============ 1. Domain Lock — قفل الدومين ============
+    const ALLOWED_HOSTS = [
+        'bazrena.vercel.app',
+        'localhost',
+        '127.0.0.1'
+    ];
+    const currentHost = window.location.hostname.toLowerCase();
+
+    if (!ALLOWED_HOSTS.includes(currentHost)) {
+        document.documentElement.innerHTML = `
+            <div style="
+                position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+                background:#0a0a0a;color:#fff;font-family:'Cairo',sans-serif;text-align:center;
+                padding:2rem;direction:rtl;z-index:999999;
+            ">
+                <div>
+                    <div style="font-size:5rem;margin-bottom:1rem;">🔒</div>
+                    <h1 style="font-size:1.8rem;font-weight:900;color:#FF7A00;margin-bottom:1rem;">
+                        الوصول غير مصرح به
+                    </h1>
+                    <p style="color:#999;line-height:2;max-width:500px;margin:0 auto;">
+                        هذه المنصة محمية ومسجلة قانونياً.<br>
+                        لا يُسمح باستخدام أو نسخ الكود خارج النطاق الرسمي.
+                    </p>
+                    <a href="https://bazrena.vercel.app" style="
+                        display:inline-block;margin-top:1.5rem;padding:.75rem 2rem;
+                        background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;
+                        border-radius:9999px;text-decoration:none;font-weight:800;
+                    ">زيارة الموقع الرسمي</a>
+                </div>
+            </div>`;
+        throw new Error('⛔ Unauthorized domain');
+    }
+
+    // ============ 2. Anti-Iframe ============
+    try {
+        if (window.self !== window.top) {
+            window.top.location = window.self.location.href;
+        }
+    } catch (e) {
+        document.body.innerHTML = '<h1 style="text-align:center;padding:3rem;font-family:sans-serif;">⛔ تم اكتشاف تضمين غير مصرح به</h1>';
+        throw new Error('⛔ Iframe detected');
+    }
+
+    // ============ 3. Developer Tools Detection ============
+    let devtoolsOpen = false;
+    const devtoolsThreshold = 160;
+
+    function detectDevTools() {
+        const widthGap = window.outerWidth - window.innerWidth;
+        const heightGap = window.outerHeight - window.innerHeight;
+
+        if (widthGap > devtoolsThreshold || heightGap > devtoolsThreshold) {
+            if (!devtoolsOpen) {
+                devtoolsOpen = true;
+                console.warn('%c⚠️ تم اكتشاف أدوات المطور', 'color:#FF7A00;font-size:20px;font-weight:bold;');
+            }
+        } else {
+            devtoolsOpen = false;
+        }
+    }
+    setInterval(detectDevTools, 1000);
+
+    // ============ 4. Console Warning ============
+    const warningStyle = 'color:#FF7A00;font-size:22px;font-weight:900;font-family:Cairo,sans-serif;';
+    const textStyle = 'color:#333;font-size:14px;font-family:Cairo,sans-serif;line-height:1.8;';
+    try {
+        console.log('%c⚠️ توقف!', warningStyle);
+        console.log('%cهذه الميزة مخصصة للمطورين فقط.', textStyle);
+        console.log('%cإذا قام أحدهم بإخبارك بنسخ أو لصق أي شيء هنا، فهو يحاول خداعك واحتيال عليك.', textStyle);
+        console.log('%cكل النشاطات مسجلة ومراقبة.', 'color:#d32f2f;font-weight:bold;font-size:14px;');
+    } catch (e) {}
+
+    // ============ 5. Right-Click Disable ============
+    document.addEventListener('contextmenu', (e) => {
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea') return;
+        e.preventDefault();
+        return false;
+    });
+
+    // ============ 6. Keyboard Shortcuts Block ============
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12') { e.preventDefault(); return false; }
+
+        if (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) {
+            e.preventDefault(); return false;
+        }
+
+        if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
+            e.preventDefault(); return false;
+        }
+
+        if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+            e.preventDefault(); return false;
+        }
+
+        if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
+            e.preventDefault(); return false;
+        }
+
+        const tag = (e.target.tagName || '').toLowerCase();
+        const isInput = tag === 'input' || tag === 'textarea';
+        if (!isInput && e.ctrlKey && (e.key === 'a' || e.key === 'A')) {
+            e.preventDefault(); return false;
+        }
+    });
+
+    // ============ 7. Copy Protection ============
+    document.addEventListener('copy', (e) => {
+        const tag = (e.target.tagName || '').toLowerCase();
+        const isInput = tag === 'input' || tag === 'textarea';
+        if (isInput) return true;
+        e.preventDefault();
+        try {
+            e.clipboardData.setData('text/plain',
+                '\n\n© 2026 BAZRENA — بازارِنا\nالموقع الرسمي: https://bazrena.vercel.app\nالمحتوى محمي بحقوق النشر.\n');
+        } catch (err) {}
+    });
+
+    // ============ 8. Disable Drag on Images ============
+    document.addEventListener('dragstart', (e) => {
+        if (e.target && e.target.tagName === 'IMG') e.preventDefault();
+    });
+
+    // ============ 9. Storage Tamper Detection ============
+    const _origSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function(key, value) {
+        if (key === 'myStoresCart' || key === 'bazrenaFollowedStores') {
+            try {
+                JSON.parse(value);
+            } catch (e) {
+                console.warn('⚠️ محاولة تخزين بيانات غير صالحة');
+                return;
+            }
+        }
+        return _origSetItem.call(this, key, value);
+    };
+
+    // ============ 10. Block Injecting Untrusted Scripts ============
+    const trustedScriptHosts = [
+        'cdn.tailwindcss.com',
+        'cdnjs.cloudflare.com',
+        'www.gstatic.com',
+        'cdn.jsdelivr.net',
+        'apis.google.com',
+        window.location.hostname
+    ];
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(m => {
+            m.addedNodes.forEach(node => {
+                if (node.tagName === 'SCRIPT' && node.src) {
+                    try {
+                        const url = new URL(node.src, window.location.href);
+                        if (!trustedScriptHosts.includes(url.hostname)) {
+                            console.warn('🚫 تم حظر سكربت غير موثوق:', url.hostname);
+                            node.remove();
+                        }
+                    } catch (e) {
+                        node.remove();
+                    }
+                }
+            });
+        });
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    // ============ 11. Prevent Form Injection to External URLs ============
+    document.addEventListener('submit', (e) => {
+        const form = e.target;
+        if (form.action) {
+            try {
+                const actionUrl = new URL(form.action, window.location.href);
+                if (!ALLOWED_HOSTS.includes(actionUrl.hostname)) {
+                    e.preventDefault();
+                    console.warn('🚫 تم حظر إرسال النموذج لجهة خارجية');
+                }
+            } catch (err) { e.preventDefault(); }
+        }
+    }, true);
+
+    // ============ 12. Watermark Fingerprint ============
+    Object.defineProperty(window, '_bzr_fingerprint', {
+        value: 'BAZRENA-' + btoa(currentHost + '|' + new Date().toISOString().slice(0,7)).slice(0, 16),
+        writable: false,
+        configurable: false
+    });
+
+})();
+</script>
+
+<div class="top-bar hidden md:block">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-sm">
+        <div class="flex items-center gap-4">
+            <span><i class="fas fa-phone ml-1"></i> +249 924 299 798</span>
+            <span><i class="fas fa-envelope ml-1"></i> support@bazrena.com</span>
+        </div>
+        <div class="flex gap-3">
+            <a href="#" class="hover:text-orange-100 transition" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="hover:text-orange-100 transition" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="hover:text-orange-100 transition" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
         </div>
     </div>
+</div>
 
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex justify-between items-center">
-            <button id="logoMenuBtn" type="button" aria-label="القائمة" aria-expanded="false">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-neon-glow overflow-hidden bg-white">
-                    <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
-                </div>
-                <span class="text-lg sm:text-2xl font-extrabold flex items-center gap-1">
-                    <span class="text-orange-500">بازارِنا-BAZARENA</span>
-                </span>
-                <i class="fas fa-chevron-down logo-menu-chevron"></i>
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex justify-between items-center">
+        <button id="logoMenuBtn" type="button" aria-label="القائمة" aria-expanded="false">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-neon-glow overflow-hidden bg-white">
+                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
+            </div>
+            <span class="text-lg sm:text-2xl font-extrabold flex items-center gap-1">
+                <span class="text-orange-500">بازارِنا-BAZARENA</span>
+            </span>
+            <i class="fas fa-chevron-down logo-menu-chevron"></i>
+        </button>
+        <nav class="hidden md:flex gap-6">
+            <a href="#" class="hover:text-primary">الرئيسية</a>
+            <a href="#stores" class="hover:text-primary">المتاجر</a>
+            <a href="#categories" class="hover:text-primary">التصنيفات</a>
+            <a href="#all-products" class="hover:text-primary">جميع المنتجات</a>
+            <a href="about.html" class="hover:text-primary">من نحن</a>
+        </nav>
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button id="searchButton" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg sm:text-xl transition" aria-label="البحث">
+                <i class="fas fa-search text-gray-700"></i>
             </button>
-            <nav class="hidden md:flex gap-6">
-                <a href="#" class="hover:text-primary">الرئيسية</a>
-                <a href="#stores" class="hover:text-primary">المتاجر</a>
-                <a href="#categories" class="hover:text-primary">التصنيفات</a>
-                <a href="#all-products" class="hover:text-primary">جميع المنتجات</a>
-                <a href="about.html" class="hover:text-primary">من نحن</a>
-            </nav>
-            <div class="flex items-center gap-2 sm:gap-3">
-                <button id="searchButton" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg sm:text-xl transition" aria-label="البحث">
-                    <i class="fas fa-search text-gray-700"></i>
-                </button>
-                <button id="cartButton" class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg sm:text-xl" aria-label="سلة التسوق">
-                    <i class="fas fa-shopping-cart text-gray-700"></i>
-                    <span id="cartCount" class="absolute -top-1 -left-1 w-5 h-5 bg-primary text-white rounded-full text-xs flex items-center justify-center font-bold">0</span>
-                </button>
-            </div>
-        </div>
-        <div id="mobileMenu" class="hidden md:hidden bg-white border-t p-4 space-y-2">
-            <a href="#" class="block py-2 hover:text-primary transition">الرئيسية</a>
-            <a href="#stores" class="block py-2 hover:text-primary transition">المتاجر</a>
-            <a href="#categories" class="block py-2 hover:text-primary transition">التصنيفات</a>
-            <a href="#all-products" class="block py-2 hover:text-primary transition">جميع المنتجات</a>
-            <a href="about.html" class="block py-2 text-primary font-bold">من نحن</a>
-        </div>
-    </header>
-
-    <div id="searchOverlay" class="search-overlay">
-        <div class="search-panel">
-            <div class="flex items-center gap-3 border-b border-gray-200 pb-3">
-                <i class="fas fa-search text-primary text-lg sm:text-xl"></i>
-                <input id="searchInput" type="search" placeholder="ابحث عن متجر أو فئة..." class="flex-1 outline-none text-base sm:text-lg bg-transparent" autocomplete="off">
-                <button id="closeSearch" class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition" aria-label="إغلاق">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="searchResults" class="mt-4 overflow-y-auto flex-1"></div>
+            <button id="cartButton" class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg sm:text-xl" aria-label="سلة التسوق">
+                <i class="fas fa-shopping-cart text-gray-700"></i>
+                <span id="cartCount" class="absolute -top-1 -left-1 w-5 h-5 bg-primary text-white rounded-full text-xs flex items-center justify-center font-bold">0</span>
+            </button>
         </div>
     </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t p-4 space-y-2">
+        <a href="#" class="block py-2 hover:text-primary transition">الرئيسية</a>
+        <a href="#stores" class="block py-2 hover:text-primary transition">المتاجر</a>
+        <a href="#categories" class="block py-2 hover:text-primary transition">التصنيفات</a>
+        <a href="#all-products" class="block py-2 hover:text-primary transition">جميع المنتجات</a>
+        <a href="about.html" class="block py-2 text-primary font-bold">من نحن</a>
+    </div>
+</header>
 
-    <button id="installButtonFloating" class="hidden" title="تثبيت التطبيق">
-        <i class="fas fa-download"></i>
-        <span>تثبيت التطبيق</span>
-    </button>
-
-    <section class="py-12 sm:py-16 md:py-24 text-center bg-gradient-to-b from-orange-50 to-white px-4">
-        <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-3 sm:mb-4">اكتشف أفضل <span class="text-primary">المتاجر</span></h1>
-        <p class="text-text-light max-w-2xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base">أفضل المتاجر والبراندات في مكان واحد</p>
-
-        <div class="flex justify-center mb-6 sm:mb-8">
-            <a href="about.html" class="hero-logo-link" aria-label="من نحن - بازارِنا" title="تعرف على المنصة">
-                <div class="w-32 h-32 xs:w-40 xs:h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[512px] lg:h-[512px] rounded-full overflow-hidden shadow-neon-glow bg-white">
-                    <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain" alt="شعار بازارِنا">
-                </div>
-            </a>
+<div id="searchOverlay" class="search-overlay">
+    <div class="search-panel">
+        <div class="flex items-center gap-3 border-b border-gray-200 pb-3">
+            <i class="fas fa-search text-primary text-lg sm:text-xl"></i>
+            <input id="searchInput" type="search" placeholder="ابحث عن متجر أو فئة..." class="flex-1 outline-none text-base sm:text-lg bg-transparent" autocomplete="off">
+            <button id="closeSearch" class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition" aria-label="إغلاق">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+        <div id="searchResults" class="mt-4 overflow-y-auto flex-1"></div>
+    </div>
+</div>
 
-        <a href="#stores" class="btn-primary inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold text-base sm:text-lg shadow-neon-glow">
-            <i class="fas fa-store"></i> تصفح المتاجر
+<button id="installButtonFloating" class="hidden" title="تثبيت التطبيق">
+    <i class="fas fa-download"></i>
+    <span>تثبيت التطبيق</span>
+</button>
+
+<section class="py-12 sm:py-16 md:py-24 text-center bg-gradient-to-b from-orange-50 to-white px-4">
+    <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-3 sm:mb-4">اكتشف أفضل <span class="text-primary">المتاجر</span></h1>
+    <p class="text-text-light max-w-2xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base">أفضل المتاجر والبراندات في مكان واحد</p>
+
+    <div class="flex justify-center mb-6 sm:mb-8">
+        <a href="about.html" class="hero-logo-link" aria-label="من نحن - بازارِنا" title="تعرف على المنصة">
+            <div class="w-32 h-32 xs:w-40 xs:h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[512px] lg:h-[512px] rounded-full overflow-hidden shadow-neon-glow bg-white">
+                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain" alt="شعار بازارِنا">
+            </div>
         </a>
-    </section>
+    </div>
 
-    <section id="categories" class="py-8 sm:py-12">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4">
-            <div class="flex justify-between items-end mb-4 sm:mb-6">
-                <div>
-                    <h2 class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">تصفح حسب الفئة</h2>
-                    <p class="text-text-light text-sm sm:text-base">اختر الفئة المناسبة لك</p>
-                </div>
-                <div class="flex gap-2">
-                    <button id="prevCategoriesBtn" class="scroll-btn"><i class="fas fa-chevron-right"></i></button>
-                    <button id="nextCategoriesBtn" class="scroll-btn"><i class="fas fa-chevron-left"></i></button>
-                </div>
+    <a href="#stores" class="btn-primary inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold text-base sm:text-lg shadow-neon-glow">
+        <i class="fas fa-store"></i> تصفح المتاجر
+    </a>
+</section>
+
+<section id="categories" class="py-8 sm:py-12">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4">
+        <div class="flex justify-between items-end mb-4 sm:mb-6">
+            <div>
+                <h2 class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">تصفح حسب الفئة</h2>
+                <p class="text-text-light text-sm sm:text-base">اختر الفئة المناسبة لك</p>
             </div>
-            <div id="categoriesContainer" class="categories-scroll-container"></div>
-        </div>
-    </section>
-
-    <section id="followedStoresSection" class="pt-4 sm:pt-6 pb-2 hidden">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4">
-            <div class="flex items-center justify-between mb-2">
-                <div>
-                    <h2 class="text-lg sm:text-2xl font-extrabold mb-1">المتاجر التي تتابعها</h2>
-                </div>
-                <span id="followedCountBadge" class="text-xs font-bold bg-orange-50 text-primary border border-orange-200 px-3 py-1 rounded-full"></span>
-            </div>
-            <div id="followedStoresContainer" class="followed-scroll-container"></div>
-        </div>
-    </section>
-
-    <section id="stores" class="py-8 sm:py-12">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4">
-            <div class="flex justify-between items-end mb-4 sm:mb-8">
-                <div>
-                    <h2 class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">المتاجر المميزة</h2>
-                </div>
-                <div class="flex gap-2 sm:gap-3">
-                    <button id="prevStoresBtn" class="scroll-btn"><i class="fas fa-chevron-right"></i></button>
-                    <button id="nextStoresBtn" class="scroll-btn"><i class="fas fa-chevron-left"></i></button>
-                </div>
-            </div>
-
-            <div id="storesScrollContainer" class="stores-scroll-container"></div>
-
-            <div id="storesLoader" class="hidden text-center py-10">
-                <i class="fas fa-spinner fa-spin text-4xl text-primary mb-3"></i>
-                <p>جاري تحميل المتاجر...</p>
-            </div>
-            <div id="storesEmpty" class="hidden text-center py-10">
-                <i class="fas fa-store-slash text-5xl text-gray-300 mb-3"></i>
-                <p id="storesErrorMessage" class="text-text-light mb-4">لا توجد متاجر</p>
-                <button id="retryStoresBtn" class="btn-primary px-6 py-2 rounded-full">إعادة المحاولة</button>
+            <div class="flex gap-2">
+                <button id="prevCategoriesBtn" class="scroll-btn"><i class="fas fa-chevron-right"></i></button>
+                <button id="nextCategoriesBtn" class="scroll-btn"><i class="fas fa-chevron-left"></i></button>
             </div>
         </div>
-    </section>
+        <div id="categoriesContainer" class="categories-scroll-container"></div>
+    </div>
+</section>
 
-    <section id="all-products" class="py-8 sm:py-12 bg-white">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4">
-            <div class="flex justify-between items-end mb-4 sm:mb-8">
-                <div>
-                    <div class="flex items-center gap-3 flex-wrap mb-1 sm:mb-2">
-                        <h2 id="allProductsTitle" class="text-xl sm:text-3xl font-extrabold">جميع المنتجات</h2>
-                        <span id="allProductsTotalBadge" class="all-products-total-badge" title="إجمالي المنتجات في الموقع">
-                            <i class="fas fa-boxes-stacked"></i>
-                            <span id="allProductsTotalCount">0</span>
-                            <span>منتج</span>
+<section id="followedStoresSection" class="pt-4 sm:pt-6 pb-2 hidden">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4">
+        <div class="flex items-center justify-between mb-2">
+            <div>
+                <h2 class="text-lg sm:text-2xl font-extrabold mb-1">المتاجر التي تتابعها</h2>
+            </div>
+            <span id="followedCountBadge" class="text-xs font-bold bg-orange-50 text-primary border border-orange-200 px-3 py-1 rounded-full"></span>
+        </div>
+        <div id="followedStoresContainer" class="followed-scroll-container"></div>
+    </div>
+</section>
+
+<section id="stores" class="py-8 sm:py-12">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4">
+        <div class="flex justify-between items-end mb-4 sm:mb-8">
+            <div>
+                <h2 class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">المتاجر المميزة</h2>
+            </div>
+            <div class="flex gap-2 sm:gap-3">
+                <button id="prevStoresBtn" class="scroll-btn"><i class="fas fa-chevron-right"></i></button>
+                <button id="nextStoresBtn" class="scroll-btn"><i class="fas fa-chevron-left"></i></button>
+            </div>
+        </div>
+
+        <div id="storesScrollContainer" class="stores-scroll-container"></div>
+
+        <div id="storesLoader" class="hidden text-center py-10">
+            <i class="fas fa-spinner fa-spin text-4xl text-primary mb-3"></i>
+            <p>جاري تحميل المتاجر...</p>
+        </div>
+        <div id="storesEmpty" class="hidden text-center py-10">
+            <i class="fas fa-store-slash text-5xl text-gray-300 mb-3"></i>
+            <p id="storesErrorMessage" class="text-text-light mb-4">لا توجد متاجر</p>
+            <button id="retryStoresBtn" class="btn-primary px-6 py-2 rounded-full">إعادة المحاولة</button>
+        </div>
+    </div>
+</section>
+
+<section id="all-products" class="py-8 sm:py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4">
+        <div class="flex justify-between items-end mb-4 sm:mb-8">
+            <div>
+                <div class="flex items-center gap-3 flex-wrap mb-1 sm:mb-2">
+                    <h2 id="allProductsTitle" class="text-xl sm:text-3xl font-extrabold">جميع المنتجات</h2>
+                    <span id="allProductsTotalBadge" class="all-products-total-badge" title="إجمالي المنتجات في الموقع">
+                        <i class="fas fa-boxes-stacked"></i>
+                        <span id="allProductsTotalCount">0</span>
+                        <span>منتج</span>
+                    </span>
+                </div>
+                <p id="allProductsSubtitle" class="text-text-light text-sm sm:text-base">تصفح كل المنتجات المتاحة</p>
+            </div>
+        </div>
+        <div id="allProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"></div>
+        <div id="allProductsLoader" class="hidden text-center py-10">
+            <i class="fas fa-spinner fa-spin text-4xl text-primary mb-3"></i>
+            <p>جاري تحميل جميع المنتجات...</p>
+        </div>
+        <div id="allProductsEmpty" class="hidden text-center py-10">
+            <i class="fas fa-box-open text-5xl text-gray-300 mb-3"></i>
+            <p class="text-text-light">لا توجد منتجات في هذه الفئة</p>
+        </div>
+        <div class="text-center mt-8">
+            <button id="loadMoreProductsBtn" class="load-more-btn hidden">
+                <span>عرض المزيد من المنتجات</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="about-cta-section">
+    <div class="about-cta-card">
+
+        <div class="about-cta-orb about-cta-orb-1"></div>
+        <div class="about-cta-orb about-cta-orb-2"></div>
+
+        <div class="about-cta-inner">
+
+            <div class="about-cta-badge">
+                <i class="fas fa-circle-info"></i>
+                <span>تعرّف علينا</span>
+            </div>
+
+            <h2 class="about-cta-heading">
+                هل تريد معرفة من نحن؟
+                <span class="about-cta-heading-accent">اكتشف قصة بازارِنا</span>
+            </h2>
+
+            <p class="about-cta-text">
+                تعرّف على رؤيتنا ورسالتنا وقيمنا، وكيف نبني أكبر سوق رقمي
+                يجمع أفضل المتاجر والبراندات السودانية في مكان واحد.
+            </p>
+
+            <a href="about.html" class="about-cta-btn">
+                <span class="about-cta-btn-icon">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="about-cta-btn-text">
+                    <strong>تعرّف على المنصة</strong>
+                </span>
+                <span class="about-cta-btn-arrow">
+                    <i class="fas fa-chevron-left"></i>
+                </span>
+            </a>
+
+            <div class="about-cta-mini-features">
+                <span><i class="fas fa-eye"></i> رؤيتنا</span>
+                <span><i class="fas fa-bullseye"></i> رسالتنا</span>
+                <span><i class="fas fa-handshake"></i> قيمنا</span>
+                <span><i class="fas fa-layer-group"></i> كيف نعمل</span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="brand-cta-section">
+    <div class="brand-cta-card">
+        <div class="brand-cta-inner">
+            <div class="brand-cta-icon-wrap">
+                <i class="fas fa-crown"></i>
+            </div>
+
+            <div>
+                <span class="brand-cta-eyebrow">فرصة لأصحاب البراندات</span>
+            </div>
+
+            <h2 class="brand-cta-heading">
+                هل تملك براند خاص بك؟
+                <span class="brand-cta-heading-accent">انطلق مع بازارِنا</span>
+            </h2>
+
+            <p class="brand-cta-text">
+                منصة احترافية لعرض منتجاتك أمام آلاف العملاء يومياً. متجرك جاهز خلال دقائق بسعر رمزي،
+                مع دعم فني متكامل وإدارة ذكية للطلبات عبر واتساب مباشرة.
+            </p>
+
+            <div class="brand-cta-actions">
+                <a href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1%D9%86%D8%A7" target="_blank" rel="noopener noreferrer" class="brand-cta-btn brand-cta-btn-primary">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>تواصل عبر واتساب</span>
+                </a>
+                <a href="tel:0924299798" class="brand-cta-btn brand-cta-btn-outline">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>0924299798</span>
+                </a>
+            </div>
+
+            <div class="brand-cta-features">
+                <div class="brand-cta-feature"><i class="fas fa-check-circle"></i><span>إنشاء متجر احترافي</span></div>
+                <div class="brand-cta-feature"><i class="fas fa-bolt"></i><span>تفعيل فوري</span></div>
+                <div class="brand-cta-feature"><i class="fas fa-headset"></i><span>دعم متواصل</span></div>
+                <div class="brand-cta-feature"><i class="fas fa-chart-line"></i><span>وصول لآلاف العملاء</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="storeModal" class="fullscreen-modal hidden">
+    <div class="modal-content bg-white flex flex-col">
+
+        <div class="store-cover-wrap">
+            <img id="storeCoverImage" src="" alt="غلاف المتجر">
+            <button id="closeStoreModal" class="store-close-btn" aria-label="إغلاق">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="store-info-card">
+            <div class="store-header-row">
+                <img id="storeLogo" class="store-header-logo" src="" alt="شعار المتجر">
+                <div class="store-header-info">
+                    <h3 id="storeName" class="store-header-name"></h3>
+                    <div class="store-header-meta">
+                        <span class="store-meta-rating">
+                            <span class="rating-num" id="storeRating">0.0</span>
+                            <i class="fas fa-star"></i>
+                        </span>
+                        <span class="store-meta-sep">|</span>
+                        <span class="store-meta-category" id="storeCategory">
+                            <i class="fas fa-tag"></i>
+                            <span>عام</span>
                         </span>
                     </div>
-                    <p id="allProductsSubtitle" class="text-text-light text-sm sm:text-base">تصفح كل المنتجات المتاحة</p>
                 </div>
             </div>
-            <div id="allProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"></div>
-            <div id="allProductsLoader" class="hidden text-center py-10">
-                <i class="fas fa-spinner fa-spin text-4xl text-primary mb-3"></i>
-                <p>جاري تحميل جميع المنتجات...</p>
-            </div>
-            <div id="allProductsEmpty" class="hidden text-center py-10">
-                <i class="fas fa-box-open text-5xl text-gray-300 mb-3"></i>
-                <p class="text-text-light">لا توجد منتجات في هذه الفئة</p>
-            </div>
-            <div class="text-center mt-8">
-                <button id="loadMoreProductsBtn" class="load-more-btn hidden">
-                    <span>عرض المزيد من المنتجات</span>
-                    <i class="fas fa-chevron-down"></i>
+
+            <p id="storeDescription" class="store-desc"></p>
+
+            <div class="store-actions-grid">
+                <button id="storeFollowButton" class="store-action-btn primary" type="button">
+                    <i class="fas fa-heart btn-icon"></i>
+                    <span id="storeFollowText">متابعة</span>
                 </button>
+                <div class="store-action-btn static">
+                    <i class="fas fa-users btn-icon"></i>
+                    <span id="storeFollowers">0</span>
+                    <span>متابع</span>
+                </div>
+
+                <a id="storeWhatsAppButton" href="#" target="_blank" rel="noopener noreferrer" class="store-action-btn">
+                    <span class="icon-circle"><i class="fab fa-whatsapp"></i></span>
+                    <span>واتساب المتجر</span>
+                    <i class="fas fa-chevron-left btn-arrow"></i>
+                </a>
+                <a id="storeCallButton" href="#" class="store-action-btn">
+                    <span class="icon-circle"><i class="fas fa-phone"></i></span>
+                    <span>اتصل بالمتجر</span>
+                    <i class="fas fa-chevron-left btn-arrow"></i>
+                </a>
             </div>
         </div>
-    </section>
 
-    <!-- ============================================================
-         ★★★ قسم "تعرّف على المنصة" — أعلى الكرت التسويقي ★★★
-         ============================================================ -->
-    <section class="about-cta-section">
-        <div class="about-cta-card">
+        <div class="store-divider"></div>
 
-            <div class="about-cta-orb about-cta-orb-1"></div>
-            <div class="about-cta-orb about-cta-orb-2"></div>
-
-            <div class="about-cta-inner">
-
-                <div class="about-cta-badge">
-                    <i class="fas fa-circle-info"></i>
-                    <span>تعرّف علينا</span>
+        <div class="px-4 sm:px-6 pb-6">
+            <div class="store-products-header">
+                <div class="store-products-title">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>منتجات المتجر</span>
                 </div>
+                <span class="store-products-count-pill">
+                    <i class="fas fa-cube"></i>
+                    <span id="storeProductsCount">0</span>
+                    <span>منتجات</span>
+                </span>
+            </div>
 
-                <h2 class="about-cta-heading">
-                    هل تريد معرفة من نحن؟
-                    <span class="about-cta-heading-accent">اكتشف قصة بازارِنا</span>
-                </h2>
+            <div id="storeProductsGrid" class="store-products-grid"></div>
+        </div>
 
-                <p class="about-cta-text">
-                    تعرّف على رؤيتنا ورسالتنا وقيمنا، وكيف نبني أكبر سوق رقمي
-                    يجمع أفضل المتاجر والبراندات السودانية في مكان واحد.
-                </p>
+    </div>
+    <div class="modal-backdrop absolute inset-0 -z-10" id="storeModalOverlay"></div>
+</div>
 
-                <a href="about.html" class="about-cta-btn">
-                    <span class="about-cta-btn-icon">
-                        <i class="fas fa-arrow-left"></i>
-                    </span>
-                    <span class="about-cta-btn-text">
-                        <strong>تعرّف على المنصة</strong>
-                      
-                    </span>
-                    <span class="about-cta-btn-arrow">
-                        <i class="fas fa-chevron-left"></i>
+<div id="productModal" class="product-modal hidden">
+    <div class="product-modal-content relative">
+        <button id="closeProductModal" class="absolute top-3 left-3 w-9 h-9 sm:w-10 sm:h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition z-10" aria-label="إغلاق">
+            <i class="fas fa-times text-sm sm:text-base"></i>
+        </button>
+        <div class="flex flex-col md:flex-row gap-4 sm:gap-6">
+            <div class="md:w-1/2">
+                <img id="productModalImage" src="" class="w-full object-contain bg-white rounded-2xl" alt="صورة المنتج">
+            </div>
+            <div class="md:w-1/2 flex flex-col">
+                <h2 id="productModalName" class="text-xl sm:text-2xl font-extrabold mb-2"></h2>
+                <div class="flex items-center gap-2 mb-3 text-sm sm:text-base">
+                    <span class="text-yellow-400"><i class="fas fa-star"></i></span>
+                    <span id="productModalRating" class="font-semibold"></span>
+                    <span class="text-text-light">|</span>
+                    <span id="productModalStore" class="text-primary font-semibold truncate"></span>
+                </div>
+                <div class="flex items-center gap-3 mb-4 flex-wrap">
+                    <span id="productModalPrice" class="text-2xl sm:text-3xl font-extrabold text-primary"></span>
+                    <span id="productModalOriginalPrice" class="text-base sm:text-lg line-through text-text-light"></span>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <button id="addToCartFromModal" class="btn-primary w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm sm:text-base">
+                        <i class="fas fa-shopping-cart"></i> أضف إلى السلة
+                    </button>
+                    <button id="buyNowFromModal" class="btn-whatsapp w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm sm:text-base">
+                        <i class="fab fa-whatsapp"></i> شراء مباشر عبر واتساب
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="cartSidebar">
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="p-4 sm:p-6 border-b flex justify-between items-center flex-shrink-0 bg-white">
+        <h2 class="text-lg sm:text-xl font-bold">سلة التسوق</h2>
+        <button id="closeCart" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition"><i class="fas fa-times text-sm sm:text-base"></i></button>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-white"></div>
+    <div class="p-4 sm:p-6 border-t bg-white flex-shrink-0">
+        <div id="cartTotal" class="flex justify-between font-bold mb-4">
+            <span>المجموع:</span>
+            <span class="text-primary">0 ج.س</span>
+        </div>
+        <button id="continueShopping" class="btn-primary w-full py-3 rounded-xl mb-2">مواصلة التسوق</button>
+        <button id="whatsappOrder" class="btn-whatsapp w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2">
+            <i class="fab fa-whatsapp"></i> طلب السلة عبر واتساب
+        </button>
+    </div>
+</div>
+
+<div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[3000] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+<footer class="bg-gray-900 text-white py-12 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <a href="about.html" class="flex items-center gap-2 mb-4 group transition-all hover:opacity-90" aria-label="من نحن - بازارِنا" title="تعرف على المنصة">
+                    <div class="w-10 h-10 rounded-full bg-white overflow-hidden transition-transform duration-300 group-hover:scale-110">
+                        <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
+                    </div>
+                    <span class="text-xl font-bold flex items-center gap-1">
+                        <span>بازارِنا</span>
+                        <span class="text-primary font-bold">-</span>
+                        <span class="text-primary">BAZRENA</span>
                     </span>
                 </a>
-
-                <div class="about-cta-mini-features">
-                    <span><i class="fas fa-eye"></i> رؤيتنا</span>
-                    <span><i class="fas fa-bullseye"></i> رسالتنا</span>
-                    <span><i class="fas fa-handshake"></i> قيمنا</span>
-                    <span><i class="fas fa-layer-group"></i> كيف نعمل</span>
-                </div>
-
+                <p class="text-gray-400 text-sm">أفضل المتاجر والبراندات في مكان واحد</p>
             </div>
-        </div>
-    </section>
-
-    <section class="brand-cta-section">
-        <div class="brand-cta-card">
-            <div class="brand-cta-inner">
-                <div class="brand-cta-icon-wrap">
-                    <i class="fas fa-crown"></i>
-                </div>
-
-                <div>
-                    <span class="brand-cta-eyebrow">فرصة لأصحاب البراندات</span>
-                </div>
-
-                <h2 class="brand-cta-heading">
-                    هل تملك براند خاص بك؟
-                    <span class="brand-cta-heading-accent">انطلق مع بازارِنا</span>
-                </h2>
-
-                <p class="brand-cta-text">
-                    منصة احترافية لعرض منتجاتك أمام آلاف العملاء يومياً. متجرك جاهز خلال دقائق بسعر رمزي،
-                    مع دعم فني متكامل وإدارة ذكية للطلبات عبر واتساب مباشرة.
-                </p>
-
-                <div class="brand-cta-actions">
-                    <a href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1%D9%86%D8%A7" target="_blank" rel="noopener noreferrer" class="brand-cta-btn brand-cta-btn-primary">
-                        <i class="fab fa-whatsapp"></i>
-                        <span>تواصل عبر واتساب</span>
-                    </a>
-                    <a href="tel:0924299798" class="brand-cta-btn brand-cta-btn-outline">
-                        <i class="fas fa-phone-alt"></i>
-                        <span>0924299798</span>
-                    </a>
-                </div>
-
-                <div class="brand-cta-features">
-                    <div class="brand-cta-feature"><i class="fas fa-check-circle"></i><span>إنشاء متجر احترافي</span></div>
-                    <div class="brand-cta-feature"><i class="fas fa-bolt"></i><span>تفعيل فوري</span></div>
-                    <div class="brand-cta-feature"><i class="fas fa-headset"></i><span>دعم متواصل</span></div>
-                    <div class="brand-cta-feature"><i class="fas fa-chart-line"></i><span>وصول لآلاف العملاء</span></div>
+            <div>
+                <h5 class="font-bold mb-4">روابط سريعة</h5>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-primary transition">الرئيسية</a></li>
+                    <li><a href="#stores" class="hover:text-primary transition">المتاجر</a></li>
+                    <li><a href="#categories" class="hover:text-primary transition">التصنيفات</a></li>
+                    <li><a href="#all-products" class="hover:text-primary transition">جميع المنتجات</a></li>
+                    <li>
+                        <a href="about.html" class="hover:text-primary transition inline-flex items-center gap-2 font-bold text-primary">
+                            <i class="fas fa-circle-info text-xs"></i>
+                            من نحن
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4">خدمة العملاء</h5>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="https://wa.me/249908280115" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition">واتساب: +249 908 280 115</a></li>
+                    <li><a href="tel:0924299798" class="hover:text-primary transition">هاتف: 0924299798</a></li>
+                    <li><a href="#" class="hover:text-primary transition">سياسة الإرجاع</a></li>
+                    <li><a href="#" class="hover:text-primary transition">الشحن والتوصيل</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4">تابعنا</h5>
+                <div class="flex gap-3">
+                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
         </div>
-    </section>
-
-    <div id="storeModal" class="fullscreen-modal hidden">
-        <div class="modal-content bg-white flex flex-col">
-
-            <div class="store-cover-wrap">
-                <img id="storeCoverImage" src="" alt="غلاف المتجر">
-                <button id="closeStoreModal" class="store-close-btn" aria-label="إغلاق">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="store-info-card">
-                <div class="store-header-row">
-                    <img id="storeLogo" class="store-header-logo" src="" alt="شعار المتجر">
-                    <div class="store-header-info">
-                        <h3 id="storeName" class="store-header-name"></h3>
-                        <div class="store-header-meta">
-                            <span class="store-meta-rating">
-                                <span class="rating-num" id="storeRating">0.0</span>
-                                <i class="fas fa-star"></i>
-                            </span>
-                            <span class="store-meta-sep">|</span>
-                            <span class="store-meta-category" id="storeCategory">
-                                <i class="fas fa-tag"></i>
-                                <span>عام</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <p id="storeDescription" class="store-desc"></p>
-
-                <div class="store-actions-grid">
-                    <button id="storeFollowButton" class="store-action-btn primary" type="button">
-                        <i class="fas fa-heart btn-icon"></i>
-                        <span id="storeFollowText">متابعة</span>
-                    </button>
-                    <div class="store-action-btn static">
-                        <i class="fas fa-users btn-icon"></i>
-                        <span id="storeFollowers">0</span>
-                        <span>متابع</span>
-                    </div>
-
-                    <a id="storeWhatsAppButton" href="#" target="_blank" rel="noopener noreferrer" class="store-action-btn">
-                        <span class="icon-circle"><i class="fab fa-whatsapp"></i></span>
-                        <span>واتساب المتجر</span>
-                        <i class="fas fa-chevron-left btn-arrow"></i>
-                    </a>
-                    <a id="storeCallButton" href="#" class="store-action-btn">
-                        <span class="icon-circle"><i class="fas fa-phone"></i></span>
-                        <span>اتصل بالمتجر</span>
-                        <i class="fas fa-chevron-left btn-arrow"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="store-divider"></div>
-
-            <div class="px-4 sm:px-6 pb-6">
-                <div class="store-products-header">
-                    <div class="store-products-title">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span>منتجات المتجر</span>
-                    </div>
-                    <span class="store-products-count-pill">
-                        <i class="fas fa-cube"></i>
-                        <span id="storeProductsCount">0</span>
-                        <span>منتجات</span>
-                    </span>
-                </div>
-
-                <div id="storeProductsGrid" class="store-products-grid"></div>
-            </div>
-
-        </div>
-        <div class="modal-backdrop absolute inset-0 -z-10" id="storeModalOverlay"></div>
-    </div>
-
-    <div id="productModal" class="product-modal hidden">
-        <div class="product-modal-content relative">
-            <button id="closeProductModal" class="absolute top-3 left-3 w-9 h-9 sm:w-10 sm:h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition z-10" aria-label="إغلاق">
-                <i class="fas fa-times text-sm sm:text-base"></i>
-            </button>
-            <div class="flex flex-col md:flex-row gap-4 sm:gap-6">
-                <div class="md:w-1/2">
-                    <img id="productModalImage" src="" class="w-full object-contain bg-white rounded-2xl" alt="صورة المنتج">
-                </div>
-                <div class="md:w-1/2 flex flex-col">
-                    <h2 id="productModalName" class="text-xl sm:text-2xl font-extrabold mb-2"></h2>
-                    <div class="flex items-center gap-2 mb-3 text-sm sm:text-base">
-                        <span class="text-yellow-400"><i class="fas fa-star"></i></span>
-                        <span id="productModalRating" class="font-semibold"></span>
-                        <span class="text-text-light">|</span>
-                        <span id="productModalStore" class="text-primary font-semibold truncate"></span>
-                    </div>
-                    <div class="flex items-center gap-3 mb-4 flex-wrap">
-                        <span id="productModalPrice" class="text-2xl sm:text-3xl font-extrabold text-primary"></span>
-                        <span id="productModalOriginalPrice" class="text-base sm:text-lg line-through text-text-light"></span>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <button id="addToCartFromModal" class="btn-primary w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm sm:text-base">
-                            <i class="fas fa-shopping-cart"></i> أضف إلى السلة
-                        </button>
-                        <button id="buyNowFromModal" class="btn-whatsapp w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm sm:text-base">
-                            <i class="fab fa-whatsapp"></i> شراء مباشر عبر واتساب
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
+            © 2026 BAZRENA – بازارِنا. جميع الحقوق محفوظة.
         </div>
     </div>
+</footer>
 
-    <div id="cartSidebar">
-        <div class="cart-overlay" id="cartOverlay"></div>
-        <div class="p-4 sm:p-6 border-b flex justify-between items-center flex-shrink-0 bg-white">
-            <h2 class="text-lg sm:text-xl font-bold">سلة التسوق</h2>
-            <button id="closeCart" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition"><i class="fas fa-times text-sm sm:text-base"></i></button>
-        </div>
-        <div id="cartItems" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-white"></div>
-        <div class="p-4 sm:p-6 border-t bg-white flex-shrink-0">
-            <div id="cartTotal" class="flex justify-between font-bold mb-4">
-                <span>المجموع:</span>
-                <span class="text-primary">0 ج.س</span>
-            </div>
-            <button id="continueShopping" class="btn-primary w-full py-3 rounded-xl mb-2">مواصلة التسوق</button>
-            <button id="whatsappOrder" class="btn-whatsapp w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2">
-                <i class="fab fa-whatsapp"></i> طلب السلة عبر واتساب
-            </button>
-        </div>
-    </div>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[3000] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
+        authDomain: "bazarena-725e4.firebaseapp.com",
+        databaseURL: "https://bazarena-725e4-default-rtdb.firebaseio.com",
+        projectId: "bazarena-725e4",
+        storageBucket: "bazarena-725e4.firebasestorage.app",
+        messagingSenderId: "977750898059",
+        appId: "1:977750898059:web:247e8513b48490ed622b8e",
+        measurementId: "G-JFL1RLKST6"
+    };
 
-    <footer class="bg-gray-900 text-white py-12 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <a href="about.html" class="flex items-center gap-2 mb-4 group transition-all hover:opacity-90" aria-label="من نحن - بازارِنا" title="تعرف على المنصة">
-                        <div class="w-10 h-10 rounded-full bg-white overflow-hidden transition-transform duration-300 group-hover:scale-110">
-                            <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
-                        </div>
-                        <span class="text-xl font-bold flex items-center gap-1">
-                            <span>بازارِنا</span>
-                            <span class="text-primary font-bold">-</span>
-                            <span class="text-primary">BAZRENA</span>
-                        </span>
-                    </a>
-                    <p class="text-gray-400 text-sm">أفضل المتاجر والبراندات في مكان واحد</p>
-                </div>
-                <div>
-                    <h5 class="font-bold mb-4">روابط سريعة</h5>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-primary transition">الرئيسية</a></li>
-                        <li><a href="#stores" class="hover:text-primary transition">المتاجر</a></li>
-                        <li><a href="#categories" class="hover:text-primary transition">التصنيفات</a></li>
-                        <li><a href="#all-products" class="hover:text-primary transition">جميع المنتجات</a></li>
-                        <li>
-                            <a href="about.html" class="hover:text-primary transition inline-flex items-center gap-2 font-bold text-primary">
-                                <i class="fas fa-circle-info text-xs"></i>
-                                من نحن
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 class="font-bold mb-4">خدمة العملاء</h5>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="https://wa.me/249908280115" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition">واتساب: +249 908 280 115</a></li>
-                        <li><a href="tel:0924299798" class="hover:text-primary transition">هاتف: 0924299798</a></li>
-                        <li><a href="#" class="hover:text-primary transition">سياسة الإرجاع</a></li>
-                        <li><a href="#" class="hover:text-primary transition">الشحن والتوصيل</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 class="font-bold mb-4">تابعنا</h5>
-                    <div class="flex gap-3">
-                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
-                © 2026 BAZRENA – بازارِنا. جميع الحقوق محفوظة.
-            </div>
-        </div>
-    </footer>
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    // ============ 🔐 Firebase Anonymous Authentication ============
+    let authReady = false;
+    let authPromise = firebase.auth().signInAnonymously()
+        .then((userCredential) => {
+            authReady = true;
+            console.log('%c✅ تم الاتصال الآمن بقاعدة البيانات', 'color:#25D366;font-weight:bold;');
+            return userCredential.user;
+        })
+        .catch((error) => {
+            console.error('❌ فشل الاتصال الآمن:', error.code, error.message);
+            document.body.insertAdjacentHTML('afterbegin', `
+                <div id="authErrorBanner" style="
+                    position:fixed;top:0;left:0;right:0;z-index:99999;
+                    background:#d32f2f;color:#fff;padding:1rem;text-align:center;
+                    font-family:'Cairo',sans-serif;font-weight:800;
+                ">
+                    ⚠️ تعذر الاتصال الآمن بالخدمة. يرجى تحديث الصفحة.
+                </div>`);
+            throw error;
+        });
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
-            authDomain: "bazarena-725e4.firebaseapp.com",
-            databaseURL: "https://bazarena-725e4-default-rtdb.firebaseio.com",
-            projectId: "bazarena-725e4",
-            storageBucket: "bazarena-725e4.firebasestorage.app",
-            messagingSenderId: "977750898059",
-            appId: "1:977750898059:web:247e8513b48490ed622b8e",
-            measurementId: "G-JFL1RLKST6"
-        };
+    async function ensureAuth() {
+        if (authReady) return true;
+        try { await authPromise; return true; }
+        catch (e) { return false; }
+    }
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+    let stores = [];
+    let categories = [];
+    let currentStore = null;
+    let cart = JSON.parse(localStorage.getItem('myStoresCart')) || [];
+    let allProducts = [];
+    let filteredProducts = [];
+    let displayedProductsCount = 0;
+    let currentCategory = null;
+    const PRODUCTS_PER_PAGE = 9;
 
-        let stores = [];
-        let categories = [];
-        let currentStore = null;
-        let cart = JSON.parse(localStorage.getItem('myStoresCart')) || [];
-        let allProducts = [];
-        let filteredProducts = [];
-        let displayedProductsCount = 0;
-        let currentCategory = null;
-        const PRODUCTS_PER_PAGE = 9;
+    const PRODUCT_FAVS_KEY = 'bazrenaProductFavs';
+    function getProductFavs() { try { return JSON.parse(localStorage.getItem(PRODUCT_FAVS_KEY) || '[]'); } catch (e) { return []; } }
+    function saveProductFavs(list) { localStorage.setItem(PRODUCT_FAVS_KEY, JSON.stringify(list)); }
+    function isProductFav(id) { return getProductFavs().includes(id); }
+    function toggleProductFav(id) {
+        const list = getProductFavs();
+        const idx = list.indexOf(id);
+        if (idx > -1) list.splice(idx, 1); else list.push(id);
+        saveProductFavs(list);
+        return list.includes(id);
+    }
 
-        const PRODUCT_FAVS_KEY = 'bazrenaProductFavs';
-        function getProductFavs() { try { return JSON.parse(localStorage.getItem(PRODUCT_FAVS_KEY) || '[]'); } catch (e) { return []; } }
-        function saveProductFavs(list) { localStorage.setItem(PRODUCT_FAVS_KEY, JSON.stringify(list)); }
-        function isProductFav(id) { return getProductFavs().includes(id); }
-        function toggleProductFav(id) {
-            const list = getProductFavs();
-            const idx = list.indexOf(id);
-            if (idx > -1) list.splice(idx, 1); else list.push(id);
-            saveProductFavs(list);
-            return list.includes(id);
+    const FOLLOWED_STORES_KEY = 'bazrenaFollowedStores';
+    let currentStoreId = null;
+    let currentFollowersCount = 0;
+    let isFollowing = false;
+    let isUpdatingFollow = false;
+
+    function getFollowedStores() {
+        try { const stored = localStorage.getItem(FOLLOWED_STORES_KEY); return stored ? JSON.parse(stored) : []; } catch (e) { return []; }
+    }
+    function saveFollowedStores(list) { localStorage.setItem(FOLLOWED_STORES_KEY, JSON.stringify(list)); }
+    function isStoreFollowed(storeId) { return getFollowedStores().includes(storeId); }
+    function getStoreId(store) { return store.id || store.name; }
+
+    const storesScrollContainer = document.getElementById('storesScrollContainer');
+    const storesLoader = document.getElementById('storesLoader');
+    const storesEmpty = document.getElementById('storesEmpty');
+    const storesErrorMessage = document.getElementById('storesErrorMessage');
+    const retryStoresBtn = document.getElementById('retryStoresBtn');
+    const storeModal = document.getElementById('storeModal');
+    const storeCoverImage = document.getElementById('storeCoverImage');
+    const storeLogo = document.getElementById('storeLogo');
+    const storeName = document.getElementById('storeName');
+    const storeCategory = document.getElementById('storeCategory');
+    const storeDescription = document.getElementById('storeDescription');
+    const storeRating = document.getElementById('storeRating');
+    const storeProductsCount = document.getElementById('storeProductsCount');
+    const storeFollowers = document.getElementById('storeFollowers');
+    const storeProductsGrid = document.getElementById('storeProductsGrid');
+    const storeCallButton = document.getElementById('storeCallButton');
+    const storeWhatsAppButton = document.getElementById('storeWhatsAppButton');
+    const productModal = document.getElementById('productModal');
+    const productModalImage = document.getElementById('productModalImage');
+    const productModalName = document.getElementById('productModalName');
+    const productModalRating = document.getElementById('productModalRating');
+    const productModalStore = document.getElementById('productModalStore');
+    const productModalPrice = document.getElementById('productModalPrice');
+    const productModalOriginalPrice = document.getElementById('productModalOriginalPrice');
+    const addToCartFromModal = document.getElementById('addToCartFromModal');
+    const buyNowFromModal = document.getElementById('buyNowFromModal');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartCount = document.getElementById('cartCount');
+    const toast = document.getElementById('toast');
+    const prevStoresBtn = document.getElementById('prevStoresBtn');
+    const nextStoresBtn = document.getElementById('nextStoresBtn');
+    const prevCategoriesBtn = document.getElementById('prevCategoriesBtn');
+    const nextCategoriesBtn = document.getElementById('nextCategoriesBtn');
+    const categoriesContainer = document.getElementById('categoriesContainer');
+    const allProductsGrid = document.getElementById('allProductsGrid');
+    const allProductsLoader = document.getElementById('allProductsLoader');
+    const allProductsEmpty = document.getElementById('allProductsEmpty');
+    const allProductsTitle = document.getElementById('allProductsTitle');
+    const allProductsSubtitle = document.getElementById('allProductsSubtitle');
+    const allProductsTotalCount = document.getElementById('allProductsTotalCount');
+    const allProductsTotalBadge = document.getElementById('allProductsTotalBadge');
+    const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
+    const installButtonFloating = document.getElementById('installButtonFloating');
+    const storeFollowButton = document.getElementById('storeFollowButton');
+    const storeFollowText = document.getElementById('storeFollowText');
+    const searchOverlay = document.getElementById('searchOverlay');
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    const searchButton = document.getElementById('searchButton');
+    const closeSearchBtn = document.getElementById('closeSearch');
+    const followedStoresSection = document.getElementById('followedStoresSection');
+    const followedStoresContainer = document.getElementById('followedStoresContainer');
+    const followedCountBadge = document.getElementById('followedCountBadge');
+    const logoMenuBtn = document.getElementById('logoMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function updateAllProductsTotalBadge() {
+        if (!allProductsTotalCount) return;
+        const total = allProducts.length;
+        allProductsTotalCount.textContent = total.toLocaleString();
+
+        if (allProductsTotalBadge) {
+            allProductsTotalBadge.style.animation = 'none';
+            void allProductsTotalBadge.offsetWidth;
+            allProductsTotalBadge.style.animation = 'badgePop 0.5s cubic-bezier(0.4,0,0.2,1)';
         }
+    }
 
-        const FOLLOWED_STORES_KEY = 'bazrenaFollowedStores';
-        let currentStoreId = null;
-        let currentFollowersCount = 0;
-        let isFollowing = false;
-        let isUpdatingFollow = false;
+    function updateBodyScroll() {
+        const anyModalOpen =
+            !storeModal.classList.contains('hidden') ||
+            !productModal.classList.contains('hidden') ||
+            cartSidebar.classList.contains('open') ||
+            (searchOverlay && searchOverlay.classList.contains('show'));
+        document.body.style.overflow = anyModalOpen ? 'hidden' : '';
+    }
 
-        function getFollowedStores() {
-            try { const stored = localStorage.getItem(FOLLOWED_STORES_KEY); return stored ? JSON.parse(stored) : []; } catch (e) { return []; }
-        }
-        function saveFollowedStores(list) { localStorage.setItem(FOLLOWED_STORES_KEY, JSON.stringify(list)); }
-        function isStoreFollowed(storeId) { return getFollowedStores().includes(storeId); }
-        function getStoreId(store) { return store.id || store.name; }
+    function toggleMobileMenu(force) {
+        if (!mobileMenu || !logoMenuBtn) return;
+        const isHidden = mobileMenu.classList.contains('hidden');
+        const shouldOpen = (typeof force === 'boolean') ? force : isHidden;
+        mobileMenu.classList.toggle('hidden', !shouldOpen);
+        logoMenuBtn.classList.toggle('menu-open', shouldOpen);
+        logoMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    }
+    if (logoMenuBtn) {
+        logoMenuBtn.addEventListener('click', (e) => {
+            if (window.innerWidth >= 768) window.scrollTo({ top: 0, behavior: 'smooth' });
+            else { e.preventDefault(); toggleMobileMenu(); }
+        });
+    }
+    if (mobileMenu) {
+        mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => toggleMobileMenu(false)));
+    }
+    window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMobileMenu(false); });
 
-        const storesScrollContainer = document.getElementById('storesScrollContainer');
-        const storesLoader = document.getElementById('storesLoader');
-        const storesEmpty = document.getElementById('storesEmpty');
-        const storesErrorMessage = document.getElementById('storesErrorMessage');
-        const retryStoresBtn = document.getElementById('retryStoresBtn');
-        const storeModal = document.getElementById('storeModal');
-        const storeCoverImage = document.getElementById('storeCoverImage');
-        const storeLogo = document.getElementById('storeLogo');
-        const storeName = document.getElementById('storeName');
-        const storeCategory = document.getElementById('storeCategory');
-        const storeDescription = document.getElementById('storeDescription');
-        const storeRating = document.getElementById('storeRating');
-        const storeProductsCount = document.getElementById('storeProductsCount');
-        const storeFollowers = document.getElementById('storeFollowers');
-        const storeProductsGrid = document.getElementById('storeProductsGrid');
-        const storeCallButton = document.getElementById('storeCallButton');
-        const storeWhatsAppButton = document.getElementById('storeWhatsAppButton');
-        const productModal = document.getElementById('productModal');
-        const productModalImage = document.getElementById('productModalImage');
-        const productModalName = document.getElementById('productModalName');
-        const productModalRating = document.getElementById('productModalRating');
-        const productModalStore = document.getElementById('productModalStore');
-        const productModalPrice = document.getElementById('productModalPrice');
-        const productModalOriginalPrice = document.getElementById('productModalOriginalPrice');
-        const addToCartFromModal = document.getElementById('addToCartFromModal');
-        const buyNowFromModal = document.getElementById('buyNowFromModal');
-        const cartSidebar = document.getElementById('cartSidebar');
-        const cartOverlay = document.getElementById('cartOverlay');
-        const cartItems = document.getElementById('cartItems');
-        const cartTotal = document.getElementById('cartTotal');
-        const cartCount = document.getElementById('cartCount');
-        const toast = document.getElementById('toast');
-        const prevStoresBtn = document.getElementById('prevStoresBtn');
-        const nextStoresBtn = document.getElementById('nextStoresBtn');
-        const prevCategoriesBtn = document.getElementById('prevCategoriesBtn');
-        const nextCategoriesBtn = document.getElementById('nextCategoriesBtn');
-        const categoriesContainer = document.getElementById('categoriesContainer');
-        const allProductsGrid = document.getElementById('allProductsGrid');
-        const allProductsLoader = document.getElementById('allProductsLoader');
-        const allProductsEmpty = document.getElementById('allProductsEmpty');
-        const allProductsTitle = document.getElementById('allProductsTitle');
-        const allProductsSubtitle = document.getElementById('allProductsSubtitle');
-        const allProductsTotalCount = document.getElementById('allProductsTotalCount');
-        const allProductsTotalBadge = document.getElementById('allProductsTotalBadge');
-        const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
-        const installButtonFloating = document.getElementById('installButtonFloating');
-        const storeFollowButton = document.getElementById('storeFollowButton');
-        const storeFollowText = document.getElementById('storeFollowText');
-        const searchOverlay = document.getElementById('searchOverlay');
-        const searchInput = document.getElementById('searchInput');
-        const searchResults = document.getElementById('searchResults');
-        const searchButton = document.getElementById('searchButton');
-        const closeSearchBtn = document.getElementById('closeSearch');
-        const followedStoresSection = document.getElementById('followedStoresSection');
-        const followedStoresContainer = document.getElementById('followedStoresContainer');
-        const followedCountBadge = document.getElementById('followedCountBadge');
-        const logoMenuBtn = document.getElementById('logoMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
+    let deferredPrompt = null;
+    function isAppInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true ||
+               localStorage.getItem('bazrenaInstalled') === 'true';
+    }
+    function hideInstallButtons() { if (installButtonFloating) installButtonFloating.classList.remove('show'); }
+    function showInstallButtons() { if (installButtonFloating) installButtonFloating.classList.add('show'); }
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); deferredPrompt = e;
+        if (!isAppInstalled()) showInstallButtons();
+    });
+    window.addEventListener('appinstalled', () => {
+        localStorage.setItem('bazrenaInstalled', 'true'); hideInstallButtons(); deferredPrompt = null;
+        showToast('تم تثبيت التطبيق بنجاح!');
+    });
+    async function handleInstallClick() {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') { localStorage.setItem('bazrenaInstalled', 'true'); hideInstallButtons(); deferredPrompt = null; }
+        else showToast('تم إلغاء التثبيت');
+    }
+    if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
+    if (isAppInstalled()) hideInstallButtons();
 
-        function updateAllProductsTotalBadge() {
-            if (!allProductsTotalCount) return;
-            const total = allProducts.length;
-            allProductsTotalCount.textContent = total.toLocaleString();
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered:', reg.scope))
+                .catch(err => console.error('Service Worker registration failed:', err));
+        });
+    }
 
-            if (allProductsTotalBadge) {
-                allProductsTotalBadge.style.animation = 'none';
-                void allProductsTotalBadge.offsetWidth;
-                allProductsTotalBadge.style.animation = 'badgePop 0.5s cubic-bezier(0.4,0,0.2,1)';
+    function sanitizeHTML(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.remove('opacity-0'); toast.classList.add('opacity-100');
+        if (window.toastTimeout) clearTimeout(window.toastTimeout);
+        window.toastTimeout = setTimeout(() => { toast.classList.add('opacity-0'); toast.classList.remove('opacity-100'); }, 2500);
+    }
+    function animateCartBadge() { cartCount.classList.add('cart-badge-animate'); setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300); }
+
+    let autoScrollInterval = null;
+    let isHoveringStores = false;
+    let lastStoresInteraction = 0;
+    const AUTO_SCROLL_RESUME_DELAY = 2500;
+
+    function getStoresMaxScroll() {
+        if (!storesScrollContainer) return 0;
+        return Math.max(0, storesScrollContainer.scrollWidth - storesScrollContainer.clientWidth);
+    }
+
+    function startAutoScroll() {
+        stopAutoScroll();
+        if (!storesScrollContainer) return;
+        requestAnimationFrame(() => {
+            const max = getStoresMaxScroll();
+            if (max > 0 && storesScrollContainer.scrollLeft === 0) {
+                storesScrollContainer.scrollLeft = max;
             }
-        }
-
-        function updateBodyScroll() {
-            const anyModalOpen =
-                !storeModal.classList.contains('hidden') ||
-                !productModal.classList.contains('hidden') ||
-                cartSidebar.classList.contains('open') ||
-                (searchOverlay && searchOverlay.classList.contains('show'));
-            document.body.style.overflow = anyModalOpen ? 'hidden' : '';
-        }
-
-        function toggleMobileMenu(force) {
-            if (!mobileMenu || !logoMenuBtn) return;
-            const isHidden = mobileMenu.classList.contains('hidden');
-            const shouldOpen = (typeof force === 'boolean') ? force : isHidden;
-            mobileMenu.classList.toggle('hidden', !shouldOpen);
-            logoMenuBtn.classList.toggle('menu-open', shouldOpen);
-            logoMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-        }
-        if (logoMenuBtn) {
-            logoMenuBtn.addEventListener('click', (e) => {
-                if (window.innerWidth >= 768) window.scrollTo({ top: 0, behavior: 'smooth' });
-                else { e.preventDefault(); toggleMobileMenu(); }
-            });
-        }
-        if (mobileMenu) {
-            mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => toggleMobileMenu(false)));
-        }
-        window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMobileMenu(false); });
-
-        let deferredPrompt = null;
-        function isAppInstalled() {
-            return window.matchMedia('(display-mode: standalone)').matches ||
-                   window.navigator.standalone === true ||
-                   localStorage.getItem('bazrenaInstalled') === 'true';
-        }
-        function hideInstallButtons() { if (installButtonFloating) installButtonFloating.classList.remove('show'); }
-        function showInstallButtons() { if (installButtonFloating) installButtonFloating.classList.add('show'); }
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); deferredPrompt = e;
-            if (!isAppInstalled()) showInstallButtons();
         });
-        window.addEventListener('appinstalled', () => {
-            localStorage.setItem('bazrenaInstalled', 'true'); hideInstallButtons(); deferredPrompt = null;
-            showToast('تم تثبيت التطبيق بنجاح!');
-        });
-        async function handleInstallClick() {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') { localStorage.setItem('bazrenaInstalled', 'true'); hideInstallButtons(); deferredPrompt = null; }
-            else showToast('تم إلغاء التثبيت');
-        }
-        if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
-        if (isAppInstalled()) hideInstallButtons();
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('Service Worker registered:', reg.scope))
-                    .catch(err => console.error('Service Worker registration failed:', err));
-            });
-        }
-
-        function sanitizeHTML(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.remove('opacity-0'); toast.classList.add('opacity-100');
-            if (window.toastTimeout) clearTimeout(window.toastTimeout);
-            window.toastTimeout = setTimeout(() => { toast.classList.add('opacity-0'); toast.classList.remove('opacity-100'); }, 2500);
-        }
-        function animateCartBadge() { cartCount.classList.add('cart-badge-animate'); setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300); }
-
-        let autoScrollInterval = null;
-        let isHoveringStores = false;
-        let lastStoresInteraction = 0;
-        const AUTO_SCROLL_RESUME_DELAY = 2500;
-
-        function getStoresMaxScroll() {
-            if (!storesScrollContainer) return 0;
-            return Math.max(0, storesScrollContainer.scrollWidth - storesScrollContainer.clientWidth);
-        }
-
-        function startAutoScroll() {
-            stopAutoScroll();
+        autoScrollInterval = setInterval(() => {
             if (!storesScrollContainer) return;
-            requestAnimationFrame(() => {
-                const max = getStoresMaxScroll();
-                if (max > 0 && storesScrollContainer.scrollLeft === 0) {
-                    storesScrollContainer.scrollLeft = max;
-                }
-            });
-            autoScrollInterval = setInterval(() => {
-                if (!storesScrollContainer) return;
-                if (isHoveringStores) return;
-                if (Date.now() - lastStoresInteraction < AUTO_SCROLL_RESUME_DELAY) return;
-                const max = getStoresMaxScroll();
-                if (max <= 0) return;
-                if (storesScrollContainer.scrollLeft <= 0) {
-                    storesScrollContainer.scrollLeft = max;
-                } else {
-                    storesScrollContainer.scrollLeft -= 1;
-                }
-            }, 40);
-        }
-
-        function stopAutoScroll() {
-            if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; }
-        }
-
-        ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
-            storesScrollContainer.addEventListener(evt, () => {
-                lastStoresInteraction = Date.now();
-            }, { passive: true });
-        });
-        storesScrollContainer.addEventListener('mouseenter', () => { isHoveringStores = true; });
-        storesScrollContainer.addEventListener('mouseleave', () => {
-            isHoveringStores = false;
-            lastStoresInteraction = Date.now();
-        });
-
-        prevStoresBtn.addEventListener('click', () => {
-            lastStoresInteraction = Date.now();
-            storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
-        });
-        nextStoresBtn.addEventListener('click', () => {
-            lastStoresInteraction = Date.now();
-            storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
-        });
-
-        function setCardFollowBtnState(btn, following) {
-            btn.classList.toggle('following', following);
-            btn.innerHTML = following
-                ? '<i class="fas fa-check"></i><span>متابَع</span>'
-                : '<i class="fas fa-plus"></i><span>متابعة</span>';
-        }
-
-        function createStoreCard(store) {
-            const storeId = getStoreId(store);
-            const followed = isStoreFollowed(storeId);
-            const card = document.createElement('div');
-            card.className = 'store-card';
-
-            const cover = document.createElement('img');
-            cover.className = 'cover-image'; cover.loading = 'lazy';
-            cover.alt = store.name || '';
-            cover.src = store.cover_url || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
-            cover.onerror = function () { this.src = 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; };
-
-            const logo = document.createElement('img');
-            logo.className = 'store-logo'; logo.loading = 'lazy';
-            logo.alt = store.name || '';
-            logo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
-            logo.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
-
-            const info = document.createElement('div');
-            info.className = 'store-info';
-
-            const nameRow = document.createElement('div');
-            nameRow.className = 'store-name';
-            nameRow.textContent = store.name || '';
-            if (store.is_verified) {
-                const v = document.createElement('span');
-                v.className = 'verified-icon'; v.innerHTML = '<i class="fas fa-check"></i>';
-                nameRow.appendChild(v);
+            if (isHoveringStores) return;
+            if (Date.now() - lastStoresInteraction < AUTO_SCROLL_RESUME_DELAY) return;
+            const max = getStoresMaxScroll();
+            if (max <= 0) return;
+            if (storesScrollContainer.scrollLeft <= 0) {
+                storesScrollContainer.scrollLeft = max;
+            } else {
+                storesScrollContainer.scrollLeft -= 1;
             }
+        }, 40);
+    }
 
-            const catRow = document.createElement('div');
-            catRow.className = 'store-category';
-            catRow.textContent = store.category || 'عام';
+    function stopAutoScroll() {
+        if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; }
+    }
 
-            const bottomRow = document.createElement('div');
-            bottomRow.className = 'flex items-center justify-between gap-2 mt-2';
+    ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
+        storesScrollContainer.addEventListener(evt, () => {
+            lastStoresInteraction = Date.now();
+        }, { passive: true });
+    });
+    storesScrollContainer.addEventListener('mouseenter', () => { isHoveringStores = true; });
+    storesScrollContainer.addEventListener('mouseleave', () => {
+        isHoveringStores = false;
+        lastStoresInteraction = Date.now();
+    });
 
-            const count = document.createElement('div');
-            count.className = 'flex items-center gap-1 text-xs text-text-light';
-            count.innerHTML = `<i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span>`;
+    prevStoresBtn.addEventListener('click', () => {
+        lastStoresInteraction = Date.now();
+        storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+    nextStoresBtn.addEventListener('click', () => {
+        lastStoresInteraction = Date.now();
+        storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
+    });
 
-            const followBtn = document.createElement('button');
-            followBtn.className = 'card-follow-btn';
-            followBtn.dataset.storeId = storeId;
-            followBtn.title = 'متابعة المتجر';
-            setCardFollowBtnState(followBtn, followed);
-            followBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); e.preventDefault();
-                toggleFollowFromCard(store, followBtn);
-            });
+    function setCardFollowBtnState(btn, following) {
+        btn.classList.toggle('following', following);
+        btn.innerHTML = following
+            ? '<i class="fas fa-check"></i><span>متابَع</span>'
+            : '<i class="fas fa-plus"></i><span>متابعة</span>';
+    }
 
-            bottomRow.appendChild(count);
-            bottomRow.appendChild(followBtn);
-            info.appendChild(nameRow);
-            info.appendChild(catRow);
-            info.appendChild(bottomRow);
+    function createStoreCard(store) {
+        const storeId = getStoreId(store);
+        const followed = isStoreFollowed(storeId);
+        const card = document.createElement('div');
+        card.className = 'store-card';
 
-            card.appendChild(cover);
-            card.appendChild(logo);
-            card.appendChild(info);
-            card.addEventListener('click', () => openStoreModal(store));
-            return card;
+        const cover = document.createElement('img');
+        cover.className = 'cover-image'; cover.loading = 'lazy';
+        cover.alt = store.name || '';
+        cover.src = store.cover_url || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
+        cover.onerror = function () { this.src = 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; };
+
+        const logo = document.createElement('img');
+        logo.className = 'store-logo'; logo.loading = 'lazy';
+        logo.alt = store.name || '';
+        logo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+        logo.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
+
+        const info = document.createElement('div');
+        info.className = 'store-info';
+
+        const nameRow = document.createElement('div');
+        nameRow.className = 'store-name';
+        nameRow.textContent = store.name || '';
+        if (store.is_verified) {
+            const v = document.createElement('span');
+            v.className = 'verified-icon'; v.innerHTML = '<i class="fas fa-check"></i>';
+            nameRow.appendChild(v);
         }
 
-        function updateCardFollowButtons(storeId) {
-            const following = isStoreFollowed(storeId);
-            document.querySelectorAll('.card-follow-btn').forEach(btn => {
-                if (btn.dataset.storeId === storeId) setCardFollowBtnState(btn, following);
-            });
-        }
+        const catRow = document.createElement('div');
+        catRow.className = 'store-category';
+        catRow.textContent = store.category || 'عام';
 
-        async function toggleFollowFromCard(store, btn) {
-            const storeId = getStoreId(store);
-            if (btn.disabled) return;
-            btn.disabled = true;
-            const wasFollowing = isStoreFollowed(storeId);
-            try {
-                const storeRef = db.collection('stores').doc(storeId);
-                const snap = await storeRef.get();
-                const currentDbFollowers = snap.exists ? (parseInt(snap.data()?.followers) || 0) : 0;
-                const newCount = wasFollowing ? Math.max(0, currentDbFollowers - 1) : currentDbFollowers + 1;
-                await storeRef.update({ followers: newCount });
-                store.followers = newCount;
-                const list = getFollowedStores();
-                if (wasFollowing) { const idx = list.indexOf(storeId); if (idx > -1) list.splice(idx, 1); }
-                else if (!list.includes(storeId)) list.push(storeId);
-                saveFollowedStores(list);
-                updateCardFollowButtons(storeId);
-                renderFollowedStores();
-                if (currentStoreId === storeId) {
-                    isFollowing = !wasFollowing;
-                    currentFollowersCount = newCount;
-                    updateFollowersDisplay();
-                    updateFollowButtonUI();
-                }
-                showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
-            } catch (err) {
-                console.error(err); showToast('حدث خطأ، حاول مرة أخرى');
-            } finally { btn.disabled = false; }
-        }
+        const bottomRow = document.createElement('div');
+        bottomRow.className = 'flex items-center justify-between gap-2 mt-2';
 
-        function renderFollowedStores() {
-            if (!followedStoresSection || !followedStoresContainer) return;
-            const ids = getFollowedStores();
-            const followed = ids.map(id => stores.find(s => getStoreId(s) === id)).filter(Boolean);
-            if (!followed.length) {
-                followedStoresSection.classList.add('hidden');
-                followedStoresContainer.innerHTML = '';
-                if (followedCountBadge) followedCountBadge.textContent = '';
-                return;
+        const count = document.createElement('div');
+        count.className = 'flex items-center gap-1 text-xs text-text-light';
+        count.innerHTML = `<i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span>`;
+
+        const followBtn = document.createElement('button');
+        followBtn.className = 'card-follow-btn';
+        followBtn.dataset.storeId = storeId;
+        followBtn.title = 'متابعة المتجر';
+        setCardFollowBtnState(followBtn, followed);
+        followBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); e.preventDefault();
+            toggleFollowFromCard(store, followBtn);
+        });
+
+        bottomRow.appendChild(count);
+        bottomRow.appendChild(followBtn);
+        info.appendChild(nameRow);
+        info.appendChild(catRow);
+        info.appendChild(bottomRow);
+
+        card.appendChild(cover);
+        card.appendChild(logo);
+        card.appendChild(info);
+        card.addEventListener('click', () => openStoreModal(store));
+        return card;
+    }
+
+    function updateCardFollowButtons(storeId) {
+        const following = isStoreFollowed(storeId);
+        document.querySelectorAll('.card-follow-btn').forEach(btn => {
+            if (btn.dataset.storeId === storeId) setCardFollowBtnState(btn, following);
+        });
+    }
+
+    async function toggleFollowFromCard(store, btn) {
+        const storeId = getStoreId(store);
+        if (btn.disabled) return;
+        btn.disabled = true;
+        const wasFollowing = isStoreFollowed(storeId);
+        try {
+            const storeRef = db.collection('stores').doc(storeId);
+            const snap = await storeRef.get();
+            const currentDbFollowers = snap.exists ? (parseInt(snap.data()?.followers) || 0) : 0;
+            const newCount = wasFollowing ? Math.max(0, currentDbFollowers - 1) : currentDbFollowers + 1;
+            await storeRef.update({ followers: newCount });
+            store.followers = newCount;
+            const list = getFollowedStores();
+            if (wasFollowing) { const idx = list.indexOf(storeId); if (idx > -1) list.splice(idx, 1); }
+            else if (!list.includes(storeId)) list.push(storeId);
+            saveFollowedStores(list);
+            updateCardFollowButtons(storeId);
+            renderFollowedStores();
+            if (currentStoreId === storeId) {
+                isFollowing = !wasFollowing;
+                currentFollowersCount = newCount;
+                updateFollowersDisplay();
+                updateFollowButtonUI();
             }
-            followedStoresSection.classList.remove('hidden');
-            if (followedCountBadge) followedCountBadge.textContent = `${followed.length} متجر`;
+            showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
+        } catch (err) {
+            console.error(err); showToast('حدث خطأ، حاول مرة أخرى');
+        } finally { btn.disabled = false; }
+    }
+
+    function renderFollowedStores() {
+        if (!followedStoresSection || !followedStoresContainer) return;
+        const ids = getFollowedStores();
+        const followed = ids.map(id => stores.find(s => getStoreId(s) === id)).filter(Boolean);
+        if (!followed.length) {
+            followedStoresSection.classList.add('hidden');
             followedStoresContainer.innerHTML = '';
-            followed.forEach(store => {
-                const item = document.createElement('div');
-                item.className = 'followed-store-item';
-                item.title = store.name || '';
-                const avatar = document.createElement('div');
-                avatar.className = 'followed-store-avatar';
-                const img = document.createElement('img');
-                img.loading = 'lazy'; img.alt = store.name || ''; img.draggable = false;
-                img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
-                img.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
-                avatar.appendChild(img);
-                const nm = document.createElement('div');
-                nm.className = 'followed-store-name';
-                nm.textContent = store.name || '';
-                item.appendChild(avatar); item.appendChild(nm);
-                item.addEventListener('click', () => openStoreModal(store));
-                followedStoresContainer.appendChild(item);
-            });
+            if (followedCountBadge) followedCountBadge.textContent = '';
+            return;
         }
+        followedStoresSection.classList.remove('hidden');
+        if (followedCountBadge) followedCountBadge.textContent = `${followed.length} متجر`;
+        followedStoresContainer.innerHTML = '';
+        followed.forEach(store => {
+            const item = document.createElement('div');
+            item.className = 'followed-store-item';
+            item.title = store.name || '';
+            const avatar = document.createElement('div');
+            avatar.className = 'followed-store-avatar';
+            const img = document.createElement('img');
+            img.loading = 'lazy'; img.alt = store.name || ''; img.draggable = false;
+            img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+            img.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
+            avatar.appendChild(img);
+            const nm = document.createElement('div');
+            nm.className = 'followed-store-name';
+            nm.textContent = store.name || '';
+            item.appendChild(avatar); item.appendChild(nm);
+            item.addEventListener('click', () => openStoreModal(store));
+            followedStoresContainer.appendChild(item);
+        });
+    }
 
-        function openSearch() {
-            searchOverlay.classList.add('show');
-            updateBodyScroll();
-            performSearch(searchInput.value);
-            setTimeout(() => { try { searchInput.focus(); } catch (e) {} }, 80);
-        }
-        function closeSearch() {
-            searchOverlay.classList.remove('show');
-            updateBodyScroll();
-            searchInput.value = '';
-            searchResults.innerHTML = '';
-        }
+    function openSearch() {
+        searchOverlay.classList.add('show');
+        updateBodyScroll();
+        performSearch(searchInput.value);
+        setTimeout(() => { try { searchInput.focus(); } catch (e) {} }, 80);
+    }
+    function closeSearch() {
+        searchOverlay.classList.remove('show');
+        updateBodyScroll();
+        searchInput.value = '';
+        searchResults.innerHTML = '';
+    }
 
-        function goToCategory(cat) {
-            closeSearch();
-            currentCategory = cat;
-            filterStoresByCategory(cat);
-            const btns = Array.from(categoriesContainer.querySelectorAll('button'));
-            const target = btns.find(b => b.textContent.trim() === cat);
-            if (target) highlightCategory(target);
-            applyProductsFilter(cat);
-            const storesSection = document.getElementById('stores');
-            if (storesSection) storesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+    function goToCategory(cat) {
+        closeSearch();
+        currentCategory = cat;
+        filterStoresByCategory(cat);
+        const btns = Array.from(categoriesContainer.querySelectorAll('button'));
+        const target = btns.find(b => b.textContent.trim() === cat);
+        if (target) highlightCategory(target);
+        applyProductsFilter(cat);
+        const storesSection = document.getElementById('stores');
+        if (storesSection) storesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
-        function performSearch(rawQuery) {
-            const query = (rawQuery || '').trim().toLowerCase();
-            searchResults.innerHTML = '';
-            if (!query) {
-                const title = document.createElement('p');
-                title.className = 'text-sm font-bold text-text-light mb-3';
-                title.textContent = 'تصفح الفئات';
-                searchResults.appendChild(title);
-                if (!categories.length) {
-                    const empty = document.createElement('p');
-                    empty.className = 'text-center text-text-light py-8';
-                    empty.textContent = 'اكتب اسم متجر أو فئة للبحث';
-                    searchResults.appendChild(empty);
-                    return;
-                }
-                const chips = document.createElement('div');
-                chips.className = 'flex flex-wrap gap-2';
-                categories.forEach(cat => {
-                    const chip = document.createElement('button');
-                    chip.className = 'px-4 py-2 rounded-full bg-gray-100 hover:bg-primary hover:text-white transition font-semibold text-sm';
-                    chip.textContent = cat;
-                    chip.addEventListener('click', () => goToCategory(cat));
-                    chips.appendChild(chip);
-                });
-                searchResults.appendChild(chips);
-                return;
-            }
-            const matchedCategories = categories.filter(c => c.toLowerCase().includes(query));
-            const matchedStores = stores.filter(s =>
-                (s.name || '').toLowerCase().includes(query) ||
-                (s.category || '').toLowerCase().includes(query) ||
-                (s.description || '').toLowerCase().includes(query)
-            );
-            if (!matchedCategories.length && !matchedStores.length) {
-                const empty = document.createElement('div');
-                empty.className = 'text-center py-10 text-text-light';
-                empty.innerHTML = '<i class="fas fa-search text-4xl mb-3 block text-gray-300"></i><p>لا توجد نتائج مطابقة لبحثك</p>';
+    function performSearch(rawQuery) {
+        const query = (rawQuery || '').trim().toLowerCase();
+        searchResults.innerHTML = '';
+        if (!query) {
+            const title = document.createElement('p');
+            title.className = 'text-sm font-bold text-text-light mb-3';
+            title.textContent = 'تصفح الفئات';
+            searchResults.appendChild(title);
+            if (!categories.length) {
+                const empty = document.createElement('p');
+                empty.className = 'text-center text-text-light py-8';
+                empty.textContent = 'اكتب اسم متجر أو فئة للبحث';
                 searchResults.appendChild(empty);
                 return;
             }
-            if (matchedCategories.length) {
-                const title = document.createElement('p');
-                title.className = 'text-sm font-bold text-text-light mb-3';
-                title.textContent = `الفئات (${matchedCategories.length})`;
-                searchResults.appendChild(title);
-                const chips = document.createElement('div');
-                chips.className = 'flex flex-wrap gap-2 mb-5';
-                matchedCategories.forEach(cat => {
-                    const chip = document.createElement('button');
-                    chip.className = 'px-4 py-2 rounded-full bg-orange-50 text-primary border border-orange-200 hover:bg-primary hover:text-white transition font-semibold text-sm flex items-center gap-2';
-                    chip.innerHTML = `<i class="fas fa-tags"></i>${cat}`;
-                    chip.addEventListener('click', () => goToCategory(cat));
-                    chips.appendChild(chip);
-                });
-                searchResults.appendChild(chips);
-            }
-            if (matchedStores.length) {
-                const title = document.createElement('p');
-                title.className = 'text-sm font-bold text-text-light mb-3';
-                title.textContent = `المتاجر (${matchedStores.length})`;
-                searchResults.appendChild(title);
-                matchedStores.forEach(store => {
-                    const row = document.createElement('div');
-                    row.className = 'flex items-center gap-3 p-3 rounded-xl hover:bg-orange-50 cursor-pointer transition';
-                    const img = document.createElement('img');
-                    img.className = 'w-12 h-12 rounded-full object-cover border border-gray-200 bg-white flex-shrink-0';
-                    img.alt = store.name || '';
-                    img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
-                    img.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
-                    const info = document.createElement('div');
-                    info.className = 'flex-1 min-w-0';
-                    const nm = document.createElement('div');
-                    nm.className = 'font-bold text-sm truncate flex items-center gap-1';
-                    nm.textContent = store.name || '';
-                    if (store.is_verified) {
-                        const v = document.createElement('span');
-                        v.className = 'verified-icon'; v.innerHTML = '<i class="fas fa-check"></i>';
-                        nm.appendChild(v);
-                    }
-                    const meta = document.createElement('div');
-                    meta.className = 'text-xs text-text-light mt-0.5';
-                    meta.textContent = `${store.category || 'عام'} • ${store.products_count || 0} منتج`;
-                    info.appendChild(nm); info.appendChild(meta);
-                    const arrow = document.createElement('i');
-                    arrow.className = 'fas fa-chevron-left text-gray-400 text-sm';
-                    row.appendChild(img); row.appendChild(info); row.appendChild(arrow);
-                    row.addEventListener('click', () => { closeSearch(); openStoreModal(store); });
-                    searchResults.appendChild(row);
-                });
-            }
+            const chips = document.createElement('div');
+            chips.className = 'flex flex-wrap gap-2';
+            categories.forEach(cat => {
+                const chip = document.createElement('button');
+                chip.className = 'px-4 py-2 rounded-full bg-gray-100 hover:bg-primary hover:text-white transition font-semibold text-sm';
+                chip.textContent = cat;
+                chip.addEventListener('click', () => goToCategory(cat));
+                chips.appendChild(chip);
+            });
+            searchResults.appendChild(chips);
+            return;
         }
-
-        if (searchButton) searchButton.addEventListener('click', openSearch);
-        if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
-        if (searchOverlay) searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
-        if (searchInput) searchInput.addEventListener('input', (e) => performSearch(e.target.value));
-
-        async function loadStores() {
-            storesLoader.classList.remove('hidden'); storesEmpty.classList.add('hidden'); storesScrollContainer.innerHTML = '';
-            try {
-                let snapshot;
-                try { snapshot = await db.collection('stores').orderBy('created_at', 'desc').get(); }
-                catch (e) { snapshot = await db.collection('stores').get(); }
-                stores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                if (stores.length > 0) {
-                    const productsSnap = await db.collection('products').get();
-                    const counts = {};
-                    productsSnap.docs.forEach(d => {
-                        const sn = d.data().store_name;
-                        if (sn) counts[sn] = (counts[sn] || 0) + 1;
-                    });
-                    stores = stores.map(s => ({ ...s, products_count: counts[s.name] || 0 }));
+        const matchedCategories = categories.filter(c => c.toLowerCase().includes(query));
+        const matchedStores = stores.filter(s =>
+            (s.name || '').toLowerCase().includes(query) ||
+            (s.category || '').toLowerCase().includes(query) ||
+            (s.description || '').toLowerCase().includes(query)
+        );
+        if (!matchedCategories.length && !matchedStores.length) {
+            const empty = document.createElement('div');
+            empty.className = 'text-center py-10 text-text-light';
+            empty.innerHTML = '<i class="fas fa-search text-4xl mb-3 block text-gray-300"></i><p>لا توجد نتائج مطابقة لبحثك</p>';
+            searchResults.appendChild(empty);
+            return;
+        }
+        if (matchedCategories.length) {
+            const title = document.createElement('p');
+            title.className = 'text-sm font-bold text-text-light mb-3';
+            title.textContent = `الفئات (${matchedCategories.length})`;
+            searchResults.appendChild(title);
+            const chips = document.createElement('div');
+            chips.className = 'flex flex-wrap gap-2 mb-5';
+            matchedCategories.forEach(cat => {
+                const chip = document.createElement('button');
+                chip.className = 'px-4 py-2 rounded-full bg-orange-50 text-primary border border-orange-200 hover:bg-primary hover:text-white transition font-semibold text-sm flex items-center gap-2';
+                chip.innerHTML = `<i class="fas fa-tags"></i>${cat}`;
+                chip.addEventListener('click', () => goToCategory(cat));
+                chips.appendChild(chip);
+            });
+            searchResults.appendChild(chips);
+        }
+        if (matchedStores.length) {
+            const title = document.createElement('p');
+            title.className = 'text-sm font-bold text-text-light mb-3';
+            title.textContent = `المتاجر (${matchedStores.length})`;
+            searchResults.appendChild(title);
+            matchedStores.forEach(store => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-3 p-3 rounded-xl hover:bg-orange-50 cursor-pointer transition';
+                const img = document.createElement('img');
+                img.className = 'w-12 h-12 rounded-full object-cover border border-gray-200 bg-white flex-shrink-0';
+                img.alt = store.name || '';
+                img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+                img.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
+                const info = document.createElement('div');
+                info.className = 'flex-1 min-w-0';
+                const nm = document.createElement('div');
+                nm.className = 'font-bold text-sm truncate flex items-center gap-1';
+                nm.textContent = store.name || '';
+                if (store.is_verified) {
+                    const v = document.createElement('span');
+                    v.className = 'verified-icon'; v.innerHTML = '<i class="fas fa-check"></i>';
+                    nm.appendChild(v);
                 }
-                if (stores.length === 0) {
-                    storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
-                    storesEmpty.classList.remove('hidden');
-                    renderFollowedStores();
-                } else {
-                    displayStores();
-                    startAutoScroll();
-                    renderFollowedStores();
-                }
-            } catch (err) {
-                console.error(err);
-                storesErrorMessage.textContent = `تعذر تحميل المتاجر: ${err.message}`;
+                const meta = document.createElement('div');
+                meta.className = 'text-xs text-text-light mt-0.5';
+                meta.textContent = `${store.category || 'عام'} • ${store.products_count || 0} منتج`;
+                info.appendChild(nm); info.appendChild(meta);
+                const arrow = document.createElement('i');
+                arrow.className = 'fas fa-chevron-left text-gray-400 text-sm';
+                row.appendChild(img); row.appendChild(info); row.appendChild(arrow);
+                row.addEventListener('click', () => { closeSearch(); openStoreModal(store); });
+                searchResults.appendChild(row);
+            });
+        }
+    }
+
+    if (searchButton) searchButton.addEventListener('click', openSearch);
+    if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
+    if (searchOverlay) searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
+    if (searchInput) searchInput.addEventListener('input', (e) => performSearch(e.target.value));
+
+    async function loadStores() {
+        storesLoader.classList.remove('hidden'); storesEmpty.classList.add('hidden'); storesScrollContainer.innerHTML = '';
+        try {
+            let snapshot;
+            try { snapshot = await db.collection('stores').orderBy('created_at', 'desc').get(); }
+            catch (e) { snapshot = await db.collection('stores').get(); }
+            stores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            if (stores.length > 0) {
+                const productsSnap = await db.collection('products').get();
+                const counts = {};
+                productsSnap.docs.forEach(d => {
+                    const sn = d.data().store_name;
+                    if (sn) counts[sn] = (counts[sn] || 0) + 1;
+                });
+                stores = stores.map(s => ({ ...s, products_count: counts[s.name] || 0 }));
+            }
+            if (stores.length === 0) {
+                storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
                 storesEmpty.classList.remove('hidden');
-            } finally { storesLoader.classList.add('hidden'); }
+                renderFollowedStores();
+            } else {
+                displayStores();
+                startAutoScroll();
+                renderFollowedStores();
+            }
+        } catch (err) {
+            console.error(err);
+            storesErrorMessage.textContent = `تعذر تحميل المتاجر: ${err.message}`;
+            storesEmpty.classList.remove('hidden');
+        } finally { storesLoader.classList.add('hidden'); }
+    }
+    retryStoresBtn.addEventListener('click', loadStores);
+
+    function displayStores() {
+        storesScrollContainer.innerHTML = '';
+        stores.forEach(store => storesScrollContainer.appendChild(createStoreCard(store)));
+    }
+
+    function openStoreModal(store) {
+        currentStore = store;
+        currentStoreId = getStoreId(store);
+        currentFollowersCount = parseInt(store.followers) || 0;
+        isFollowing = isStoreFollowed(currentStoreId);
+
+        storeCoverImage.src = store.cover_url || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
+        storeCoverImage.onerror = function () { this.src = 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover'; };
+        storeLogo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+        storeLogo.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
+
+        storeDescription.textContent = store.description || 'متجر مميز';
+        storeRating.textContent = (parseFloat(store.ratting) || 0).toFixed(1);
+        storeProductsCount.textContent = store.products_count || 0;
+
+        const catValue = (store.category && String(store.category).trim()) ? store.category : 'عام';
+        storeCategory.innerHTML = `<i class="fas fa-tag"></i><span>${sanitizeHTML(catValue)}</span>`;
+
+        updateFollowersDisplay();
+        updateFollowButtonUI();
+
+        if (store.is_verified) {
+            storeName.innerHTML = `${sanitizeHTML(store.name)} <span class="verified-icon"><i class="fas fa-check"></i></span>`;
+        } else {
+            storeName.textContent = store.name || '';
         }
-        retryStoresBtn.addEventListener('click', loadStores);
 
-        function displayStores() {
-            storesScrollContainer.innerHTML = '';
-            stores.forEach(store => storesScrollContainer.appendChild(createStoreCard(store)));
+        const phoneNumber = store.phone_number || '';
+        const whatsappNumber = store.whatsapp_number || '';
+
+        if (phoneNumber) { storeCallButton.href = `tel:${phoneNumber}`; storeCallButton.style.display = ''; }
+        else { storeCallButton.style.display = 'none'; }
+
+        if (whatsappNumber) { storeWhatsAppButton.href = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`; storeWhatsAppButton.style.display = ''; }
+        else { storeWhatsAppButton.style.display = 'none'; }
+
+        loadStoreProducts(store.name);
+        storeModal.classList.remove('hidden');
+        updateBodyScroll();
+        storeModal.querySelector('.modal-content').scrollTop = 0;
+    }
+
+    function updateFollowButtonUI() {
+        if (!storeFollowButton || !storeFollowText) return;
+        if (isFollowing) {
+            storeFollowButton.classList.add('following');
+            storeFollowText.textContent = 'متابَع';
+            storeFollowButton.querySelector('i').className = 'fas fa-check btn-icon';
+        } else {
+            storeFollowButton.classList.remove('following');
+            storeFollowText.textContent = 'متابعة';
+            storeFollowButton.querySelector('i').className = 'fas fa-heart btn-icon';
         }
+    }
+    function updateFollowersDisplay() { storeFollowers.textContent = currentFollowersCount.toLocaleString(); }
 
-        function openStoreModal(store) {
-            currentStore = store;
-            currentStoreId = getStoreId(store);
-            currentFollowersCount = parseInt(store.followers) || 0;
-            isFollowing = isStoreFollowed(currentStoreId);
-
-            storeCoverImage.src = store.cover_url || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
-            storeCoverImage.onerror = function () { this.src = 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover'; };
-            storeLogo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
-            storeLogo.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
-
-            storeDescription.textContent = store.description || 'متجر مميز';
-            storeRating.textContent = (parseFloat(store.ratting) || 0).toFixed(1);
-            storeProductsCount.textContent = store.products_count || 0;
-
-            const catValue = (store.category && String(store.category).trim()) ? store.category : 'عام';
-            storeCategory.innerHTML = `<i class="fas fa-tag"></i><span>${sanitizeHTML(catValue)}</span>`;
-
+    async function handleFollowToggle() {
+        if (!currentStoreId || isUpdatingFollow) return;
+        isUpdatingFollow = true;
+        storeFollowButton.disabled = true;
+        const wasFollowing = isFollowing;
+        storeFollowText.textContent = 'جاري...';
+        try {
+            const storeRef = db.collection('stores').doc(currentStoreId);
+            const storeSnap = await storeRef.get();
+            if (!storeSnap.exists) throw new Error('المتجر غير موجود');
+            const currentDbFollowers = parseInt(storeSnap.data()?.followers) || 0;
+            let newFollowers = wasFollowing ? Math.max(0, currentDbFollowers - 1) : currentDbFollowers + 1;
+            await storeRef.update({ followers: newFollowers });
+            if (wasFollowing) {
+                isFollowing = false;
+                const list = getFollowedStores(); const idx = list.indexOf(currentStoreId);
+                if (idx > -1) list.splice(idx, 1); saveFollowedStores(list);
+            } else {
+                isFollowing = true;
+                const list = getFollowedStores();
+                if (!list.includes(currentStoreId)) list.push(currentStoreId);
+                saveFollowedStores(list);
+            }
+            currentFollowersCount = newFollowers;
             updateFollowersDisplay();
             updateFollowButtonUI();
-
-            if (store.is_verified) {
-                storeName.innerHTML = `${sanitizeHTML(store.name)} <span class="verified-icon"><i class="fas fa-check"></i></span>`;
-            } else {
-                storeName.textContent = store.name || '';
-            }
-
-            const phoneNumber = store.phone_number || '';
-            const whatsappNumber = store.whatsapp_number || '';
-
-            if (phoneNumber) { storeCallButton.href = `tel:${phoneNumber}`; storeCallButton.style.display = ''; }
-            else { storeCallButton.style.display = 'none'; }
-
-            if (whatsappNumber) { storeWhatsAppButton.href = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`; storeWhatsAppButton.style.display = ''; }
-            else { storeWhatsAppButton.style.display = 'none'; }
-
-            loadStoreProducts(store.name);
-            storeModal.classList.remove('hidden');
-            updateBodyScroll();
-            storeModal.querySelector('.modal-content').scrollTop = 0;
+            updateCardFollowButtons(currentStoreId);
+            renderFollowedStores();
+            showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
+            if (currentStore) currentStore.followers = newFollowers;
+        } catch (err) {
+            console.error(err); showToast('حدث خطأ، حاول مرة أخرى');
+            isFollowing = wasFollowing; updateFollowButtonUI(); updateFollowersDisplay();
+        } finally {
+            isUpdatingFollow = false; storeFollowButton.disabled = false;
         }
+    }
+    if (storeFollowButton) storeFollowButton.addEventListener('click', handleFollowToggle);
 
-        function updateFollowButtonUI() {
-            if (!storeFollowButton || !storeFollowText) return;
-            if (isFollowing) {
-                storeFollowButton.classList.add('following');
-                storeFollowText.textContent = 'متابَع';
-                storeFollowButton.querySelector('i').className = 'fas fa-check btn-icon';
-            } else {
-                storeFollowButton.classList.remove('following');
-                storeFollowText.textContent = 'متابعة';
-                storeFollowButton.querySelector('i').className = 'fas fa-heart btn-icon';
-            }
-        }
-        function updateFollowersDisplay() { storeFollowers.textContent = currentFollowersCount.toLocaleString(); }
+    document.getElementById('closeStoreModal').addEventListener('click', closeStoreModal);
+    document.getElementById('storeModalOverlay').addEventListener('click', closeStoreModal);
+    function closeStoreModal() { storeModal.classList.add('hidden'); updateBodyScroll(); }
 
-        async function handleFollowToggle() {
-            if (!currentStoreId || isUpdatingFollow) return;
-            isUpdatingFollow = true;
-            storeFollowButton.disabled = true;
-            const wasFollowing = isFollowing;
-            storeFollowText.textContent = 'جاري...';
-            try {
-                const storeRef = db.collection('stores').doc(currentStoreId);
-                const storeSnap = await storeRef.get();
-                if (!storeSnap.exists) throw new Error('المتجر غير موجود');
-                const currentDbFollowers = parseInt(storeSnap.data()?.followers) || 0;
-                let newFollowers = wasFollowing ? Math.max(0, currentDbFollowers - 1) : currentDbFollowers + 1;
-                await storeRef.update({ followers: newFollowers });
-                if (wasFollowing) {
-                    isFollowing = false;
-                    const list = getFollowedStores(); const idx = list.indexOf(currentStoreId);
-                    if (idx > -1) list.splice(idx, 1); saveFollowedStores(list);
-                } else {
-                    isFollowing = true;
-                    const list = getFollowedStores();
-                    if (!list.includes(currentStoreId)) list.push(currentStoreId);
-                    saveFollowedStores(list);
-                }
-                currentFollowersCount = newFollowers;
-                updateFollowersDisplay();
-                updateFollowButtonUI();
-                updateCardFollowButtons(currentStoreId);
-                renderFollowedStores();
-                showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
-                if (currentStore) currentStore.followers = newFollowers;
-            } catch (err) {
-                console.error(err); showToast('حدث خطأ، حاول مرة أخرى');
-                isFollowing = wasFollowing; updateFollowButtonUI(); updateFollowersDisplay();
-            } finally {
-                isUpdatingFollow = false; storeFollowButton.disabled = false;
-            }
-        }
-        if (storeFollowButton) storeFollowButton.addEventListener('click', handleFollowToggle);
-
-        document.getElementById('closeStoreModal').addEventListener('click', closeStoreModal);
-        document.getElementById('storeModalOverlay').addEventListener('click', closeStoreModal);
-        function closeStoreModal() { storeModal.classList.add('hidden'); updateBodyScroll(); }
-
-        async function loadStoreProducts(storeNameParam) {
-            storeProductsGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>';
-            try {
-                const snapshot = await db.collection('products').where('store_name', '==', storeNameParam).get();
-                let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                data.sort((a, b) => {
-                    const ta = a.created_at?.seconds || 0;
-                    const tb = b.created_at?.seconds || 0;
-                    return tb - ta;
-                });
-                if (storeProductsCount) storeProductsCount.textContent = data.length;
-                if (currentStore) currentStore.products_count = data.length;
-                if (!data || data.length === 0) {
-                    storeProductsGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:#666;">لا توجد منتجات</div>';
-                } else {
-                    renderStoreProductCards(data);
-                }
-            } catch (err) {
-                console.error(err);
-                storeProductsGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:#666;">تعذر تحميل المنتجات</div>`;
-            }
-        }
-
-        function renderStoreProductCards(products) {
-            storeProductsGrid.innerHTML = '';
-            products.forEach(product => {
-                const price = parseFloat(product.price) || 0;
-                const rating = parseFloat(product.ratting) || 0;
-                const fav = isProductFav(product.id);
-
-                const productForModal = {
-                    id: product.id, name: product.name, img_url: product.img_url,
-                    price,
-                    original_price: product.original_price ? parseFloat(product.original_price) : null,
-                    ratting: rating,
-                    store_name: product.store_name,
-                    description: product.description || ''
-                };
-
-                const card = document.createElement('div');
-                card.className = 'store-product-card';
-
-                const favBtn = document.createElement('button');
-                favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
-                favBtn.type = 'button';
-                favBtn.setAttribute('aria-label', 'إضافة للمفضلة');
-                favBtn.innerHTML = `<i class="${fav ? 'fas' : 'far'} fa-heart"></i>`;
-                favBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const nowActive = toggleProductFav(product.id);
-                    favBtn.classList.toggle('active', nowActive);
-                    favBtn.innerHTML = `<i class="${nowActive ? 'fas' : 'far'} fa-heart"></i>`;
-                    showToast(nowActive ? 'أُضيف إلى المفضلة' : 'أُزيل من المفضلة');
-                });
-
-                const imgWrap = document.createElement('div');
-                imgWrap.className = 'store-product-img-wrap';
-                const img = document.createElement('img');
-                img.loading = 'lazy'; img.alt = product.name || '';
-                img.src = product.img_url || 'https://via.placeholder.com/300';
-                img.onerror = function () { this.src = 'https://via.placeholder.com/300'; };
-                imgWrap.appendChild(img);
-
-                const info = document.createElement('div');
-                info.className = 'store-product-info';
-
-                const nameEl = document.createElement('div');
-                nameEl.className = 'store-product-name';
-                nameEl.textContent = product.name || '';
-
-                const ratingEl = document.createElement('div');
-                ratingEl.className = 'store-product-rating';
-                ratingEl.innerHTML = `<span>${rating}</span> <i class="fas fa-star"></i>`;
-
-                const priceEl = document.createElement('div');
-                priceEl.className = 'store-product-price';
-                priceEl.textContent = `${price.toLocaleString()} ج.س`;
-
-                const viewBtn = document.createElement('button');
-                viewBtn.className = 'store-product-btn';
-                viewBtn.type = 'button';
-                viewBtn.innerHTML = `<span>عرض المنتج</span> <i class="fas fa-chevron-left"></i>`;
-                viewBtn.addEventListener('click', (e) => { e.stopPropagation(); openProductModal(productForModal); });
-
-                info.appendChild(nameEl);
-                info.appendChild(ratingEl);
-                info.appendChild(priceEl);
-                info.appendChild(viewBtn);
-
-                card.appendChild(favBtn);
-                card.appendChild(imgWrap);
-                card.appendChild(info);
-                card.addEventListener('click', () => openProductModal(productForModal));
-
-                storeProductsGrid.appendChild(card);
+    async function loadStoreProducts(storeNameParam) {
+        storeProductsGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>';
+        try {
+            const snapshot = await db.collection('products').where('store_name', '==', storeNameParam).get();
+            let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            data.sort((a, b) => {
+                const ta = a.created_at?.seconds || 0;
+                const tb = b.created_at?.seconds || 0;
+                return tb - ta;
             });
+            if (storeProductsCount) storeProductsCount.textContent = data.length;
+            if (currentStore) currentStore.products_count = data.length;
+            if (!data || data.length === 0) {
+                storeProductsGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:#666;">لا توجد منتجات</div>';
+            } else {
+                renderStoreProductCards(data);
+            }
+        } catch (err) {
+            console.error(err);
+            storeProductsGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:#666;">تعذر تحميل المنتجات</div>`;
         }
+    }
 
-        function displayProductsGrid(container, products, addStoreName = false) {
-            container.innerHTML = '';
-            products.forEach(product => {
-                const price = parseFloat(product.price) || 0;
-                const originalPrice = product.original_price ? parseFloat(product.original_price) : null;
-                const rating = parseFloat(product.ratting) || 0;
-                const card = document.createElement('div');
-                card.className = 'product-card bg-white border rounded-xl overflow-hidden hover:shadow-lg transition group';
-                const productForModal = {
-                    id: product.id, name: product.name, img_url: product.img_url,
-                    price, original_price: originalPrice, ratting: rating,
-                    store_name: product.store_name, description: product.description || ''
-                };
-                card.innerHTML = `
-                    <div class="product-image-container relative h-28 sm:h-36 md:h-40">
-                        <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
-                        ${originalPrice ? '<span class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">خصم</span>' : ''}
+    function renderStoreProductCards(products) {
+        storeProductsGrid.innerHTML = '';
+        products.forEach(product => {
+            const price = parseFloat(product.price) || 0;
+            const rating = parseFloat(product.ratting) || 0;
+            const fav = isProductFav(product.id);
+
+            const productForModal = {
+                id: product.id, name: product.name, img_url: product.img_url,
+                price,
+                original_price: product.original_price ? parseFloat(product.original_price) : null,
+                ratting: rating,
+                store_name: product.store_name,
+                description: product.description || ''
+            };
+
+            const card = document.createElement('div');
+            card.className = 'store-product-card';
+
+            const favBtn = document.createElement('button');
+            favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
+            favBtn.type = 'button';
+            favBtn.setAttribute('aria-label', 'إضافة للمفضلة');
+            favBtn.innerHTML = `<i class="${fav ? 'fas' : 'far'} fa-heart"></i>`;
+            favBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const nowActive = toggleProductFav(product.id);
+                favBtn.classList.toggle('active', nowActive);
+                favBtn.innerHTML = `<i class="${nowActive ? 'fas' : 'far'} fa-heart"></i>`;
+                showToast(nowActive ? 'أُضيف إلى المفضلة' : 'أُزيل من المفضلة');
+            });
+
+            const imgWrap = document.createElement('div');
+            imgWrap.className = 'store-product-img-wrap';
+            const img = document.createElement('img');
+            img.loading = 'lazy'; img.alt = product.name || '';
+            img.src = product.img_url || 'https://via.placeholder.com/300';
+            img.onerror = function () { this.src = 'https://via.placeholder.com/300'; };
+            imgWrap.appendChild(img);
+
+            const info = document.createElement('div');
+            info.className = 'store-product-info';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'store-product-name';
+            nameEl.textContent = product.name || '';
+
+            const ratingEl = document.createElement('div');
+            ratingEl.className = 'store-product-rating';
+            ratingEl.innerHTML = `<span>${rating}</span> <i class="fas fa-star"></i>`;
+
+            const priceEl = document.createElement('div');
+            priceEl.className = 'store-product-price';
+            priceEl.textContent = `${price.toLocaleString()} ج.س`;
+
+            const viewBtn = document.createElement('button');
+            viewBtn.className = 'store-product-btn';
+            viewBtn.type = 'button';
+            viewBtn.innerHTML = `<span>عرض المنتج</span> <i class="fas fa-chevron-left"></i>`;
+            viewBtn.addEventListener('click', (e) => { e.stopPropagation(); openProductModal(productForModal); });
+
+            info.appendChild(nameEl);
+            info.appendChild(ratingEl);
+            info.appendChild(priceEl);
+            info.appendChild(viewBtn);
+
+            card.appendChild(favBtn);
+            card.appendChild(imgWrap);
+            card.appendChild(info);
+            card.addEventListener('click', () => openProductModal(productForModal));
+
+            storeProductsGrid.appendChild(card);
+        });
+    }
+
+    function displayProductsGrid(container, products, addStoreName = false) {
+        container.innerHTML = '';
+        products.forEach(product => {
+            const price = parseFloat(product.price) || 0;
+            const originalPrice = product.original_price ? parseFloat(product.original_price) : null;
+            const rating = parseFloat(product.ratting) || 0;
+            const card = document.createElement('div');
+            card.className = 'product-card bg-white border rounded-xl overflow-hidden hover:shadow-lg transition group';
+            const productForModal = {
+                id: product.id, name: product.name, img_url: product.img_url,
+                price, original_price: originalPrice, ratting: rating,
+                store_name: product.store_name, description: product.description || ''
+            };
+            card.innerHTML = `
+                <div class="product-image-container relative h-28 sm:h-36 md:h-40">
+                    <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
+                    ${originalPrice ? '<span class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">خصم</span>' : ''}
+                </div>
+                <div class="p-2 sm:p-3">
+                    <h5 class="font-bold text-xs sm:text-sm truncate">${sanitizeHTML(product.name)}</h5>
+                    ${addStoreName && product.store_name ? `<p class="text-xs text-primary mt-1 truncate">${sanitizeHTML(product.store_name)}</p>` : ''}
+                    <div class="flex items-center gap-1 text-xs my-1"><i class="fas fa-star text-yellow-400"></i> ${rating}</div>
+                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                        <span class="font-bold text-primary text-xs sm:text-sm">${price.toLocaleString()} ج.س</span>
+                        ${originalPrice ? `<span class="text-xs line-through text-text-light">${originalPrice.toLocaleString()} ج.س</span>` : ''}
                     </div>
-                    <div class="p-2 sm:p-3">
-                        <h5 class="font-bold text-xs sm:text-sm truncate">${sanitizeHTML(product.name)}</h5>
-                        ${addStoreName && product.store_name ? `<p class="text-xs text-primary mt-1 truncate">${sanitizeHTML(product.store_name)}</p>` : ''}
-                        <div class="flex items-center gap-1 text-xs my-1"><i class="fas fa-star text-yellow-400"></i> ${rating}</div>
-                        <div class="flex items-center gap-2 mb-2 flex-wrap">
-                            <span class="font-bold text-primary text-xs sm:text-sm">${price.toLocaleString()} ج.س</span>
-                            ${originalPrice ? `<span class="text-xs line-through text-text-light">${originalPrice.toLocaleString()} ج.س</span>` : ''}
-                        </div>
-                        <button class="open-product-btn w-full bg-primary text-white py-2 rounded-lg text-xs sm:text-sm hover:bg-primary-dark transition" data-product='${JSON.stringify(productForModal).replace(/'/g, "&#39;")}'>عرض المنتج</button>
-                    </div>`;
-                container.appendChild(card);
-            });
-            container.querySelectorAll('.open-product-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    try { const product = JSON.parse(e.currentTarget.dataset.product); openProductModal(product); }
-                    catch (err) { console.error(err); }
-                });
-            });
-        }
-
-        function openProductModal(product) {
-            productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
-            productModalImage.onload = function() { this.style.objectFit = 'contain'; };
-            productModalImage.onerror = function() { this.src = 'https://via.placeholder.com/600'; };
-            productModalName.textContent = product.name;
-            productModalRating.textContent = product.ratting || 0;
-            productModalStore.textContent = product.store_name || 'غير محدد';
-            productModalPrice.textContent = `${(product.price || 0).toLocaleString()} ج.س`;
-            if (product.original_price) {
-                productModalOriginalPrice.textContent = `${product.original_price.toLocaleString()} ج.س`;
-                productModalOriginalPrice.classList.remove('hidden');
-            } else {
-                productModalOriginalPrice.textContent = ''; productModalOriginalPrice.classList.add('hidden');
-            }
-            productModal.classList.remove('hidden'); updateBodyScroll();
-            addToCartFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
-            buyNowFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
-        }
-
-        document.getElementById('closeProductModal').addEventListener('click', () => { productModal.classList.add('hidden'); updateBodyScroll(); });
-
-        addToCartFromModal.addEventListener('click', (e) => {
-            const btn = e.currentTarget; const product = JSON.parse(btn.dataset.product);
-            addToCart(product);
-            btn.classList.add('btn-adding'); btn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
-            setTimeout(() => { btn.classList.remove('btn-adding'); btn.innerHTML = '<i class="fas fa-shopping-cart"></i> أضف إلى السلة'; }, 1500);
+                    <button class="open-product-btn w-full bg-primary text-white py-2 rounded-lg text-xs sm:text-sm hover:bg-primary-dark transition" data-product='${JSON.stringify(productForModal).replace(/'/g, "&#39;")}'>عرض المنتج</button>
+                </div>`;
+            container.appendChild(card);
         });
-
-        buyNowFromModal.addEventListener('click', (e) => {
-            const product = JSON.parse(e.currentTarget.dataset.product);
-            let whatsappNumber = '';
-            const store = stores.find(s => s.name === product.store_name);
-            if (store && store.whatsapp_number) whatsappNumber = store.whatsapp_number;
-            if (!whatsappNumber) { showToast('رقم الواتساب غير متوفر لهذا المتجر'); return; }
-            const message = `مرحباً، أريد شراء هذا المنتج:\n\n${product.name}\nالسعر: ${(product.price || 0).toLocaleString()} ج.س\n${product.store_name ? 'من متجر: ' + product.store_name : ''}`;
-            window.open(`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+        container.querySelectorAll('.open-product-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                try { const product = JSON.parse(e.currentTarget.dataset.product); openProductModal(product); }
+                catch (err) { console.error(err); }
+            });
         });
+    }
 
-        function addToCart(product) {
-            const store = stores.find(s => s.name === product.store_name);
-            const cartItem = { ...product, quantity: 1, store_whatsapp: store?.whatsapp_number || '' };
-            const existing = cart.find(i => i.id === product.id);
-            if (existing) existing.quantity += 1; else cart.push(cartItem);
-            updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); animateCartBadge(); showToast('تمت الإضافة إلى السلة');
+    function openProductModal(product) {
+        productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
+        productModalImage.onload = function() { this.style.objectFit = 'contain'; };
+        productModalImage.onerror = function() { this.src = 'https://via.placeholder.com/600'; };
+        productModalName.textContent = product.name;
+        productModalRating.textContent = product.ratting || 0;
+        productModalStore.textContent = product.store_name || 'غير محدد';
+        productModalPrice.textContent = `${(product.price || 0).toLocaleString()} ج.س`;
+        if (product.original_price) {
+            productModalOriginalPrice.textContent = `${product.original_price.toLocaleString()} ج.س`;
+            productModalOriginalPrice.classList.remove('hidden');
+        } else {
+            productModalOriginalPrice.textContent = ''; productModalOriginalPrice.classList.add('hidden');
         }
-        function updateCartUI() {
-            const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
-            cartCount.textContent = totalItems; cartItems.innerHTML = '';
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<div class="text-center text-text-light py-10"><i class="fas fa-shopping-cart text-5xl mb-3"></i><p>السلة فارغة</p></div>';
-            } else {
-                cart.forEach(item => {
-                    const div = document.createElement('div'); div.className = 'flex items-center gap-3 p-3 border-b';
-                    div.innerHTML = `
-                        <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
-                        <div class="flex-1 min-w-0">
-                            <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
-                            ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
-                            <div class="flex items-center gap-2 mt-1">
-                                <button class="decrease-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">-</button>
-                                <span>${item.quantity}</span>
-                                <button class="increase-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">+</button>
-                            </div>
-                        </div>
-                        <div class="text-left flex-shrink-0">
-                            <div class="font-bold text-primary">${(item.price * item.quantity).toLocaleString()} ج.س</div>
-                            <button class="remove-btn text-red-500 mt-1" data-id="${item.id}"><i class="fas fa-trash"></i></button>
-                        </div>`;
-                    cartItems.appendChild(div);
-                });
-                document.querySelectorAll('.decrease-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, -1));
-                document.querySelectorAll('.increase-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, 1));
-                document.querySelectorAll('.remove-btn').forEach(btn => btn.onclick = () => removeFromCart(btn.dataset.id));
-            }
-            const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
-            cartTotal.querySelector('span:last-child').textContent = total.toLocaleString() + ' ج.س';
-        }
-        function changeQuantity(id, delta) { const item = cart.find(i => i.id === id); if (!item) return; item.quantity = Math.max(1, item.quantity + delta); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); }
-        function removeFromCart(id) { cart = cart.filter(i => i.id !== id); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); showToast('تمت الإزالة'); }
-        function openCart() { cartSidebar.classList.add('open'); updateBodyScroll(); }
-        function closeCart() { cartSidebar.classList.remove('open'); updateBodyScroll(); }
-        document.getElementById('cartButton').addEventListener('click', openCart);
-        document.getElementById('closeCart').addEventListener('click', closeCart);
-        document.getElementById('cartOverlay').addEventListener('click', closeCart);
-        document.getElementById('continueShopping').addEventListener('click', closeCart);
+        productModal.classList.remove('hidden'); updateBodyScroll();
+        addToCartFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
+        buyNowFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
+    }
 
-        document.getElementById('whatsappOrder').addEventListener('click', () => {
-            if (cart.length === 0) { showToast('السلة فارغة'); return; }
-            const groupedByWhatsApp = {};
+    document.getElementById('closeProductModal').addEventListener('click', () => { productModal.classList.add('hidden'); updateBodyScroll(); });
+
+    addToCartFromModal.addEventListener('click', (e) => {
+        const btn = e.currentTarget; const product = JSON.parse(btn.dataset.product);
+        addToCart(product);
+        btn.classList.add('btn-adding'); btn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
+        setTimeout(() => { btn.classList.remove('btn-adding'); btn.innerHTML = '<i class="fas fa-shopping-cart"></i> أضف إلى السلة'; }, 1500);
+    });
+
+    buyNowFromModal.addEventListener('click', (e) => {
+        const product = JSON.parse(e.currentTarget.dataset.product);
+        let whatsappNumber = '';
+        const store = stores.find(s => s.name === product.store_name);
+        if (store && store.whatsapp_number) whatsappNumber = store.whatsapp_number;
+        if (!whatsappNumber) { showToast('رقم الواتساب غير متوفر لهذا المتجر'); return; }
+        const message = `مرحباً، أريد شراء هذا المنتج:\n\n${product.name}\nالسعر: ${(product.price || 0).toLocaleString()} ج.س\n${product.store_name ? 'من متجر: ' + product.store_name : ''}`;
+        window.open(`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+    });
+
+    function addToCart(product) {
+        const store = stores.find(s => s.name === product.store_name);
+        const cartItem = { ...product, quantity: 1, store_whatsapp: store?.whatsapp_number || '' };
+        const existing = cart.find(i => i.id === product.id);
+        if (existing) existing.quantity += 1; else cart.push(cartItem);
+        updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); animateCartBadge(); showToast('تمت الإضافة إلى السلة');
+    }
+    function updateCartUI() {
+        const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+        cartCount.textContent = totalItems; cartItems.innerHTML = '';
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<div class="text-center text-text-light py-10"><i class="fas fa-shopping-cart text-5xl mb-3"></i><p>السلة فارغة</p></div>';
+        } else {
             cart.forEach(item => {
-                const wa = item.store_whatsapp || 'default';
-                if (!groupedByWhatsApp[wa]) groupedByWhatsApp[wa] = [];
-                groupedByWhatsApp[wa].push(item);
+                const div = document.createElement('div'); div.className = 'flex items-center gap-3 p-3 border-b';
+                div.innerHTML = `
+                    <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
+                    <div class="flex-1 min-w-0">
+                        <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
+                        ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
+                        <div class="flex items-center gap-2 mt-1">
+                            <button class="decrease-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="increase-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">+</button>
+                        </div>
+                    </div>
+                    <div class="text-left flex-shrink-0">
+                        <div class="font-bold text-primary">${(item.price * item.quantity).toLocaleString()} ج.س</div>
+                        <button class="remove-btn text-red-500 mt-1" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+                    </div>`;
+                cartItems.appendChild(div);
             });
-            const whatsappNumbers = Object.keys(groupedByWhatsApp);
-            if (whatsappNumbers.length === 1) {
-                const wa = whatsappNumbers[0];
-                let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
-                groupedByWhatsApp[wa].forEach(item => {
-                    message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
-                    if (item.store_name) message += `من متجر: ${item.store_name}\n`;
-                });
-                const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
-                message += `\nالمجموع: ${total.toLocaleString()} ج.س`;
-                const finalWa = wa === 'default' ? '0924299798' : wa;
-                window.open(`https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
-            } else {
-                showToast('يتم إرسال الطلب لكل متجر على حدة...');
-                whatsappNumbers.forEach((wa, index) => {
-                    setTimeout(() => {
-                        let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
-                        groupedByWhatsApp[wa].forEach(item => {
-                            message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
-                            if (item.store_name) message += `من متجر: ${item.store_name}\n`;
-                        });
-                        const finalWa = wa === 'default' ? '0924299798' : wa;
-                        window.open(`https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
-                    }, index * 500);
-                });
-            }
-        });
+            document.querySelectorAll('.decrease-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, -1));
+            document.querySelectorAll('.increase-btn').forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.id, 1));
+            document.querySelectorAll('.remove-btn').forEach(btn => btn.onclick = () => removeFromCart(btn.dataset.id));
+        }
+        const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+        cartTotal.querySelector('span:last-child').textContent = total.toLocaleString() + ' ج.س';
+    }
+    function changeQuantity(id, delta) { const item = cart.find(i => i.id === id); if (!item) return; item.quantity = Math.max(1, item.quantity + delta); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); }
+    function removeFromCart(id) { cart = cart.filter(i => i.id !== id); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); showToast('تمت الإزالة'); }
+    function openCart() { cartSidebar.classList.add('open'); updateBodyScroll(); }
+    function closeCart() { cartSidebar.classList.remove('open'); updateBodyScroll(); }
+    document.getElementById('cartButton').addEventListener('click', openCart);
+    document.getElementById('closeCart').addEventListener('click', closeCart);
+    document.getElementById('cartOverlay').addEventListener('click', closeCart);
+    document.getElementById('continueShopping').addEventListener('click', closeCart);
 
-        async function loadCategories() {
-            try {
-                const snapshot = await db.collection('stores').get();
-                const cats = [];
-                snapshot.docs.forEach(d => {
-                    const c = d.data().category;
-                    if (c && String(c).trim() !== '' && !cats.includes(c)) cats.push(c);
-                });
-                categories = cats;
-                displayCategories();
-            } catch (err) {
-                console.error(err);
-                categoriesContainer.innerHTML = '<p class="text-text-light">تعذر تحميل الفئات</p>';
-            }
-        }
-        function displayCategories() {
-            categoriesContainer.innerHTML = '';
-            const allBtn = document.createElement('button');
-            allBtn.className = 'px-6 py-2 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition flex-shrink-0';
-            allBtn.textContent = 'الكل';
-            allBtn.addEventListener('click', () => {
-                currentCategory = null;
-                displayStores();
-                highlightCategory(allBtn);
-                startAutoScroll();
-                applyProductsFilter(null);
+    document.getElementById('whatsappOrder').addEventListener('click', () => {
+        if (cart.length === 0) { showToast('السلة فارغة'); return; }
+        const groupedByWhatsApp = {};
+        cart.forEach(item => {
+            const wa = item.store_whatsapp || 'default';
+            if (!groupedByWhatsApp[wa]) groupedByWhatsApp[wa] = [];
+            groupedByWhatsApp[wa].push(item);
+        });
+        const whatsappNumbers = Object.keys(groupedByWhatsApp);
+        if (whatsappNumbers.length === 1) {
+            const wa = whatsappNumbers[0];
+            let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
+            groupedByWhatsApp[wa].forEach(item => {
+                message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+                if (item.store_name) message += `من متجر: ${item.store_name}\n`;
             });
-            categoriesContainer.appendChild(allBtn);
-            categories.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = 'px-6 py-2 rounded-full bg-white border border-gray-200 hover:bg-primary hover:text-white transition font-semibold flex-shrink-0';
-                btn.textContent = cat;
-                btn.addEventListener('click', () => {
-                    currentCategory = cat;
-                    filterStoresByCategory(cat);
-                    highlightCategory(btn);
-                    applyProductsFilter(cat);
-                });
-                categoriesContainer.appendChild(btn);
+            const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+            message += `\nالمجموع: ${total.toLocaleString()} ج.س`;
+            const finalWa = wa === 'default' ? '0924299798' : wa;
+            window.open(`https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+        } else {
+            showToast('يتم إرسال الطلب لكل متجر على حدة...');
+            whatsappNumbers.forEach((wa, index) => {
+                setTimeout(() => {
+                    let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
+                    groupedByWhatsApp[wa].forEach(item => {
+                        message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+                        if (item.store_name) message += `من متجر: ${item.store_name}\n`;
+                    });
+                    const finalWa = wa === 'default' ? '0924299798' : wa;
+                    window.open(`https://wa.me/${finalWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+                }, index * 500);
             });
         }
-        function highlightCategory(activeBtn) {
-            categoriesContainer.querySelectorAll('button').forEach(b => { b.classList.remove('bg-primary','text-white','font-bold'); b.classList.add('bg-white','border','border-gray-200','text-text-main'); });
-            activeBtn.classList.add('bg-primary','text-white','font-bold'); activeBtn.classList.remove('bg-white','border','border-gray-200','text-text-main');
+    });
+
+    async function loadCategories() {
+        try {
+            const snapshot = await db.collection('stores').get();
+            const cats = [];
+            snapshot.docs.forEach(d => {
+                const c = d.data().category;
+                if (c && String(c).trim() !== '' && !cats.includes(c)) cats.push(c);
+            });
+            categories = cats;
+            displayCategories();
+        } catch (err) {
+            console.error(err);
+            categoriesContainer.innerHTML = '<p class="text-text-light">تعذر تحميل الفئات</p>';
         }
-        function filterStoresByCategory(category) {
-            currentCategory = category;
-            const filtered = stores.filter(s => s.category === category);
-            storesScrollContainer.innerHTML = '';
-            if (filtered.length === 0) {
-                storesScrollContainer.innerHTML = '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>';
-            } else {
-                filtered.forEach(store => storesScrollContainer.appendChild(createStoreCard(store)));
-            }
-            lastStoresInteraction = Date.now();
+    }
+    function displayCategories() {
+        categoriesContainer.innerHTML = '';
+        const allBtn = document.createElement('button');
+        allBtn.className = 'px-6 py-2 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition flex-shrink-0';
+        allBtn.textContent = 'الكل';
+        allBtn.addEventListener('click', () => {
+            currentCategory = null;
+            displayStores();
+            highlightCategory(allBtn);
             startAutoScroll();
-        }
-        prevCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' }));
-        nextCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' }));
-
-        function applyProductsFilter(category) {
-            if (!category) {
-                filteredProducts = [...allProducts];
-                allProductsTitle.textContent = 'جميع المنتجات';
-                allProductsSubtitle.textContent = 'تصفح كل المنتجات المتاحة';
-            } else {
-                const storeNamesInCategory = stores.filter(s => s.category === category).map(s => s.name);
-                filteredProducts = allProducts.filter(p => storeNamesInCategory.includes(p.store_name));
-                allProductsTitle.textContent = `منتجات فئة: ${category}`;
-                allProductsSubtitle.textContent = `${filteredProducts.length} منتج متاح`;
-            }
-            displayedProductsCount = 0;
-            allProductsGrid.innerHTML = '';
-            renderNextProductsPage();
-        }
-
-        function renderNextProductsPage() {
-            const start = displayedProductsCount;
-            const end = start + PRODUCTS_PER_PAGE;
-            const nextBatch = filteredProducts.slice(start, end);
-            if (nextBatch.length > 0) {
-                const tempContainer = document.createElement('div');
-                displayProductsGrid(tempContainer, nextBatch, true);
-                while (tempContainer.firstChild) allProductsGrid.appendChild(tempContainer.firstChild);
-            }
-            displayedProductsCount = end;
-            if (filteredProducts.length === 0) {
-                allProductsEmpty.classList.remove('hidden');
-                loadMoreProductsBtn.classList.add('hidden');
-            } else {
-                allProductsEmpty.classList.add('hidden');
-            }
-            if (displayedProductsCount < filteredProducts.length) {
-                loadMoreProductsBtn.classList.remove('hidden');
-                loadMoreProductsBtn.innerHTML = `<span>عرض المزيد (${filteredProducts.length - displayedProductsCount} منتج متبقي)</span><i class="fas fa-chevron-down"></i>`;
-            } else {
-                loadMoreProductsBtn.classList.add('hidden');
-            }
-        }
-
-        loadMoreProductsBtn.addEventListener('click', () => {
-            loadMoreProductsBtn.disabled = true;
-            setTimeout(() => { renderNextProductsPage(); loadMoreProductsBtn.disabled = false; }, 150);
+            applyProductsFilter(null);
         });
+        categoriesContainer.appendChild(allBtn);
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'px-6 py-2 rounded-full bg-white border border-gray-200 hover:bg-primary hover:text-white transition font-semibold flex-shrink-0';
+            btn.textContent = cat;
+            btn.addEventListener('click', () => {
+                currentCategory = cat;
+                filterStoresByCategory(cat);
+                highlightCategory(btn);
+                applyProductsFilter(cat);
+            });
+            categoriesContainer.appendChild(btn);
+        });
+    }
+    function highlightCategory(activeBtn) {
+        categoriesContainer.querySelectorAll('button').forEach(b => { b.classList.remove('bg-primary','text-white','font-bold'); b.classList.add('bg-white','border','border-gray-200','text-text-main'); });
+        activeBtn.classList.add('bg-primary','text-white','font-bold'); activeBtn.classList.remove('bg-white','border','border-gray-200','text-text-main');
+    }
+    function filterStoresByCategory(category) {
+        currentCategory = category;
+        const filtered = stores.filter(s => s.category === category);
+        storesScrollContainer.innerHTML = '';
+        if (filtered.length === 0) {
+            storesScrollContainer.innerHTML = '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>';
+        } else {
+            filtered.forEach(store => storesScrollContainer.appendChild(createStoreCard(store)));
+        }
+        lastStoresInteraction = Date.now();
+        startAutoScroll();
+    }
+    prevCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' }));
+    nextCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' }));
 
-        async function loadAllProducts() {
-            allProductsLoader.classList.remove('hidden');
-            allProductsEmpty.classList.add('hidden');
-            allProductsGrid.innerHTML = '';
+    function applyProductsFilter(category) {
+        if (!category) {
+            filteredProducts = [...allProducts];
+            allProductsTitle.textContent = 'جميع المنتجات';
+            allProductsSubtitle.textContent = 'تصفح كل المنتجات المتاحة';
+        } else {
+            const storeNamesInCategory = stores.filter(s => s.category === category).map(s => s.name);
+            filteredProducts = allProducts.filter(p => storeNamesInCategory.includes(p.store_name));
+            allProductsTitle.textContent = `منتجات فئة: ${category}`;
+            allProductsSubtitle.textContent = `${filteredProducts.length} منتج متاح`;
+        }
+        displayedProductsCount = 0;
+        allProductsGrid.innerHTML = '';
+        renderNextProductsPage();
+    }
+
+    function renderNextProductsPage() {
+        const start = displayedProductsCount;
+        const end = start + PRODUCTS_PER_PAGE;
+        const nextBatch = filteredProducts.slice(start, end);
+        if (nextBatch.length > 0) {
+            const tempContainer = document.createElement('div');
+            displayProductsGrid(tempContainer, nextBatch, true);
+            while (tempContainer.firstChild) allProductsGrid.appendChild(tempContainer.firstChild);
+        }
+        displayedProductsCount = end;
+        if (filteredProducts.length === 0) {
+            allProductsEmpty.classList.remove('hidden');
             loadMoreProductsBtn.classList.add('hidden');
-            try {
-                let snapshot;
-                try { snapshot = await db.collection('products').orderBy('created_at', 'desc').get(); }
-                catch (e) { snapshot = await db.collection('products').get(); }
-                allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-
-                updateAllProductsTotalBadge();
-
-                applyProductsFilter(currentCategory);
-            } catch (err) {
-                console.error('فشل تحميل المنتجات:', err);
-                allProductsGrid.innerHTML = '<p class="col-span-full text-text-light text-center">تعذر تحميل المنتجات</p>';
-            } finally { allProductsLoader.classList.add('hidden'); }
+        } else {
+            allProductsEmpty.classList.add('hidden');
         }
+        if (displayedProductsCount < filteredProducts.length) {
+            loadMoreProductsBtn.classList.remove('hidden');
+            loadMoreProductsBtn.innerHTML = `<span>عرض المزيد (${filteredProducts.length - displayedProductsCount} منتج متبقي)</span><i class="fas fa-chevron-down"></i>`;
+        } else {
+            loadMoreProductsBtn.classList.add('hidden');
+        }
+    }
 
-        function initApp() {
-            updateCartUI();
+    loadMoreProductsBtn.addEventListener('click', () => {
+        loadMoreProductsBtn.disabled = true;
+        setTimeout(() => { renderNextProductsPage(); loadMoreProductsBtn.disabled = false; }, 150);
+    });
+
+    async function loadAllProducts() {
+        allProductsLoader.classList.remove('hidden');
+        allProductsEmpty.classList.add('hidden');
+        allProductsGrid.innerHTML = '';
+        loadMoreProductsBtn.classList.add('hidden');
+        try {
+            let snapshot;
+            try { snapshot = await db.collection('products').orderBy('created_at', 'desc').get(); }
+            catch (e) { snapshot = await db.collection('products').get(); }
+            allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
             updateAllProductsTotalBadge();
-            loadStores();
-            loadCategories();
-            loadAllProducts();
+
+            applyProductsFilter(currentCategory);
+        } catch (err) {
+            console.error('فشل تحميل المنتجات:', err);
+            allProductsGrid.innerHTML = '<p class="col-span-full text-text-light text-center">تعذر تحميل المنتجات</p>';
+        } finally { allProductsLoader.classList.add('hidden'); }
+    }
+
+    async function initApp() {
+        const authOk = await ensureAuth();
+        if (!authOk) {
+            console.warn('⛔ التطبيق لم يبدأ بسبب فشل المصادقة');
+            return;
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else { initApp(); }
+        updateCartUI();
+        updateAllProductsTotalBadge();
+        loadStores();
+        loadCategories();
+        loadAllProducts();
+    }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (searchOverlay && searchOverlay.classList.contains('show')) { closeSearch(); return; }
-                if (!productModal.classList.contains('hidden')) { productModal.classList.add('hidden'); updateBodyScroll(); }
-                if (!storeModal.classList.contains('hidden')) closeStoreModal();
-                if (cartSidebar.classList.contains('open')) closeCart();
-                if (mobileMenu && !mobileMenu.classList.contains('hidden')) toggleMobileMenu(false);
-            }
-        });
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+    } else { initApp(); }
 
-        categoriesContainer.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0) { e.preventDefault(); categoriesContainer.scrollLeft += e.deltaY; }
-        }, { passive: false });
-    </script>
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (searchOverlay && searchOverlay.classList.contains('show')) { closeSearch(); return; }
+            if (!productModal.classList.contains('hidden')) { productModal.classList.add('hidden'); updateBodyScroll(); }
+            if (!storeModal.classList.contains('hidden')) closeStoreModal();
+            if (cartSidebar.classList.contains('open')) closeCart();
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) toggleMobileMenu(false);
+        }
+    });
+
+    categoriesContainer.addEventListener('wheel', (e) => {
+        if (e.deltaY !== 0) { e.preventDefault(); categoriesContainer.scrollLeft += e.deltaY; }
+    }, { passive: false });
+</script>
 </body>
 </html>
