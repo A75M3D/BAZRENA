@@ -44,7 +44,6 @@
             background: radial-gradient(circle, rgba(255,166,77,0.12) 0%, transparent 65%);
             pointer-events: none;
         }
-
         .login-card {
             position: relative;
             z-index: 2;
@@ -62,7 +61,6 @@
             from { transform: translateY(30px) scale(0.96); opacity: 0; }
             to { transform: translateY(0) scale(1); opacity: 1; }
         }
-
         .login-logo {
             width: 90px; height: 90px; border-radius: 50%;
             background: #fff; padding: 6px;
@@ -71,25 +69,21 @@
         }
         @media (min-width: 640px) { .login-logo { width: 108px; height: 108px; } }
         .login-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
-
         .login-title {
             font-size: 1.5rem; font-weight: 900; color: #1A1A1A;
             text-align: center; margin-bottom: 0.4rem;
         }
         @media (min-width: 640px) { .login-title { font-size: 1.75rem; } }
-
         .login-subtitle {
             text-align: center; color: #666; font-size: 0.9rem;
             margin-bottom: 1.75rem; line-height: 1.7;
         }
         @media (min-width: 640px) { .login-subtitle { font-size: 0.95rem; } }
-
         .login-field { position: relative; margin-bottom: 1rem; }
         .login-field-icon {
             position: absolute;
             right: 1rem; top: 50%; transform: translateY(-50%);
             color: #FF7A00; font-size: 1rem; pointer-events: none;
-            transition: all 0.25s;
         }
         .login-input {
             width: 100%;
@@ -108,7 +102,6 @@
             box-shadow: 0 0 0 4px rgba(255,122,0,0.1);
         }
         .login-input::placeholder { color: #9ca3af; }
-
         .login-btn {
             width: 100%;
             padding: 1rem;
@@ -125,9 +118,7 @@
             transform: translateY(-2px);
             box-shadow: 0 16px 38px -10px rgba(255,122,0,0.85);
         }
-        .login-btn:active:not(:disabled) { transform: translateY(0); }
         .login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-
         .login-error {
             background: #FEF2F2;
             border: 1px solid #FECACA;
@@ -147,7 +138,6 @@
             25% { transform: translateX(-6px); }
             75% { transform: translateX(6px); }
         }
-
         .login-footer-hint {
             text-align: center;
             margin-top: 1.5rem;
@@ -158,9 +148,7 @@
             line-height: 1.7;
         }
         .login-footer-hint a {
-            color: #FF7A00;
-            text-decoration: none;
-            font-weight: 700;
+            color: #FF7A00; text-decoration: none; font-weight: 700;
         }
         .login-footer-hint a:hover { text-decoration: underline; }
 
@@ -172,13 +160,15 @@
         .btn-primary:hover { background: #E06B00; box-shadow: 0 4px 15px rgba(255,122,0,0.3); }
         .btn-danger { background: #ef4444; color: white; transition: all 0.3s; }
         .btn-danger:hover { background: #dc2626; }
-        .input-field { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; font-size: 0.95rem; transition: all 0.3s; }
+        .btn-secondary { background: #6b7280; color: white; transition: all 0.3s; }
+        .btn-secondary:hover { background: #4b5563; }
+        .input-field { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; font-size: 0.95rem; transition: all 0.3s; background: #fff; }
         .input-field:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 3px rgba(255,122,0,0.1); }
         .input-field:disabled { background: #f9fafb; cursor: not-allowed; color: #6b7280; }
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
         th, td { padding: 0.75rem 1rem; text-align: right; border-bottom: 1px solid #e5e7eb; }
-        th { background: #f9fafb; font-weight: 700; color: #374151; position: sticky; top: 0; }
+        th { background: #f9fafb; font-weight: 700; color: #374151; }
         .action-btn { padding: 0.4rem 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; cursor: pointer; transition: all 0.3s; border: none; }
         .edit-btn { background: #3b82f6; color: white; }
         .edit-btn:hover { background: #2563eb; }
@@ -190,91 +180,113 @@
         .status-green { background: #10b981; }
         .status-red { background: #ef4444; }
         .status-yellow { background: #f59e0b; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 1rem 2rem; border-radius: 0.75rem; z-index: 99999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 1rem 2rem; border-radius: 0.75rem; z-index: 99999; opacity: 0; transition: opacity 0.3s; pointer-events: none; font-weight: 700; }
         .toast.show { opacity: 1; }
-        .image-preview { width: 100%; height: 120px; object-fit: cover; border-radius: 0.5rem; margin-top: 0.5rem; }
-        .btn-loading { opacity: 0.7 !important; cursor: not-allowed !important; pointer-events: none !important; position: relative; }
+        .image-preview { width: 100%; height: 120px; object-fit: cover; border-radius: 0.5rem; margin-top: 0.5rem; border: 1px solid #e5e7eb; }
+        .btn-loading { opacity: 0.7 !important; cursor: not-allowed !important; pointer-events: none !important; }
 
-        /* بطاقة معلومات المتجر (قراءة فقط) */
-        .store-info-display {
-            background: linear-gradient(135deg, #FFF8F1 0%, #FFFFFF 100%);
-            border: 1.5px solid #FFE0BD;
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            position: relative;
-            overflow: hidden;
+        /* Tabs */
+        .tab-btn {
+            padding: 0.65rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border: 2px solid #FF7A00;
+            background: #fff;
+            color: #FF7A00;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-        .store-info-display::before {
-            content: '';
-            position: absolute;
-            top: -80px; right: -80px;
-            width: 220px; height: 220px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,122,0,0.10) 0%, transparent 65%);
-            pointer-events: none;
+        .tab-btn:hover { background: #FFF7ED; }
+        .tab-btn.active {
+            background: #FF7A00;
+            color: #fff;
+            box-shadow: 0 8px 20px -8px rgba(255,122,0,0.7);
         }
-        .store-info-header {
+
+        /* Protection badge */
+        .protected-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #FEF3C7;
+            color: #92400E;
+            border: 1px solid #FDE68A;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        /* Read-only field */
+        .readonly-display {
+            background: #F9FAFB;
+            border: 1.5px dashed #D1D5DB;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #4B5563;
+            font-weight: 800;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.25rem;
-            position: relative;
-            z-index: 2;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 8px;
         }
-        .store-info-logo {
-            width: 72px; height: 72px;
-            border-radius: 50%;
-            border: 3px solid #FFFFFF;
-            background: #fff;
-            object-fit: cover;
-            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.4);
+        .readonly-display .lock-icon {
+            color: #9CA3AF;
+            font-size: 0.85rem;
             flex-shrink: 0;
         }
-        @media (min-width: 640px) { .store-info-logo { width: 84px; height: 84px; } }
 
-        .info-item {
-            background: #FFFFFF;
-            border: 1px solid #F0F0F0;
-            border-radius: 0.85rem;
-            padding: 0.85rem 1rem;
-            transition: all 0.25s;
-        }
-        .info-item:hover {
-            border-color: #FFE0BD;
-            box-shadow: 0 4px 12px -6px rgba(255,122,0,0.3);
-        }
-        .info-label {
-            font-size: 0.75rem;
-            color: #9ca3af;
-            font-weight: 700;
-            margin-bottom: 0.35rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .info-label i { color: #FF7A00; font-size: 0.7rem; }
-        .info-value {
-            font-weight: 800;
-            color: #1A1A1A;
-            font-size: 0.95rem;
-            word-break: break-word;
-        }
-
-        .readonly-banner {
+        /* Section header */
+        .section-header {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #F3F4F6;
+            font-weight: 800;
+            color: #374151;
+        }
+        .section-header i {
+            width: 32px; height: 32px;
+            border-radius: 0.6rem;
+            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            color: #fff;
+            display: inline-flex;
+            align-items: center; justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        /* Info banner */
+        .info-banner {
+            display: flex; align-items: flex-start; gap: 10px;
             background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
             border: 1px solid #BFDBFE;
             color: #1E40AF;
-            padding: 0.75rem 1rem;
+            padding: 0.85rem 1rem;
             border-radius: 0.85rem;
             font-size: 0.85rem;
             font-weight: 700;
+            line-height: 1.7;
             margin-bottom: 1.25rem;
         }
-        .readonly-banner i { font-size: 1rem; color: #3B82F6; }
+        .info-banner i { font-size: 1rem; color: #3B82F6; margin-top: 3px; flex-shrink: 0; }
+
+        .warning-banner {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border: 1px solid #FCD34D;
+            color: #92400E;
+            padding: 0.85rem 1rem;
+            border-radius: 0.85rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+        .warning-banner i { color: #D97706; margin-top: 3px; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -297,27 +309,11 @@
 
         <form id="loginForm" autocomplete="off">
             <div class="login-field">
-                <input
-                    type="text"
-                    id="loginStoreName"
-                    class="login-input"
-                    placeholder="اسم المتجر"
-                    required
-                    autocomplete="off"
-                    spellcheck="false"
-                >
+                <input type="text" id="loginStoreName" class="login-input" placeholder="اسم المتجر" required autocomplete="off" spellcheck="false">
                 <i class="fas fa-store login-field-icon"></i>
             </div>
-
             <div class="login-field">
-                <input
-                    type="password"
-                    id="loginPassword"
-                    class="login-input"
-                    placeholder="كلمة المرور"
-                    required
-                    autocomplete="off"
-                >
+                <input type="password" id="loginPassword" class="login-input" placeholder="كلمة المرور" required autocomplete="off">
                 <i class="fas fa-lock login-field-icon"></i>
             </div>
 
@@ -343,17 +339,17 @@
 </div>
 
 <!-- ============================================================
-     🎛️ لوحة التحكم (مخفية حتى تسجيل الدخول)
+     🎛️ لوحة التحكم
      ============================================================ -->
 <div id="dashboard" class="hidden p-4 md:p-8">
     <div id="toast" class="toast"></div>
 
     <div class="max-w-7xl mx-auto">
 
-        <!-- شريط ترحيب + تسجيل خروج -->
+        <!-- شريط ترحيب -->
         <div class="card p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
-                <span class="logged-store-badge" style="
+                <span style="
                     display: inline-flex; align-items: center; gap: 8px;
                     background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
                     border: 1.5px solid #FFE0BD;
@@ -374,7 +370,7 @@
                 <button id="checkConnectionBtn" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold">
                     <i class="fas fa-sync-alt ml-1"></i> إعادة الفحص
                 </button>
-                <button id="logoutBtn" class="logout-btn" style="
+                <button id="logoutBtn" style="
                     display: inline-flex; align-items: center; gap: 6px;
                     background: #fff; border: 1.5px solid #ef4444; color: #ef4444;
                     padding: 0.5rem 1rem; border-radius: 9999px;
@@ -388,141 +384,289 @@
         </div>
 
         <!-- العنوان -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-2xl" style="background:#FF7A00;">
                     <i class="fas fa-crown"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-extrabold">إدارة منتجات متجرك</h1>
-                    <p class="text-sm text-gray-500">أضف، عدّل، واحذف منتجات متجرك بسهولة</p>
+                    <h1 class="text-2xl font-extrabold">إدارة متجرك</h1>
+                    <p class="text-sm text-gray-500">عدّل معلوماتك وأدر منتجاتك</p>
                 </div>
             </div>
         </div>
 
+        <!-- التبويبات -->
+        <div class="flex gap-2 mb-6 flex-wrap">
+            <button id="tabStore" class="tab-btn active">
+                <i class="fas fa-store"></i>
+                <span>معلومات متجري</span>
+            </button>
+            <button id="tabProducts" class="tab-btn">
+                <i class="fas fa-box"></i>
+                <span>منتجاتي</span>
+                <span id="productsCountBadge" style="
+                    background: rgba(255,255,255,0.3);
+                    padding: 0.1rem 0.5rem;
+                    border-radius: 9999px;
+                    font-size: 0.75rem;
+                ">0</span>
+            </button>
+        </div>
+
         <!-- ============================================================
-             📋 معلومات المتجر (قراءة فقط)
+             🏪 قسم معلومات المتجر (قابل للتعديل)
              ============================================================ -->
-        <div class="card p-5 sm:p-6 mb-6">
-            <h2 class="text-lg sm:text-xl font-bold mb-4">
-                <i class="fas fa-store ml-2" style="color:#FF7A00;"></i>
-                معلومات متجري
-                <span class="text-xs sm:text-sm font-normal text-gray-500">(للاطلاع فقط)</span>
-            </h2>
+        <div id="storeSection">
+            <div class="max-w-3xl mx-auto">
+                <div class="card p-6">
 
-            <div class="readonly-banner">
-                <i class="fas fa-circle-info"></i>
-                <span>معلومات المتجر تُدار من قِبل إدارة بازارِنا. للتعديل، تواصل معنا عبر واتساب.</span>
-            </div>
+                    <div class="section-header">
+                        <i class="fas fa-store"></i>
+                        <span>معلومات متجري</span>
+                    </div>
 
-            <div id="storeInfoBox" class="store-info-display">
-                <div class="store-info-header">
-                    <img id="storeInfoLogo" class="store-info-logo" src="https://via.placeholder.com/150/FF7A00/FFFFFF?text=S" alt="شعار المتجر" onerror="this.src='https://via.placeholder.com/150/FF7A00/FFFFFF?text=S'">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap mb-1">
-                            <h3 id="storeInfoName" class="text-xl sm:text-2xl font-extrabold text-gray-900">—</h3>
-                            <span id="storeInfoVerified" class="hidden" style="
-                                display: inline-flex; align-items: center; justify-content: center;
-                                width: 22px; height: 22px; background-color: #FF7A00; border-radius: 50%;
-                                color: white; font-size: 12px;
-                            " title="متجر موثّق"><i class="fas fa-check"></i></span>
+                    <div class="info-banner">
+                        <i class="fas fa-circle-info"></i>
+                        <div>
+                            يمكنك تعديل <strong>اسم المتجر</strong>، <strong>كلمة المرور</strong>، ومعلومات الاتصال والصور.
+                            <br>
+                            <strong>التقييم</strong> و <strong>عدد المتابعين</strong> و <strong>شارة التوثيق</strong> تُدار من قِبل إدارة بازارِنا فقط.
                         </div>
-                        <p id="storeInfoCategory" class="text-sm" style="color:#FF7A00; font-weight:700;">
-                            <i class="fas fa-tag"></i> —
-                        </p>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="info-item">
-                        <div class="info-label"><i class="fab fa-whatsapp"></i> رقم الواتساب</div>
-                        <div id="storeInfoWhatsapp" class="info-value">—</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label"><i class="fas fa-phone"></i> رقم الهاتف</div>
-                        <div id="storeInfoPhone" class="info-value">—</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label"><i class="fas fa-star"></i> التقييم</div>
-                        <div id="storeInfoRating" class="info-value">—</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label"><i class="fas fa-users"></i> عدد المتابعين</div>
-                        <div id="storeInfoFollowers" class="info-value">—</div>
-                    </div>
-                    <div class="info-item sm:col-span-2">
-                        <div class="info-label"><i class="fas fa-align-right"></i> وصف المتجر</div>
-                        <div id="storeInfoDescription" class="info-value">—</div>
-                    </div>
+                    <form id="storeForm" class="space-y-4">
+                        <input type="hidden" id="store_id">
+
+                        <!-- ===== المعلومات الأساسية ===== -->
+                        <div>
+                            <div class="section-header" style="margin-top: 0.5rem;">
+                                <i class="fas fa-info-circle"></i>
+                                <span>المعلومات الأساسية</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-store text-xs" style="color:#FF7A00;"></i>
+                                        اسم المتجر <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <input type="text" id="store_name" class="input-field" required placeholder="اسم متجرك" minlength="2" maxlength="100">
+                                    <div class="warning-banner" style="margin-top: 0.5rem; margin-bottom: 0;">
+                                        <i class="fas fa-triangle-exclamation"></i>
+                                        <span>عند تغيير الاسم، سيتم تحديث اسم متجرك في جميع منتجاتك تلقائياً. تأكد قبل الحفظ!</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-key text-xs" style="color:#FF7A00;"></i>
+                                        كلمة مرور الدخول <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <input type="text" id="store_login_password" class="input-field" required placeholder="كلمة المرور" minlength="4">
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        <i class="fas fa-info-circle"></i> احفظها في مكان آمن — ستحتاجها للدخول في المرة القادمة
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-tag text-xs" style="color:#FF7A00;"></i>
+                                        التصنيف
+                                    </label>
+                                    <input type="text" id="store_category" class="input-field" placeholder="مثال: إلكترونيات، ملابس، طعام" maxlength="50">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-align-right text-xs" style="color:#FF7A00;"></i>
+                                        وصف المتجر
+                                    </label>
+                                    <textarea id="store_description" class="input-field" rows="3" placeholder="وصف مختصر عن المتجر" maxlength="500"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ===== معلومات الاتصال ===== -->
+                        <div>
+                            <div class="section-header" style="margin-top: 1.25rem;">
+                                <i class="fas fa-phone"></i>
+                                <span>معلومات الاتصال</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fab fa-whatsapp text-xs" style="color:#25D366;"></i>
+                                        رقم الواتساب <span style="color:#ef4444;">*</span>
+                                    </label>
+                                    <input type="tel" id="store_whatsapp" class="input-field" required placeholder="249912345678" pattern="[0-9]{10,15}" title="أدخل رقم واتساب بصيغة دولية">
+                                    <p class="text-xs text-gray-500 mt-1">بصيغة دولية بدون + (مثال: 249912345678)</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-phone text-xs" style="color:#2196F3;"></i>
+                                        رقم الهاتف
+                                    </label>
+                                    <input type="tel" id="store_phone" class="input-field" placeholder="249912345678">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ===== الصور ===== -->
+                        <div>
+                            <div class="section-header" style="margin-top: 1.25rem;">
+                                <i class="fas fa-image"></i>
+                                <span>الصور</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">رابط الشعار</label>
+                                    <input type="url" id="store_logo" class="input-field" placeholder="https://example.com/logo.png">
+                                    <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار" onerror="this.style.display='none'">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">رابط الغلاف</label>
+                                    <input type="url" id="store_cover" class="input-field" placeholder="https://example.com/cover.png">
+                                    <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.style.display='none'">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ===== الحقول المحمية (قراءة فقط) ===== -->
+                        <div>
+                            <div class="section-header" style="margin-top: 1.25rem;">
+                                <i class="fas fa-shield-halved"></i>
+                                <span>معلومات محمية (من الإدارة)</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-star text-xs" style="color:#FF7A00;"></i>
+                                        التقييم
+                                    </label>
+                                    <div class="readonly-display">
+                                        <span id="ro_ratting">— / 5</span>
+                                        <i class="fas fa-lock lock-icon"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-users text-xs" style="color:#FF7A00;"></i>
+                                        عدد المتابعين
+                                    </label>
+                                    <div class="readonly-display">
+                                        <span id="ro_followers">—</span>
+                                        <i class="fas fa-lock lock-icon"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-box text-xs" style="color:#FF7A00;"></i>
+                                        عدد المنتجات
+                                    </label>
+                                    <div class="readonly-display">
+                                        <span id="ro_products_count">—</span>
+                                        <i class="fas fa-lock lock-icon"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold mb-1">
+                                        <i class="fas fa-check-circle text-xs" style="color:#FF7A00;"></i>
+                                        حالة التوثيق
+                                    </label>
+                                    <div class="readonly-display">
+                                        <span id="ro_verified">—</span>
+                                        <i class="fas fa-lock lock-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- زر الحفظ -->
+                        <div class="pt-4 border-t border-gray-200">
+                            <button type="submit" id="storeSubmitBtn" class="btn-primary w-full py-3 rounded-lg font-bold text-lg">
+                                <i class="fas fa-save ml-2"></i> <span>حفظ التعديلات</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
         <!-- ============================================================
-             📦 إدارة المنتجات
+             📦 قسم المنتجات
              ============================================================ -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div id="productsSection" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <!-- نموذج إضافة/تعديل منتج -->
-            <div class="card p-6">
-                <h2 class="text-xl font-bold mb-4">
-                    <i class="fas fa-box ml-2" style="color:#FF7A00;"></i>
-                    <span id="productFormTitle">إضافة منتج جديد</span>
-                </h2>
-                <form id="productForm" class="space-y-4">
-                    <input type="hidden" id="product_id">
-
-                    <div>
-                        <label class="block text-sm font-medium mb-1">اسم المنتج *</label>
-                        <input type="text" id="product_name" class="input-field" required placeholder="مثال: هاتف ذكي">
+                <!-- نموذج إضافة/تعديل منتج -->
+                <div class="card p-6">
+                    <div class="section-header">
+                        <i class="fas fa-box"></i>
+                        <span id="productFormTitle">إضافة منتج جديد</span>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium mb-1">المتجر</label>
-                        <input type="text" id="product_store_name_display" class="input-field" disabled>
-                        <input type="hidden" id="product_store_name">
-                        <p class="text-xs text-gray-500 mt-1"><i class="fas fa-lock"></i> المنتج يضاف لمتجرك تلقائياً</p>
-                    </div>
+                    <form id="productForm" class="space-y-4">
+                        <input type="hidden" id="product_id">
 
-                    <div>
-                        <label class="block text-sm font-medium mb-1">السعر * (بالجنيه السوداني)</label>
-                        <input type="number" id="product_price" class="input-field" required min="0" step="0.01" placeholder="0.00">
-                    </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">اسم المنتج <span style="color:#ef4444;">*</span></label>
+                            <input type="text" id="product_name" class="input-field" required placeholder="مثال: هاتف ذكي">
+                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium mb-1">رابط الصورة</label>
-                        <input type="url" id="product_img_url" class="input-field" placeholder="https://example.com/product.png">
-                        <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج">
-                    </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">المتجر</label>
+                            <input type="text" id="product_store_name_display" class="input-field" disabled>
+                            <input type="hidden" id="product_store_name">
+                            <p class="text-xs text-gray-500 mt-1"><i class="fas fa-lock"></i> المنتج يضاف لمتجرك تلقائياً</p>
+                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium mb-1">التقييم</label>
-                        <input type="number" id="product_ratting" class="input-field" value="0" min="0" max="5" step="0.1">
-                    </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">السعر (ج.س) <span style="color:#ef4444;">*</span></label>
+                            <input type="number" id="product_price" class="input-field" required min="0" step="0.01" placeholder="0.00">
+                        </div>
 
-                    <div class="flex gap-3">
-                        <button type="submit" id="productSubmitBtn" class="btn-primary flex-1 py-3 rounded-lg font-bold text-lg">
-                            <i class="fas fa-save ml-2"></i> <span>حفظ المنتج</span>
-                        </button>
-                        <button type="button" id="cancelEditProduct" class="btn-danger px-6 py-3 rounded-lg font-bold hidden">
-                            <i class="fas fa-times ml-2"></i> إلغاء
-                        </button>
-                    </div>
-                </form>
-            </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">رابط الصورة</label>
+                            <input type="url" id="product_img_url" class="input-field" placeholder="https://example.com/product.png">
+                            <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج" onerror="this.style.display='none'">
+                        </div>
 
-            <!-- قائمة منتجات المتجر -->
-            <div class="card p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold">
-                        <i class="fas fa-boxes ml-2" style="color:#FF7A00;"></i>
-                        منتجات متجري
-                    </h2>
-                    <span id="productsCount" class="text-white px-3 py-1 rounded-full text-sm font-bold" style="background:#FF7A00;">0</span>
+                        <div>
+                            <label class="block text-sm font-bold mb-1">التقييم</label>
+                            <input type="number" id="product_ratting" class="input-field" value="0" min="0" max="5" step="0.1">
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="submit" id="productSubmitBtn" class="btn-primary flex-1 py-3 rounded-lg font-bold text-lg">
+                                <i class="fas fa-save ml-2"></i> <span>حفظ المنتج</span>
+                            </button>
+                            <button type="button" id="cancelEditProduct" class="btn-danger px-6 py-3 rounded-lg font-bold hidden">
+                                <i class="fas fa-times ml-2"></i> إلغاء
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div id="productsList" class="table-container"></div>
-            </div>
 
+                <!-- قائمة منتجات المتجر -->
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="section-header" style="margin: 0; border: none; padding: 0;">
+                            <i class="fas fa-boxes"></i>
+                            <span>منتجات متجري</span>
+                        </div>
+                        <span id="productsCount" class="text-white px-3 py-1 rounded-full text-sm font-bold" style="background:#FF7A00;">0</span>
+                    </div>
+                    <div id="productsList" class="table-container"></div>
+                </div>
+
+            </div>
         </div>
 
     </div>
@@ -537,7 +681,7 @@
 
 <script>
 // ============================================================
-// 🔥 إعداد Firebase
+// 🔥 Firebase Init
 // ============================================================
 const firebaseConfig = {
     apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
@@ -557,47 +701,27 @@ const productsTableName = 'products';
 const SESSION_KEY = 'bzr_store_session';
 
 // ============================================================
-// 🔐 Anonymous Auth قبل أي قراءة
+// 🔐 Anonymous Auth
 // ============================================================
 firebase.auth().signInAnonymously()
     .then(() => console.log('%c✅ تم الاتصال الآمن', 'color:#25D366;font-weight:bold;'))
     .catch(err => console.warn('⚠️ فشلت المصادقة المجهولة:', err.message));
 
 // ============================================================
-// 🌐 متغيرات عامة
+// 🌐 المتغيرات
 // ============================================================
 let currentStore = null;
 let productsData = [];
 let isSavingProduct = false;
+let isSavingStore = false;
 
 // ============================================================
-// 🎯 اختصارات DOM
+// 🎯 DOM shortcuts
 // ============================================================
-const loginOverlay = document.getElementById('loginOverlay');
-const loginForm = document.getElementById('loginForm');
-const loginStoreName = document.getElementById('loginStoreName');
-const loginPassword = document.getElementById('loginPassword');
-const loginError = document.getElementById('loginError');
-const loginSubmitBtn = document.getElementById('loginSubmitBtn');
-
-const dashboard = document.getElementById('dashboard');
-const welcomeStoreName = document.getElementById('welcomeStoreName');
-const logoutBtn = document.getElementById('logoutBtn');
-
-const productForm = document.getElementById('productForm');
-const productsList = document.getElementById('productsList');
-const productsCount = document.getElementById('productsCount');
-const connectionStatusDot = document.getElementById('connectionStatusDot');
-const connectionStatusText = document.getElementById('connectionStatusText');
-const checkConnectionBtn = document.getElementById('checkConnectionBtn');
-const toast = document.getElementById('toast');
-
-const cancelEditProduct = document.getElementById('cancelEditProduct');
-const productImgPreview = document.getElementById('product_img_preview');
-const productSubmitBtn = document.getElementById('productSubmitBtn');
+const $ = id => document.getElementById(id);
 
 // ============================================================
-// 🛠️ دوال مساعدة
+// 🛠️ Helpers
 // ============================================================
 function sanitizeInput(str) {
     if (!str) return '';
@@ -607,11 +731,23 @@ function toNumber(value, defaultValue = 0) {
     const num = parseFloat(value);
     return isNaN(num) ? defaultValue : num;
 }
+function cleanPhone(p) {
+    if (!p) return '';
+    return String(p).replace(/[^0-9]/g, '');
+}
+function escapeHtml(str) {
+    if (str == null) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
 function showToast(message, type = 'success') {
-    toast.textContent = message;
-    toast.className = 'toast show';
-    toast.style.backgroundColor = type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#10b981';
-    setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    const t = $('toast');
+    t.textContent = message;
+    t.className = 'toast show';
+    t.style.backgroundColor = type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#10b981';
+    clearTimeout(window._toastT);
+    window._toastT = setTimeout(() => t.classList.remove('show'), 3500);
 }
 function setButtonLoading(btn, isLoading, loadingText, normalHTML) {
     if (isLoading) {
@@ -625,25 +761,27 @@ function setButtonLoading(btn, isLoading, loadingText, normalHTML) {
     }
 }
 function updateConnectionStatus(success, message) {
+    const dot = $('connectionStatusDot');
+    const txt = $('connectionStatusText');
     if (success) {
-        connectionStatusDot.className = 'status-dot status-green';
-        connectionStatusText.textContent = 'متصل ✅ ' + message;
-        connectionStatusText.className = 'text-sm font-semibold text-green-700';
+        dot.className = 'status-dot status-green';
+        txt.textContent = 'متصل ✅ ' + message;
+        txt.className = 'text-sm font-semibold text-green-700';
     } else {
-        connectionStatusDot.className = 'status-dot status-red';
-        connectionStatusText.textContent = 'فشل الاتصال ❌ ' + message;
-        connectionStatusText.className = 'text-sm font-semibold text-red-700';
+        dot.className = 'status-dot status-red';
+        txt.textContent = 'فشل الاتصال ❌ ' + message;
+        txt.className = 'text-sm font-semibold text-red-700';
     }
 }
 
 // ============================================================
-// 🔐 نظام تسجيل الدخول
+// 🔐 Session
 // ============================================================
 function getSession() {
     try {
         const raw = sessionStorage.getItem(SESSION_KEY);
         return raw ? JSON.parse(raw) : null;
-    } catch (e) { return null; }
+    } catch { return null; }
 }
 function saveSession(store) {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify({
@@ -656,30 +794,32 @@ function clearSession() {
     sessionStorage.removeItem(SESSION_KEY);
 }
 
-// تسجيل الدخول
-loginForm.addEventListener('submit', async (e) => {
+// ============================================================
+// 🔐 Login
+// ============================================================
+$('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const enteredName = sanitizeInput(loginStoreName.value);
-    const enteredPass = loginPassword.value;
+    const enteredName = sanitizeInput($('loginStoreName').value);
+    const enteredPass = $('loginPassword').value;
+    const errEl = $('loginError');
 
-    loginError.classList.remove('show');
+    errEl.classList.remove('show');
 
     if (!enteredName) {
-        loginError.textContent = '⚠️ الرجاء إدخال اسم المتجر';
-        loginError.classList.add('show');
+        errEl.textContent = '⚠️ الرجاء إدخال اسم المتجر';
+        errEl.classList.add('show');
         return;
     }
     if (!enteredPass) {
-        loginError.textContent = '⚠️ الرجاء إدخال كلمة المرور';
-        loginError.classList.add('show');
+        errEl.textContent = '⚠️ الرجاء إدخال كلمة المرور';
+        errEl.classList.add('show');
         return;
     }
 
-    setButtonLoading(loginSubmitBtn, true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
+    setButtonLoading($('loginSubmitBtn'), true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
 
     try {
-        // جلب كل المتاجر والبحث عن التطابق (غير حساس لحالة الأحرف)
         const snapshot = await db.collection(storesTableName).get();
         let foundStore = null;
         snapshot.docs.forEach(doc => {
@@ -689,16 +829,11 @@ loginForm.addEventListener('submit', async (e) => {
             }
         });
 
-        if (!foundStore) {
-            throw new Error('لم يتم العثور على متجر بهذا الاسم');
-        }
+        if (!foundStore) throw new Error('لم يتم العثور على متجر بهذا الاسم');
 
-        if (!foundStore.login_password) {
-            throw new Error('لم يتم تعيين كلمة مرور لهذا المتجر. تواصل مع الإدارة');
-        }
-        if (foundStore.login_password !== enteredPass) {
-            throw new Error('كلمة المرور غير صحيحة');
-        }
+        if (!foundStore.login_password) throw new Error('لم يتم تعيين كلمة مرور لهذا المتجر. تواصل مع الإدارة');
+
+        if (foundStore.login_password !== enteredPass) throw new Error('كلمة المرور غير صحيحة');
 
         // ✅ نجاح
         currentStore = foundStore;
@@ -708,37 +843,40 @@ loginForm.addEventListener('submit', async (e) => {
 
     } catch (err) {
         console.error(err);
-        loginError.textContent = '❌ ' + (err.message || 'حدث خطأ غير متوقع');
-        loginError.classList.add('show');
-        loginPassword.value = '';
+        errEl.textContent = '❌ ' + (err.message || 'حدث خطأ غير متوقع');
+        errEl.classList.add('show');
+        $('loginPassword').value = '';
     } finally {
-        setButtonLoading(loginSubmitBtn, false, '', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
+        setButtonLoading($('loginSubmitBtn'), false, '', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     }
 });
 
-// الدخول للوحة التحكم
+// ============================================================
+// 🚀 Dashboard Entry
+// ============================================================
 async function enterDashboard() {
-    loginOverlay.classList.add('hidden');
-    dashboard.classList.remove('hidden');
+    $('loginOverlay').classList.add('hidden');
+    $('dashboard').classList.remove('hidden');
 
-    // عرض اسم المتجر في الشارة العلوية
-    welcomeStoreName.textContent = currentStore.name;
+    $('welcomeStoreName').textContent = currentStore.name;
 
-    // ✅ تعبئة بطاقة معلومات المتجر (قراءة فقط)
-    fillStoreInfoDisplay(currentStore);
+    // تعبئة نموذج المتجر
+    fillStoreForm(currentStore);
 
-    // ✅ تعبئة حقل المتجر في نموذج المنتج
-    document.getElementById('product_store_name').value = currentStore.name;
-    document.getElementById('product_store_name_display').value = currentStore.name;
+    // تعبئة حقل المتجر في نموذج المنتج
+    $('product_store_name').value = currentStore.name;
+    $('product_store_name_display').value = currentStore.name;
 
-    // ✅ تحميل منتجات المتجر
+    // تحميل المنتجات
     await loadMyProducts();
 
     updateConnectionStatus(true, 'مرحباً ' + currentStore.name);
 }
 
-// تسجيل الخروج
-logoutBtn.addEventListener('click', () => {
+// ============================================================
+// 🔒 Logout
+// ============================================================
+$('logoutBtn').addEventListener('click', () => {
     if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
     clearSession();
     currentStore = null;
@@ -746,63 +884,167 @@ logoutBtn.addEventListener('click', () => {
 });
 
 // ============================================================
-// 🎨 تعبئة بطاقة معلومات المتجر (قراءة فقط)
+// 🎨 Fill Store Form
 // ============================================================
-function fillStoreInfoDisplay(store) {
-    // الشعار
-    const logo = document.getElementById('storeInfoLogo');
-    if (store.logo_url) {
-        logo.src = store.logo_url;
-    } else {
-        logo.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
-    }
+function fillStoreForm(store) {
+    $('store_id').value = store.id || '';
+    $('store_name').value = store.name || '';
+    $('store_login_password').value = store.login_password || '';
+    $('store_category').value = store.category || '';
+    $('store_description').value = store.description || '';
+    $('store_whatsapp').value = store.whatsapp_number || '';
+    $('store_phone').value = store.phone_number || '';
+    $('store_logo').value = store.logo_url || '';
+    $('store_cover').value = store.cover_url || '';
 
-    // الاسم
-    document.getElementById('storeInfoName').textContent = store.name || '—';
-
-    // التحقق من التوثيق
-    const verifiedIcon = document.getElementById('storeInfoVerified');
-    if (store.is_verified) {
-        verifiedIcon.classList.remove('hidden');
-    } else {
-        verifiedIcon.classList.add('hidden');
-    }
-
-    // التصنيف
-    const category = store.category || 'عام';
-    document.getElementById('storeInfoCategory').innerHTML = `<i class="fas fa-tag"></i> ${sanitizeInput(category)}`;
-
-    // الواتساب
-    document.getElementById('storeInfoWhatsapp').innerHTML = store.whatsapp_number
-        ? `<a href="https://wa.me/${String(store.whatsapp_number).replace(/[^0-9]/g, '')}" target="_blank" style="color:#25D366; text-decoration:none; font-weight:800;">
-            <i class="fab fa-whatsapp"></i> ${sanitizeInput(store.whatsapp_number)}
-           </a>`
-        : '<span style="color:#9ca3af;">غير محدد</span>';
-
-    // الهاتف
-    document.getElementById('storeInfoPhone').innerHTML = store.phone_number
-        ? `<a href="tel:${sanitizeInput(store.phone_number)}" style="color:#2196F3; text-decoration:none; font-weight:800;">
-            <i class="fas fa-phone"></i> ${sanitizeInput(store.phone_number)}
-           </a>`
-        : '<span style="color:#9ca3af;">غير محدد</span>';
-
-    // التقييم
+    // الحقول المحمية (عرض فقط)
     const rating = parseFloat(store.ratting) || 0;
-    document.getElementById('storeInfoRating').innerHTML = `
-        <span style="color:#FF7A00;"><i class="fas fa-star"></i></span>
-        ${rating.toFixed(1)} / 5
-    `;
+    $('ro_ratting').innerHTML = `<span style="color:#FF7A00;"><i class="fas fa-star"></i></span> ${rating.toFixed(1)} / 5`;
 
-    // المتابعون
     const followers = parseInt(store.followers) || 0;
-    document.getElementById('storeInfoFollowers').textContent = followers.toLocaleString() + ' متابع';
+    $('ro_followers').textContent = followers.toLocaleString() + ' متابع';
 
-    // الوصف
-    document.getElementById('storeInfoDescription').textContent = store.description || 'لا يوجد وصف';
+    const pcount = parseInt(store.products_count) || 0;
+    $('ro_products_count').textContent = pcount + ' منتج';
+
+    $('ro_verified').innerHTML = store.is_verified
+        ? '<span style="color:#10b981;"><i class="fas fa-check-circle"></i> موثّق</span>'
+        : '<span style="color:#9ca3af;"><i class="fas fa-circle-xmark"></i> غير موثّق</span>';
+
+    // معاينة الصور
+    if (store.logo_url) {
+        $('store_logo_preview').src = store.logo_url;
+        $('store_logo_preview').classList.remove('hidden');
+    } else {
+        $('store_logo_preview').classList.add('hidden');
+    }
+    if (store.cover_url) {
+        $('store_cover_preview').src = store.cover_url;
+        $('store_cover_preview').classList.remove('hidden');
+    } else {
+        $('store_cover_preview').classList.add('hidden');
+    }
 }
 
 // ============================================================
-// 📦 تحميل منتجات المتجر فقط
+// 💾 Save Store (مع دعم تغيير الاسم)
+// ============================================================
+$('storeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSavingStore || !currentStore) return;
+
+    const storeId = $('store_id').value;
+    const newName = sanitizeInput($('store_name').value);
+    const newPassword = $('store_login_password').value;
+    const whatsapp = cleanPhone($('store_whatsapp').value);
+    const phone = cleanPhone($('store_phone').value);
+
+    // ============ التحقق ============
+    if (!newName || newName.length < 2) {
+        showToast('اسم المتجر مطلوب (حرفان على الأقل)', 'error');
+        return;
+    }
+    if (newName.length > 100) {
+        showToast('اسم المتجر طويل جداً (100 حرف كحد أقصى)', 'error');
+        return;
+    }
+    if (!newPassword || newPassword.length < 4) {
+        showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error');
+        return;
+    }
+    if (!whatsapp || whatsapp.length < 10) {
+        showToast('رقم الواتساب مطلوب ويجب أن يكون صحيحاً', 'error');
+        return;
+    }
+
+    const oldName = currentStore.name;
+    const nameChanged = (newName !== oldName);
+
+    // ============ تأكيد تغيير الاسم ============
+    if (nameChanged) {
+        const confirmChange = confirm(
+            `⚠️ تنبيه مهم!\n\n` +
+            `سيتم تغيير اسم متجرك من:\n"${oldName}"\n\n` +
+            `إلى:\n"${newName}"\n\n` +
+            `وسيتم تحديث اسم المتجر في جميع منتجاتك تلقائياً.\n\n` +
+            `هل أنت متأكد؟`
+        );
+        if (!confirmChange) return;
+    }
+
+    const updateData = {
+        name: newName,
+        login_password: newPassword,
+        whatsapp_number: whatsapp,
+        phone_number: phone || null,
+        logo_url: sanitizeInput($('store_logo').value),
+        cover_url: sanitizeInput($('store_cover').value),
+        category: sanitizeInput($('store_category').value),
+        description: sanitizeInput($('store_description').value)
+    };
+
+    isSavingStore = true;
+    setButtonLoading(
+        $('storeSubmitBtn'),
+        true,
+        'جارٍ الحفظ...',
+        '<i class="fas fa-save ml-2"></i> <span>حفظ التعديلات</span>'
+    );
+
+    try {
+        // 1) تحديث بيانات المتجر
+        await db.collection(storesTableName).doc(storeId).update(updateData);
+
+        // 2) إذا تغيّر الاسم → نحدّث كل منتجات المتجر
+        if (nameChanged) {
+            showToast('جاري تحديث المنتجات...', 'warning');
+
+            const productsSnap = await db.collection(productsTableName)
+                .where('store_name', '==', oldName)
+                .get();
+
+            const updates = productsSnap.docs.map(doc =>
+                db.collection(productsTableName).doc(doc.id).update({ store_name: newName })
+            );
+            await Promise.all(updates);
+
+            // 3) تحديث الجلسة بالاسم الجديد
+            saveSession({
+                id: storeId,
+                name: newName,
+                loggedAt: Date.now()
+            });
+
+            // 4) تحديث الواجهة
+            $('welcomeStoreName').textContent = newName;
+            $('product_store_name').value = newName;
+            $('product_store_name_display').value = newName;
+
+            showToast(`✅ تم تحديث الاسم و ${updates.length} منتج`);
+        } else {
+            showToast('تم حفظ التعديلات بنجاح ✅');
+        }
+
+        // تحديث الكائن المحلي
+        currentStore = { ...currentStore, ...updateData };
+        fillStoreForm(currentStore);
+
+    } catch (err) {
+        console.error('خطأ حفظ المتجر:', err);
+        showToast('فشل الحفظ: ' + err.message, 'error');
+    } finally {
+        isSavingStore = false;
+        setButtonLoading(
+            $('storeSubmitBtn'),
+            false,
+            '',
+            '<i class="fas fa-save ml-2"></i> <span>حفظ التعديلات</span>'
+        );
+    }
+});
+
+// ============================================================
+// 📦 Load My Products
 // ============================================================
 async function loadMyProducts() {
     if (!currentStore) return;
@@ -812,24 +1054,26 @@ async function loadMyProducts() {
             .get();
 
         productsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        // ترتيب من الأحدث
         productsData.sort((a, b) => {
             const ta = a.created_at?.seconds || 0;
             const tb = b.created_at?.seconds || 0;
             return tb - ta;
         });
 
-        productsCount.textContent = productsData.length;
+        $('productsCount').textContent = productsData.length;
+        $('productsCountBadge').textContent = productsData.length;
+        $('ro_products_count').textContent = productsData.length + ' منتج';
+
         renderMyProductsList(productsData);
     } catch (err) {
         console.error('خطأ تحميل المنتجات:', err);
-        productsList.innerHTML = `<div class="text-red-500 p-4">تعذر تحميل المنتجات: ${err.message}</div>`;
+        $('productsList').innerHTML = `<div class="text-red-500 p-4">تعذر تحميل المنتجات: ${err.message}</div>`;
     }
 }
 
 function renderMyProductsList(products) {
     if (products.length === 0) {
-        productsList.innerHTML = `
+        $('productsList').innerHTML = `
             <div class="text-gray-500 p-6 text-center">
                 <i class="fas fa-box-open text-5xl mb-3" style="color:#d1d5db;"></i>
                 <p class="font-bold">لا توجد منتجات بعد</p>
@@ -856,9 +1100,9 @@ function renderMyProductsList(products) {
                 <td>
                     <div class="flex items-center gap-2">
                         ${product.img_url
-                            ? `<img src="${sanitizeInput(product.img_url)}" class="w-10 h-10 rounded-lg object-cover" alt="${sanitizeInput(product.name)}" onerror="this.style.display='none'">`
+                            ? `<img src="${escapeHtml(product.img_url)}" class="w-10 h-10 rounded-lg object-cover" alt="${escapeHtml(product.name)}" onerror="this.style.display='none'">`
                             : '<div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center"><i class="fas fa-box text-gray-500"></i></div>'}
-                        <div class="font-semibold">${sanitizeInput(product.name)}</div>
+                        <div class="font-semibold">${escapeHtml(product.name)}</div>
                     </div>
                 </td>
                 <td><div class="font-bold" style="color:#FF7A00;">${price.toLocaleString()} ج.س</div></td>
@@ -878,19 +1122,19 @@ function renderMyProductsList(products) {
         `;
     });
     html += '</tbody></table>';
-    productsList.innerHTML = html;
+    $('productsList').innerHTML = html;
 }
 
 // ============================================================
-// ➕/✏️ حفظ منتج
+// ➕/✏️ Save Product
 // ============================================================
-productForm.addEventListener('submit', async (e) => {
+$('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingProduct || !currentStore) return;
 
-    const id = document.getElementById('product_id').value;
-    const name = sanitizeInput(document.getElementById('product_name').value);
-    const price = toNumber(document.getElementById('product_price').value);
+    const id = $('product_id').value;
+    const name = sanitizeInput($('product_name').value);
+    const price = toNumber($('product_price').value);
 
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (price <= 0) { showToast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
@@ -899,13 +1143,13 @@ productForm.addEventListener('submit', async (e) => {
         name: name,
         store_name: currentStore.name,
         price: price,
-        img_url: sanitizeInput(document.getElementById('product_img_url').value),
-        ratting: toNumber(document.getElementById('product_ratting').value)
+        img_url: sanitizeInput($('product_img_url').value),
+        ratting: toNumber($('product_ratting').value)
     };
 
     isSavingProduct = true;
     const isEditing = !!id;
-    setButtonLoading(productSubmitBtn, true, isEditing ? 'جارٍ التعديل...' : 'جارٍ الحفظ...', '<i class="fas fa-save ml-2"></i> <span>حفظ المنتج</span>');
+    setButtonLoading($('productSubmitBtn'), true, isEditing ? 'جارٍ التعديل...' : 'جارٍ الحفظ...', '<i class="fas fa-save ml-2"></i> <span>حفظ المنتج</span>');
 
     try {
         if (id) {
@@ -928,18 +1172,18 @@ productForm.addEventListener('submit', async (e) => {
         showToast('فشل الحفظ: ' + err.message, 'error');
     } finally {
         isSavingProduct = false;
-        setButtonLoading(productSubmitBtn, false, '', '<i class="fas fa-save ml-2"></i> <span>حفظ المنتج</span>');
+        setButtonLoading($('productSubmitBtn'), false, '', '<i class="fas fa-save ml-2"></i> <span>حفظ المنتج</span>');
     }
 });
 
 function resetProductForm() {
-    productForm.reset();
-    document.getElementById('product_id').value = '';
-    document.getElementById('productFormTitle').textContent = 'إضافة منتج جديد';
-    cancelEditProduct.classList.add('hidden');
-    productImgPreview.classList.add('hidden');
-    document.getElementById('product_store_name').value = currentStore.name;
-    document.getElementById('product_store_name_display').value = currentStore.name;
+    $('productForm').reset();
+    $('product_id').value = '';
+    $('productFormTitle').textContent = 'إضافة منتج جديد';
+    $('cancelEditProduct').classList.add('hidden');
+    $('product_img_preview').classList.add('hidden');
+    $('product_store_name').value = currentStore.name;
+    $('product_store_name_display').value = currentStore.name;
 }
 
 window.editProduct = async (id) => {
@@ -952,29 +1196,29 @@ window.editProduct = async (id) => {
             throw new Error('لا تملك صلاحية تعديل هذا المنتج');
         }
 
-        document.getElementById('product_id').value = data.id;
-        document.getElementById('product_name').value = data.name || '';
-        document.getElementById('product_price').value = data.price || 0;
-        document.getElementById('product_img_url').value = data.img_url || '';
-        document.getElementById('product_ratting').value = data.ratting || 0;
+        $('product_id').value = data.id;
+        $('product_name').value = data.name || '';
+        $('product_price').value = data.price || 0;
+        $('product_img_url').value = data.img_url || '';
+        $('product_ratting').value = data.ratting || 0;
 
         if (data.img_url) {
-            productImgPreview.src = data.img_url;
-            productImgPreview.classList.remove('hidden');
+            $('product_img_preview').src = data.img_url;
+            $('product_img_preview').classList.remove('hidden');
         } else {
-            productImgPreview.classList.add('hidden');
+            $('product_img_preview').classList.add('hidden');
         }
 
-        document.getElementById('productFormTitle').textContent = 'تعديل المنتج: ' + data.name;
-        cancelEditProduct.classList.remove('hidden');
-        document.querySelector('#productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        $('productFormTitle').textContent = 'تعديل المنتج: ' + data.name;
+        $('cancelEditProduct').classList.remove('hidden');
+        $('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
         console.error('خطأ تحميل المنتج:', err);
         showToast('فشل: ' + err.message, 'error');
     }
 };
 
-cancelEditProduct.addEventListener('click', resetProductForm);
+$('cancelEditProduct').addEventListener('click', resetProductForm);
 
 window.deleteProduct = async (id) => {
     if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
@@ -1003,18 +1247,39 @@ async function updateMyStoreProductsCount() {
         const newCount = snapshot.size;
         await db.collection(storesTableName).doc(currentStore.id).update({ products_count: newCount });
         currentStore.products_count = newCount;
-        // تحديث عرض عدد المتابعين إذا لزم
+        $('ro_products_count').textContent = newCount + ' منتج';
+        $('productsCount').textContent = newCount;
+        $('productsCountBadge').textContent = newCount;
     } catch (err) {
         console.error('خطأ تحديث عدد المنتجات:', err);
     }
 }
 
 // ============================================================
-// 🔍 فحص الاتصال
+// 🎛️ Tabs
 // ============================================================
-checkConnectionBtn.addEventListener('click', async () => {
-    connectionStatusDot.className = 'status-dot status-yellow';
-    connectionStatusText.textContent = 'جارٍ الفحص...';
+$('tabStore').addEventListener('click', () => {
+    $('tabStore').classList.add('active');
+    $('tabProducts').classList.remove('active');
+    $('storeSection').classList.remove('hidden');
+    $('productsSection').classList.add('hidden');
+    $('productsCountBadge').style.background = 'rgba(0,0,0,0.1)';
+});
+$('tabProducts').addEventListener('click', () => {
+    $('tabProducts').classList.add('active');
+    $('tabStore').classList.remove('active');
+    $('productsSection').classList.remove('hidden');
+    $('storeSection').classList.add('hidden');
+    $('productsCountBadge').style.background = 'rgba(255,255,255,0.3)';
+    loadMyProducts();
+});
+
+// ============================================================
+// 🔍 Connection Check
+// ============================================================
+$('checkConnectionBtn').addEventListener('click', async () => {
+    $('connectionStatusDot').className = 'status-dot status-yellow';
+    $('connectionStatusText').textContent = 'جارٍ الفحص...';
     try {
         await db.collection(storesTableName).limit(1).get();
         updateConnectionStatus(true, currentStore ? currentStore.name : '');
@@ -1024,36 +1289,42 @@ checkConnectionBtn.addEventListener('click', async () => {
 });
 
 // ============================================================
-// 🖼️ معاينة صورة المنتج
+// 🖼️ Image Previews
 // ============================================================
-document.getElementById('product_img_url').addEventListener('input', (e) => {
-    if (e.target.value) {
-        productImgPreview.src = e.target.value;
-        productImgPreview.classList.remove('hidden');
-    } else {
-        productImgPreview.classList.add('hidden');
-    }
+$('store_logo').addEventListener('input', (e) => {
+    const p = $('store_logo_preview');
+    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
+    else p.classList.add('hidden');
+});
+$('store_cover').addEventListener('input', (e) => {
+    const p = $('store_cover_preview');
+    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
+    else p.classList.add('hidden');
+});
+$('product_img_url').addEventListener('input', (e) => {
+    const p = $('product_img_preview');
+    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
+    else p.classList.add('hidden');
 });
 
 // ============================================================
-// 🚀 بدء التشغيل
+// 🚀 Init
 // ============================================================
 async function init() {
     const session = getSession();
     if (!session || !session.id) {
-        loginOverlay.classList.remove('hidden');
-        dashboard.classList.add('hidden');
-        setTimeout(() => loginStoreName.focus(), 200);
+        $('loginOverlay').classList.remove('hidden');
+        $('dashboard').classList.add('hidden');
+        setTimeout(() => $('loginStoreName').focus(), 200);
         return;
     }
 
-    // ✅ يوجد جلسة → نتحقق أن المتجر لا يزال موجوداً
     try {
         const snap = await db.collection(storesTableName).doc(session.id).get();
         if (!snap.exists) {
             clearSession();
-            loginOverlay.classList.remove('hidden');
-            dashboard.classList.add('hidden');
+            $('loginOverlay').classList.remove('hidden');
+            $('dashboard').classList.add('hidden');
             return;
         }
         currentStore = { id: snap.id, ...snap.data() };
@@ -1061,8 +1332,8 @@ async function init() {
     } catch (err) {
         console.error(err);
         clearSession();
-        loginOverlay.classList.remove('hidden');
-        dashboard.classList.add('hidden');
+        $('loginOverlay').classList.remove('hidden');
+        $('dashboard').classList.add('hidden');
     }
 }
 
