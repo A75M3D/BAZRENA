@@ -931,17 +931,23 @@
         /* ============================================================
            ✨ Modal إضافة المنتجات
            ============================================================ */
-        .add-products-modal {
+        #addProductsModal {
+            display: none;
             position: fixed;
-            inset: 0;
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 99999;
             background: rgba(0,0,0,0.65);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        #addProductsModal.show {
+            display: flex;
             animation: fadeIn 0.25s;
         }
 
@@ -957,6 +963,7 @@
             box-shadow: 0 30px 70px -20px rgba(255,122,0,0.55), 0 8px 30px rgba(0,0,0,0.1);
             animation: zoomIn 0.4s cubic-bezier(0.4,0,0.2,1);
             overflow: hidden;
+            margin: auto;
         }
 
         .add-products-content::before {
@@ -1654,10 +1661,10 @@
 <!-- ============================================================
      ✨ Modal إضافة المنتجات
      ============================================================ -->
-<div id="addProductsModal" class="add-products-modal hidden">
+<div id="addProductsModal">
     <div class="add-products-content">
 
-        <button class="add-products-close" onclick="closeAddProductsModal()" aria-label="إغلاق">
+        <button type="button" class="add-products-close" id="addProductsCloseBtn" aria-label="إغلاق">
             <i class="fas fa-times"></i>
         </button>
 
@@ -1880,6 +1887,7 @@
     const logoMenuBtn = document.getElementById('logoMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     const addProductsModal = document.getElementById('addProductsModal');
+    const addProductsCloseBtn = document.getElementById('addProductsCloseBtn');
 
     function updateAllProductsTotalBadge() {
         if (!allProductsTotalCount) return;
@@ -1897,26 +1905,50 @@
         const anyModalOpen =
             !storeModal.classList.contains('hidden') ||
             !productModal.classList.contains('hidden') ||
-            (addProductsModal && !addProductsModal.classList.contains('hidden')) ||
+            (addProductsModal && addProductsModal.classList.contains('show')) ||
             cartSidebar.classList.contains('open') ||
             (searchOverlay && searchOverlay.classList.contains('show'));
         document.body.style.overflow = anyModalOpen ? 'hidden' : '';
     }
 
-    function openAddProductsModal() {
-        if (!addProductsModal) return;
-        addProductsModal.classList.remove('hidden');
-        updateBodyScroll();
+    // ============================================================
+    // ✨ Modal إضافة المنتجات
+    // ============================================================
+    window.openAddProductsModal = function() {
+        const modal = document.getElementById('addProductsModal');
+        if (!modal) {
+            console.error('❌ Modal not found in DOM');
+            return;
+        }
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        console.log('✅ Modal opened');
+    };
+
+    window.closeAddProductsModal = function() {
+        const modal = document.getElementById('addProductsModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        console.log('❌ Modal closed');
+    };
+
+    if (addProductsCloseBtn) {
+        addProductsCloseBtn.onclick = function(e) {
+            e.stopPropagation();
+            window.closeAddProductsModal();
+        };
     }
 
-    function closeAddProductsModal() {
-        if (!addProductsModal) return;
-        addProductsModal.classList.add('hidden');
-        updateBodyScroll();
+    if (addProductsModal) {
+        addProductsModal.onclick = function(e) {
+            if (e.target === addProductsModal) {
+                window.closeAddProductsModal();
+            }
+        };
     }
-
-    window.openAddProductsModal = openAddProductsModal;
-    window.closeAddProductsModal = closeAddProductsModal;
 
     function toggleMobileMenu(force) {
         if (!mobileMenu || !logoMenuBtn) return;
@@ -2081,16 +2113,24 @@
         const bottomRow = document.createElement('div');
         bottomRow.className = 'flex items-center justify-between gap-2 mt-2';
 
+        // ✅ زر المنتجات — onclick مباشر
         const count = document.createElement('button');
         count.className = 'store-products-btn';
         count.type = 'button';
-        count.title = 'إضافة منتجات';
+        count.setAttribute('title', 'إضافة منتجات');
         count.innerHTML = `<i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span>`;
-        count.addEventListener('click', (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            openAddProductsModal();
-        });
+        count.onclick = function(e) {
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            try {
+                window.openAddProductsModal();
+            } catch (err) {
+                console.error('❌ Error opening modal:', err);
+            }
+            return false;
+        };
 
         const followBtn = document.createElement('button');
         followBtn.className = 'card-follow-btn';
@@ -2847,18 +2887,12 @@
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+            if (addProductsModal && addProductsModal.classList.contains('show')) { window.closeAddProductsModal(); return; }
             if (searchOverlay && searchOverlay.classList.contains('show')) { closeSearch(); return; }
-            if (addProductsModal && !addProductsModal.classList.contains('hidden')) { closeAddProductsModal(); return; }
             if (!productModal.classList.contains('hidden')) { productModal.classList.add('hidden'); updateBodyScroll(); return; }
             if (!storeModal.classList.contains('hidden')) { closeStoreModal(); return; }
             if (cartSidebar.classList.contains('open')) { closeCart(); return; }
             if (mobileMenu && !mobileMenu.classList.contains('hidden')) toggleMobileMenu(false);
-        }
-    });
-
-    document.addEventListener('click', (e) => {
-        if (addProductsModal && e.target === addProductsModal) {
-            closeAddProductsModal();
         }
     });
 
