@@ -711,6 +711,51 @@
             transform: rotate(90deg);
         }
 
+        /* ✅ نسخة مصغّرة لرابط "إضافة منتجات" داخل شريط التنقل العلوي (ديسكتوب) */
+        .add-products-nav-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
+            border: 1.5px solid #FFE0BD;
+            color: #E06B00 !important;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+            line-height: 1;
+        }
+        .add-products-nav-link:hover {
+            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            border-color: #FF7A00;
+            color: #FFFFFF !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6);
+        }
+        .add-products-nav-link .add-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: #FF7A00;
+            color: #FFFFFF;
+            font-size: 0.85rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            transition: all 0.25s;
+        }
+        .add-products-nav-link:hover .add-icon {
+            background: #FFFFFF;
+            color: #FF7A00;
+            transform: rotate(90deg);
+        }
+
         .store-cover-wrap {
             position: relative; width: 100%; height: 200px;
             flex-shrink: 0; overflow: hidden; background: #f5f5f5;
@@ -1108,11 +1153,15 @@
             </span>
             <i class="fas fa-chevron-down logo-menu-chevron"></i>
         </button>
-        <nav class="hidden md:flex gap-6">
+        <nav class="hidden md:flex items-center gap-6">
             <a href="#" class="hover:text-primary">الرئيسية</a>
             <a href="#stores" class="hover:text-primary">المتاجر</a>
             <a href="#categories" class="hover:text-primary">التصنيفات</a>
-            <a href="#all-products" class="hover:text-primary">جميع المنتجات</a>
+            <!-- ✅ زر إضافة منتجات (ديسكتوب) — ينقل مباشرة إلى a.html -->
+            <a href="a.html" class="add-products-nav-link" aria-label="إضافة منتجات">
+                <span class="add-icon">+</span>
+                <span>إضافة منتجات</span>
+            </a>
             <a href="about.html" class="hover:text-primary">من نحن</a>
         </nav>
         <div class="flex items-center gap-2 sm:gap-3">
@@ -1131,10 +1180,9 @@
         <a href="#" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">الرئيسية</a>
         <a href="#stores" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">المتاجر</a>
         <a href="#categories" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">التصنيفات</a>
-        <a href="#all-products" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">جميع المنتجات</a>
 
-        <!-- ✅ رابط إضافة منتجات — نص بسيط مع علامة + -->
-        <a href="a.html" class="add-products-link">
+        <!-- ✅ رابط إضافة منتجات — ينقل مباشرة إلى a.html -->
+        <a href="a.html" class="add-products-link" aria-label="إضافة منتجات">
             <span style="display: flex; align-items: center; gap: 10px;">
                 <span class="add-icon">+</span>
                 <span>إضافة منتجات</span>
