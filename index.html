@@ -897,52 +897,247 @@
         .store-product-btn:active { transform: translateY(0); }
         .store-product-btn i { font-size: 0.7rem; }
         @media (min-width: 640px) { .store-product-btn { height: 44px; font-size: 0.95rem; border-radius: 14px; } }
+
+        /* ============================================================
+           🎯 زر المنتجات في بطاقة المتجر
+           ============================================================ */
+        .store-products-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
+            border: 1px solid #FFE0BD;
+            color: #E06B00;
+            padding: 0.28rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+        .store-products-btn:hover {
+            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            color: #FFFFFF;
+            border-color: #FF7A00;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.7), 0 0 15px rgba(255,122,0,0.4);
+        }
+        .store-products-btn:active { transform: translateY(0) scale(1); }
+        .store-products-btn i { font-size: 0.72rem; }
+
+        /* ============================================================
+           ✨ Modal إضافة المنتجات
+           ============================================================ */
+        .add-products-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            animation: fadeIn 0.25s;
+        }
+
+        .add-products-content {
+            position: relative;
+            background: linear-gradient(160deg, #FFFFFF 0%, #FFF8F1 55%, #FFF1E0 100%);
+            border: 1.5px solid #FFE0BD;
+            border-radius: 2rem;
+            padding: 2.25rem 1.5rem 1.75rem;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 70px -20px rgba(255,122,0,0.55), 0 8px 30px rgba(0,0,0,0.1);
+            animation: zoomIn 0.4s cubic-bezier(0.4,0,0.2,1);
+            overflow: hidden;
+        }
+
+        .add-products-content::before {
+            content: '';
+            position: absolute;
+            top: -120px; right: -100px;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,122,0,0.22) 0%, transparent 65%);
+            pointer-events: none;
+            animation: orbFloat 6s ease-in-out infinite;
+        }
+
+        .add-products-content::after {
+            content: '';
+            position: absolute;
+            bottom: -130px; left: -100px;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,166,77,0.15) 0%, transparent 65%);
+            pointer-events: none;
+            animation: orbFloat 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-15px, 15px); }
+        }
+
+        .add-products-icon {
+            position: relative;
+            z-index: 2;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.1rem;
+            margin: 0 auto 1.35rem;
+            animation: glowingPulse 2.2s ease-in-out infinite;
+        }
+
+        @keyframes glowingPulse {
+            0%, 100% {
+                box-shadow: 0 15px 40px -10px rgba(255,122,0,0.9), 0 0 25px rgba(255,122,0,0.5);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 20px 50px -10px rgba(255,122,0,1), 0 0 45px rgba(255,122,0,0.85);
+                transform: scale(1.06);
+            }
+        }
+
+        .add-products-heading {
+            position: relative;
+            z-index: 2;
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #1A1A1A;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        @media (min-width: 640px) { .add-products-heading { font-size: 1.5rem; } }
+
+        .add-products-glow-text {
+            position: relative;
+            z-index: 2;
+            display: block;
+            background: linear-gradient(90deg, #FF7A00 0%, #FFA64D 25%, #FFB366 50%, #FFA64D 75%, #FF7A00 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #FF7A00;
+            font-size: 1.55rem;
+            font-weight: 900;
+            margin: 0.75rem 0 1rem;
+            animation: glowTextShift 3s linear infinite;
+            filter: drop-shadow(0 0 12px rgba(255,122,0,0.55));
+        }
+        @media (min-width: 640px) { .add-products-glow-text { font-size: 1.75rem; } }
+
+        @keyframes glowTextShift {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .add-products-desc {
+            position: relative;
+            z-index: 2;
+            color: #4b5563;
+            font-size: 0.9rem;
+            line-height: 1.85;
+            margin-bottom: 1.75rem;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 640px) { .add-products-desc { font-size: 0.95rem; } }
+
+        .add-products-btn {
+            position: relative;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            background-size: 200% auto;
+            color: #FFFFFF !important;
+            border: 2px solid rgba(255,255,255,0.25);
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 15px 40px -12px rgba(255,122,0,0.9), 0 0 25px rgba(255,122,0,0.4);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Cairo', sans-serif;
+        }
+        .add-products-btn:hover {
+            transform: translateY(-3px);
+            background-position: 100% center;
+            box-shadow: 0 22px 50px -12px rgba(255,122,0,1), 0 0 40px rgba(255,122,0,0.75);
+        }
+        .add-products-btn:active { transform: translateY(-1px); }
+        .add-products-btn i { font-size: 1.15rem; }
+
+        .add-products-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 1.5px solid #FFE0BD;
+            color: #FF7A00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            z-index: 3;
+            font-size: 1rem;
+        }
+        .add-products-close:hover {
+            background: #FF7A00;
+            color: #FFFFFF;
+            border-color: #FF7A00;
+            transform: scale(1.1) rotate(90deg);
+        }
     </style>
 </head>
 <body class="font-cairo text-text-main">
 
-<!-- ============================================================
-     🛡️ SECURITY LAYER — طبقة الحماية الكاملة
-     ============================================================ -->
 <script>
 (function() {
     'use strict';
-
-    // ============ 1. Domain Lock — قفل الدومين ============
-    const ALLOWED_HOSTS = [
-        'bazrena.vercel.app',
-        'localhost',
-        '127.0.0.1'
-    ];
+    const ALLOWED_HOSTS = ['bazrena.vercel.app', 'localhost', '127.0.0.1'];
     const currentHost = window.location.hostname.toLowerCase();
 
     if (!ALLOWED_HOSTS.includes(currentHost)) {
         document.documentElement.innerHTML = `
-            <div style="
-                position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-                background:#0a0a0a;color:#fff;font-family:'Cairo',sans-serif;text-align:center;
-                padding:2rem;direction:rtl;z-index:999999;
-            ">
+            <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0a0a;color:#fff;font-family:'Cairo',sans-serif;text-align:center;padding:2rem;direction:rtl;z-index:999999;">
                 <div>
                     <div style="font-size:5rem;margin-bottom:1rem;">🔒</div>
-                    <h1 style="font-size:1.8rem;font-weight:900;color:#FF7A00;margin-bottom:1rem;">
-                        الوصول غير مصرح به
-                    </h1>
-                    <p style="color:#999;line-height:2;max-width:500px;margin:0 auto;">
-                        هذه المنصة محمية ومسجلة قانونياً.<br>
-                        لا يُسمح باستخدام أو نسخ الكود خارج النطاق الرسمي.
-                    </p>
-                    <a href="https://bazrena.vercel.app" style="
-                        display:inline-block;margin-top:1.5rem;padding:.75rem 2rem;
-                        background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;
-                        border-radius:9999px;text-decoration:none;font-weight:800;
-                    ">زيارة الموقع الرسمي</a>
+                    <h1 style="font-size:1.8rem;font-weight:900;color:#FF7A00;margin-bottom:1rem;">الوصول غير مصرح به</h1>
+                    <p style="color:#999;line-height:2;max-width:500px;margin:0 auto;">هذه المنصة محمية ومسجلة قانونياً.<br>لا يُسمح باستخدام أو نسخ الكود خارج النطاق الرسمي.</p>
+                    <a href="https://bazrena.vercel.app" style="display:inline-block;margin-top:1.5rem;padding:.75rem 2rem;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;border-radius:9999px;text-decoration:none;font-weight:800;">زيارة الموقع الرسمي</a>
                 </div>
             </div>`;
         throw new Error('⛔ Unauthorized domain');
     }
 
-    // ============ 2. Anti-Iframe ============
     try {
         if (window.self !== window.top) {
             window.top.location = window.self.location.href;
@@ -952,26 +1147,20 @@
         throw new Error('⛔ Iframe detected');
     }
 
-    // ============ 3. Developer Tools Detection ============
     let devtoolsOpen = false;
     const devtoolsThreshold = 160;
-
     function detectDevTools() {
         const widthGap = window.outerWidth - window.innerWidth;
         const heightGap = window.outerHeight - window.innerHeight;
-
         if (widthGap > devtoolsThreshold || heightGap > devtoolsThreshold) {
             if (!devtoolsOpen) {
                 devtoolsOpen = true;
                 console.warn('%c⚠️ تم اكتشاف أدوات المطور', 'color:#FF7A00;font-size:20px;font-weight:bold;');
             }
-        } else {
-            devtoolsOpen = false;
-        }
+        } else { devtoolsOpen = false; }
     }
     setInterval(detectDevTools, 1000);
 
-    // ============ 4. Console Warning ============
     const warningStyle = 'color:#FF7A00;font-size:22px;font-weight:900;font-family:Cairo,sans-serif;';
     const textStyle = 'color:#333;font-size:14px;font-family:Cairo,sans-serif;line-height:1.8;';
     try {
@@ -981,7 +1170,6 @@
         console.log('%cكل النشاطات مسجلة ومراقبة.', 'color:#d32f2f;font-weight:bold;font-size:14px;');
     } catch (e) {}
 
-    // ============ 5. Right-Click Disable ============
     document.addEventListener('contextmenu', (e) => {
         const tag = (e.target.tagName || '').toLowerCase();
         if (tag === 'input' || tag === 'textarea') return;
@@ -989,65 +1177,40 @@
         return false;
     });
 
-    // ============ 6. Keyboard Shortcuts Block ============
     document.addEventListener('keydown', (e) => {
         if (e.key === 'F12') { e.preventDefault(); return false; }
-
-        if (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) {
-            e.preventDefault(); return false;
-        }
-
-        if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
-            e.preventDefault(); return false;
-        }
-
-        if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
-            e.preventDefault(); return false;
-        }
-
-        if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
-            e.preventDefault(); return false;
-        }
-
+        if (e.ctrlKey && e.shiftKey && ['I','J','C','i','j','c'].includes(e.key)) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) { e.preventDefault(); return false; }
         const tag = (e.target.tagName || '').toLowerCase();
         const isInput = tag === 'input' || tag === 'textarea';
-        if (!isInput && e.ctrlKey && (e.key === 'a' || e.key === 'A')) {
-            e.preventDefault(); return false;
-        }
+        if (!isInput && e.ctrlKey && (e.key === 'a' || e.key === 'A')) { e.preventDefault(); return false; }
     });
 
-    // ============ 7. Copy Protection ============
     document.addEventListener('copy', (e) => {
         const tag = (e.target.tagName || '').toLowerCase();
         const isInput = tag === 'input' || tag === 'textarea';
         if (isInput) return true;
         e.preventDefault();
         try {
-            e.clipboardData.setData('text/plain',
-                '\n\n© 2026 BAZRENA — بازارِنا\nالموقع الرسمي: https://bazrena.vercel.app\nالمحتوى محمي بحقوق النشر.\n');
+            e.clipboardData.setData('text/plain', '\n\n© 2026 BAZRENA — بازارِنا\nالموقع الرسمي: https://bazrena.vercel.app\nالمحتوى محمي بحقوق النشر.\n');
         } catch (err) {}
     });
 
-    // ============ 8. Disable Drag on Images ============
     document.addEventListener('dragstart', (e) => {
         if (e.target && e.target.tagName === 'IMG') e.preventDefault();
     });
 
-    // ============ 9. Storage Tamper Detection ============
     const _origSetItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function(key, value) {
         if (key === 'myStoresCart' || key === 'bazrenaFollowedStores') {
-            try {
-                JSON.parse(value);
-            } catch (e) {
-                console.warn('⚠️ محاولة تخزين بيانات غير صالحة');
-                return;
-            }
+            try { JSON.parse(value); }
+            catch (e) { console.warn('⚠️ محاولة تخزين بيانات غير صالحة'); return; }
         }
         return _origSetItem.call(this, key, value);
     };
 
-    // ============ 10. Block Injecting Untrusted Scripts ============
     const trustedScriptHosts = [
         'cdn.tailwindcss.com',
         'cdnjs.cloudflare.com',
@@ -1066,16 +1229,13 @@
                             console.warn('🚫 تم حظر سكربت غير موثوق:', url.hostname);
                             node.remove();
                         }
-                    } catch (e) {
-                        node.remove();
-                    }
+                    } catch (e) { node.remove(); }
                 }
             });
         });
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
 
-    // ============ 11. Prevent Form Injection to External URLs ============
     document.addEventListener('submit', (e) => {
         const form = e.target;
         if (form.action) {
@@ -1089,7 +1249,6 @@
         }
     }, true);
 
-    // ============ 12. Watermark Fingerprint ============
     Object.defineProperty(window, '_bzr_fingerprint', {
         value: 'BAZRENA-' + btoa(currentHost + '|' + new Date().toISOString().slice(0,7)).slice(0, 16),
         writable: false,
@@ -1492,6 +1651,41 @@
 
 <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[3000] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
+<!-- ============================================================
+     ✨ Modal إضافة المنتجات
+     ============================================================ -->
+<div id="addProductsModal" class="add-products-modal hidden">
+    <div class="add-products-content">
+
+        <button class="add-products-close" onclick="closeAddProductsModal()" aria-label="إغلاق">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="add-products-icon">
+            <i class="fas fa-boxes-stacked"></i>
+        </div>
+
+        <h3 class="add-products-heading">
+            أضف منتجات متجرك الآن
+        </h3>
+
+        <span class="add-products-glow-text">
+            انطلق مع بازارِنا ✨
+        </span>
+
+        <p class="add-products-desc">
+            أضف منتجاتك واعرضها أمام آلاف العملاء من خلال لوحة تحكم سهلة ومتطورة.
+        </p>
+
+        <a href="a.html" class="add-products-btn">
+            <i class="fas fa-plus-circle"></i>
+            <span>إضافة منتجات</span>
+            <i class="fas fa-arrow-left"></i>
+        </a>
+
+    </div>
+</div>
+
 <footer class="bg-gray-900 text-white py-12 mt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -1566,7 +1760,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ============ 🔐 Firebase Anonymous Authentication ============
     let authReady = false;
     let authPromise = firebase.auth().signInAnonymously()
         .then((userCredential) => {
@@ -1686,6 +1879,7 @@
     const followedCountBadge = document.getElementById('followedCountBadge');
     const logoMenuBtn = document.getElementById('logoMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
+    const addProductsModal = document.getElementById('addProductsModal');
 
     function updateAllProductsTotalBadge() {
         if (!allProductsTotalCount) return;
@@ -1703,10 +1897,26 @@
         const anyModalOpen =
             !storeModal.classList.contains('hidden') ||
             !productModal.classList.contains('hidden') ||
+            (addProductsModal && !addProductsModal.classList.contains('hidden')) ||
             cartSidebar.classList.contains('open') ||
             (searchOverlay && searchOverlay.classList.contains('show'));
         document.body.style.overflow = anyModalOpen ? 'hidden' : '';
     }
+
+    function openAddProductsModal() {
+        if (!addProductsModal) return;
+        addProductsModal.classList.remove('hidden');
+        updateBodyScroll();
+    }
+
+    function closeAddProductsModal() {
+        if (!addProductsModal) return;
+        addProductsModal.classList.add('hidden');
+        updateBodyScroll();
+    }
+
+    window.openAddProductsModal = openAddProductsModal;
+    window.closeAddProductsModal = closeAddProductsModal;
 
     function toggleMobileMenu(force) {
         if (!mobileMenu || !logoMenuBtn) return;
@@ -1871,9 +2081,16 @@
         const bottomRow = document.createElement('div');
         bottomRow.className = 'flex items-center justify-between gap-2 mt-2';
 
-        const count = document.createElement('div');
-        count.className = 'flex items-center gap-1 text-xs text-text-light';
+        const count = document.createElement('button');
+        count.className = 'store-products-btn';
+        count.type = 'button';
+        count.title = 'إضافة منتجات';
         count.innerHTML = `<i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span>`;
+        count.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openAddProductsModal();
+        });
 
         const followBtn = document.createElement('button');
         followBtn.className = 'card-follow-btn';
@@ -2631,10 +2848,17 @@
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (searchOverlay && searchOverlay.classList.contains('show')) { closeSearch(); return; }
-            if (!productModal.classList.contains('hidden')) { productModal.classList.add('hidden'); updateBodyScroll(); }
-            if (!storeModal.classList.contains('hidden')) closeStoreModal();
-            if (cartSidebar.classList.contains('open')) closeCart();
+            if (addProductsModal && !addProductsModal.classList.contains('hidden')) { closeAddProductsModal(); return; }
+            if (!productModal.classList.contains('hidden')) { productModal.classList.add('hidden'); updateBodyScroll(); return; }
+            if (!storeModal.classList.contains('hidden')) { closeStoreModal(); return; }
+            if (cartSidebar.classList.contains('open')) { closeCart(); return; }
             if (mobileMenu && !mobileMenu.classList.contains('hidden')) toggleMobileMenu(false);
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (addProductsModal && e.target === addProductsModal) {
+            closeAddProductsModal();
         }
     });
 
