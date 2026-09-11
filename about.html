@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="theme-color" content="#FF7A00">
+<meta name="description" content="من نحن - بازارِنا BAZRENA | منصة سودانية تجمع أفضل المتاجر والبراندات في مكان واحد.">
+<title>من نحن | بازارِنا – BAZRENA</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#FF7A00',
+          'primary-dark': '#E06B00',
+          'primary-light': '#FFA64D',
+          'text-main': '#1A1A1A',
+          'text-light': '#666666',
+          whatsapp: '#25D366',
+        },
+        fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+      }
+    }
+  }
+</script>
+
+<style>
+  * { font-family: 'Cairo', sans-serif; }
+  html { overflow-x: hidden; scroll-behavior: smooth; }
+  body { background: #F8F9FA; direction: rtl; overflow-x: hidden; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #E06B00; }
+
+  /* ===== Hero ===== */
+  .about-hero {
+    position: relative; overflow: hidden;
+    background: linear-gradient(160deg, #FFF8F1 0%, #FFFFFF 55%, #FFF1E0 100%);
+    border-bottom: 1px solid #FFE0BD;
+  }
+  .about-hero::before {
+    content: ''; position: absolute; top: -140px; right: -120px;
+    width: 380px; height: 380px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,122,0,.14) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .about-hero::after {
+    content: ''; position: absolute; bottom: -160px; left: -140px;
+    width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,166,77,.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-inner { position: relative; z-index: 2; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #FFFFFF; color: #E06B00; border: 1px solid #FFE0BD;
+    padding: .45rem 1.1rem; border-radius: 9999px;
+    font-size: .8rem; font-weight: 800;
+    box-shadow: 0 6px 18px -10px rgba(255,122,0,.6);
+  }
+
+  .hero-logo-ring {
+    width: 128px; height: 128px; border-radius: 50%;
+    padding: 6px; background: #fff;
+    box-shadow: 0 12px 40px -12px rgba(255,122,0,.65), 0 0 0 6px rgba(255,122,0,.08);
+  }
+  @media (min-width: 640px) { .hero-logo-ring { width: 168px; height: 168px; } }
+  .hero-logo-ring img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+
+  /* ===== Cards ===== */
+  .soft-card {
+    background: #fff; border: 1px solid #F0F0F0; border-radius: 1.5rem;
+    box-shadow: 0 6px 22px rgba(0,0,0,.05);
+    transition: all .3s cubic-bezier(.4,0,.2,1);
+  }
+  .soft-card:hover {
+    transform: translateY(-6px);
+    border-color: #FFE0BD;
+    box-shadow: 0 20px 44px -18px rgba(255,122,0,.35), 0 8px 22px rgba(0,0,0,.06);
+  }
+
+  .icon-badge {
+    width: 58px; height: 58px; border-radius: 1.1rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: #fff;
+    background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+    box-shadow: 0 12px 26px -12px rgba(255,122,0,.75);
+    flex-shrink: 0;
+  }
+  .icon-badge.soft {
+    background: #FFF7ED; color: #FF7A00; border: 1px solid #FFE0BD;
+    box-shadow: 0 6px 16px -10px rgba(255,122,0,.5);
+  }
+
+  .section-title { font-weight: 900; color: #1A1A1A; line-height: 1.35; }
+  .title-accent {
+    background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: #FF7A00;
+  }
+  .divider-line {
+    width: 68px; height: 5px; border-radius: 9999px;
+    background: linear-gradient(90deg, #FF7A00, #FFA64D);
+    margin: 0 auto;
+  }
+
+  /* ===== Stats ===== */
+  .stat-card {
+    background: #fff; border: 1px solid #FFE0BD; border-radius: 1.25rem;
+    padding: 1.25rem .75rem; text-align: center;
+    box-shadow: 0 8px 24px -16px rgba(255,122,0,.7);
+    transition: transform .3s;
+  }
+  .stat-card:hover { transform: translateY(-5px); }
+  .stat-num {
+    font-size: 1.7rem; font-weight: 900; line-height: 1;
+    background: linear-gradient(135deg, #FF7A00, #FFA64D);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  @media (min-width: 640px) { .stat-num { font-size: 2.2rem; } }
+
+  /* ===== Steps ===== */
+  .step-card { position: relative; background: #fff; border: 1px solid #F0F0F0; border-radius: 1.35rem; padding: 1.5rem 1.15rem; text-align: center; transition: all .3s; }
+  .step-card:hover { transform: translateY(-6px); border-color: #FFE0BD; box-shadow: 0 18px 40px -20px rgba(255,122,0,.5); }
+  .step-num {
+    position: absolute; top: -18px; right: 50%; transform: translateX(50%);
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 1.05rem;
+    box-shadow: 0 10px 22px -10px rgba(255,122,0,.85);
+  }
+
+  /* ===== CTA ===== */
+  .brand-cta-card {
+    position: relative;
+    background: linear-gradient(160deg, #FFFFFF 0%, #FFF8F1 55%, #FFF1E0 100%);
+    border: 1.5px solid #FFE0BD; border-radius: 1.75rem;
+    padding: 2.25rem 1.25rem 1.9rem; text-align: center;
+    box-shadow: 0 20px 50px -20px rgba(255,122,0,.25), 0 8px 30px rgba(0,0,0,.04);
+    overflow: hidden;
+  }
+  @media (min-width: 640px) { .brand-cta-card { padding: 3rem 2.5rem 2.5rem; border-radius: 2rem; } }
+  .brand-cta-card::before {
+    content: ''; position: absolute; top: -120px; right: -120px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,122,0,.12) 0%, transparent 65%);
+  }
+  .brand-cta-card::after {
+    content: ''; position: absolute; bottom: -140px; left: -120px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,166,77,.10) 0%, transparent 65%);
+  }
+  .cta-inner { position: relative; z-index: 2; }
+
+  .cta-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 54px; padding: 0 1rem; border-radius: 9999px;
+    font-weight: 800; font-size: .92rem; text-decoration: none; cursor: pointer;
+    transition: all .22s cubic-bezier(.4,0,.2,1); border: 2px solid transparent;
+    white-space: nowrap; -webkit-tap-highlight-color: transparent;
+  }
+  @media (min-width: 640px) { .cta-btn { height: 58px; font-size: 1rem; } }
+  .cta-btn-primary { background: linear-gradient(135deg, #25D366 0%, #1EBE5D 100%); color: #fff; box-shadow: 0 10px 24px -8px rgba(37,211,102,.5); }
+  .cta-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px rgba(37,211,102,.65); }
+  .cta-btn-outline { background: #fff; color: #FF7A00; border-color: #FF7A00; box-shadow: 0 4px 12px rgba(255,122,0,.08); }
+  .cta-btn-outline:hover { background: #FFF7ED; transform: translateY(-2px); box-shadow: 0 10px 20px -6px rgba(255,122,0,.25); }
+  .cta-btn-solid { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; box-shadow: 0 10px 24px -8px rgba(255,122,0,.6); }
+  .cta-btn-solid:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px rgba(255,122,0,.75); }
+
+  .feature-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #fff; border: 1px solid #FFE0BD; color: #4b5563;
+    padding: .45rem .9rem; border-radius: 9999px;
+    font-size: .78rem; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(255,122,0,.04);
+  }
+  @media (min-width: 640px) { .feature-pill { font-size: .85rem; padding: .5rem 1rem; } }
+  .feature-pill i { color: #FF7A00; }
+
+  .quote-box {
+    background: linear-gradient(135deg, #FFF8F1 0%, #FFFFFF 100%);
+    border-right: 5px solid #FF7A00; border-radius: 1rem;
+    padding: 1.25rem 1.35rem;
+  }
+
+  .timeline-item { position: relative; padding-right: 2.4rem; }
+  .timeline-item::before {
+    content: ''; position: absolute; right: .62rem; top: 1.9rem; bottom: -1.4rem;
+    width: 2px; background: linear-gradient(#FFE0BD, transparent);
+  }
+  .timeline-item:last-child::before { display: none; }
+  .timeline-dot {
+    position: absolute; right: 0; top: .35rem;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #fff; border: 3px solid #FF7A00;
+    box-shadow: 0 0 0 4px rgba(255,122,0,.12);
+  }
+
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.4,0,.2,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .to-top {
+    position: fixed; bottom: 22px; left: 22px; z-index: 900;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 26px -10px rgba(255,122,0,.9);
+    opacity: 0; pointer-events: none; transform: translateY(14px);
+    transition: all .3s; border: none; cursor: pointer;
+  }
+  .to-top.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .to-top:hover { transform: translateY(-3px); }
+</style>
+</head>
+
+<body class="font-cairo text-text-main">
+
+  <!-- ===== Hero ===== -->
+  <section class="about-hero py-14 sm:py-20 md:py-24 px-4">
+    <div class="hero-inner max-w-4xl mx-auto text-center">
+
+      <div class="hero-logo-ring mx-auto mb-6">
+        <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" alt="شعار بازارِنا">
+      </div>
+
+      <span class="eyebrow mb-5">
+        <i class="fas fa-circle-info"></i>
+        تعرّف علينا
+      </span>
+
+      <h1 class="section-title text-3xl sm:text-5xl md:text-6xl mb-4">
+        من نحن
+        <span class="title-accent">بازارِنا</span>
+      </h1>
+
+      <p class="text-text-light text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-7">
+        منصة سودانية تجمع أفضل المتاجر والبراندات المحلية في مكان واحد،
+        لتسهيل التسوّق الإلكتروني وتمكين أصحاب المشاريع من الوصول إلى عملائهم بسهولة واحترافية.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mt-8">
+        <span class="feature-pill"><i class="fas fa-shield-halved"></i> متاجر موثوقة</span>
+        <span class="feature-pill"><i class="fab fa-whatsapp"></i> طلب مباشر عبر واتساب</span>
+        <span class="feature-pill"><i class="fas fa-bolt"></i> تصفّح سريع وسلس</span>
+        <span class="feature-pill"><i class="fas fa-tags"></i> أسعار وعروض حقيقية</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== قصتنا ===== -->
+  <section class="py-12 sm:py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-6 sm:gap-8 items-center">
+
+        <div class="reveal">
+          <span class="inline-flex items-center gap-2 text-primary font-extrabold text-sm mb-3">
+            <i class="fas fa-seedling"></i> قصتنا
+          </span>
+          <h2 class="section-title text-2xl sm:text-4xl mb-4">
+            وُلدت <span class="title-accent">بازارِنا</span> من حاجة حقيقية
+          </h2>
+
+          <div class="space-y-4 text-text-light text-sm sm:text-base leading-loose">
+            <p>
+              في السودان، آلاف المتاجر والبراندات الصغيرة والمتوسطة تبيع منتجات رائعة،
+              لكنها تبقى بعيدة عن عملائها بسبب غياب قناة عرض واحدة تجمعها وتُسهّل الوصول إليها.
+              من هنا جاءت فكرة <strong class="text-text-main">بازارِنا (BAZRENA)</strong>.
+            </p>
+            <p>
+              بنينا منصة عربية بسيطة وسريعة تعرض المتاجر ومنتجاتها بشكل منظّم وجذّاب،
+              وتتيح للعميل التصفّح حسب الفئة، ومقارنة المنتجات، والتواصل مع المتجر مباشرة
+              عبر واتساب أو الهاتف — دون تعقيد ودون وسطاء.
+            </p>
+            <p>
+              اليوم، <strong class="text-text-main">بازارِنا</strong> ليست مجرد موقع تسوّق،
+              بل سوق رقمي متكامل يربط التجار بالعملاء، ويساعد البراندات المحلية على النمو
+              وبناء حضور احترافي على الإنترنت.
+            </p>
+          </div>
+
+          <div class="quote-box mt-6">
+            <p class="font-bold text-text-main text-sm sm:text-base leading-relaxed">
+              <i class="fas fa-quote-right text-primary ml-2"></i>
+              هدفنا أن يصبح كل تاجر سوداني قادراً على عرض منتجاته للعالم بضغطة زر.
+            </p>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="grid grid-cols-2 gap-3 sm:gap-4">
+            <div class="stat-card">
+              <div class="stat-num" data-count="250" data-suffix="+">0</div>
+              <p class="text-xs sm:text-sm font-bold text-text-light mt-2">متجر وبراند</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" data-count="1200" data-suffix="+">0</div>
+              <p class="text-xs sm:text-sm font-bold text-text-light mt-2">منتج معروض</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" data-count="12" data-suffix="+">0</div>
+              <p class="text-xs sm:text-sm font-bold text-text-light mt-2">فئة متنوعة</p>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" data-count="24" data-suffix="/7">0</div>
+              <p class="text-xs sm:text-sm font-bold text-text-light mt-2">تصفّح متواصل</p>
+            </div>
+          </div>
+
+          <div class="soft-card p-5 sm:p-6 mt-4">
+            <div class="flex items-start gap-4">
+              <div class="icon-badge soft"><i class="fas fa-mobile-screen-button"></i></div>
+              <div>
+                <h4 class="font-extrabold text-base sm:text-lg mb-1">تجربة سلسة على كل الأجهزة</h4>
+                <p class="text-text-light text-sm leading-relaxed">
+                  صمّمنا المنصة لتعمل بسرعة على الجوال والحاسوب، مع إمكانية تثبيتها كتطبيق
+                  على شاشتك الرئيسية والوصول إليها في ثانية.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== الرؤية والرسالة ===== -->
+  <section class="py-12 sm:py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+
+      <div class="text-center mb-10 sm:mb-14 reveal">
+        <h2 class="section-title text-2xl sm:text-4xl mb-3">رؤيتنا ورسالتنا</h2>
+        <div class="divider-line mb-4"></div>
+        <p class="text-text-light text-sm sm:text-base max-w-2xl mx-auto">
+          مبادئ واضحة تقود كل خطوة نخطوها في بازارِنا
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5 sm:gap-7">
+
+        <div class="soft-card p-6 sm:p-8 reveal">
+          <div class="icon-badge mb-5"><i class="fas fa-eye"></i></div>
+          <h3 class="text-xl sm:text-2xl font-extrabold mb-3">رؤيتنا</h3>
+          <p class="text-text-light text-sm sm:text-base leading-loose">
+            أن نكون <strong class="text-text-main">السوق الرقمي الأول</strong> في السودان
+            والمنطقة العربية، والوجهة المفضّلة لكل من يبحث عن منتج محلي موثوق،
+            ولكل تاجر يطمح إلى نمو حقيقي في تجارته الإلكترونية.
+          </p>
+          <ul class="mt-5 space-y-2.5 text-sm text-text-light">
+            <li class="flex items-start gap-2"><i class="fas fa-check-circle text-primary mt-1"></i><span>تمكين التجار المحليين رقمياً</span></li>
+            <li class="flex items-start gap-2"><i class="fas fa-check-circle text-primary mt-1"></i><span>بناء ثقة كاملة بين التاجر والعميل</span></li>
+            <li class="flex items-start gap-2"><i class="fas fa-check-circle text-primary mt-1"></i><span>توسيع سوق المنتجات السودانية</span></li>
+          </ul>
+        </div>
+
+        <div class="soft-card p-6 sm:p-8 reveal">
+          <div class="icon-badge mb-5"><i class="fas fa-bullseye"></i></div>
+          <h3 class="text-xl sm:text-2xl font-extrabold mb-3">رسالتنا</h3>
+          <p class="text-text-light text-sm sm:text-base leading-loose">
+            نُبسّط التجارة الإلكترونية عبر منصة <strong class="text-text-main">سهلة، سريعة، ومجانية للمتصفّح</strong>،
+            تربط المتاجر بعملائها مباشرة عبر واتساب، وتمنح صاحب المشروع أدوات عرض
+            احترافية بسعر رمزي وبتفعيل فوري.
+          </p>
+          <ul class="mt-5 space-y-2.5 text-sm text-text-light">
+            <li class="flex items-start gap-2"><i class="fas fa-check-circle text-primary mt-1"></i><span>تجربة تصفّح نظيفة بلا تعقيد</span></li>
+            <li class="flex items-start gap-2"><i class="fas fa-check-circle text-primary mt-1"></i><span>تواصل مباشر بلا وسطاء</span></li>
+            <li class="flex items-start gap-2"><i class="fas fa-check-circle text-primary mt-1"></i><span>دعم فني متواصل لأصحاب المتاجر</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== لماذا بازارِنا ===== -->
+  <section class="py-12 sm:py-16">
+    <div class="max-w-6xl mx-auto px-4">
+
+      <div class="text-center mb-10 sm:mb-14 reveal">
+        <h2 class="section-title text-2xl sm:text-4xl mb-3">لماذا <span class="title-accent">بازارِنا</span>؟</h2>
+        <div class="divider-line mb-4"></div>
+        <p class="text-text-light text-sm sm:text-base max-w-2xl mx-auto">
+          مزايا صُمّمت لخدمة العميل والتاجر في آن واحد
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+
+        <div class="soft-card p-6 reveal">
+          <div class="icon-badge mb-4"><i class="fas fa-layer-group"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">كل المتاجر في مكان واحد</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            تصفّح مئات المتاجر والبراندات المحلية من واجهة واحدة، دون الحاجة للتنقل بين مواقع متعددة.
+          </p>
+        </div>
+
+        <div class="soft-card p-6 reveal">
+          <div class="icon-badge mb-4"><i class="fab fa-whatsapp"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">طلب مباشر عبر واتساب</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            أضف منتجاتك للسلة وأرسل الطلب للمتجر مباشرة عبر واتساب بضغطة واحدة، بلا حسابات معقّدة.
+          </p>
+        </div>
+
+        <div class="soft-card p-6 reveal">
+          <div class="icon-badge mb-4"><i class="fas fa-circle-check"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">متاجر موثّقة</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            نمنح شارة التوثيق للمتاجر التي تستوفي معاييرنا، ليميّز العميل المتاجر الموثوقة بسهولة.
+          </p>
+        </div>
+
+        <div class="soft-card p-6 reveal">
+          <div class="icon-badge mb-4"><i class="fas fa-gauge-high"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">سرعة وأداء عالي</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            منصة خفيفة تُحمّل بسرعة حتى مع اتصال إنترنت ضعيف، مع دعم العمل بدون اتصال كتطبيق.
+          </p>
+        </div>
+
+        <div class="soft-card p-6 reveal">
+          <div class="icon-badge mb-4"><i class="fas fa-tags"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">تصفّح حسب الفئة</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            أزياء، إلكترونيات، تجميل، منزل، هدايا وغيرها — اعثر على ما تريد بسرعة ووضوح.
+          </p>
+        </div>
+
+        <div class="soft-card p-6 reveal">
+          <div class="icon-badge mb-4"><i class="fas fa-heart"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">متابعة المتاجر المفضلة</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            تابع المتاجر التي تحبها وستجدها دائماً في مقدمة الصفحة للوصول إليها فوراً.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== القيم ===== -->
+  <section class="py-12 sm:py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+
+      <div class="text-center mb-10 sm:mb-14 reveal">
+        <h2 class="section-title text-2xl sm:text-4xl mb-3">قيمنا</h2>
+        <div class="divider-line mb-4"></div>
+        <p class="text-text-light text-sm sm:text-base max-w-2xl mx-auto">
+          المبادئ التي نبني عليها كل قرار وكل تحديث في المنصة
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        <div class="soft-card p-6 text-center reveal">
+          <div class="icon-badge soft mx-auto mb-4"><i class="fas fa-handshake"></i></div>
+          <h3 class="font-extrabold text-base mb-2">الثقة</h3>
+          <p class="text-text-light text-sm leading-relaxed">الشفافية والوضوح أساس تعاملنا مع التجار والعملاء.</p>
+        </div>
+
+        <div class="soft-card p-6 text-center reveal">
+          <div class="icon-badge soft mx-auto mb-4"><i class="fas fa-lightbulb"></i></div>
+          <h3 class="font-extrabold text-base mb-2">الابتكار</h3>
+          <p class="text-text-light text-sm leading-relaxed">نطوّر المنصة باستمرار لنقدّم تجربة أفضل كل يوم.</p>
+        </div>
+
+        <div class="soft-card p-6 text-center reveal">
+          <div class="icon-badge soft mx-auto mb-4"><i class="fas fa-people-group"></i></div>
+          <h3 class="font-extrabold text-base mb-2">دعم المجتمع</h3>
+          <p class="text-text-light text-sm leading-relaxed">نؤمن بالمشاريع الصغيرة ونساعدها على النمو والاستمرار.</p>
+        </div>
+
+        <div class="soft-card p-6 text-center reveal">
+          <div class="icon-badge soft mx-auto mb-4"><i class="fas fa-bolt"></i></div>
+          <h3 class="font-extrabold text-base mb-2">البساطة</h3>
+          <p class="text-text-light text-sm leading-relaxed">نُزيل التعقيد ليبقى التسوّق سهلاً وسريعاً للجميع.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== كيف تعمل المنصة ===== -->
+  <section class="py-12 sm:py-16">
+    <div class="max-w-6xl mx-auto px-4">
+
+      <div class="text-center mb-14 sm:mb-16 reveal">
+        <h2 class="section-title text-2xl sm:text-4xl mb-3">كيف تعمل المنصة؟</h2>
+        <div class="divider-line mb-4"></div>
+        <p class="text-text-light text-sm sm:text-base max-w-2xl mx-auto">
+          ثلاث خطوات بسيطة تفصلك عن تجربة تسوّق مريحة
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-8 sm:gap-6 pt-4">
+
+        <div class="step-card reveal">
+          <div class="step-num">1</div>
+          <div class="icon-badge soft mx-auto mb-4 mt-3"><i class="fas fa-magnifying-glass"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">ابحث أو تصفّح</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            اختر الفئة المناسبة أو ابحث عن متجر أو منتج معيّن، وتعرّف على كل التفاصيل.
+          </p>
+        </div>
+
+        <div class="step-card reveal">
+          <div class="step-num">2</div>
+          <div class="icon-badge soft mx-auto mb-4 mt-3"><i class="fas fa-cart-plus"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">أضف إلى السلة</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            أضف المنتجات التي أعجبتك إلى سلة التسوق وراجع الطلب قبل الإرسال.
+          </p>
+        </div>
+
+        <div class="step-card reveal">
+          <div class="step-num">3</div>
+          <div class="icon-badge soft mx-auto mb-4 mt-3"><i class="fab fa-whatsapp"></i></div>
+          <h3 class="font-extrabold text-lg mb-2">اطلب عبر واتساب</h3>
+          <p class="text-text-light text-sm leading-relaxed">
+            أرسل طلبك للمتجر مباشرة عبر واتساب وأكمل الاتفاق معه بسهولة وأمان.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== لأصحاب المتاجر ===== -->
+  <section class="py-12 sm:py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-6 sm:gap-10 items-center">
+
+        <div class="reveal">
+          <span class="inline-flex items-center gap-2 text-primary font-extrabold text-sm mb-3">
+            <i class="fas fa-crown"></i> لأصحاب البراندات
+          </span>
+          <h2 class="section-title text-2xl sm:text-4xl mb-4">
+            انطلق بمتجرك مع <span class="title-accent">بازارِنا</span>
+          </h2>
+          <p class="text-text-light text-sm sm:text-base leading-loose mb-6">
+            هل تملك متجراً أو برانداً خاصاً؟ انضم إلى بازارِنا واعرض منتجاتك أمام آلاف العملاء
+            يومياً، مع لوحة عرض احترافية، وربط مباشر بالطلبات عبر واتساب، ودعم فني متكامل.
+          </p>
+
+          <div class="space-y-4">
+            <div class="timeline-item">
+              <span class="timeline-dot"></span>
+              <h4 class="font-extrabold text-base mb-1">تواصل معنا</h4>
+              <p class="text-text-light text-sm">أرسل لنا رسالة واتساب وأخبرنا عن متجرك ومنتجاتك.</p>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-dot"></span>
+              <h4 class="font-extrabold text-base mb-1">نجهّز متجرك</h4>
+              <p class="text-text-light text-sm">نضيف الشعار والغلاف والمنتجات خلال وقت قصير.</p>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-dot"></span>
+              <h4 class="font-extrabold text-base mb-1">ابدأ البيع</h4>
+              <p class="text-text-light text-sm">متجرك يصبح جاهزاً للعرض والاستقبال مباشرة.</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3 mt-7">
+            <a href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1%D9%86%D8%A7"
+               target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn-primary">
+              <i class="fab fa-whatsapp"></i><span>انضم كتاجر</span>
+            </a>
+            <a href="tel:0924299798" class="cta-btn cta-btn-outline">
+              <i class="fas fa-phone-alt"></i><span>0924299798</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="soft-card p-6 sm:p-8">
+            <h3 class="font-extrabold text-lg sm:text-xl mb-5 flex items-center gap-2">
+              <i class="fas fa-gift text-primary"></i> ماذا تحصل عليه؟
+            </h3>
+            <ul class="space-y-4">
+              <li class="flex items-start gap-3">
+                <span class="icon-badge soft" style="width:40px;height:40px;font-size:1rem;border-radius:.75rem"><i class="fas fa-store"></i></span>
+                <div>
+                  <h4 class="font-bold text-sm sm:text-base">صفحة متجر احترافية</h4>
+                  <p class="text-text-light text-xs sm:text-sm">غلاف، شعار، وصف، وتقييم، وقائمة منتجات منظمة.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="icon-badge soft" style="width:40px;height:40px;font-size:1rem;border-radius:.75rem"><i class="fas fa-arrow-trend-up"></i></span>
+                <div>
+                  <h4 class="font-bold text-sm sm:text-base">وصول لآلاف العملاء</h4>
+                  <p class="text-text-light text-xs sm:text-sm">ظهور متجرك في الصفحة الرئيسية وقوائم الفئات والبحث.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="icon-badge soft" style="width:40px;height:40px;font-size:1rem;border-radius:.75rem"><i class="fab fa-whatsapp"></i></span>
+                <div>
+                  <h4 class="font-bold text-sm sm:text-base">طلبات مباشرة</h4>
+                  <p class="text-text-light text-xs sm:text-sm">تصل الطلبات إلى واتساب متجرك مباشرة دون وسيط.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="icon-badge soft" style="width:40px;height:40px;font-size:1rem;border-radius:.75rem"><i class="fas fa-headset"></i></span>
+                <div>
+                  <h4 class="font-bold text-sm sm:text-base">دعم فني متواصل</h4>
+                  <p class="text-text-light text-xs sm:text-sm">فريقنا جاهز لمساعدتك في أي وقت لتطوير متجرك.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== تواصل معنا ===== -->
+  <section id="contact" class="px-4 py-12 sm:py-16">
+    <div class="max-w-4xl mx-auto">
+      <div class="brand-cta-card">
+        <div class="cta-inner">
+
+          <div class="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-full mx-auto mb-4 flex items-center justify-center text-white text-2xl sm:text-[1.7rem]"
+               style="background:linear-gradient(135deg,#FF7A00 0%,#FFA64D 100%);box-shadow:0 12px 30px -8px rgba(255,122,0,.55)">
+            <i class="fas fa-comments"></i>
+          </div>
+
+          <span class="inline-block bg-white text-[#E06B00] border border-[#FFE0BD] px-4 py-1.5 rounded-full text-xs sm:text-sm font-extrabold mb-4">
+            نحن هنا من أجلك
+          </span>
+
+          <h2 class="section-title text-xl sm:text-3xl mb-3">
+            هل لديك سؤال أو استفسار؟
+            <span class="block title-accent">تواصل معنا الآن</span>
+          </h2>
+
+          <p class="text-text-light text-sm sm:text-base leading-relaxed max-w-xl mx-auto mb-7">
+            سواء كنت عميلاً يبحث عن منتج، أو صاحب متجر يريد الانضمام،
+            فريق بازارِنا جاهز لمساعدتك والرد على استفساراتك.
+          </p>
+
+          <div class="grid sm:grid-cols-2 gap-3 max-w-md mx-auto">
+            <a href="https://wa.me/249908280115" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn-primary">
+              <i class="fab fa-whatsapp"></i><span>واتساب</span>
+            </a>
+            <a href="mailto:support@bazrena.com" class="cta-btn cta-btn-outline">
+              <i class="fas fa-envelope"></i><span>البريد الإلكتروني</span>
+            </a>
+          </div>
+
+          <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mt-7 pt-6" style="border-top:1px dashed #FFE0BD">
+            <span class="feature-pill"><i class="fas fa-clock"></i> رد سريع</span>
+            <span class="feature-pill"><i class="fas fa-shield-halved"></i> تعامل موثوق</span>
+            <span class="feature-pill"><i class="fas fa-user-tie"></i> فريق متخصص</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <button id="toTop" class="to-top" aria-label="العودة للأعلى">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <script>
+    /* ===== ظهور تدريجي عند التمرير ===== */
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('visible'));
+    }
+
+    /* ===== عدّادات الأرقام ===== */
+    function animateCounter(el) {
+      const target = parseFloat(el.dataset.count) || 0;
+      const suffix = el.dataset.suffix || '';
+      const duration = 1400;
+      const start = performance.now();
+
+      function step(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = Math.round(target * eased);
+        el.textContent = value.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    const counters = document.querySelectorAll('.stat-num[data-count]');
+    if ('IntersectionObserver' in window) {
+      const cio = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            cio.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      counters.forEach(c => cio.observe(c));
+    } else {
+      counters.forEach(c => {
+        c.textContent = (parseFloat(c.dataset.count) || 0).toLocaleString() + (c.dataset.suffix || '');
+      });
+    }
+
+    /* ===== زر العودة للأعلى ===== */
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll', () => {
+      toTop.classList.toggle('show', window.scrollY > 500);
+    }, { passive: true });
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  </script>
+
+</body>
+</html>
