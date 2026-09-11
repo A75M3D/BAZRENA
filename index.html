@@ -19,12 +19,12 @@
         form-action 'self';
         worker-src 'self';
     ">
-    <title>BAZRENA – بازارنا | أفضل المتاجر والبراندات في مكان واحد</title>
+    <title>BAZRENA – بازارِنا | أفضل المتاجر والبراندات في مكان واحد</title>
 
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="بازارنا">
+    <meta name="apple-mobile-web-app-title" content="بازارِنا">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -109,7 +109,9 @@
         .stores-scroll-container {
             overflow-x: auto; scroll-behavior: auto; display: flex; gap: 1rem;
             padding-bottom: 1rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
-            direction: ltr;
+            direction: ltr; touch-action: pan-x;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
         }
         .stores-scroll-container > * { direction: rtl; }
         .stores-scroll-container::-webkit-scrollbar { height: 8px; }
@@ -119,7 +121,7 @@
         .categories-scroll-container {
             overflow-x: auto; scroll-behavior: smooth; display: flex; gap: 0.75rem;
             padding-bottom: 0.5rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
-            direction: rtl;
+            direction: rtl; touch-action: pan-x;
         }
         .categories-scroll-container::-webkit-scrollbar { height: 6px; }
         .categories-scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
@@ -284,6 +286,109 @@
         }
         .brand-cta-feature { display: flex; align-items: center; gap: 8px; color: #cfcfcf; font-size: 0.9rem; font-weight: 600; }
         .brand-cta-feature i { color: #FF7A00; font-size: 1rem; }
+
+        /* ============================================================
+           شريط المتاجر المتابَعة (أيقونات دائرية) - قابل للتمرير يدوياً
+           ============================================================ */
+        .followed-scroll-container {
+            overflow-x: auto; display: flex; gap: 1rem;
+            padding: 0.75rem 0 1rem; scrollbar-width: thin;
+            scrollbar-color: #FF7A00 #f1f1f1;
+            touch-action: pan-x;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+            scroll-behavior: smooth;
+        }
+        .followed-scroll-container::-webkit-scrollbar { height: 8px; }
+        .followed-scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .followed-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
+
+        .followed-store-item {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            flex-shrink: 0; width: 88px; cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+        .followed-store-item:hover { transform: translateY(-4px); }
+        .followed-store-avatar {
+            width: 70px; height: 70px; border-radius: 50%;
+            border: 3px solid #FF7A00; background: #fff; padding: 3px;
+            box-shadow: 0 4px 12px rgba(255,122,0,0.25);
+            overflow: hidden; transition: box-shadow 0.25s;
+        }
+        .followed-store-item:hover .followed-store-avatar { box-shadow: 0 8px 22px rgba(255,122,0,0.45); }
+        .followed-store-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; pointer-events: none; }
+        .followed-store-name {
+            font-size: 0.75rem; font-weight: 700; color: #1A1A1A;
+            max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            text-align: center;
+        }
+
+        /* ============================================================
+           زر المتابعة داخل بطاقة المتجر
+           ============================================================ */
+        .card-follow-btn {
+            background: #FF7A00; color: #fff; border: 1.5px solid #FF7A00;
+            border-radius: 9999px; padding: 0.35rem 0.8rem;
+            font-size: 0.72rem; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 4px;
+            transition: all 0.25s; white-space: nowrap; flex-shrink: 0;
+        }
+        .card-follow-btn:hover { background: #E06B00; border-color: #E06B00; }
+        .card-follow-btn.following { background: #FFFFFF; color: #FF7A00; }
+        .card-follow-btn.following:hover { background: #FFF3E6; }
+        .card-follow-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        /* ============================================================
+           نافذة البحث
+           ============================================================ */
+        .search-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 2500;
+            background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+            align-items: flex-start; justify-content: center;
+            padding: 1rem; animation: fadeIn 0.2s;
+        }
+        .search-overlay.show { display: flex; }
+        .search-panel {
+            background: #FFFFFF; width: 100%; max-width: 680px;
+            border-radius: 1.5rem; padding: 1.25rem;
+            margin-top: 5vh; max-height: 85vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            animation: zoomIn 0.25s;
+        }
+        .search-panel input[type="search"] {
+            -webkit-appearance: none; appearance: none;
+            background: transparent; border: none;
+        }
+        .search-panel input[type="search"]::-webkit-search-cancel-button { display: none; }
+
+        /* ============================================================
+           شعار المنصة كزر قائمة (للموبايل)
+           ============================================================ */
+        #logoMenuBtn {
+            background: transparent;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #logoMenuBtn:hover { opacity: 0.85; }
+        #logoMenuBtn .logo-menu-chevron {
+            display: none;
+            font-size: 0.7rem;
+            color: #999;
+            margin-right: 2px;
+            transition: transform 0.3s;
+        }
+        @media (max-width: 767px) {
+            #logoMenuBtn .logo-menu-chevron { display: inline-block; }
+            #logoMenuBtn.menu-open .logo-menu-chevron { transform: rotate(180deg); }
+        }
     </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -304,16 +409,18 @@
 
     <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div class="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
-            <div class="flex items-center gap-2">
+            <!-- الشعار أصبح زر فتح القائمة للموبايل -->
+            <button id="logoMenuBtn" type="button" aria-label="القائمة" aria-expanded="false">
                 <div class="w-12 h-12 rounded-full shadow-neon-glow overflow-hidden bg-white">
-                    <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارنا">
+                    <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
                 </div>
                 <span class="text-2xl font-extrabold flex items-center gap-1">
-                    <span class="text-text-main">بازارنا</span>
+                    <span class="text-text-main">بازارِنا</span>
                     <span class="text-text-light text-lg font-bold">-</span>
                     <span class="text-primary">BAZRENA</span>
                 </span>
-            </div>
+                <i class="fas fa-chevron-down logo-menu-chevron"></i>
+            </button>
             <nav class="hidden md:flex gap-6">
                 <a href="#" class="hover:text-primary">الرئيسية</a>
                 <a href="#stores" class="hover:text-primary">المتاجر</a>
@@ -322,21 +429,39 @@
                 <a href="#" class="hover:text-primary">من نحن</a>
             </nav>
             <div class="flex items-center gap-3">
+                <!-- زر البحث -->
+                <button id="searchButton" class="w-11 h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-xl transition" aria-label="البحث">
+                    <i class="fas fa-search text-gray-700"></i>
+                </button>
                 <button id="cartButton" class="relative w-11 h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-xl" aria-label="سلة التسوق">
                     <i class="fas fa-shopping-cart text-gray-700"></i>
                     <span id="cartCount" class="absolute -top-1 -left-1 w-5 h-5 bg-primary text-white rounded-full text-xs flex items-center justify-center font-bold">0</span>
                 </button>
-                <button id="mobileMenuBtn" class="md:hidden w-11 h-11 rounded-full bg-gray-100"><i class="fas fa-bars"></i></button>
             </div>
         </div>
+        <!-- قائمة الموبايل تُفتح من الشعار -->
         <div id="mobileMenu" class="hidden md:hidden bg-white border-t p-4 space-y-2">
-            <a href="#" class="block py-2">الرئيسية</a>
-            <a href="#stores" class="block py-2">المتاجر</a>
-            <a href="#categories" class="block py-2">التصنيفات</a>
-            <a href="#all-products" class="block py-2">جميع المنتجات</a>
-            <a href="#" class="block py-2">من نحن</a>
+            <a href="#" class="block py-2 hover:text-primary transition">الرئيسية</a>
+            <a href="#stores" class="block py-2 hover:text-primary transition">المتاجر</a>
+            <a href="#categories" class="block py-2 hover:text-primary transition">التصنيفات</a>
+            <a href="#all-products" class="block py-2 hover:text-primary transition">جميع المنتجات</a>
+            <a href="#" class="block py-2 hover:text-primary transition">من نحن</a>
         </div>
     </header>
+
+    <!-- نافذة البحث -->
+    <div id="searchOverlay" class="search-overlay">
+        <div class="search-panel">
+            <div class="flex items-center gap-3 border-b border-gray-200 pb-3">
+                <i class="fas fa-search text-primary text-xl"></i>
+                <input id="searchInput" type="search" placeholder="ابحث عن متجر أو فئة..." class="flex-1 outline-none text-lg bg-transparent" autocomplete="off">
+                <button id="closeSearch" class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition" aria-label="إغلاق">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="searchResults" class="mt-4 overflow-y-auto flex-1"></div>
+        </div>
+    </div>
 
     <button id="installButtonFloating" class="hidden" title="تثبيت التطبيق">
         <i class="fas fa-download"></i>
@@ -349,7 +474,7 @@
 
         <div class="flex justify-center mb-8">
             <div class="w-40 h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[512px] lg:h-[512px] rounded-full overflow-hidden shadow-neon-glow bg-white">
-                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain" alt="شعار بازارنا">
+                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain" alt="شعار بازارِنا">
             </div>
         </div>
 
@@ -374,12 +499,24 @@
         </div>
     </section>
 
+    <!-- المتاجر التي تتابعها -->
+    <section id="followedStoresSection" class="pt-6 pb-2 hidden">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <h2 class="text-2xl font-extrabold mb-1">المتاجر التي تتابعها</h2>
+                </div>
+                <span id="followedCountBadge" class="text-xs font-bold bg-orange-50 text-primary border border-orange-200 px-3 py-1 rounded-full"></span>
+            </div>
+            <div id="followedStoresContainer" class="followed-scroll-container"></div>
+        </div>
+    </section>
+
     <section id="stores" class="py-12">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-end mb-8">
                 <div>
                     <h2 class="text-3xl font-extrabold mb-2">المتاجر المميزة</h2>
-                    <p class="text-text-light">اضغط على أي متجر لاستعراض منتجاته</p>
                 </div>
                 <div class="flex gap-3">
                     <button id="prevStoresBtn" class="scroll-btn"><i class="fas fa-chevron-right"></i></button>
@@ -437,11 +574,11 @@
 
                 <h2 class="brand-cta-title">
                     هل تملك منتجات وبراند خاص بك؟<br>
-                    <span class="highlight">انطلق بمشروعك إلى مستوى جديد</span> مع بازارنا
+                    <span class="highlight">انطلق بمشروعك إلى مستوى جديد</span> مع بازارِنا
                 </h2>
 
                 <p class="brand-cta-desc">
-                    في <strong>بازارنا</strong> نمنح أصحاب البراندات والمشاريع الناشئة منصة احترافية لعرض منتجاتهم أمام آلاف العملاء يوميًا.
+                    في <strong>بازارِنا</strong> نمنح أصحاب البراندات والمشاريع الناشئة منصة احترافية لعرض منتجاتهم أمام آلاف العملاء يوميًا.
                     متجرك الخاص جاهز خلال دقائق — <strong>بدون أي رسوم اشتراك</strong>، مع دعم فني كامل،
                     وإدارة ذكية للطلبات عبر واتساب مباشرة. <strong>لا تفوّت الفرصة</strong> وكن جزءًا من أكبر سوق رقمي في السودان.
                 </p>
@@ -572,10 +709,10 @@
                 <div>
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-10 h-10 rounded-full bg-white overflow-hidden">
-                            <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارنا">
+                            <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
                         </div>
                         <span class="text-xl font-bold flex items-center gap-1">
-                            <span>بازارنا</span>
+                            <span>بازارِنا</span>
                             <span class="text-primary font-bold">-</span>
                             <span class="text-primary">BAZRENA</span>
                         </span>
@@ -610,7 +747,7 @@
                 </div>
             </div>
             <div class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
-                © 2026 BAZRENA – بازارنا. جميع الحقوق محفوظة.
+                © 2026 BAZRENA – بازارِنا. جميع الحقوق محفوظة.
             </div>
         </div>
     </footer>
@@ -643,6 +780,8 @@
         let currentStore = null;
         let cart = JSON.parse(localStorage.getItem('myStoresCart')) || [];
         let autoScrollInterval = null;
+        let autoScrollResumeTimer = null;
+        let isUserInteracting = false;
         let allProducts = [];
         let filteredProducts = [];
         let displayedProductsCount = 0;
@@ -664,6 +803,7 @@
         }
         function saveFollowedStores(list) { localStorage.setItem(FOLLOWED_STORES_KEY, JSON.stringify(list)); }
         function isStoreFollowed(storeId) { return getFollowedStores().includes(storeId); }
+        function getStoreId(store) { return store.id || store.name; }
 
         // عناصر DOM
         const storesScrollContainer = document.getElementById('storesScrollContainer');
@@ -713,6 +853,49 @@
         const storeFollowButton = document.getElementById('storeFollowButton');
         const storeFollowText = document.getElementById('storeFollowText');
 
+        // عناصر جديدة
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const searchButton = document.getElementById('searchButton');
+        const closeSearchBtn = document.getElementById('closeSearch');
+        const followedStoresSection = document.getElementById('followedStoresSection');
+        const followedStoresContainer = document.getElementById('followedStoresContainer');
+        const followedCountBadge = document.getElementById('followedCountBadge');
+        const logoMenuBtn = document.getElementById('logoMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        // ===== قائمة الموبايل عبر الشعار =====
+        function toggleMobileMenu(force) {
+            if (!mobileMenu || !logoMenuBtn) return;
+            const isHidden = mobileMenu.classList.contains('hidden');
+            const shouldOpen = (typeof force === 'boolean') ? force : isHidden;
+            mobileMenu.classList.toggle('hidden', !shouldOpen);
+            logoMenuBtn.classList.toggle('menu-open', shouldOpen);
+            logoMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+        }
+        if (logoMenuBtn) {
+            logoMenuBtn.addEventListener('click', (e) => {
+                // على الشاشات الكبيرة نعيد للأعلى، على الموبايل نفتح القائمة
+                if (window.innerWidth >= 768) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    e.preventDefault();
+                    toggleMobileMenu();
+                }
+            });
+        }
+        // إغلاق القائمة عند الضغط على أي رابط داخلها
+        if (mobileMenu) {
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => toggleMobileMenu(false));
+            });
+        }
+        // إغلاق عند تغيير الحجم للديسكتوب
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) toggleMobileMenu(false);
+        });
+
         // ===== PWA =====
         let deferredPrompt = null;
         function isAppInstalled() {
@@ -757,7 +940,357 @@
         }
         function animateCartBadge() { cartCount.classList.add('cart-badge-animate'); setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300); }
 
-        // ===== تحميل المتاجر =====
+        // ============================================================
+        // بطاقة المتجر (مع زر المتابعة)
+        // ============================================================
+        function setCardFollowBtnState(btn, following) {
+            btn.classList.toggle('following', following);
+            btn.innerHTML = following
+                ? '<i class="fas fa-check"></i><span>متابَع</span>'
+                : '<i class="fas fa-plus"></i><span>متابعة</span>';
+        }
+
+        function createStoreCard(store) {
+            const storeId = getStoreId(store);
+            const followed = isStoreFollowed(storeId);
+
+            const card = document.createElement('div');
+            card.className = 'store-card';
+
+            const cover = document.createElement('img');
+            cover.className = 'cover-image';
+            cover.loading = 'lazy';
+            cover.alt = store.name || '';
+            cover.src = store.cover_url || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
+            cover.onerror = function () { this.src = 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; };
+
+            const logo = document.createElement('img');
+            logo.className = 'store-logo';
+            logo.loading = 'lazy';
+            logo.alt = store.name || '';
+            logo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+            logo.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
+
+            const info = document.createElement('div');
+            info.className = 'store-info';
+
+            const nameRow = document.createElement('div');
+            nameRow.className = 'store-name';
+            nameRow.textContent = store.name || '';
+            if (store.is_verified) {
+                const v = document.createElement('span');
+                v.className = 'verified-icon';
+                v.innerHTML = '<i class="fas fa-check"></i>';
+                nameRow.appendChild(v);
+            }
+
+            const catRow = document.createElement('div');
+            catRow.className = 'store-category';
+            catRow.textContent = store.category || 'عام';
+
+            const bottomRow = document.createElement('div');
+            bottomRow.className = 'flex items-center justify-between gap-2 mt-2';
+
+            const count = document.createElement('div');
+            count.className = 'flex items-center gap-1 text-xs text-text-light';
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-shopping-bag';
+            const countText = document.createElement('span');
+            countText.textContent = `${store.products_count || 0} منتج`;
+            count.appendChild(icon);
+            count.appendChild(countText);
+
+            const followBtn = document.createElement('button');
+            followBtn.className = 'card-follow-btn';
+            followBtn.dataset.storeId = storeId;
+            followBtn.title = 'متابعة المتجر';
+            setCardFollowBtnState(followBtn, followed);
+            followBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                toggleFollowFromCard(store, followBtn);
+            });
+
+            bottomRow.appendChild(count);
+            bottomRow.appendChild(followBtn);
+
+            info.appendChild(nameRow);
+            info.appendChild(catRow);
+            info.appendChild(bottomRow);
+
+            card.appendChild(cover);
+            card.appendChild(logo);
+            card.appendChild(info);
+
+            card.addEventListener('click', () => openStoreModal(store));
+            return card;
+        }
+
+        function updateCardFollowButtons(storeId) {
+            const following = isStoreFollowed(storeId);
+            document.querySelectorAll('.card-follow-btn').forEach(btn => {
+                if (btn.dataset.storeId === storeId) setCardFollowBtnState(btn, following);
+            });
+        }
+
+        // ============================================================
+        // متابعة من داخل البطاقة
+        // ============================================================
+        async function toggleFollowFromCard(store, btn) {
+            const storeId = getStoreId(store);
+            if (btn.disabled) return;
+            btn.disabled = true;
+
+            const wasFollowing = isStoreFollowed(storeId);
+            try {
+                const storeRef = db.collection('stores').doc(storeId);
+                const snap = await storeRef.get();
+                const currentDbFollowers = snap.exists ? (parseInt(snap.data()?.followers) || 0) : 0;
+                const newCount = wasFollowing ? Math.max(0, currentDbFollowers - 1) : currentDbFollowers + 1;
+
+                await storeRef.update({ followers: newCount });
+                store.followers = newCount;
+
+                const list = getFollowedStores();
+                if (wasFollowing) {
+                    const idx = list.indexOf(storeId);
+                    if (idx > -1) list.splice(idx, 1);
+                } else if (!list.includes(storeId)) {
+                    list.push(storeId);
+                }
+                saveFollowedStores(list);
+
+                updateCardFollowButtons(storeId);
+                renderFollowedStores();
+
+                if (currentStoreId === storeId) {
+                    isFollowing = !wasFollowing;
+                    currentFollowersCount = newCount;
+                    updateFollowersDisplay();
+                    updateFollowButtonUI();
+                }
+
+                showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
+            } catch (err) {
+                console.error(err);
+                showToast('حدث خطأ، حاول مرة أخرى');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ============================================================
+        // قائمة المتاجر التي تتابعها (قابلة للتمرير يدوياً)
+        // ============================================================
+        function renderFollowedStores() {
+            if (!followedStoresSection || !followedStoresContainer) return;
+
+            const ids = getFollowedStores();
+            const followed = ids
+                .map(id => stores.find(s => getStoreId(s) === id))
+                .filter(Boolean);
+
+            if (!followed.length) {
+                followedStoresSection.classList.add('hidden');
+                followedStoresContainer.innerHTML = '';
+                if (followedCountBadge) followedCountBadge.textContent = '';
+                return;
+            }
+
+            followedStoresSection.classList.remove('hidden');
+            if (followedCountBadge) followedCountBadge.textContent = `${followed.length} متجر`;
+            followedStoresContainer.innerHTML = '';
+
+            followed.forEach(store => {
+                const item = document.createElement('div');
+                item.className = 'followed-store-item';
+                item.title = store.name || '';
+
+                const avatar = document.createElement('div');
+                avatar.className = 'followed-store-avatar';
+
+                const img = document.createElement('img');
+                img.loading = 'lazy';
+                img.alt = store.name || '';
+                img.draggable = false;
+                img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+                img.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
+                avatar.appendChild(img);
+
+                const nm = document.createElement('div');
+                nm.className = 'followed-store-name';
+                nm.textContent = store.name || '';
+
+                item.appendChild(avatar);
+                item.appendChild(nm);
+
+                item.addEventListener('click', () => openStoreModal(store));
+                followedStoresContainer.appendChild(item);
+            });
+        }
+
+        // ============================================================
+        // البحث
+        // ============================================================
+        function openSearch() {
+            searchOverlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            performSearch(searchInput.value);
+            setTimeout(() => { try { searchInput.focus(); } catch (e) {} }, 80);
+        }
+        function closeSearch() {
+            searchOverlay.classList.remove('show');
+            document.body.style.overflow = 'auto';
+            searchInput.value = '';
+            searchResults.innerHTML = '';
+        }
+
+        function goToCategory(cat) {
+            closeSearch();
+            currentCategory = cat;
+            filterStoresByCategory(cat);
+            const btns = Array.from(categoriesContainer.querySelectorAll('button'));
+            const target = btns.find(b => b.textContent.trim() === cat);
+            if (target) highlightCategory(target);
+            applyProductsFilter(cat);
+            const storesSection = document.getElementById('stores');
+            if (storesSection) storesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function performSearch(rawQuery) {
+            const query = (rawQuery || '').trim().toLowerCase();
+            searchResults.innerHTML = '';
+
+            if (!query) {
+                const title = document.createElement('p');
+                title.className = 'text-sm font-bold text-text-light mb-3';
+                title.textContent = 'تصفح الفئات';
+                searchResults.appendChild(title);
+
+                if (!categories.length) {
+                    const empty = document.createElement('p');
+                    empty.className = 'text-center text-text-light py-8';
+                    empty.textContent = 'اكتب اسم متجر أو فئة للبحث';
+                    searchResults.appendChild(empty);
+                    return;
+                }
+
+                const chips = document.createElement('div');
+                chips.className = 'flex flex-wrap gap-2';
+                categories.forEach(cat => {
+                    const chip = document.createElement('button');
+                    chip.className = 'px-4 py-2 rounded-full bg-gray-100 hover:bg-primary hover:text-white transition font-semibold text-sm';
+                    chip.textContent = cat;
+                    chip.addEventListener('click', () => goToCategory(cat));
+                    chips.appendChild(chip);
+                });
+                searchResults.appendChild(chips);
+                return;
+            }
+
+            const matchedCategories = categories.filter(c => c.toLowerCase().includes(query));
+            const matchedStores = stores.filter(s =>
+                (s.name || '').toLowerCase().includes(query) ||
+                (s.category || '').toLowerCase().includes(query) ||
+                (s.description || '').toLowerCase().includes(query)
+            );
+
+            if (!matchedCategories.length && !matchedStores.length) {
+                const empty = document.createElement('div');
+                empty.className = 'text-center py-10 text-text-light';
+                empty.innerHTML = '<i class="fas fa-search text-4xl mb-3 block text-gray-300"></i>';
+                const p = document.createElement('p');
+                p.textContent = 'لا توجد نتائج مطابقة لبحثك';
+                empty.appendChild(p);
+                searchResults.appendChild(empty);
+                return;
+            }
+
+            if (matchedCategories.length) {
+                const title = document.createElement('p');
+                title.className = 'text-sm font-bold text-text-light mb-3';
+                title.textContent = `الفئات (${matchedCategories.length})`;
+                searchResults.appendChild(title);
+
+                const chips = document.createElement('div');
+                chips.className = 'flex flex-wrap gap-2 mb-5';
+                matchedCategories.forEach(cat => {
+                    const chip = document.createElement('button');
+                    chip.className = 'px-4 py-2 rounded-full bg-orange-50 text-primary border border-orange-200 hover:bg-primary hover:text-white transition font-semibold text-sm flex items-center gap-2';
+                    const ic = document.createElement('i');
+                    ic.className = 'fas fa-tags';
+                    chip.appendChild(ic);
+                    chip.appendChild(document.createTextNode(cat));
+                    chip.addEventListener('click', () => goToCategory(cat));
+                    chips.appendChild(chip);
+                });
+                searchResults.appendChild(chips);
+            }
+
+            if (matchedStores.length) {
+                const title = document.createElement('p');
+                title.className = 'text-sm font-bold text-text-light mb-3';
+                title.textContent = `المتاجر (${matchedStores.length})`;
+                searchResults.appendChild(title);
+
+                matchedStores.forEach(store => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center gap-3 p-3 rounded-xl hover:bg-orange-50 cursor-pointer transition';
+
+                    const img = document.createElement('img');
+                    img.className = 'w-12 h-12 rounded-full object-cover border border-gray-200 bg-white flex-shrink-0';
+                    img.alt = store.name || '';
+                    img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+                    img.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
+
+                    const info = document.createElement('div');
+                    info.className = 'flex-1 min-w-0';
+
+                    const nm = document.createElement('div');
+                    nm.className = 'font-bold text-sm truncate flex items-center gap-1';
+                    nm.textContent = store.name || '';
+                    if (store.is_verified) {
+                        const v = document.createElement('span');
+                        v.className = 'verified-icon';
+                        v.innerHTML = '<i class="fas fa-check"></i>';
+                        nm.appendChild(v);
+                    }
+
+                    const meta = document.createElement('div');
+                    meta.className = 'text-xs text-text-light mt-0.5';
+                    meta.textContent = `${store.category || 'عام'} • ${store.products_count || 0} منتج`;
+
+                    info.appendChild(nm);
+                    info.appendChild(meta);
+
+                    const arrow = document.createElement('i');
+                    arrow.className = 'fas fa-chevron-left text-gray-400 text-sm';
+
+                    row.appendChild(img);
+                    row.appendChild(info);
+                    row.appendChild(arrow);
+
+                    row.addEventListener('click', () => {
+                        closeSearch();
+                        openStoreModal(store);
+                    });
+                    searchResults.appendChild(row);
+                });
+            }
+        }
+
+        if (searchButton) searchButton.addEventListener('click', openSearch);
+        if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
+        if (searchOverlay) {
+            searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
+        }
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => performSearch(e.target.value));
+        }
+
+        // ============================================================
+        // تحميل المتاجر
+        // ============================================================
         async function loadStores() {
             storesLoader.classList.remove('hidden'); storesEmpty.classList.add('hidden'); storesScrollContainer.innerHTML = '';
             try {
@@ -782,9 +1315,11 @@
                 if (stores.length === 0) {
                     storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
                     storesEmpty.classList.remove('hidden');
+                    renderFollowedStores();
                 } else {
                     displayStores();
                     startAutoScroll();
+                    renderFollowedStores();
                 }
             } catch (err) {
                 console.error(err);
@@ -799,45 +1334,93 @@
         function displayStores() {
             storesScrollContainer.innerHTML = '';
             stores.forEach(store => {
-                const card = document.createElement('div');
-                card.className = 'store-card';
-                card.innerHTML = `
-                    <img src="${sanitizeHTML(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'}" class="cover-image" loading="lazy">
-                    <img src="${sanitizeHTML(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'}" class="store-logo" loading="lazy">
-                    <div class="store-info">
-                        <div class="store-name">${sanitizeHTML(store.name)} ${store.is_verified ? '<span class="verified-icon"><i class="fas fa-check"></i></span>' : ''}</div>
-                        <div class="store-category">${sanitizeHTML(store.category) || 'عام'}</div>
-                        <div class="flex items-center gap-2 mt-1 text-xs text-text-light"><i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span></div>
-                    </div>`;
-                card.addEventListener('click', () => openStoreModal(store));
-                storesScrollContainer.appendChild(card);
+                storesScrollContainer.appendChild(createStoreCard(store));
             });
         }
 
-        // ===== الحركة التلقائية =====
+        // ============================================================
+        // التمرير التلقائي مع إمكانية التمرير اليدوي بحرية
+        // ============================================================
         function startAutoScroll() {
             stopAutoScroll();
+            if (isUserInteracting) return;
             const maxScroll = () => storesScrollContainer.scrollWidth - storesScrollContainer.clientWidth;
-            storesScrollContainer.scrollLeft = maxScroll();
+            // ابدأ من نهاية القائمة (RTL)
+            if (storesScrollContainer.scrollLeft === 0) {
+                storesScrollContainer.scrollLeft = maxScroll();
+            }
             autoScrollInterval = setInterval(() => {
-                if (!storesScrollContainer) return;
-                const max = maxScroll(); if (max <= 0) return;
+                if (!storesScrollContainer || isUserInteracting) return;
+                const max = maxScroll();
+                if (max <= 0) return;
                 if (storesScrollContainer.scrollLeft <= 0) storesScrollContainer.scrollLeft = max;
                 else storesScrollContainer.scrollLeft -= 2;
             }, 50);
         }
-        function stopAutoScroll() { if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; } }
-        storesScrollContainer.addEventListener('mouseenter', stopAutoScroll);
-        storesScrollContainer.addEventListener('mouseleave', startAutoScroll);
-        storesScrollContainer.addEventListener('touchstart', stopAutoScroll);
-        storesScrollContainer.addEventListener('touchend', () => setTimeout(startAutoScroll, 2000));
-        prevStoresBtn.addEventListener('click', () => { stopAutoScroll(); storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' }); setTimeout(startAutoScroll, 3000); });
-        nextStoresBtn.addEventListener('click', () => { stopAutoScroll(); storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' }); setTimeout(startAutoScroll, 3000); });
 
-        // ===== فتح نافذة المتجر =====
+        function stopAutoScroll() {
+            if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; }
+        }
+
+        function pauseAutoScrollForUser(delayBeforeResume = 2500) {
+            isUserInteracting = true;
+            stopAutoScroll();
+            if (autoScrollResumeTimer) clearTimeout(autoScrollResumeTimer);
+            if (delayBeforeResume > 0) {
+                autoScrollResumeTimer = setTimeout(() => {
+                    isUserInteracting = false;
+                    startAutoScroll();
+                }, delayBeforeResume);
+            }
+        }
+
+        function resumeAutoScrollAfterUser() {
+            if (autoScrollResumeTimer) clearTimeout(autoScrollResumeTimer);
+            isUserInteracting = false;
+            autoScrollResumeTimer = setTimeout(() => startAutoScroll(), 2500);
+        }
+
+        // تفاعلات المؤشر (ماوس + لمس + عجلة)
+        storesScrollContainer.addEventListener('mouseenter', stopAutoScroll);
+        storesScrollContainer.addEventListener('mouseleave', () => { if (!isUserInteracting) startAutoScroll(); });
+
+        storesScrollContainer.addEventListener('pointerdown', () => pauseAutoScrollForUser(0), { passive: true });
+        storesScrollContainer.addEventListener('pointerup', () => resumeAutoScrollAfterUser(), { passive: true });
+        storesScrollContainer.addEventListener('pointercancel', () => resumeAutoScrollAfterUser(), { passive: true });
+
+        storesScrollContainer.addEventListener('touchstart', () => pauseAutoScrollForUser(0), { passive: true });
+        storesScrollContainer.addEventListener('touchend', () => resumeAutoScrollAfterUser(), { passive: true });
+        storesScrollContainer.addEventListener('touchcancel', () => resumeAutoScrollAfterUser(), { passive: true });
+
+        // دعم التمرير بعجلة الماوس/لوحة اللمس: نعيد التشغيل بعد توقف المستخدم
+        let wheelResumeTimer = null;
+        storesScrollContainer.addEventListener('wheel', () => {
+            stopAutoScroll();
+            isUserInteracting = true;
+            if (wheelResumeTimer) clearTimeout(wheelResumeTimer);
+            wheelResumeTimer = setTimeout(() => {
+                isUserInteracting = false;
+                startAutoScroll();
+            }, 2000);
+        }, { passive: true });
+
+        prevStoresBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
+            pauseAutoScrollForUser(3000);
+        });
+        nextStoresBtn.addEventListener('click', () => {
+            stopAutoScroll();
+            storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
+            pauseAutoScrollForUser(3000);
+        });
+
+        // ============================================================
+        // فتح نافذة المتجر
+        // ============================================================
         function openStoreModal(store) {
             currentStore = store;
-            currentStoreId = store.id || store.name;
+            currentStoreId = getStoreId(store);
             currentFollowersCount = parseInt(store.followers) || 0;
             isFollowing = isStoreFollowed(currentStoreId);
 
@@ -906,6 +1489,10 @@
                 currentFollowersCount = newFollowers;
                 updateFollowersDisplay();
                 updateFollowButtonUI();
+
+                updateCardFollowButtons(currentStoreId);
+                renderFollowedStores();
+
                 showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
                 if (currentStore) currentStore.followers = newFollowers;
 
@@ -922,14 +1509,13 @@
         document.getElementById('storeModalOverlay').addEventListener('click', closeStoreModal);
         function closeStoreModal() { storeModal.classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
-        // ===== تحميل منتجات المتجر (بدون كاش) =====
+        // ===== تحميل منتجات المتجر =====
         async function loadStoreProducts(storeNameParam) {
             storeProductsGrid.innerHTML = '<div class="col-span-full text-center py-8"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>';
             try {
                 const snapshot = await db.collection('products').where('store_name', '==', storeNameParam).get();
                 let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-                // ترتيب محلياً حسب created_at
                 data.sort((a, b) => {
                     const ta = a.created_at?.seconds || (a.created_at?.toMillis?.() / 1000) || 0;
                     const tb = b.created_at?.seconds || (b.created_at?.toMillis?.() / 1000) || 0;
@@ -1111,10 +1697,6 @@
             }
         });
 
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            document.getElementById('mobileMenu').classList.toggle('hidden');
-        });
-
         // ===== تحميل الفئات =====
         async function loadCategories() {
             try {
@@ -1165,20 +1747,11 @@
             currentCategory = category;
             const filtered = stores.filter(s => s.category === category);
             storesScrollContainer.innerHTML = '';
-            if (filtered.length === 0) storesScrollContainer.innerHTML = '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>';
-            else {
+            if (filtered.length === 0) {
+                storesScrollContainer.innerHTML = '<div class="text-center w-full py-10 text-text-light">لا توجد متاجر في هذه الفئة</div>';
+            } else {
                 filtered.forEach(store => {
-                    const card = document.createElement('div'); card.className = 'store-card';
-                    card.innerHTML = `
-                        <img src="${sanitizeHTML(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'}" class="cover-image" loading="lazy">
-                        <img src="${sanitizeHTML(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'}" class="store-logo" loading="lazy">
-                        <div class="store-info">
-                            <div class="store-name">${sanitizeHTML(store.name)} ${store.is_verified ? '<span class="verified-icon"><i class="fas fa-check"></i></span>' : ''}</div>
-                            <div class="store-category">${sanitizeHTML(store.category) || 'عام'}</div>
-                            <div class="flex items-center gap-2 mt-1 text-xs text-text-light"><i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span></div>
-                        </div>`;
-                    card.addEventListener('click', () => openStoreModal(store));
-                    storesScrollContainer.appendChild(card);
+                    storesScrollContainer.appendChild(createStoreCard(store));
                 });
             }
             stopAutoScroll(); startAutoScroll();
@@ -1239,7 +1812,7 @@
             }, 150);
         });
 
-        // ===== تحميل جميع المنتجات (بدون كاش) =====
+        // ===== تحميل جميع المنتجات =====
         async function loadAllProducts() {
             allProductsLoader.classList.remove('hidden');
             allProductsEmpty.classList.add('hidden');
@@ -1247,7 +1820,6 @@
             loadMoreProductsBtn.classList.add('hidden');
 
             try {
-                console.log('🔄 جلب المنتجات من قاعدة البيانات...');
                 let snapshot;
                 try {
                     snapshot = await db.collection('products').orderBy('created_at', 'desc').get();
@@ -1282,9 +1854,11 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
+                if (searchOverlay && searchOverlay.classList.contains('show')) { closeSearch(); return; }
                 if (!productModal.classList.contains('hidden')) { productModal.classList.add('hidden'); document.body.style.overflow = 'auto'; }
                 if (!storeModal.classList.contains('hidden')) closeStoreModal();
                 if (cartSidebar.classList.contains('open')) closeCart();
+                if (mobileMenu && !mobileMenu.classList.contains('hidden')) toggleMobileMenu(false);
             }
         });
 
