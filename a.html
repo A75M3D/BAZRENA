@@ -15,7 +15,7 @@
         body { background: #F8F9FA; direction: rtl; margin: 0; padding: 0; }
 
         /* ============================================================
-           🎨 شاشة تسجيل الدخول
+           🔐 شاشة تسجيل الدخول
            ============================================================ */
         .login-overlay {
             position: fixed;
@@ -84,10 +84,7 @@
         }
         @media (min-width: 640px) { .login-subtitle { font-size: 0.95rem; } }
 
-        .login-field {
-            position: relative;
-            margin-bottom: 1rem;
-        }
+        .login-field { position: relative; margin-bottom: 1rem; }
         .login-field-icon {
             position: absolute;
             right: 1rem; top: 50%; transform: translateY(-50%);
@@ -109,10 +106,6 @@
             border-color: #FF7A00;
             background: #FFF;
             box-shadow: 0 0 0 4px rgba(255,122,0,0.1);
-        }
-        .login-input:focus + .login-field-icon,
-        .login-field:focus-within .login-field-icon {
-            transform: translateY(-50%) scale(1.15);
         }
         .login-input::placeholder { color: #9ca3af; }
 
@@ -177,8 +170,6 @@
         .card { background: white; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .btn-primary { background: #FF7A00; color: white; transition: all 0.3s; }
         .btn-primary:hover { background: #E06B00; box-shadow: 0 4px 15px rgba(255,122,0,0.3); }
-        .btn-success { background: #10b981; color: white; transition: all 0.3s; }
-        .btn-success:hover { background: #059669; }
         .btn-danger { background: #ef4444; color: white; transition: all 0.3s; }
         .btn-danger:hover { background: #dc2626; }
         .input-field { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; font-size: 0.95rem; transition: all 0.3s; }
@@ -204,27 +195,86 @@
         .image-preview { width: 100%; height: 120px; object-fit: cover; border-radius: 0.5rem; margin-top: 0.5rem; }
         .btn-loading { opacity: 0.7 !important; cursor: not-allowed !important; pointer-events: none !important; position: relative; }
 
-        /* شارة المتجر المسجّل */
-        .logged-store-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
+        /* بطاقة معلومات المتجر (قراءة فقط) */
+        .store-info-display {
+            background: linear-gradient(135deg, #FFF8F1 0%, #FFFFFF 100%);
             border: 1.5px solid #FFE0BD;
-            padding: 0.5rem 1rem; border-radius: 9999px;
-            font-weight: 800; color: #E06B00;
-            font-size: 0.85rem;
-            box-shadow: 0 4px 12px -6px rgba(255,122,0,0.5);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
         }
-        @media (min-width: 640px) { .logged-store-badge { font-size: 0.95rem; padding: 0.55rem 1.15rem; } }
+        .store-info-display::before {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,122,0,0.10) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .store-info-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            position: relative;
+            z-index: 2;
+            flex-wrap: wrap;
+        }
+        .store-info-logo {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            border: 3px solid #FFFFFF;
+            background: #fff;
+            object-fit: cover;
+            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.4);
+            flex-shrink: 0;
+        }
+        @media (min-width: 640px) { .store-info-logo { width: 84px; height: 84px; } }
 
-        .logout-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: #fff; border: 1.5px solid #ef4444; color: #ef4444;
-            padding: 0.5rem 1rem; border-radius: 9999px;
-            font-weight: 800; font-size: 0.85rem;
-            cursor: pointer; transition: all 0.25s;
+        .info-item {
+            background: #FFFFFF;
+            border: 1px solid #F0F0F0;
+            border-radius: 0.85rem;
+            padding: 0.85rem 1rem;
+            transition: all 0.25s;
         }
-        .logout-btn:hover { background: #ef4444; color: #fff; }
-        @media (min-width: 640px) { .logout-btn { font-size: 0.95rem; padding: 0.55rem 1.15rem; } }
+        .info-item:hover {
+            border-color: #FFE0BD;
+            box-shadow: 0 4px 12px -6px rgba(255,122,0,0.3);
+        }
+        .info-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .info-label i { color: #FF7A00; font-size: 0.7rem; }
+        .info-value {
+            font-weight: 800;
+            color: #1A1A1A;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+
+        .readonly-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            border: 1px solid #BFDBFE;
+            color: #1E40AF;
+            padding: 0.75rem 1rem;
+            border-radius: 0.85rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+        }
+        .readonly-banner i { font-size: 1rem; color: #3B82F6; }
     </style>
 </head>
 <body>
@@ -303,7 +353,15 @@
         <!-- شريط ترحيب + تسجيل خروج -->
         <div class="card p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
-                <span class="logged-store-badge">
+                <span class="logged-store-badge" style="
+                    display: inline-flex; align-items: center; gap: 8px;
+                    background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
+                    border: 1.5px solid #FFE0BD;
+                    padding: 0.5rem 1rem; border-radius: 9999px;
+                    font-weight: 800; color: #E06B00;
+                    font-size: 0.85rem;
+                    box-shadow: 0 4px 12px -6px rgba(255,122,0,0.5);
+                ">
                     <i class="fas fa-store"></i>
                     <span id="welcomeStoreName">—</span>
                 </span>
@@ -316,7 +374,13 @@
                 <button id="checkConnectionBtn" class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold">
                     <i class="fas fa-sync-alt ml-1"></i> إعادة الفحص
                 </button>
-                <button id="logoutBtn" class="logout-btn">
+                <button id="logoutBtn" class="logout-btn" style="
+                    display: inline-flex; align-items: center; gap: 6px;
+                    background: #fff; border: 1.5px solid #ef4444; color: #ef4444;
+                    padding: 0.5rem 1rem; border-radius: 9999px;
+                    font-weight: 800; font-size: 0.85rem;
+                    cursor: pointer; transition: all 0.25s;
+                ">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>خروج</span>
                 </button>
@@ -326,194 +390,149 @@
         <!-- العنوان -->
         <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white text-2xl" style="background:#FF7A00;">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-2xl" style="background:#FF7A00;">
                     <i class="fas fa-crown"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-extrabold">مرحباً بك في لوحة متجرك</h1>
-                    <p class="text-sm text-gray-500">أدر متجرك ومنتجاتك من مكان واحد</p>
-                </div>
-            </div>
-            <div class="flex gap-2">
-                <button id="showStoreTab" class="btn-primary px-4 py-2 rounded-lg font-semibold text-sm">
-                    <i class="fas fa-store ml-1"></i> متجري
-                </button>
-                <button id="showProductsTab" class="btn-primary px-4 py-2 rounded-lg font-semibold text-sm">
-                    <i class="fas fa-box ml-1"></i> منتجاتي
-                </button>
-            </div>
-        </div>
-
-        <!-- قسم معلومات المتجر -->
-        <div id="storeSection">
-            <div class="max-w-3xl mx-auto">
-                <div class="card p-6">
-                    <h2 class="text-xl font-bold mb-4">
-                        <i class="fas fa-store text-primary ml-2" style="color:#FF7A00;"></i>
-                        <span>معلومات متجري</span>
-                    </h2>
-                    <form id="storeForm" class="space-y-4">
-                        <input type="hidden" id="store_id">
-
-                        <div class="border-b pb-4 mb-4">
-                            <h3 class="font-bold text-gray-700 mb-3">المعلومات الأساسية</h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">اسم المتجر *</label>
-                                    <input type="text" id="store_name" class="input-field" required disabled>
-                                    <p class="text-xs text-gray-500 mt-1"><i class="fas fa-lock"></i> لا يمكن تغيير اسم المتجر</p>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">التصنيف</label>
-                                    <input type="text" id="store_category" class="input-field" placeholder="مثال: إلكترونيات، ملابس، طعام">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">وصف المتجر</label>
-                                    <textarea id="store_description" class="input-field" rows="3" placeholder="وصف مختصر عن المتجر"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border-b pb-4 mb-4">
-                            <h3 class="font-bold text-gray-700 mb-3">معلومات الاتصال</h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">
-                                        رقم الواتساب *
-                                        <span class="text-xs text-gray-500">(بصيغة دولية بدون + مثال: 249912345678)</span>
-                                    </label>
-                                    <input type="tel" id="store_whatsapp" class="input-field" required
-                                           placeholder="249912345678" pattern="[0-9]{10,15}">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">
-                                        رقم الهاتف
-                                        <span class="text-xs text-gray-500">(للاتصال المباشر)</span>
-                                    </label>
-                                    <input type="tel" id="store_phone" class="input-field"
-                                           placeholder="+249912345678 أو 249912345678">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border-b pb-4 mb-4">
-                            <h3 class="font-bold text-gray-700 mb-3">الصور</h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">رابط الشعار</label>
-                                    <input type="url" id="store_logo" class="input-field" placeholder="https://example.com/logo.png">
-                                    <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">رابط الغلاف</label>
-                                    <input type="url" id="store_cover" class="input-field" placeholder="https://example.com/cover.png">
-                                    <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border-b pb-4 mb-4">
-                            <h3 class="font-bold text-gray-700 mb-3">معلومات إضافية</h3>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">التقييم</label>
-                                    <input type="number" id="store_ratting" class="input-field" value="0" min="0" max="5" step="0.1">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium mb-1">عدد المتابعين</label>
-                                    <input type="text" id="store_followers" class="input-field" value="0" disabled>
-                                    <p class="text-xs text-gray-500 mt-1">يتحدّث تلقائياً</p>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <label class="flex items-center gap-2 text-sm text-gray-500">
-                                    <input type="checkbox" id="store_is_verified" class="w-5 h-5" disabled>
-                                    <span>متجر موثّق</span>
-                                    <i class="fas fa-check-circle text-primary" style="color:#FF7A00;"></i>
-                                    <span class="text-xs">(تحدده إدارة بازارِنا فقط)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <button type="submit" id="storeSubmitBtn" class="btn-primary w-full py-3 rounded-lg font-bold text-lg">
-                            <i class="fas fa-save ml-2"></i> <span>حفظ التعديلات</span>
-                        </button>
-                    </form>
+                    <h1 class="text-2xl font-extrabold">إدارة منتجات متجرك</h1>
+                    <p class="text-sm text-gray-500">أضف، عدّل، واحذف منتجات متجرك بسهولة</p>
                 </div>
             </div>
         </div>
 
-        <!-- قسم المنتجات -->
-        <div id="productsSection" class="hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- ============================================================
+             📋 معلومات المتجر (قراءة فقط)
+             ============================================================ -->
+        <div class="card p-5 sm:p-6 mb-6">
+            <h2 class="text-lg sm:text-xl font-bold mb-4">
+                <i class="fas fa-store ml-2" style="color:#FF7A00;"></i>
+                معلومات متجري
+                <span class="text-xs sm:text-sm font-normal text-gray-500">(للاطلاع فقط)</span>
+            </h2>
 
-                <!-- نموذج إضافة/تعديل منتج -->
-                <div class="card p-6">
-                    <h2 class="text-xl font-bold mb-4">
-                        <i class="fas fa-box text-primary ml-2" style="color:#FF7A00;"></i>
-                        <span id="productFormTitle">إضافة منتج جديد</span>
-                    </h2>
-                    <form id="productForm" class="space-y-4">
-                        <input type="hidden" id="product_id">
+            <div class="readonly-banner">
+                <i class="fas fa-circle-info"></i>
+                <span>معلومات المتجر تُدار من قِبل إدارة بازارِنا. للتعديل، تواصل معنا عبر واتساب.</span>
+            </div>
 
-                        <div>
-                            <label class="block text-sm font-medium mb-1">اسم المنتج *</label>
-                            <input type="text" id="product_name" class="input-field" required placeholder="مثال: هاتف ذكي">
+            <div id="storeInfoBox" class="store-info-display">
+                <div class="store-info-header">
+                    <img id="storeInfoLogo" class="store-info-logo" src="https://via.placeholder.com/150/FF7A00/FFFFFF?text=S" alt="شعار المتجر" onerror="this.src='https://via.placeholder.com/150/FF7A00/FFFFFF?text=S'">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <h3 id="storeInfoName" class="text-xl sm:text-2xl font-extrabold text-gray-900">—</h3>
+                            <span id="storeInfoVerified" class="hidden" style="
+                                display: inline-flex; align-items: center; justify-content: center;
+                                width: 22px; height: 22px; background-color: #FF7A00; border-radius: 50%;
+                                color: white; font-size: 12px;
+                            " title="متجر موثّق"><i class="fas fa-check"></i></span>
                         </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-1">المتجر</label>
-                            <input type="text" id="product_store_name_display" class="input-field" disabled>
-                            <input type="hidden" id="product_store_name">
-                            <p class="text-xs text-gray-500 mt-1"><i class="fas fa-lock"></i> المنتج يضاف لمتجرك تلقائياً</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-1">السعر * (بالجنيه السوداني)</label>
-                            <input type="number" id="product_price" class="input-field" required min="0" step="0.01" placeholder="0.00">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-1">رابط الصورة</label>
-                            <input type="url" id="product_img_url" class="input-field" placeholder="https://example.com/product.png">
-                            <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-1">التقييم</label>
-                            <input type="number" id="product_ratting" class="input-field" value="0" min="0" max="5" step="0.1">
-                        </div>
-
-                        <div class="flex gap-3">
-                            <button type="submit" id="productSubmitBtn" class="btn-primary flex-1 py-3 rounded-lg font-bold text-lg">
-                                <i class="fas fa-save ml-2"></i> <span>حفظ المنتج</span>
-                            </button>
-                            <button type="button" id="cancelEditProduct" class="btn-danger px-6 py-3 rounded-lg font-bold hidden">
-                                <i class="fas fa-times ml-2"></i> إلغاء
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- قائمة منتجات المتجر -->
-                <div class="card p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold">
-                            <i class="fas fa-boxes ml-2 text-primary" style="color:#FF7A00;"></i>
-                            منتجات متجري
-                        </h2>
-                        <span id="productsCount" class="bg-primary text-white px-3 py-1 rounded-full text-sm font-bold" style="background:#FF7A00;">0</span>
+                        <p id="storeInfoCategory" class="text-sm" style="color:#FF7A00; font-weight:700;">
+                            <i class="fas fa-tag"></i> —
+                        </p>
                     </div>
-                    <div id="productsList" class="table-container"></div>
                 </div>
 
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="info-item">
+                        <div class="info-label"><i class="fab fa-whatsapp"></i> رقم الواتساب</div>
+                        <div id="storeInfoWhatsapp" class="info-value">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-phone"></i> رقم الهاتف</div>
+                        <div id="storeInfoPhone" class="info-value">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-star"></i> التقييم</div>
+                        <div id="storeInfoRating" class="info-value">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-users"></i> عدد المتابعين</div>
+                        <div id="storeInfoFollowers" class="info-value">—</div>
+                    </div>
+                    <div class="info-item sm:col-span-2">
+                        <div class="info-label"><i class="fas fa-align-right"></i> وصف المتجر</div>
+                        <div id="storeInfoDescription" class="info-value">—</div>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- ============================================================
+             📦 إدارة المنتجات
+             ============================================================ -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- نموذج إضافة/تعديل منتج -->
+            <div class="card p-6">
+                <h2 class="text-xl font-bold mb-4">
+                    <i class="fas fa-box ml-2" style="color:#FF7A00;"></i>
+                    <span id="productFormTitle">إضافة منتج جديد</span>
+                </h2>
+                <form id="productForm" class="space-y-4">
+                    <input type="hidden" id="product_id">
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">اسم المنتج *</label>
+                        <input type="text" id="product_name" class="input-field" required placeholder="مثال: هاتف ذكي">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">المتجر</label>
+                        <input type="text" id="product_store_name_display" class="input-field" disabled>
+                        <input type="hidden" id="product_store_name">
+                        <p class="text-xs text-gray-500 mt-1"><i class="fas fa-lock"></i> المنتج يضاف لمتجرك تلقائياً</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">السعر * (بالجنيه السوداني)</label>
+                        <input type="number" id="product_price" class="input-field" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">رابط الصورة</label>
+                        <input type="url" id="product_img_url" class="input-field" placeholder="https://example.com/product.png">
+                        <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">التقييم</label>
+                        <input type="number" id="product_ratting" class="input-field" value="0" min="0" max="5" step="0.1">
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button type="submit" id="productSubmitBtn" class="btn-primary flex-1 py-3 rounded-lg font-bold text-lg">
+                            <i class="fas fa-save ml-2"></i> <span>حفظ المنتج</span>
+                        </button>
+                        <button type="button" id="cancelEditProduct" class="btn-danger px-6 py-3 rounded-lg font-bold hidden">
+                            <i class="fas fa-times ml-2"></i> إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- قائمة منتجات المتجر -->
+            <div class="card p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">
+                        <i class="fas fa-boxes ml-2" style="color:#FF7A00;"></i>
+                        منتجات متجري
+                    </h2>
+                    <span id="productsCount" class="text-white px-3 py-1 rounded-full text-sm font-bold" style="background:#FF7A00;">0</span>
+                </div>
+                <div id="productsList" class="table-container"></div>
+            </div>
+
         </div>
 
     </div>
 </div>
 
+<!-- ============================================================
+     🔥 Firebase Scripts
+     ============================================================ -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
@@ -540,17 +559,15 @@ const SESSION_KEY = 'bzr_store_session';
 // ============================================================
 // 🔐 Anonymous Auth قبل أي قراءة
 // ============================================================
-firebase.auth().signInAnonymously().catch(err => {
-    console.error('Auth error:', err);
-});
+firebase.auth().signInAnonymously()
+    .then(() => console.log('%c✅ تم الاتصال الآمن', 'color:#25D366;font-weight:bold;'))
+    .catch(err => console.warn('⚠️ فشلت المصادقة المجهولة:', err.message));
 
 // ============================================================
 // 🌐 متغيرات عامة
 // ============================================================
-let isConnected = false;
-let currentStore = null;      // المتجر المسجّل حالياً
+let currentStore = null;
 let productsData = [];
-let isSavingStore = false;
 let isSavingProduct = false;
 
 // ============================================================
@@ -567,24 +584,16 @@ const dashboard = document.getElementById('dashboard');
 const welcomeStoreName = document.getElementById('welcomeStoreName');
 const logoutBtn = document.getElementById('logoutBtn');
 
-const storeForm = document.getElementById('storeForm');
 const productForm = document.getElementById('productForm');
 const productsList = document.getElementById('productsList');
 const productsCount = document.getElementById('productsCount');
-const showStoreTab = document.getElementById('showStoreTab');
-const showProductsTab = document.getElementById('showProductsTab');
-const storeSection = document.getElementById('storeSection');
-const productsSection = document.getElementById('productsSection');
 const connectionStatusDot = document.getElementById('connectionStatusDot');
 const connectionStatusText = document.getElementById('connectionStatusText');
 const checkConnectionBtn = document.getElementById('checkConnectionBtn');
 const toast = document.getElementById('toast');
 
 const cancelEditProduct = document.getElementById('cancelEditProduct');
-const storeLogoPreview = document.getElementById('store_logo_preview');
-const storeCoverPreview = document.getElementById('store_cover_preview');
 const productImgPreview = document.getElementById('product_img_preview');
-const storeSubmitBtn = document.getElementById('storeSubmitBtn');
 const productSubmitBtn = document.getElementById('productSubmitBtn');
 
 // ============================================================
@@ -597,10 +606,6 @@ function sanitizeInput(str) {
 function toNumber(value, defaultValue = 0) {
     const num = parseFloat(value);
     return isNaN(num) ? defaultValue : num;
-}
-function formatPhoneNumber(phone) {
-    if (!phone) return '';
-    return String(phone).replace(/[^0-9]/g, '');
 }
 function showToast(message, type = 'success') {
     toast.textContent = message;
@@ -620,7 +625,6 @@ function setButtonLoading(btn, isLoading, loadingText, normalHTML) {
     }
 }
 function updateConnectionStatus(success, message) {
-    isConnected = success;
     if (success) {
         connectionStatusDot.className = 'status-dot status-green';
         connectionStatusText.textContent = 'متصل ✅ ' + message;
@@ -635,8 +639,6 @@ function updateConnectionStatus(success, message) {
 // ============================================================
 // 🔐 نظام تسجيل الدخول
 // ============================================================
-
-// محاولة استرجاع الجلسة من sessionStorage
 function getSession() {
     try {
         const raw = sessionStorage.getItem(SESSION_KEY);
@@ -677,7 +679,7 @@ loginForm.addEventListener('submit', async (e) => {
     setButtonLoading(loginSubmitBtn, true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
 
     try {
-        // جلب المتجر بالاسم (مقارنة غير حساسة لحالة الأحرف)
+        // جلب كل المتاجر والبحث عن التطابق (غير حساس لحالة الأحرف)
         const snapshot = await db.collection(storesTableName).get();
         let foundStore = null;
         snapshot.docs.forEach(doc => {
@@ -691,7 +693,6 @@ loginForm.addEventListener('submit', async (e) => {
             throw new Error('لم يتم العثور على متجر بهذا الاسم');
         }
 
-        // التحقق من كلمة المرور
         if (!foundStore.login_password) {
             throw new Error('لم يتم تعيين كلمة مرور لهذا المتجر. تواصل مع الإدارة');
         }
@@ -720,20 +721,19 @@ async function enterDashboard() {
     loginOverlay.classList.add('hidden');
     dashboard.classList.remove('hidden');
 
-    // عرض اسم المتجر
+    // عرض اسم المتجر في الشارة العلوية
     welcomeStoreName.textContent = currentStore.name;
 
-    // تعبئة نموذج المتجر
-    fillStoreForm(currentStore);
+    // ✅ تعبئة بطاقة معلومات المتجر (قراءة فقط)
+    fillStoreInfoDisplay(currentStore);
 
-    // تعبئة حقل المتجر في نموذج المنتج
+    // ✅ تعبئة حقل المتجر في نموذج المنتج
     document.getElementById('product_store_name').value = currentStore.name;
     document.getElementById('product_store_name_display').value = currentStore.name;
 
-    // تحميل منتجات المتجر
+    // ✅ تحميل منتجات المتجر
     await loadMyProducts();
 
-    // فحص الاتصال
     updateConnectionStatus(true, 'مرحباً ' + currentStore.name);
 }
 
@@ -746,81 +746,63 @@ logoutBtn.addEventListener('click', () => {
 });
 
 // ============================================================
-// 🎨 تعبئة نموذج المتجر من بيانات المتجر
+// 🎨 تعبئة بطاقة معلومات المتجر (قراءة فقط)
 // ============================================================
-function fillStoreForm(store) {
-    document.getElementById('store_id').value = store.id || '';
-    document.getElementById('store_name').value = store.name || '';
-    document.getElementById('store_whatsapp').value = store.whatsapp_number || '';
-    document.getElementById('store_phone').value = store.phone_number || '';
-    document.getElementById('store_logo').value = store.logo_url || '';
-    document.getElementById('store_cover').value = store.cover_url || '';
-    document.getElementById('store_category').value = store.category || '';
-    document.getElementById('store_description').value = store.description || '';
-    document.getElementById('store_ratting').value = store.ratting || 0;
-    document.getElementById('store_followers').value = store.followers || 0;
-    document.getElementById('store_is_verified').checked = !!store.is_verified;
-
+function fillStoreInfoDisplay(store) {
+    // الشعار
+    const logo = document.getElementById('storeInfoLogo');
     if (store.logo_url) {
-        storeLogoPreview.src = store.logo_url;
-        storeLogoPreview.classList.remove('hidden');
+        logo.src = store.logo_url;
     } else {
-        storeLogoPreview.classList.add('hidden');
+        logo.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
     }
-    if (store.cover_url) {
-        storeCoverPreview.src = store.cover_url;
-        storeCoverPreview.classList.remove('hidden');
+
+    // الاسم
+    document.getElementById('storeInfoName').textContent = store.name || '—';
+
+    // التحقق من التوثيق
+    const verifiedIcon = document.getElementById('storeInfoVerified');
+    if (store.is_verified) {
+        verifiedIcon.classList.remove('hidden');
     } else {
-        storeCoverPreview.classList.add('hidden');
+        verifiedIcon.classList.add('hidden');
     }
+
+    // التصنيف
+    const category = store.category || 'عام';
+    document.getElementById('storeInfoCategory').innerHTML = `<i class="fas fa-tag"></i> ${sanitizeInput(category)}`;
+
+    // الواتساب
+    document.getElementById('storeInfoWhatsapp').innerHTML = store.whatsapp_number
+        ? `<a href="https://wa.me/${String(store.whatsapp_number).replace(/[^0-9]/g, '')}" target="_blank" style="color:#25D366; text-decoration:none; font-weight:800;">
+            <i class="fab fa-whatsapp"></i> ${sanitizeInput(store.whatsapp_number)}
+           </a>`
+        : '<span style="color:#9ca3af;">غير محدد</span>';
+
+    // الهاتف
+    document.getElementById('storeInfoPhone').innerHTML = store.phone_number
+        ? `<a href="tel:${sanitizeInput(store.phone_number)}" style="color:#2196F3; text-decoration:none; font-weight:800;">
+            <i class="fas fa-phone"></i> ${sanitizeInput(store.phone_number)}
+           </a>`
+        : '<span style="color:#9ca3af;">غير محدد</span>';
+
+    // التقييم
+    const rating = parseFloat(store.ratting) || 0;
+    document.getElementById('storeInfoRating').innerHTML = `
+        <span style="color:#FF7A00;"><i class="fas fa-star"></i></span>
+        ${rating.toFixed(1)} / 5
+    `;
+
+    // المتابعون
+    const followers = parseInt(store.followers) || 0;
+    document.getElementById('storeInfoFollowers').textContent = followers.toLocaleString() + ' متابع';
+
+    // الوصف
+    document.getElementById('storeInfoDescription').textContent = store.description || 'لا يوجد وصف';
 }
 
 // ============================================================
-// 💾 حفظ تعديلات المتجر (فقط متجره)
-// ============================================================
-storeForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (isSavingStore || !currentStore) return;
-
-    const storeId = document.getElementById('store_id').value;
-    const whatsapp = formatPhoneNumber(document.getElementById('store_whatsapp').value);
-    const phone = formatPhoneNumber(document.getElementById('store_phone').value);
-
-    if (!whatsapp || whatsapp.length < 10) {
-        showToast('رقم الواتساب مطلوب ويجب أن يكون صحيحاً', 'error');
-        return;
-    }
-
-    const updateData = {
-        whatsapp_number: whatsapp,
-        phone_number: phone || null,
-        logo_url: sanitizeInput(document.getElementById('store_logo').value),
-        cover_url: sanitizeInput(document.getElementById('store_cover').value),
-        category: sanitizeInput(document.getElementById('store_category').value),
-        description: sanitizeInput(document.getElementById('store_description').value),
-        ratting: toNumber(document.getElementById('store_ratting').value)
-    };
-
-    isSavingStore = true;
-    setButtonLoading(storeSubmitBtn, true, 'جارٍ الحفظ...', '<i class="fas fa-save ml-2"></i> <span>حفظ التعديلات</span>');
-
-    try {
-        await db.collection(storesTableName).doc(storeId).update(updateData);
-        // تحديث البيانات المحلية
-        currentStore = { ...currentStore, ...updateData };
-        welcomeStoreName.textContent = currentStore.name;
-        showToast('تم حفظ التعديلات بنجاح ✅');
-    } catch (err) {
-        console.error('خطأ حفظ المتجر:', err);
-        showToast('فشل الحفظ: ' + err.message, 'error');
-    } finally {
-        isSavingStore = false;
-        setButtonLoading(storeSubmitBtn, false, '', '<i class="fas fa-save ml-2"></i> <span>حفظ التعديلات</span>');
-    }
-});
-
-// ============================================================
-// 📦 تحميل منتجات المتجر الحالي فقط
+// 📦 تحميل منتجات المتجر فقط
 // ============================================================
 async function loadMyProducts() {
     if (!currentStore) return;
@@ -847,7 +829,12 @@ async function loadMyProducts() {
 
 function renderMyProductsList(products) {
     if (products.length === 0) {
-        productsList.innerHTML = '<div class="text-gray-500 p-4 text-center"><i class="fas fa-box-open text-4xl mb-3"></i><p>لا توجد منتجات بعد</p><p class="text-xs mt-1">ابدأ بإضافة منتجات متجرك من النموذج</p></div>';
+        productsList.innerHTML = `
+            <div class="text-gray-500 p-6 text-center">
+                <i class="fas fa-box-open text-5xl mb-3" style="color:#d1d5db;"></i>
+                <p class="font-bold">لا توجد منتجات بعد</p>
+                <p class="text-xs mt-1">ابدأ بإضافة أول منتج من النموذج المجاور</p>
+            </div>`;
         return;
     }
     let html = `
@@ -874,9 +861,9 @@ function renderMyProductsList(products) {
                         <div class="font-semibold">${sanitizeInput(product.name)}</div>
                     </div>
                 </td>
-                <td><div class="font-bold text-primary" style="color:#FF7A00;">${price.toLocaleString()} ج.س</div></td>
+                <td><div class="font-bold" style="color:#FF7A00;">${price.toLocaleString()} ج.س</div></td>
                 <td>
-                    <span class="text-yellow-500"><i class="fas fa-star"></i></span>
+                    <span style="color:#f59e0b;"><i class="fas fa-star"></i></span>
                     ${parseFloat(product.ratting || 0)}
                 </td>
                 <td>
@@ -910,7 +897,7 @@ productForm.addEventListener('submit', async (e) => {
 
     const productData = {
         name: name,
-        store_name: currentStore.name, // ✅ إجباري - اسم متجرهم
+        store_name: currentStore.name,
         price: price,
         img_url: sanitizeInput(document.getElementById('product_img_url').value),
         ratting: toNumber(document.getElementById('product_ratting').value)
@@ -922,7 +909,6 @@ productForm.addEventListener('submit', async (e) => {
 
     try {
         if (id) {
-            // التحقق من أن المنتج يخص هذا المتجر
             const existing = await db.collection(productsTableName).doc(id).get();
             if (!existing.exists || existing.data().store_name !== currentStore.name) {
                 throw new Error('لا تملك صلاحية تعديل هذا المنتج');
@@ -952,7 +938,6 @@ function resetProductForm() {
     document.getElementById('productFormTitle').textContent = 'إضافة منتج جديد';
     cancelEditProduct.classList.add('hidden');
     productImgPreview.classList.add('hidden');
-    // إعادة تعيين حقل المتجر
     document.getElementById('product_store_name').value = currentStore.name;
     document.getElementById('product_store_name_display').value = currentStore.name;
 }
@@ -963,7 +948,6 @@ window.editProduct = async (id) => {
         if (!snap.exists) throw new Error('المنتج غير موجود');
         const data = { id: snap.id, ...snap.data() };
 
-        // التحقق من الملكية
         if (data.store_name !== currentStore.name) {
             throw new Error('لا تملك صلاحية تعديل هذا المنتج');
         }
@@ -983,7 +967,7 @@ window.editProduct = async (id) => {
 
         document.getElementById('productFormTitle').textContent = 'تعديل المنتج: ' + data.name;
         cancelEditProduct.classList.remove('hidden');
-        document.querySelector('#productsSection .card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelector('#productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
         console.error('خطأ تحميل المنتج:', err);
         showToast('فشل: ' + err.message, 'error');
@@ -1019,28 +1003,11 @@ async function updateMyStoreProductsCount() {
         const newCount = snapshot.size;
         await db.collection(storesTableName).doc(currentStore.id).update({ products_count: newCount });
         currentStore.products_count = newCount;
+        // تحديث عرض عدد المتابعين إذا لزم
     } catch (err) {
         console.error('خطأ تحديث عدد المنتجات:', err);
     }
 }
-
-// ============================================================
-// 🎛️ التبويبات
-// ============================================================
-showStoreTab.addEventListener('click', () => {
-    storeSection.classList.remove('hidden');
-    productsSection.classList.add('hidden');
-    showStoreTab.classList.add('bg-primary-dark');
-    showProductsTab.classList.remove('bg-primary-dark');
-});
-
-showProductsTab.addEventListener('click', () => {
-    storeSection.classList.add('hidden');
-    productsSection.classList.remove('hidden');
-    showProductsTab.classList.add('bg-primary-dark');
-    showStoreTab.classList.remove('bg-primary-dark');
-    loadMyProducts();
-});
 
 // ============================================================
 // 🔍 فحص الاتصال
@@ -1057,26 +1024,8 @@ checkConnectionBtn.addEventListener('click', async () => {
 });
 
 // ============================================================
-// 🖼️ معاينة الصور
+// 🖼️ معاينة صورة المنتج
 // ============================================================
-document.getElementById('store_logo').addEventListener('input', (e) => {
-    if (e.target.value) {
-        storeLogoPreview.src = e.target.value;
-        storeLogoPreview.classList.remove('hidden');
-    } else {
-        storeLogoPreview.classList.add('hidden');
-    }
-});
-
-document.getElementById('store_cover').addEventListener('input', (e) => {
-    if (e.target.value) {
-        storeCoverPreview.src = e.target.value;
-        storeCoverPreview.classList.remove('hidden');
-    } else {
-        storeCoverPreview.classList.add('hidden');
-    }
-});
-
 document.getElementById('product_img_url').addEventListener('input', (e) => {
     if (e.target.value) {
         productImgPreview.src = e.target.value;
@@ -1092,7 +1041,6 @@ document.getElementById('product_img_url').addEventListener('input', (e) => {
 async function init() {
     const session = getSession();
     if (!session || !session.id) {
-        // لا يوجد جلسة → شاشة تسجيل الدخول
         loginOverlay.classList.remove('hidden');
         dashboard.classList.add('hidden');
         setTimeout(() => loginStoreName.focus(), 200);
