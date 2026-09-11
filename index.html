@@ -983,31 +983,6 @@
         .store-product-btn:active { transform: translateY(0); }
         .store-product-btn i { font-size: 0.7rem; }
         @media (min-width: 640px) { .store-product-btn { height: 44px; font-size: 0.95rem; border-radius: 14px; } }
-
-        #refreshCacheBtn { position: relative; }
-        #refreshCacheBtn.spinning i { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* 🆕 شارة "جديد" للمنتجات المضافة حديثاً */
-        .new-product-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(135deg, #25D366, #1EBE5D);
-            color: #FFFFFF;
-            font-size: 0.65rem;
-            font-weight: 900;
-            padding: 3px 8px;
-            border-radius: 9999px;
-            z-index: 4;
-            box-shadow: 0 3px 10px rgba(37,211,102,0.5);
-            animation: newBadgePulse 1.5s ease-in-out infinite;
-            letter-spacing: 0.3px;
-        }
-        @keyframes newBadgePulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 3px 10px rgba(37,211,102,0.5); }
-            50% { transform: scale(1.08); box-shadow: 0 5px 16px rgba(37,211,102,0.75); }
-        }
     </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -1187,9 +1162,6 @@
             <a href="about.html" class="hover:text-primary">من نحن</a>
         </nav>
         <div class="flex items-center gap-2 sm:gap-3">
-            <button id="refreshCacheBtn" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg sm:text-xl transition" title="تحديث البيانات" aria-label="تحديث">
-                <i class="fas fa-sync-alt text-gray-700"></i>
-            </button>
             <button id="searchButton" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-lg sm:text-xl transition" aria-label="البحث">
                 <i class="fas fa-search text-gray-700"></i>
             </button>
@@ -1634,11 +1606,10 @@
     const db = firebase.firestore();
 
     // ============================================
-    // 🗄️ نظام الكاش الذكي - مدته 24 ساعة
+    // 🗄️ نظام الكاش الذكي - مدة 24 ساعة
     // ============================================
-    const CACHE_DURATION = 24 * 60 * 60 * 1000; // ⏱️ 24 ساعات
+    const CACHE_DURATION = 24 * 60 * 60 * 1000; // ⏱️ 24 ساعة
     const CACHE_PREFIX = 'bazrena_cache_';
-    const NEW_PRODUCT_WINDOW = 24 * 60 * 60 * 1000; // 24 ساعة لعرض شارة "جديد"
 
     const cacheManager = {
         set(key, value) {
@@ -1692,15 +1663,6 @@
         const data = await fetchFunction();
         cacheManager.set(cacheKey, data);
         return data;
-    }
-
-    // دالة مساعدة للتحقق إذا كان المنتج "جديد" (خلال 24 ساعة)
-    function isNewProduct(product) {
-        if (!product.created_at) return false;
-        const createdAt = product.created_at.seconds
-            ? product.created_at.seconds * 1000
-            : new Date(product.created_at).getTime();
-        return (Date.now() - createdAt) < NEW_PRODUCT_WINDOW;
     }
 
     // دالة للحصول على "معرف فريد" لكل منتج (لمقارنة التغييرات)
@@ -1834,7 +1796,6 @@
     const followedCountBadge = document.getElementById('followedCountBadge');
     const logoMenuBtn = document.getElementById('logoMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    const refreshCacheBtn = document.getElementById('refreshCacheBtn');
 
     function updateAllProductsTotalBadge() {
         if (!allProductsTotalCount) return;
@@ -2243,38 +2204,31 @@
     // 🆕 نظام التحديث اللحظي للمنتجات الجديدة
     // ============================================
     function setupRealtimeProductsListener() {
-        if (productsUnsubscribe) return; // موجود مسبقاً
+        if (productsUnsubscribe) return;
 
         console.log('🔄 بدء مراقبة المنتجات الحية...');
 
-        // نستخدم onSnapshot لمراقبة أي إضافة/تعديل/حذف
         productsUnsubscribe = db.collection('products')
             .onSnapshot((snapshot) => {
-                // استخرج كل المنتجات
                 const freshProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-                // ترتيب حسب التاريخ الأحدث
                 freshProducts.sort((a, b) => {
                     const ta = a.created_at?.seconds || (a.created_at ? new Date(a.created_at).getTime()/1000 : 0);
                     const tb = b.created_at?.seconds || (b.created_at ? new Date(b.created_at).getTime()/1000 : 0);
                     return tb - ta;
                 });
 
-                // إذا كانت هذه أول مرة يتم فيها استدعاء المستمع، نحفظ البصمة
                 const newFingerprint = getProductFingerprint(freshProducts);
 
                 if (isFirstProductsSnapshot) {
                     isFirstProductsSnapshot = false;
                     lastProductsFingerprint = newFingerprint;
 
-                    // تحقق إذا كانت البيانات مختلفة عن الكاش المحلي
                     const cachedProducts = cacheManager.get('all_products');
                     const cachedFingerprint = cachedProducts ? getProductFingerprint(cachedProducts) : '';
 
-                    // حدّث الكاش دائماً بالبيانات الحديثة
                     cacheManager.set('all_products', freshProducts);
 
-                    // إذا كانت البيانات مختلفة عن الكاش، حدّث الواجهة
                     if (cachedFingerprint !== newFingerprint) {
                         console.log('📊 البيانات تغيرت منذ آخر زيارة - تحديث الواجهة');
                         allProducts = freshProducts;
@@ -2287,12 +2241,10 @@
                     return;
                 }
 
-                // إذا كانت البصمة لم تتغير، لا نفعل شيئاً
                 if (newFingerprint === lastProductsFingerprint) {
                     return;
                 }
 
-                // هناك تغيير حقيقي!
                 const changes = snapshot.docChanges();
                 const addedCount = changes.filter(c => c.type === 'added').length;
                 const modifiedCount = changes.filter(c => c.type === 'modified').length;
@@ -2302,20 +2254,16 @@
 
                 lastProductsFingerprint = newFingerprint;
 
-                // حدّث المتغيرات والكاش
                 allProducts = freshProducts;
                 cacheManager.set('all_products', freshProducts);
 
-                // حدّث الواجهة
                 updateAllProductsTotalBadge();
                 applyProductsFilter(currentCategory);
 
-                // إذا كان مودال المتجر مفتوحاً، حدّث منتجاته أيضاً
                 if (currentStore && !storeModal.classList.contains('hidden')) {
                     loadStoreProductsFromLocal(freshProducts, currentStore.name);
                 }
 
-                // أظهر إشعار للمستخدم
                 if (addedCount > 0) {
                     showToast(`🆕 تم إضافة ${addedCount} ${addedCount === 1 ? 'منتج جديد' : 'منتجات جديدة'}!`);
                 } else if (removedCount > 0) {
@@ -2323,11 +2271,9 @@
                 }
             }, (error) => {
                 console.warn('⚠️ خطأ في مراقبة المنتجات الحية:', error);
-                // لا شيء - سيتم الاعتماد على الكاش فقط
             });
     }
 
-    // دالة مساعدة لتحديث منتجات متجر من البيانات المحلية (بدون استعلام Firestore)
     function loadStoreProductsFromLocal(productsArray, storeNameParam) {
         const storeProducts = productsArray.filter(p => p.store_name === storeNameParam);
         if (storeProductsCount) storeProductsCount.textContent = storeProducts.length;
@@ -2352,18 +2298,15 @@
                 if (isFirstStoresSnapshot) {
                     isFirstStoresSnapshot = false;
 
-                    // إذا كان عدد المتاجر مختلف عن الكاش، حدّث
                     const cachedStores = cacheManager.get('stores_list');
                     if (cachedStores && cachedStores.length !== freshStores.length) {
                         console.log('🏪 عدد المتاجر تغير - تحديث');
                         cacheManager.remove('stores_list');
-                        // أعد تحميل المتاجر
                         setTimeout(() => loadStores(true), 100);
                     }
                     return;
                 }
 
-                // تغيير في المتاجر
                 console.log('🏪 تحديث المتاجر اللحظي');
                 cacheManager.remove('stores_list');
                 setTimeout(() => loadStores(true), 100);
@@ -2372,7 +2315,6 @@
             });
     }
 
-    // ✅ loadStores مع الكاش
     async function loadStores(forceRefresh = false) {
         storesLoader.classList.remove('hidden'); storesEmpty.classList.add('hidden'); storesScrollContainer.innerHTML = '';
         try {
@@ -2516,7 +2458,6 @@
     document.getElementById('storeModalOverlay').addEventListener('click', closeStoreModal);
     function closeStoreModal() { storeModal.classList.add('hidden'); updateBodyScroll(); }
 
-    // ✅ loadStoreProducts مع الكاش
     async function loadStoreProducts(storeNameParam, forceRefresh = false) {
         storeProductsGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin text-3xl text-primary"></i></div>';
         try {
@@ -2551,7 +2492,6 @@
             const price = parseFloat(product.price) || 0;
             const rating = parseFloat(product.ratting) || 0;
             const fav = isProductFav(product.id);
-            const isNew = isNewProduct(product);
 
             const productForModal = {
                 id: product.id, name: product.name, img_url: product.img_url,
@@ -2613,12 +2553,6 @@
             info.appendChild(viewBtn);
 
             card.appendChild(favBtn);
-            if (isNew) {
-                const newBadge = document.createElement('span');
-                newBadge.className = 'new-product-badge';
-                newBadge.textContent = '🆕 جديد';
-                card.appendChild(newBadge);
-            }
             card.appendChild(imgWrap);
             card.appendChild(info);
             card.addEventListener('click', () => openProductModal(productForModal));
@@ -2633,7 +2567,6 @@
             const price = parseFloat(product.price) || 0;
             const originalPrice = product.original_price ? parseFloat(product.original_price) : null;
             const rating = parseFloat(product.ratting) || 0;
-            const isNew = isNewProduct(product);
             const card = document.createElement('div');
             card.className = 'product-card bg-white border rounded-xl overflow-hidden hover:shadow-lg transition group';
             const productForModal = {
@@ -2645,7 +2578,6 @@
                 <div class="product-image-container relative h-28 sm:h-36 md:h-40">
                     <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
                     ${originalPrice ? '<span class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">خصم</span>' : ''}
-                    ${isNew ? '<span class="new-product-badge">🆕 جديد</span>' : ''}
                 </div>
                 <div class="p-2 sm:p-3">
                     <h5 class="font-bold text-xs sm:text-sm truncate">${sanitizeHTML(product.name)}</h5>
@@ -2920,34 +2852,6 @@
         } finally { allProductsLoader.classList.add('hidden'); }
     }
 
-    if (refreshCacheBtn) {
-        refreshCacheBtn.addEventListener('click', async () => {
-            if (refreshCacheBtn.classList.contains('spinning')) return;
-            refreshCacheBtn.classList.add('spinning');
-            refreshCacheBtn.disabled = true;
-
-            cacheManager.clearAll();
-            isFirstProductsSnapshot = true;
-            isFirstStoresSnapshot = true;
-            showToast('🔄 جاري تحديث البيانات...');
-
-            try {
-                await Promise.all([
-                    loadStores(true),
-                    loadCategories(true),
-                    loadAllProducts(true)
-                ]);
-                showToast('✅ تم تحديث البيانات بنجاح');
-            } catch (e) {
-                console.error(e);
-                showToast('⚠️ حدث خطأ أثناء التحديث');
-            } finally {
-                refreshCacheBtn.classList.remove('spinning');
-                refreshCacheBtn.disabled = false;
-            }
-        });
-    }
-
     async function initApp() {
         const authOk = await ensureAuth();
         if (!authOk) {
@@ -2958,18 +2862,16 @@
         updateCartUI();
         updateAllProductsTotalBadge();
 
-        // تحميل البيانات من الكاش أولاً (سريع جداً)
         await Promise.all([
             loadStores(),
             loadCategories(),
             loadAllProducts()
         ]);
 
-        // 🆕 بعد التحميل، ابدأ المراقبة اللحظية
         setupRealtimeProductsListener();
         setupRealtimeStoresListener();
 
-        console.log('%c🟢 النظام جاهز - التحديث اللحظي مفعّل', 'color:#25D366;font-weight:900;font-size:14px;');
+        console.log('%c🟢 النظام جاهز - التحديث اللحظي مفعّل | الكاش: 24 ساعة', 'color:#25D366;font-weight:900;font-size:14px;');
     }
 
     if (document.readyState === 'loading') {
