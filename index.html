@@ -899,228 +899,137 @@
         @media (min-width: 640px) { .store-product-btn { height: 44px; font-size: 0.95rem; border-radius: 14px; } }
 
         /* ============================================================
-           🎯 زر المنتجات في بطاقة المتجر
+           👑 شريط CTA العلوي — أضف منتجاتك الآن
            ============================================================ */
-        .store-products-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
-            border: 1px solid #FFE0BD;
-            color: #E06B00;
-            padding: 0.28rem 0.6rem;
-            border-radius: 9999px;
-            font-size: 0.72rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            white-space: nowrap;
-            flex-shrink: 0;
-            font-family: 'Cairo', sans-serif;
-        }
-        .store-products-btn:hover {
-            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+        .top-cta-bar {
+            position: relative;
+            background: linear-gradient(135deg, #1A1A1A 0%, #2d2d2d 50%, #FF7A00 150%);
             color: #FFFFFF;
-            border-color: #FF7A00;
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.7), 0 0 15px rgba(255,122,0,0.4);
-        }
-        .store-products-btn:active { transform: translateY(0) scale(1); }
-        .store-products-btn i { font-size: 0.72rem; }
-
-        /* ============================================================
-           ✨ Modal إضافة المنتجات
-           ============================================================ */
-        #addProductsModal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 99999;
-            background: rgba(0,0,0,0.65);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-        #addProductsModal.show {
-            display: flex;
-            animation: fadeIn 0.25s;
-        }
-
-        .add-products-content {
-            position: relative;
-            background: linear-gradient(160deg, #FFFFFF 0%, #FFF8F1 55%, #FFF1E0 100%);
-            border: 1.5px solid #FFE0BD;
-            border-radius: 2rem;
-            padding: 2.25rem 1.5rem 1.75rem;
-            max-width: 440px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 30px 70px -20px rgba(255,122,0,0.55), 0 8px 30px rgba(0,0,0,0.1);
-            animation: zoomIn 0.4s cubic-bezier(0.4,0,0.2,1);
+            padding: 0.75rem 1rem;
             overflow: hidden;
-            margin: auto;
+            border-bottom: 2px solid rgba(255,122,0,0.4);
         }
-
-        .add-products-content::before {
+        .top-cta-bar::before {
             content: '';
             position: absolute;
-            top: -120px; right: -100px;
-            width: 280px; height: 280px;
+            top: -80px; right: -60px;
+            width: 220px; height: 220px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,122,0,0.22) 0%, transparent 65%);
+            background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, transparent 65%);
             pointer-events: none;
-            animation: orbFloat 6s ease-in-out infinite;
+            animation: ctaOrbFloat 6s ease-in-out infinite;
         }
-
-        .add-products-content::after {
+        .top-cta-bar::after {
             content: '';
             position: absolute;
-            bottom: -130px; left: -100px;
-            width: 300px; height: 300px;
+            bottom: -100px; left: -80px;
+            width: 240px; height: 240px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,166,77,0.15) 0%, transparent 65%);
+            background: radial-gradient(circle, rgba(255,166,77,0.25) 0%, transparent 65%);
             pointer-events: none;
-            animation: orbFloat 8s ease-in-out infinite reverse;
+            animation: ctaOrbFloat 8s ease-in-out infinite reverse;
         }
-
-        @keyframes orbFloat {
+        @keyframes ctaOrbFloat {
             0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-15px, 15px); }
+            50% { transform: translate(-15px, 12px); }
         }
-
-        .add-products-icon {
+        .top-cta-inner {
             position: relative;
             z-index: 2;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-            display: inline-flex;
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 2.1rem;
-            margin: 0 auto 1.35rem;
-            animation: glowingPulse 2.2s ease-in-out infinite;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
-
-        @keyframes glowingPulse {
-            0%, 100% {
-                box-shadow: 0 15px 40px -10px rgba(255,122,0,0.9), 0 0 25px rgba(255,122,0,0.5);
-                transform: scale(1);
-            }
-            50% {
-                box-shadow: 0 20px 50px -10px rgba(255,122,0,1), 0 0 45px rgba(255,122,0,0.85);
-                transform: scale(1.06);
-            }
-        }
-
-        .add-products-heading {
-            position: relative;
-            z-index: 2;
-            font-size: 1.35rem;
-            font-weight: 900;
-            color: #1A1A1A;
-            margin-bottom: 0.5rem;
+        .top-cta-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 0.9rem;
             line-height: 1.4;
+            flex: 1;
+            min-width: 200px;
         }
-        @media (min-width: 640px) { .add-products-heading { font-size: 1.5rem; } }
-
-        .add-products-glow-text {
-            position: relative;
-            z-index: 2;
-            display: block;
-            background: linear-gradient(90deg, #FF7A00 0%, #FFA64D 25%, #FFB366 50%, #FFA64D 75%, #FF7A00 100%);
-            background-size: 200% auto;
+        @media (min-width: 640px) { .top-cta-text { font-size: 1.05rem; gap: 12px; } }
+        .top-cta-text i {
+            color: #FFA64D;
+            font-size: 1.2rem;
+            animation: crownBounce 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @media (min-width: 640px) { .top-cta-text i { font-size: 1.4rem; } }
+        @keyframes crownBounce {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-3px) rotate(5deg); }
+        }
+        .top-cta-text span { color: rgba(255,255,255,0.9); }
+        .top-cta-text strong {
+            color: #FFA64D;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF7A00, #FFB366);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            color: #FF7A00;
-            font-size: 1.55rem;
-            font-weight: 900;
-            margin: 0.75rem 0 1rem;
-            animation: glowTextShift 3s linear infinite;
-            filter: drop-shadow(0 0 12px rgba(255,122,0,0.55));
+            filter: drop-shadow(0 0 8px rgba(255,122,0,0.5));
         }
-        @media (min-width: 640px) { .add-products-glow-text { font-size: 1.75rem; } }
-
-        @keyframes glowTextShift {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .add-products-desc {
+        .top-cta-btn {
             position: relative;
-            z-index: 2;
-            color: #4b5563;
-            font-size: 0.9rem;
-            line-height: 1.85;
-            margin-bottom: 1.75rem;
-            max-width: 340px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        @media (min-width: 640px) { .add-products-desc { font-size: 0.95rem; } }
-
-        .add-products-btn {
-            position: relative;
-            z-index: 2;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 1rem 1.5rem;
+            gap: 8px;
+            padding: 0.7rem 1.25rem;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
             background-size: 200% auto;
             color: #FFFFFF !important;
             border: 2px solid rgba(255,255,255,0.25);
             border-radius: 9999px;
-            font-weight: 800;
-            font-size: 1.05rem;
-            cursor: pointer;
+            font-weight: 900;
+            font-size: 0.88rem;
             text-decoration: none;
-            box-shadow: 0 15px 40px -12px rgba(255,122,0,0.9), 0 0 25px rgba(255,122,0,0.4);
+            white-space: nowrap;
+            cursor: pointer;
+            box-shadow: 0 10px 28px -8px rgba(255,122,0,0.9), 0 0 20px rgba(255,122,0,0.4);
             transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             -webkit-tap-highlight-color: transparent;
             font-family: 'Cairo', sans-serif;
+            animation: ctaBtnGlow 2.5s ease-in-out infinite;
         }
-        .add-products-btn:hover {
-            transform: translateY(-3px);
+        @media (min-width: 640px) {
+            .top-cta-btn { padding: 0.75rem 1.5rem; font-size: 1rem; gap: 10px; }
+        }
+        @keyframes ctaBtnGlow {
+            0%, 100% {
+                box-shadow: 0 10px 28px -8px rgba(255,122,0,0.9), 0 0 20px rgba(255,122,0,0.4);
+            }
+            50% {
+                box-shadow: 0 14px 36px -8px rgba(255,122,0,1), 0 0 35px rgba(255,122,0,0.75);
+            }
+        }
+        .top-cta-btn:hover {
+            transform: translateY(-3px) scale(1.02);
             background-position: 100% center;
-            box-shadow: 0 22px 50px -12px rgba(255,122,0,1), 0 0 40px rgba(255,122,0,0.75);
+            box-shadow: 0 18px 45px -10px rgba(255,122,0,1), 0 0 50px rgba(255,122,0,0.9);
+            animation: none;
         }
-        .add-products-btn:active { transform: translateY(-1px); }
-        .add-products-btn i { font-size: 1.15rem; }
-
-        .add-products-close {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #FFFFFF;
-            border: 1.5px solid #FFE0BD;
-            color: #FF7A00;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.25s;
-            z-index: 3;
-            font-size: 1rem;
+        .top-cta-btn:active { transform: translateY(-1px); }
+        .top-cta-btn i { font-size: 1rem; }
+        @media (min-width: 640px) { .top-cta-btn i { font-size: 1.15rem; } }
+        .top-cta-btn .btn-arrow {
+            transition: transform 0.3s;
+            font-size: 0.85rem;
+            opacity: 0.9;
         }
-        .add-products-close:hover {
-            background: #FF7A00;
-            color: #FFFFFF;
-            border-color: #FF7A00;
-            transform: scale(1.1) rotate(90deg);
+        .top-cta-btn:hover .btn-arrow { transform: translateX(-5px); opacity: 1; }
+        @media (max-width: 480px) {
+            .top-cta-bar { padding: 0.65rem 0.75rem; }
+            .top-cta-inner { gap: 0.65rem; }
+            .top-cta-text { font-size: 0.82rem; }
+            .top-cta-btn { padding: 0.6rem 1rem; font-size: 0.82rem; }
         }
     </style>
 </head>
@@ -1265,6 +1174,23 @@
 })();
 </script>
 
+<!-- ============================================================
+     👑 شريط CTA العلوي — أضف منتجاتك الآن
+     ============================================================ -->
+<div class="top-cta-bar">
+    <div class="top-cta-inner">
+        <div class="top-cta-text">
+            <i class="fas fa-crown"></i>
+            <span>هل تملك متجراً أو براند؟ انطلق مع <strong>بازارِنا</strong></span>
+        </div>
+        <a href="a.html" class="top-cta-btn">
+            <i class="fas fa-plus-circle"></i>
+            <span>أضف منتجاتك الآن</span>
+            <i class="fas fa-arrow-left btn-arrow"></i>
+        </a>
+    </div>
+</div>
+
 <div class="top-bar hidden md:block">
     <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-sm">
         <div class="flex items-center gap-4">
@@ -1295,7 +1221,6 @@
             <a href="#stores" class="hover:text-primary">المتاجر</a>
             <a href="#categories" class="hover:text-primary">التصنيفات</a>
             <a href="#all-products" class="hover:text-primary">جميع المنتجات</a>
-            <a href="a.html" class="hover:text-primary">إضافة منتجات+</a>
             <a href="about.html" class="hover:text-primary">من نحن</a>
         </nav>
         <div class="flex items-center gap-2 sm:gap-3">
@@ -1659,41 +1584,6 @@
 
 <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[3000] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
-<!-- ============================================================
-     ✨ Modal إضافة المنتجات
-     ============================================================ -->
-<div id="addProductsModal">
-    <div class="add-products-content">
-
-        <button type="button" class="add-products-close" id="addProductsCloseBtn" aria-label="إغلاق">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <div class="add-products-icon">
-            <i class="fas fa-boxes-stacked"></i>
-        </div>
-
-        <h3 class="add-products-heading">
-            أضف منتجات متجرك الآن
-        </h3>
-
-        <span class="add-products-glow-text">
-            انطلق مع بازارِنا ✨
-        </span>
-
-        <p class="add-products-desc">
-            أضف منتجاتك واعرضها أمام آلاف العملاء من خلال لوحة تحكم سهلة ومتطورة.
-        </p>
-
-        <a href="a.html" class="add-products-btn">
-            <i class="fas fa-plus-circle"></i>
-            <span>إضافة منتجات</span>
-            <i class="fas fa-arrow-left"></i>
-        </a>
-
-    </div>
-</div>
-
 <footer class="bg-gray-900 text-white py-12 mt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -1887,8 +1777,6 @@
     const followedCountBadge = document.getElementById('followedCountBadge');
     const logoMenuBtn = document.getElementById('logoMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
-    const addProductsModal = document.getElementById('addProductsModal');
-    const addProductsCloseBtn = document.getElementById('addProductsCloseBtn');
 
     function updateAllProductsTotalBadge() {
         if (!allProductsTotalCount) return;
@@ -1906,49 +1794,9 @@
         const anyModalOpen =
             !storeModal.classList.contains('hidden') ||
             !productModal.classList.contains('hidden') ||
-            (addProductsModal && addProductsModal.classList.contains('show')) ||
             cartSidebar.classList.contains('open') ||
             (searchOverlay && searchOverlay.classList.contains('show'));
         document.body.style.overflow = anyModalOpen ? 'hidden' : '';
-    }
-
-    // ============================================================
-    // ✨ Modal إضافة المنتجات
-    // ============================================================
-    window.openAddProductsModal = function() {
-        const modal = document.getElementById('addProductsModal');
-        if (!modal) {
-            console.error('❌ Modal not found in DOM');
-            return;
-        }
-        modal.classList.add('show');
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        console.log('✅ Modal opened');
-    };
-
-    window.closeAddProductsModal = function() {
-        const modal = document.getElementById('addProductsModal');
-        if (!modal) return;
-        modal.classList.remove('show');
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-        console.log('❌ Modal closed');
-    };
-
-    if (addProductsCloseBtn) {
-        addProductsCloseBtn.onclick = function(e) {
-            e.stopPropagation();
-            window.closeAddProductsModal();
-        };
-    }
-
-    if (addProductsModal) {
-        addProductsModal.onclick = function(e) {
-            if (e.target === addProductsModal) {
-                window.closeAddProductsModal();
-            }
-        };
     }
 
     function toggleMobileMenu(force) {
@@ -2114,24 +1962,10 @@
         const bottomRow = document.createElement('div');
         bottomRow.className = 'flex items-center justify-between gap-2 mt-2';
 
-        // ✅ زر المنتجات — onclick مباشر
-        const count = document.createElement('button');
-        count.className = 'store-products-btn';
-        count.type = 'button';
-        count.setAttribute('title', 'إضافة منتجات');
+        // ✅ عدد المنتجات — نص عادي (قراءة فقط)
+        const count = document.createElement('div');
+        count.className = 'flex items-center gap-1 text-xs text-text-light';
         count.innerHTML = `<i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span>`;
-        count.onclick = function(e) {
-            if (e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-            try {
-                window.openAddProductsModal();
-            } catch (err) {
-                console.error('❌ Error opening modal:', err);
-            }
-            return false;
-        };
 
         const followBtn = document.createElement('button');
         followBtn.className = 'card-follow-btn';
@@ -2888,7 +2722,6 @@
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            if (addProductsModal && addProductsModal.classList.contains('show')) { window.closeAddProductsModal(); return; }
             if (searchOverlay && searchOverlay.classList.contains('show')) { closeSearch(); return; }
             if (!productModal.classList.contains('hidden')) { productModal.classList.add('hidden'); updateBodyScroll(); return; }
             if (!storeModal.classList.contains('hidden')) { closeStoreModal(); return; }
