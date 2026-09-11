@@ -109,7 +109,38 @@
         }
 
         /* ============================================================
-           حاويات التمرير — بدون touch-action (لضمان حرية التمرير)
+           ★★★ شارة عدّاد المنتجات الإجمالي ★★★
+           ============================================================ */
+        .all-products-total-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: #FFFFFF;
+            border-radius: 9999px;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+            box-shadow: 0 6px 16px -6px rgba(255,122,0,0.65);
+            letter-spacing: 0.3px;
+            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+            animation: badgePop 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        .all-products-total-badge:hover { transform: translateY(-2px); }
+        .all-products-total-badge i { font-size: 0.85rem; }
+        @media (min-width: 640px) {
+            .all-products-total-badge { font-size: 0.9rem; padding: 0.45rem 1rem; gap: 7px; }
+            .all-products-total-badge i { font-size: 0.95rem; }
+        }
+        @keyframes badgePop {
+            0% { transform: scale(0.7); opacity: 0; }
+            60% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ============================================================
+           حاويات التمرير
            ============================================================ */
         .stores-scroll-container {
             overflow-x: auto; overflow-y: hidden; display: flex; gap: 1rem;
@@ -239,182 +270,98 @@
         .load-more-btn:hover i { transform: translateY(3px); }
 
         /* ============================================================
-           بطاقة الإعلان الاحترافية
+           بطاقة الإعلان
            ============================================================ */
-        .brand-cta-section {
-            max-width: 960px;
-            margin: 4rem auto 0;
-            padding: 0 1rem;
-        }
-
+        .brand-cta-section { max-width: 960px; margin: 4rem auto 0; padding: 0 1rem; }
         .brand-cta-card {
             position: relative;
             background: linear-gradient(160deg, #FFFFFF 0%, #FFF8F1 55%, #FFF1E0 100%);
-            border: 1.5px solid #FFE0BD;
-            border-radius: 1.75rem;
-            padding: 2.25rem 1.25rem 1.75rem;
-            text-align: center;
+            border: 1.5px solid #FFE0BD; border-radius: 1.75rem;
+            padding: 2.25rem 1.25rem 1.75rem; text-align: center;
             box-shadow: 0 20px 50px -20px rgba(255,122,0,0.25), 0 8px 30px rgba(0,0,0,0.04);
             overflow: hidden;
         }
-        @media (min-width: 640px) {
-            .brand-cta-card { padding: 3rem 2.5rem 2.5rem; border-radius: 2rem; }
-        }
-
+        @media (min-width: 640px) { .brand-cta-card { padding: 3rem 2.5rem 2.5rem; border-radius: 2rem; } }
         .brand-cta-card::before {
-            content: ''; position: absolute;
-            top: -120px; right: -120px;
+            content: ''; position: absolute; top: -120px; right: -120px;
             width: 320px; height: 320px;
             background: radial-gradient(circle, rgba(255,122,0,0.12) 0%, transparent 65%);
             border-radius: 50%; pointer-events: none;
         }
         .brand-cta-card::after {
-            content: ''; position: absolute;
-            bottom: -140px; left: -120px;
+            content: ''; position: absolute; bottom: -140px; left: -120px;
             width: 320px; height: 320px;
             background: radial-gradient(circle, rgba(255,166,77,0.10) 0%, transparent 65%);
             border-radius: 50%; pointer-events: none;
         }
-
         .brand-cta-inner { position: relative; z-index: 2; }
-
         .brand-cta-icon-wrap {
-            display: inline-flex;
-            width: 64px; height: 64px;
-            border-radius: 50%;
+            display: inline-flex; width: 64px; height: 64px; border-radius: 50%;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-            align-items: center; justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            color: #fff; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 1rem;
             box-shadow: 0 12px 30px -8px rgba(255,122,0,0.55);
         }
-        @media (min-width: 640px) {
-            .brand-cta-icon-wrap { width: 72px; height: 72px; font-size: 1.7rem; }
-        }
-
+        @media (min-width: 640px) { .brand-cta-icon-wrap { width: 72px; height: 72px; font-size: 1.7rem; } }
         .brand-cta-eyebrow {
-            display: inline-block;
-            background: #FFFFFF;
-            color: #E06B00;
-            border: 1px solid #FFE0BD;
-            padding: 0.4rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.78rem;
-            font-weight: 800;
-            margin-bottom: 0.9rem;
+            display: inline-block; background: #FFFFFF; color: #E06B00;
+            border: 1px solid #FFE0BD; padding: 0.4rem 1rem; border-radius: 9999px;
+            font-size: 0.78rem; font-weight: 800; margin-bottom: 0.9rem;
         }
-
         .brand-cta-heading {
-            font-size: 1.35rem;
-            font-weight: 900;
-            color: #1A1A1A;
-            line-height: 1.4;
-            margin: 0 auto 0.85rem;
-            max-width: 640px;
+            font-size: 1.35rem; font-weight: 900; color: #1A1A1A;
+            line-height: 1.4; margin: 0 auto 0.85rem; max-width: 640px;
         }
         @media (min-width: 640px) { .brand-cta-heading { font-size: 1.8rem; } }
         @media (min-width: 768px) { .brand-cta-heading { font-size: 2.1rem; } }
-
         .brand-cta-heading-accent {
             display: block;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: #FF7A00;
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: #FF7A00;
         }
-
         .brand-cta-text {
-            color: #4b5563;
-            font-size: 0.9rem;
-            line-height: 1.9;
-            max-width: 620px;
-            margin: 0 auto 1.6rem;
+            color: #4b5563; font-size: 0.9rem; line-height: 1.9;
+            max-width: 620px; margin: 0 auto 1.6rem;
         }
         @media (min-width: 640px) { .brand-cta-text { font-size: 1rem; margin-bottom: 1.9rem; } }
-
         .brand-cta-actions {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.7rem;
-            max-width: 480px;
-            margin: 0 auto;
+            display: grid; grid-template-columns: 1fr; gap: 0.7rem;
+            max-width: 480px; margin: 0 auto;
         }
-        @media (min-width: 560px) {
-            .brand-cta-actions { grid-template-columns: 1fr 1fr; gap: 0.85rem; }
-        }
-
+        @media (min-width: 560px) { .brand-cta-actions { grid-template-columns: 1fr 1fr; gap: 0.85rem; } }
         .brand-cta-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            height: 52px;
-            min-height: 52px;
-            max-height: 52px;
-            padding: 0 1rem;
-            border-radius: 9999px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            text-decoration: none;
-            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            height: 52px; min-height: 52px; max-height: 52px; padding: 0 1rem;
+            border-radius: 9999px; font-weight: 800; font-size: 0.9rem;
+            text-decoration: none; cursor: pointer;
             transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
-            border: 2px solid transparent;
-            white-space: nowrap;
-            -webkit-tap-highlight-color: transparent;
-            line-height: 1;
+            border: 2px solid transparent; white-space: nowrap;
+            -webkit-tap-highlight-color: transparent; line-height: 1;
         }
-        @media (min-width: 640px) {
-            .brand-cta-btn { height: 56px; min-height: 56px; max-height: 56px; font-size: 0.98rem; }
-        }
-
+        @media (min-width: 640px) { .brand-cta-btn { height: 56px; min-height: 56px; max-height: 56px; font-size: 0.98rem; } }
         .brand-cta-btn i { font-size: 1.05rem; }
-
         .brand-cta-btn-primary {
             background: linear-gradient(135deg, #25D366 0%, #1EBE5D 100%);
-            color: #FFFFFF;
-            box-shadow: 0 10px 24px -8px rgba(37,211,102,0.5);
+            color: #FFFFFF; box-shadow: 0 10px 24px -8px rgba(37,211,102,0.5);
         }
-        .brand-cta-btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 14px 30px -8px rgba(37,211,102,0.65);
-        }
-
+        .brand-cta-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px rgba(37,211,102,0.65); }
         .brand-cta-btn-outline {
-            background: #FFFFFF;
-            color: #FF7A00;
-            border-color: #FF7A00;
+            background: #FFFFFF; color: #FF7A00; border-color: #FF7A00;
             box-shadow: 0 4px 12px rgba(255,122,0,0.08);
         }
-        .brand-cta-btn-outline:hover {
-            background: #FFF7ED;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -6px rgba(255,122,0,0.25);
-        }
-
+        .brand-cta-btn-outline:hover { background: #FFF7ED; transform: translateY(-2px); box-shadow: 0 10px 20px -6px rgba(255,122,0,0.25); }
         .brand-cta-features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem 0.55rem;
-            margin-top: 1.6rem;
-            padding-top: 1.4rem;
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 0.5rem 0.55rem; margin-top: 1.6rem; padding-top: 1.4rem;
             border-top: 1px dashed #FFE0BD;
         }
         @media (min-width: 640px) { .brand-cta-features { gap: 0.7rem; margin-top: 1.9rem; } }
-
         .brand-cta-feature {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #FFFFFF;
-            border: 1px solid #FFE0BD;
-            color: #4b5563;
-            padding: 0.45rem 0.85rem;
-            border-radius: 9999px;
-            font-size: 0.76rem;
-            font-weight: 700;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #FFFFFF; border: 1px solid #FFE0BD; color: #4b5563;
+            padding: 0.45rem 0.85rem; border-radius: 9999px;
+            font-size: 0.76rem; font-weight: 700;
             box-shadow: 0 2px 8px rgba(255,122,0,0.04);
         }
         @media (min-width: 640px) { .brand-cta-feature { font-size: 0.85rem; padding: 0.5rem 1rem; } }
@@ -469,8 +416,7 @@
         .card-follow-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
         .search-overlay {
-            display: none;
-            position: fixed; inset: 0; z-index: 2500;
+            display: none; position: fixed; inset: 0; z-index: 2500;
             background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
             align-items: flex-start; justify-content: center;
             padding: 0.75rem; animation: fadeIn 0.2s;
@@ -538,10 +484,7 @@
         @media (min-width: 640px) { .store-info-card { padding: 0 1.5rem 1.5rem; margin-top: -46px; } }
         @media (min-width: 768px) { .store-info-card { padding: 0 2rem 2rem; margin-top: -54px; } }
 
-        .store-header-row {
-            display: flex; align-items: flex-end;
-            gap: 0.75rem; padding-top: 8px;
-        }
+        .store-header-row { display: flex; align-items: flex-end; gap: 0.75rem; padding-top: 8px; }
         @media (min-width: 640px) { .store-header-row { gap: 1rem; padding-top: 10px; } }
 
         .store-header-logo {
@@ -552,10 +495,7 @@
         @media (min-width: 640px) { .store-header-logo { width: 100px; height: 100px; } }
         @media (min-width: 768px) { .store-header-logo { width: 112px; height: 112px; border-width: 5px; } }
 
-        .store-header-info {
-            flex: 1; min-width: 0; padding-bottom: 4px; text-align: right;
-        }
-
+        .store-header-info { flex: 1; min-width: 0; padding-bottom: 4px; text-align: right; }
         .store-header-name {
             font-size: 1.25rem; font-weight: 900; color: #1A1A1A;
             display: flex; align-items: center; gap: 6px;
@@ -565,159 +505,85 @@
         @media (min-width: 768px) { .store-header-name { font-size: 1.9rem; } }
         .store-header-name .verified-icon { width: 22px; height: 22px; font-size: 12px; }
 
-        .store-header-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 6px;
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-        }
+        .store-header-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 0.9rem; flex-wrap: wrap; }
         @media (min-width: 640px) { .store-header-meta { gap: 10px; margin-top: 8px; font-size: 1rem; } }
 
         .store-meta-rating {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            color: #FF7A00;
-            font-weight: 900;
-            background: #FFF7ED;
-            border: 1px solid #FFE0BD;
-            padding: 0.2rem 0.55rem;
-            border-radius: 9999px;
+            display: inline-flex; align-items: center; gap: 4px;
+            color: #FF7A00; font-weight: 900;
+            background: #FFF7ED; border: 1px solid #FFE0BD;
+            padding: 0.2rem 0.55rem; border-radius: 9999px;
         }
-        .store-meta-rating .rating-num {
-            font-size: 0.95rem;
-            font-weight: 900;
-            color: #FF7A00;
-        }
+        .store-meta-rating .rating-num { font-size: 0.95rem; font-weight: 900; color: #FF7A00; }
         @media (min-width: 640px) { .store-meta-rating .rating-num { font-size: 1.05rem; } }
-        .store-meta-rating i {
-            color: #FF7A00;
-            font-size: 0.85rem;
-        }
+        .store-meta-rating i { color: #FF7A00; font-size: 0.85rem; }
         @media (min-width: 640px) { .store-meta-rating i { font-size: 0.95rem; } }
 
-        .store-meta-sep {
-            color: #d1d5db;
-            font-weight: 300;
-            font-size: 0.9rem;
-        }
+        .store-meta-sep { color: #d1d5db; font-weight: 300; font-size: 0.9rem; }
 
         .store-meta-category {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: #4b5563;
-            font-weight: 700;
-            font-size: 0.85rem;
-            background: #F3F4F6;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
+            display: inline-flex; align-items: center; gap: 5px;
+            color: #4b5563; font-weight: 700; font-size: 0.85rem;
+            background: #F3F4F6; padding: 0.2rem 0.6rem; border-radius: 9999px;
         }
         @media (min-width: 640px) { .store-meta-category { font-size: 0.95rem; } }
-        .store-meta-category i {
-            color: #FF7A00;
-            font-size: 0.75rem;
-        }
+        .store-meta-category i { color: #FF7A00; font-size: 0.75rem; }
 
         .store-desc {
             text-align: center; color: #4b5563;
             font-size: 0.92rem; line-height: 1.85;
-            margin: 1rem auto 0; max-width: 640px;
-            padding: 0 0.25rem;
+            margin: 1rem auto 0; max-width: 640px; padding: 0 0.25rem;
         }
         @media (min-width: 640px) { .store-desc { font-size: 1.02rem; margin-top: 1.25rem; } }
         @media (min-width: 768px) { .store-desc { font-size: 1.1rem; line-height: 1.9; } }
 
         .store-actions-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.65rem;
-            margin-top: 1.25rem;
-            width: 100%;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 0.65rem; margin-top: 1.25rem; width: 100%;
         }
         @media (min-width: 480px) { .store-actions-grid { gap: 0.85rem; } }
         @media (min-width: 640px) { .store-actions-grid { gap: 1rem; margin-top: 1.5rem; } }
 
         .store-action-btn {
             display: flex; align-items: center; justify-content: center;
-            gap: 8px;
-            height: 52px; min-height: 52px; max-height: 52px;
-            padding: 0 0.75rem;
-            border-radius: 9999px;
-            border: 2px solid #FF7A00;
-            background: #FFFFFF; color: #FF7A00;
-            font-weight: 800; font-size: 0.88rem;
-            cursor: pointer;
+            gap: 8px; height: 52px; min-height: 52px; max-height: 52px;
+            padding: 0 0.75rem; border-radius: 9999px;
+            border: 2px solid #FF7A00; background: #FFFFFF; color: #FF7A00;
+            font-weight: 800; font-size: 0.88rem; cursor: pointer;
             transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
-            text-decoration: none;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            -webkit-tap-highlight-color: transparent;
-            line-height: 1;
+            text-decoration: none; white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; -webkit-tap-highlight-color: transparent; line-height: 1;
         }
         @media (min-width: 480px) { .store-action-btn { height: 56px; min-height: 56px; max-height: 56px; font-size: 0.93rem; } }
         @media (min-width: 640px) { .store-action-btn { height: 58px; min-height: 58px; max-height: 58px; font-size: 1rem; padding: 0 1.25rem; gap: 10px; } }
-
-        .store-action-btn:hover {
-            background: #FFF3E6;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(255,122,0,0.15);
-        }
+        .store-action-btn:hover { background: #FFF3E6; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(255,122,0,0.15); }
         .store-action-btn:active { transform: translateY(0); }
-
-        .store-action-btn.primary {
-            background: #FF7A00; color: #FFFFFF; border-color: #FF7A00;
-        }
-        .store-action-btn.primary:hover {
-            background: #E06B00; border-color: #E06B00;
-            box-shadow: 0 6px 16px rgba(255,122,0,0.35);
-        }
-        .store-action-btn.primary.following {
-            background: #FFFFFF; color: #FF7A00; border-color: #FF7A00;
-        }
+        .store-action-btn.primary { background: #FF7A00; color: #FFFFFF; border-color: #FF7A00; }
+        .store-action-btn.primary:hover { background: #E06B00; border-color: #E06B00; box-shadow: 0 6px 16px rgba(255,122,0,0.35); }
+        .store-action-btn.primary.following { background: #FFFFFF; color: #FF7A00; border-color: #FF7A00; }
         .store-action-btn.primary.following:hover { background: #FFF3E6; }
-
-        .store-action-btn.static {
-            cursor: default; pointer-events: none;
-        }
-        .store-action-btn.static:hover {
-            background: #FFFFFF; transform: none; box-shadow: none;
-        }
-
+        .store-action-btn.static { cursor: default; pointer-events: none; }
+        .store-action-btn.static:hover { background: #FFFFFF; transform: none; box-shadow: none; }
         .store-action-btn i.btn-icon { font-size: 1rem; flex-shrink: 0; }
         @media (min-width: 640px) { .store-action-btn i.btn-icon { font-size: 1.1rem; } }
-
         .store-action-btn .icon-circle {
             width: 30px; height: 30px; border-radius: 50%;
             display: inline-flex; align-items: center; justify-content: center;
-            flex-shrink: 0; color: #FFFFFF; font-size: 0.95rem;
-            background: #FF7A00;
+            flex-shrink: 0; color: #FFFFFF; font-size: 0.95rem; background: #FF7A00;
         }
-        @media (min-width: 640px) {
-            .store-action-btn .icon-circle { width: 34px; height: 34px; font-size: 1.05rem; }
-        }
-
-        .store-action-btn .btn-arrow {
-            font-size: 0.7rem; color: #FF7A00;
-            margin-right: auto; flex-shrink: 0;
-        }
+        @media (min-width: 640px) { .store-action-btn .icon-circle { width: 34px; height: 34px; font-size: 1.05rem; } }
+        .store-action-btn .btn-arrow { font-size: 0.7rem; color: #FF7A00; margin-right: auto; flex-shrink: 0; }
         @media (min-width: 640px) { .store-action-btn .btn-arrow { font-size: 0.85rem; } }
 
-        .store-divider {
-            height: 8px; background: #F3F4F6;
-            margin: 1.25rem -1rem;
-        }
+        .store-divider { height: 8px; background: #F3F4F6; margin: 1.25rem -1rem; }
         @media (min-width: 640px) { .store-divider { margin: 1.5rem -1.5rem; height: 10px; } }
         @media (min-width: 768px) { .store-divider { margin: 1.75rem -2rem; height: 12px; } }
 
         .store-products-header {
             display: flex; align-items: center; justify-content: space-between;
-            gap: 0.75rem; padding: 0.25rem 0; margin-bottom: 1rem;
-            flex-wrap: wrap;
+            gap: 0.75rem; padding: 0.25rem 0; margin-bottom: 1rem; flex-wrap: wrap;
         }
         @media (min-width: 640px) { .store-products-header { margin-bottom: 1.25rem; } }
-
         .store-products-title {
             display: flex; align-items: center; gap: 8px;
             font-size: 1.15rem; font-weight: 900; color: #1A1A1A;
@@ -729,19 +595,15 @@
         .store-products-count-pill {
             display: inline-flex; align-items: center; gap: 6px;
             background: #FFF7ED; color: #FF7A00;
-            border: 1px solid #FFE0BD;
-            border-radius: 9999px;
-            padding: 0.4rem 0.85rem;
-            font-size: 0.8rem; font-weight: 800;
-            white-space: nowrap;
+            border: 1px solid #FFE0BD; border-radius: 9999px;
+            padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 800; white-space: nowrap;
         }
         @media (min-width: 640px) { .store-products-count-pill { font-size: 0.9rem; padding: 0.5rem 1rem; } }
         .store-products-count-pill i { font-size: 0.85rem; }
         @media (min-width: 640px) { .store-products-count-pill i { font-size: 0.95rem; } }
 
         .store-products-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 0.75rem; padding-bottom: 1.5rem;
         }
         @media (min-width: 480px) { .store-products-grid { gap: 0.9rem; } }
@@ -751,8 +613,7 @@
 
         .store-product-card {
             position: relative; background: #FFFFFF;
-            border: 1px solid #F0F0F0; border-radius: 18px;
-            overflow: hidden;
+            border: 1px solid #F0F0F0; border-radius: 18px; overflow: hidden;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
             display: flex; flex-direction: column;
@@ -762,14 +623,12 @@
             box-shadow: 0 10px 24px rgba(255,122,0,0.15), 0 4px 12px rgba(0,0,0,0.08);
             border-color: #FFE0BD;
         }
-
         .store-product-fav {
             position: absolute; top: 10px; left: 10px;
             width: 32px; height: 32px; border-radius: 50%;
             background: #FFFFFF; border: none;
             display: flex; align-items: center; justify-content: center;
-            color: #FF7A00; font-size: 0.85rem;
-            cursor: pointer;
+            color: #FF7A00; font-size: 0.85rem; cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: all 0.2s; z-index: 3;
             -webkit-tap-highlight-color: transparent;
@@ -785,10 +644,7 @@
         }
         @media (min-width: 480px) { .store-product-img-wrap { height: 150px; } }
         @media (min-width: 640px) { .store-product-img-wrap { height: 170px; padding: 10px; } }
-        .store-product-img-wrap img {
-            max-width: 100%; max-height: 100%;
-            object-fit: contain; transition: transform 0.3s ease;
-        }
+        .store-product-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
         .store-product-card:hover .store-product-img-wrap img { transform: scale(1.05); }
 
         .store-product-info {
@@ -800,24 +656,20 @@
         .store-product-name {
             font-size: 0.95rem; font-weight: 800; color: #1A1A1A;
             text-align: right; overflow: hidden;
-            text-overflow: ellipsis; white-space: nowrap;
-            line-height: 1.3;
+            text-overflow: ellipsis; white-space: nowrap; line-height: 1.3;
         }
         @media (min-width: 640px) { .store-product-name { font-size: 1.05rem; } }
-
         .store-product-rating {
             display: flex; align-items: center; justify-content: flex-start;
             gap: 5px; font-size: 0.8rem; color: #FF7A00; font-weight: 800;
         }
         @media (min-width: 640px) { .store-product-rating { font-size: 0.9rem; } }
         .store-product-rating i { font-size: 0.85rem; }
-
         .store-product-price {
             font-size: 1rem; font-weight: 900; color: #FF7A00;
             text-align: right; margin-top: auto; padding-top: 2px;
         }
         @media (min-width: 640px) { .store-product-price { font-size: 1.15rem; } }
-
         .store-product-btn {
             display: flex; align-items: center; justify-content: center;
             gap: 6px; width: 100%; height: 40px;
@@ -829,9 +681,7 @@
         .store-product-btn:hover { background: #E06B00; transform: translateY(-1px); }
         .store-product-btn:active { transform: translateY(0); }
         .store-product-btn i { font-size: 0.7rem; }
-        @media (min-width: 640px) {
-            .store-product-btn { height: 44px; font-size: 0.95rem; border-radius: 14px; }
-        }
+        @media (min-width: 640px) { .store-product-btn { height: 44px; font-size: 0.95rem; border-radius: 14px; } }
     </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -857,11 +707,7 @@
                     <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
                 </div>
                 <span class="text-lg sm:text-2xl font-extrabold flex items-center gap-1">
-    <span class="text-orange-500">بازارِنا-BAZARENA</span>                
-                    
-                    
-                    <span class="text-text-light text-sm sm:text-lg font-bold">-</span>
-                    <span class="text-primary hidden xs:inline sm:inline">BAZRENA</span>
+                    <span class="text-orange-500">بازارِنا-BAZARENA</span>
                 </span>
                 <i class="fas fa-chevron-down logo-menu-chevron"></i>
             </button>
@@ -978,11 +824,19 @@
         </div>
     </section>
 
+    <!-- ★★★ جميع المنتجات مع العدّاد الإجمالي ★★★ -->
     <section id="all-products" class="py-8 sm:py-12 bg-white">
         <div class="max-w-7xl mx-auto px-3 sm:px-4">
             <div class="flex justify-between items-end mb-4 sm:mb-8">
                 <div>
-                    <h2 id="allProductsTitle" class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">جميع المنتجات</h2>
+                    <div class="flex items-center gap-3 flex-wrap mb-1 sm:mb-2">
+                        <h2 id="allProductsTitle" class="text-xl sm:text-3xl font-extrabold">جميع المنتجات</h2>
+                        <span id="allProductsTotalBadge" class="all-products-total-badge" title="إجمالي المنتجات في الموقع">
+                            <i class="fas fa-boxes-stacked"></i>
+                            <span id="allProductsTotalCount">0</span>
+                            <span>منتج</span>
+                        </span>
+                    </div>
                     <p id="allProductsSubtitle" class="text-text-light text-sm sm:text-base">تصفح كل المنتجات المتاحة</p>
                 </div>
             </div>
@@ -1322,6 +1176,8 @@
         const allProductsEmpty = document.getElementById('allProductsEmpty');
         const allProductsTitle = document.getElementById('allProductsTitle');
         const allProductsSubtitle = document.getElementById('allProductsSubtitle');
+        const allProductsTotalCount = document.getElementById('allProductsTotalCount');
+        const allProductsTotalBadge = document.getElementById('allProductsTotalBadge');
         const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
         const installButtonFloating = document.getElementById('installButtonFloating');
         const storeFollowButton = document.getElementById('storeFollowButton');
@@ -1338,8 +1194,21 @@
         const mobileMenu = document.getElementById('mobileMenu');
 
         // ============================================================
-        // ★★★ إدارة تمرير الـ body بشكل موحّد ★★★
+        // ★★★ تحديث عدّاد المنتجات الإجمالي ★★★
         // ============================================================
+        function updateAllProductsTotalBadge() {
+            if (!allProductsTotalCount) return;
+            const total = allProducts.length;
+            allProductsTotalCount.textContent = total.toLocaleString();
+
+            // إعادة تشغيل أنيميشن الظهور عند التحديث
+            if (allProductsTotalBadge) {
+                allProductsTotalBadge.style.animation = 'none';
+                void allProductsTotalBadge.offsetWidth;
+                allProductsTotalBadge.style.animation = 'badgePop 0.5s cubic-bezier(0.4,0,0.2,1)';
+            }
+        }
+
         function updateBodyScroll() {
             const anyModalOpen =
                 !storeModal.classList.contains('hidden') ||
@@ -1412,12 +1281,12 @@
         function animateCartBadge() { cartCount.classList.add('cart-badge-animate'); setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300); }
 
         // ============================================================
-        // ★★★ التمرير التلقائي — يعمل على جميع الأجهزة، يتوقف عند التفاعل ★★★
+        // التمرير التلقائي
         // ============================================================
         let autoScrollInterval = null;
         let isHoveringStores = false;
         let lastStoresInteraction = 0;
-        const AUTO_SCROLL_RESUME_DELAY = 2500; // 2.5 ثانية
+        const AUTO_SCROLL_RESUME_DELAY = 2500;
 
         function getStoresMaxScroll() {
             if (!storesScrollContainer) return 0;
@@ -1427,7 +1296,6 @@
         function startAutoScroll() {
             stopAutoScroll();
             if (!storesScrollContainer) return;
-            // ضبط البداية عند الطرف الأقصى (نهاية القائمة المرئية)
             requestAnimationFrame(() => {
                 const max = getStoresMaxScroll();
                 if (max > 0 && storesScrollContainer.scrollLeft === 0) {
@@ -1445,14 +1313,13 @@
                 } else {
                     storesScrollContainer.scrollLeft -= 1;
                 }
-            }, 40); // 1px / 40ms ≈ 25px/s — سلس وهادئ
+            }, 40);
         }
 
         function stopAutoScroll() {
             if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; }
         }
 
-        // تسجيل التفاعل على القائمة فقط
         ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
             storesScrollContainer.addEventListener(evt, () => {
                 lastStoresInteraction = Date.now();
@@ -2246,6 +2113,10 @@
                 try { snapshot = await db.collection('products').orderBy('created_at', 'desc').get(); }
                 catch (e) { snapshot = await db.collection('products').get(); }
                 allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                // ★ تحديث العدّاد الإجمالي
+                updateAllProductsTotalBadge();
+
                 applyProductsFilter(currentCategory);
             } catch (err) {
                 console.error('فشل تحميل المنتجات:', err);
@@ -2255,6 +2126,7 @@
 
         function initApp() {
             updateCartUI();
+            updateAllProductsTotalBadge();
             loadStores();
             loadCategories();
             loadAllProducts();
