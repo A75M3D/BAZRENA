@@ -668,6 +668,49 @@
             #logoMenuBtn.menu-open .logo-menu-chevron { transform: rotate(180deg); }
         }
 
+        /* ✅ رابط "إضافة منتجات" في القائمة المنسدلة */
+        .add-products-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 0.75rem 1rem;
+            border-radius: 0.85rem;
+            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
+            border: 1.5px solid #FFE0BD;
+            color: #E06B00 !important;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+            margin: 0.35rem 0;
+        }
+        .add-products-link:hover {
+            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            border-color: #FF7A00;
+            color: #FFFFFF !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6);
+        }
+        .add-products-link .add-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: #FF7A00;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            transition: all 0.25s;
+        }
+        .add-products-link:hover .add-icon {
+            background: #FFFFFF;
+            color: #FF7A00;
+            transform: rotate(90deg);
+        }
+
         .store-cover-wrap {
             position: relative; width: 100%; height: 200px;
             flex-shrink: 0; overflow: hidden; background: #f5f5f5;
@@ -897,140 +940,6 @@
         .store-product-btn:active { transform: translateY(0); }
         .store-product-btn i { font-size: 0.7rem; }
         @media (min-width: 640px) { .store-product-btn { height: 44px; font-size: 0.95rem; border-radius: 14px; } }
-
-        /* ============================================================
-           👑 شريط CTA العلوي — أضف منتجاتك الآن
-           ============================================================ */
-        .top-cta-bar {
-            position: relative;
-            background: linear-gradient(135deg, #1A1A1A 0%, #2d2d2d 50%, #FF7A00 150%);
-            color: #FFFFFF;
-            padding: 0.75rem 1rem;
-            overflow: hidden;
-            border-bottom: 2px solid rgba(255,122,0,0.4);
-        }
-        .top-cta-bar::before {
-            content: '';
-            position: absolute;
-            top: -80px; right: -60px;
-            width: 220px; height: 220px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, transparent 65%);
-            pointer-events: none;
-            animation: ctaOrbFloat 6s ease-in-out infinite;
-        }
-        .top-cta-bar::after {
-            content: '';
-            position: absolute;
-            bottom: -100px; left: -80px;
-            width: 240px; height: 240px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,166,77,0.25) 0%, transparent 65%);
-            pointer-events: none;
-            animation: ctaOrbFloat 8s ease-in-out infinite reverse;
-        }
-        @keyframes ctaOrbFloat {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-15px, 12px); }
-        }
-        .top-cta-inner {
-            position: relative;
-            z-index: 2;
-            max-width: 1280px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .top-cta-text {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            flex: 1;
-            min-width: 200px;
-        }
-        @media (min-width: 640px) { .top-cta-text { font-size: 1.05rem; gap: 12px; } }
-        .top-cta-text i {
-            color: #FFA64D;
-            font-size: 1.2rem;
-            animation: crownBounce 2s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-        @media (min-width: 640px) { .top-cta-text i { font-size: 1.4rem; } }
-        @keyframes crownBounce {
-            0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-3px) rotate(5deg); }
-        }
-        .top-cta-text span { color: rgba(255,255,255,0.9); }
-        .top-cta-text strong {
-            color: #FFA64D;
-            font-weight: 900;
-            background: linear-gradient(135deg, #FF7A00, #FFB366);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 8px rgba(255,122,0,0.5));
-        }
-        .top-cta-btn {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 0.7rem 1.25rem;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            background-size: 200% auto;
-            color: #FFFFFF !important;
-            border: 2px solid rgba(255,255,255,0.25);
-            border-radius: 9999px;
-            font-weight: 900;
-            font-size: 0.88rem;
-            text-decoration: none;
-            white-space: nowrap;
-            cursor: pointer;
-            box-shadow: 0 10px 28px -8px rgba(255,122,0,0.9), 0 0 20px rgba(255,122,0,0.4);
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Cairo', sans-serif;
-            animation: ctaBtnGlow 2.5s ease-in-out infinite;
-        }
-        @media (min-width: 640px) {
-            .top-cta-btn { padding: 0.75rem 1.5rem; font-size: 1rem; gap: 10px; }
-        }
-        @keyframes ctaBtnGlow {
-            0%, 100% {
-                box-shadow: 0 10px 28px -8px rgba(255,122,0,0.9), 0 0 20px rgba(255,122,0,0.4);
-            }
-            50% {
-                box-shadow: 0 14px 36px -8px rgba(255,122,0,1), 0 0 35px rgba(255,122,0,0.75);
-            }
-        }
-        .top-cta-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            background-position: 100% center;
-            box-shadow: 0 18px 45px -10px rgba(255,122,0,1), 0 0 50px rgba(255,122,0,0.9);
-            animation: none;
-        }
-        .top-cta-btn:active { transform: translateY(-1px); }
-        .top-cta-btn i { font-size: 1rem; }
-        @media (min-width: 640px) { .top-cta-btn i { font-size: 1.15rem; } }
-        .top-cta-btn .btn-arrow {
-            transition: transform 0.3s;
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-        .top-cta-btn:hover .btn-arrow { transform: translateX(-5px); opacity: 1; }
-        @media (max-width: 480px) {
-            .top-cta-bar { padding: 0.65rem 0.75rem; }
-            .top-cta-inner { gap: 0.65rem; }
-            .top-cta-text { font-size: 0.82rem; }
-            .top-cta-btn { padding: 0.6rem 1rem; font-size: 0.82rem; }
-        }
     </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -1174,23 +1083,6 @@
 })();
 </script>
 
-<!-- ============================================================
-     👑 شريط CTA العلوي — أضف منتجاتك الآن
-     ============================================================ -->
-<div class="top-cta-bar">
-    <div class="top-cta-inner">
-        <div class="top-cta-text">
-            <i class="fas fa-crown"></i>
-            <span>هل تملك متجراً أو براند؟ انطلق مع <strong>بازارِنا</strong></span>
-        </div>
-        <a href="a.html" class="top-cta-btn">
-            <i class="fas fa-plus-circle"></i>
-            <span>أضف منتجاتك الآن</span>
-            <i class="fas fa-arrow-left btn-arrow"></i>
-        </a>
-    </div>
-</div>
-
 <div class="top-bar hidden md:block">
     <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-sm">
         <div class="flex items-center gap-4">
@@ -1233,12 +1125,24 @@
             </button>
         </div>
     </div>
-    <div id="mobileMenu" class="hidden md:hidden bg-white border-t p-4 space-y-2">
-        <a href="#" class="block py-2 hover:text-primary transition">الرئيسية</a>
-        <a href="#stores" class="block py-2 hover:text-primary transition">المتاجر</a>
-        <a href="#categories" class="block py-2 hover:text-primary transition">التصنيفات</a>
-        <a href="#all-products" class="block py-2 hover:text-primary transition">جميع المنتجات</a>
-        <a href="about.html" class="block py-2 text-primary font-bold">من نحن</a>
+
+    <!-- القائمة المنسدلة للموبايل -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t p-4 space-y-1">
+        <a href="#" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">الرئيسية</a>
+        <a href="#stores" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">المتاجر</a>
+        <a href="#categories" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">التصنيفات</a>
+        <a href="#all-products" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">جميع المنتجات</a>
+
+        <!-- ✅ رابط إضافة منتجات — نص بسيط مع علامة + -->
+        <a href="a.html" class="add-products-link">
+            <span style="display: flex; align-items: center; gap: 10px;">
+                <span class="add-icon">+</span>
+                <span>إضافة منتجات</span>
+            </span>
+            <i class="fas fa-chevron-left" style="font-size: 0.75rem; opacity: 0.7;"></i>
+        </a>
+
+        <a href="about.html" class="block py-2 px-3 rounded-lg hover:bg-orange-50 hover:text-primary transition">من نحن</a>
     </div>
 </header>
 
@@ -1962,7 +1866,6 @@
         const bottomRow = document.createElement('div');
         bottomRow.className = 'flex items-center justify-between gap-2 mt-2';
 
-        // ✅ عدد المنتجات — نص عادي (قراءة فقط)
         const count = document.createElement('div');
         count.className = 'flex items-center gap-1 text-xs text-text-light';
         count.innerHTML = `<i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span>`;
