@@ -112,12 +112,19 @@
         }
 
         .all-products-total-badge {
-            display: inline-flex; align-items: center; gap: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #FFFFFF; border-radius: 9999px;
-            padding: 0.35rem 0.85rem; font-size: 0.78rem; font-weight: 800;
-            white-space: nowrap; box-shadow: 0 6px 16px -6px rgba(255,122,0,0.65);
-            letter-spacing: 0.3px; transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+            color: #FFFFFF;
+            border-radius: 9999px;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+            box-shadow: 0 6px 16px -6px rgba(255,122,0,0.65);
+            letter-spacing: 0.3px;
+            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
             animation: badgePop 0.5s cubic-bezier(0.4,0,0.2,1);
         }
         .all-products-total-badge:hover { transform: translateY(-2px); }
@@ -135,7 +142,8 @@
         .stores-scroll-container {
             overflow-x: auto; overflow-y: hidden; display: flex; gap: 1rem;
             padding-bottom: 1rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
-            direction: ltr; -webkit-overflow-scrolling: touch;
+            direction: ltr;
+            -webkit-overflow-scrolling: touch;
         }
         .stores-scroll-container > * { direction: rtl; }
         .stores-scroll-container::-webkit-scrollbar { height: 8px; }
@@ -145,7 +153,8 @@
         .categories-scroll-container {
             overflow-x: auto; overflow-y: hidden; display: flex; gap: 0.75rem;
             padding-bottom: 0.5rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
-            direction: rtl; -webkit-overflow-scrolling: touch;
+            direction: rtl;
+            -webkit-overflow-scrolling: touch;
         }
         .categories-scroll-container::-webkit-scrollbar { height: 6px; }
         .categories-scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
@@ -186,7 +195,8 @@
         .fullscreen-modal .modal-content {
             width: 100%; height: 100%; max-width: 100%; max-height: 100%;
             background: #FFFFFF; overflow-y: auto; border-radius: 0; animation: slideUp 0.3s;
-            -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
         }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -204,17 +214,36 @@
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .product-modal-image-wrapper {
-            width: 100%; height: 350px; background-color: #F8F9FA;
-            border-radius: 2rem; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-            padding: 1rem; border: 1px solid #F0F0F0;
+            width: 100%;
+            height: 350px;
+            background-color: #F8F9FA;
+            border-radius: 2rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border: 1px solid #F0F0F0;
             box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
             transition: all 0.3s ease;
         }
-        @media (min-width: 640px) { .product-modal-image-wrapper { height: 450px; border-radius: 2.5rem; } }
-        @media (min-width: 768px) { .product-modal-image-wrapper { height: 500px; border-radius: 3rem; } }
-        #productModalImage { width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .product-modal-image-wrapper:hover #productModalImage { transform: scale(1.05); }
+        @media (min-width: 640px) { 
+            .product-modal-image-wrapper { height: 450px; border-radius: 2.5rem; } 
+        }
+        @media (min-width: 768px) { 
+            .product-modal-image-wrapper { height: 500px; border-radius: 3rem; } 
+        }
+
+        #productModalImage { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-modal-image-wrapper:hover #productModalImage {
+            transform: scale(1.05);
+        }
 
         .cart-item-image { width: 56px; height: 56px; object-fit: contain; background-color: #FFFFFF; border-radius: 0.75rem; flex-shrink: 0; }
 
@@ -222,7 +251,27 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
         .btn-adding { background: #28a745 !important; color: white !important; pointer-events: none; transition: all 0.2s; }
 
-        /* ============ نظام الإشعارات المنبثقة ============ */
+        #installButtonFloating {
+            position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: white; border: none; border-radius: 9999px; padding: 0.8rem 1.5rem;
+            font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(255,122,0,0.4); transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(20px);
+        }
+        @media (max-width: 480px) {
+            #installButtonFloating { bottom: 15px; right: 15px; padding: 0.7rem 1.1rem; font-size: 0.85rem; }
+        }
+        #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        #installButtonFloating:hover {
+            transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,122,0,0.6);
+            background: linear-gradient(135deg, #E06B00 0%, #FF8C1A 100%);
+        }
+        #installButtonFloating:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(255,122,0,0.4); }
+        #installButtonFloating i { font-size: 1.2rem; transition: transform 0.3s; }
+        #installButtonFloating:hover i { transform: rotate(180deg); }
+
+        /* ============ نظام الإشعارات المنبثقة (للمتاجر الجديدة داخل الموقع) ============ */
         #newStoreNotification {
             position: fixed; bottom: 20px; left: 20px; z-index: 9999;
             background: #FFFFFF; border-radius: 16px; padding: 12px 16px;
@@ -334,7 +383,7 @@
             .notif-btn-enable, .notif-btn-dismiss { height: 42px; font-size: 0.82rem; }
         }
 
-        /* ============ Toast مخصص للإشعارات ============ */
+        /* ============ Toast للإشعارات الواردة (foreground) ============ */
         #pushToast {
             position: fixed; top: 20px; left: 50%; transform: translate(-50%, -200%);
             z-index: 10000;
@@ -357,26 +406,6 @@
             flex-shrink: 0;
         }
         #pushToast .push-icon i { color: #fff; font-size: 1.1rem; }
-
-        #installButtonFloating {
-            position: fixed; bottom: 20px; right: 20px; z-index: 9999;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: white; border: none; border-radius: 9999px; padding: 0.8rem 1.5rem;
-            font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 15px rgba(255,122,0,0.4); transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(20px);
-        }
-        @media (max-width: 480px) {
-            #installButtonFloating { bottom: 15px; right: 15px; padding: 0.7rem 1.1rem; font-size: 0.85rem; }
-        }
-        #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-        #installButtonFloating:hover {
-            transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,122,0,0.6);
-            background: linear-gradient(135deg, #E06B00 0%, #FF8C1A 100%);
-        }
-        #installButtonFloating:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(255,122,0,0.4); }
-        #installButtonFloating i { font-size: 1.2rem; transition: transform 0.3s; }
-        #installButtonFloating:hover i { transform: rotate(180deg); }
 
         #cartSidebar {
             position: fixed; top: 0; left: 0; height: 100%; width: 100%; max-width: 400px;
@@ -402,41 +431,87 @@
         .load-more-btn:hover i { transform: translateY(3px); }
 
         .hero-logo-link {
-            display: inline-block; cursor: pointer;
+            display: inline-block;
+            cursor: pointer;
             transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), filter 0.35s;
-            -webkit-tap-highlight-color: transparent; text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            text-decoration: none;
         }
-        .hero-logo-link:hover { transform: scale(1.04); filter: drop-shadow(0 0 25px rgba(255,122,0,0.55)); }
-        .hero-logo-link:active { transform: scale(0.98); }
+        .hero-logo-link:hover {
+            transform: scale(1.04);
+            filter: drop-shadow(0 0 25px rgba(255,122,0,0.55));
+        }
+        .hero-logo-link:active {
+            transform: scale(0.98);
+        }
 
-        .about-cta-section { max-width: 960px; margin: 3rem auto 0; padding: 0 1rem; }
-        @media (min-width: 640px) { .about-cta-section { margin-top: 4rem; } }
+        .about-cta-section {
+            max-width: 960px;
+            margin: 3rem auto 0;
+            padding: 0 1rem;
+        }
+        @media (min-width: 640px) {
+            .about-cta-section { margin-top: 4rem; }
+        }
 
         .about-cta-card {
             position: relative;
             background: linear-gradient(135deg, #1A1A1A 0%, #2d2d2d 45%, #FF7A00 130%);
-            border-radius: 1.75rem; padding: 2.25rem 1.25rem; overflow: hidden;
+            border-radius: 1.75rem;
+            padding: 2.25rem 1.25rem;
+            overflow: hidden;
             box-shadow: 0 25px 60px -25px rgba(0,0,0,0.45), 0 8px 30px -10px rgba(255,122,0,0.35);
         }
-        @media (min-width: 640px) { .about-cta-card { border-radius: 2rem; padding: 3rem 2.5rem; } }
+        @media (min-width: 640px) {
+            .about-cta-card { border-radius: 2rem; padding: 3rem 2.5rem; }
+        }
 
-        .about-cta-orb { position: absolute; border-radius: 50%; pointer-events: none; filter: blur(2px); }
-        .about-cta-orb-1 { top: -100px; right: -80px; width: 280px; height: 280px; background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, transparent 70%); }
-        .about-cta-orb-2 { bottom: -120px; left: -100px; width: 320px; height: 320px; background: radial-gradient(circle, rgba(255,166,77,0.22) 0%, transparent 70%); }
+        .about-cta-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(2px);
+        }
+        .about-cta-orb-1 {
+            top: -100px; right: -80px;
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, transparent 70%);
+        }
+        .about-cta-orb-2 {
+            bottom: -120px; left: -100px;
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(255,166,77,0.22) 0%, transparent 70%);
+        }
 
-        .about-cta-inner { position: relative; z-index: 2; text-align: center; }
+        .about-cta-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
 
         .about-cta-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(255,122,0,0.18); border: 1px solid rgba(255,122,0,0.5);
-            color: #FFA64D; padding: 0.45rem 1.1rem; border-radius: 9999px;
-            font-size: 0.8rem; font-weight: 800; margin-bottom: 1.1rem; backdrop-filter: blur(6px);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,122,0,0.18);
+            border: 1px solid rgba(255,122,0,0.5);
+            color: #FFA64D;
+            padding: 0.45rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 1.1rem;
+            backdrop-filter: blur(6px);
         }
         .about-cta-badge i { font-size: 0.85rem; }
 
         .about-cta-heading {
-            font-size: 1.4rem; font-weight: 900; color: #FFFFFF;
-            line-height: 1.4; margin: 0 auto 0.9rem; max-width: 640px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #FFFFFF;
+            line-height: 1.4;
+            margin: 0 auto 0.9rem;
+            max-width: 640px;
         }
         @media (min-width: 640px) { .about-cta-heading { font-size: 1.9rem; } }
         @media (min-width: 768px) { .about-cta-heading { font-size: 2.2rem; } }
@@ -444,34 +519,50 @@
         .about-cta-heading-accent {
             display: block;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent; color: #FFA64D;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #FFA64D;
         }
 
         .about-cta-text {
-            color: rgba(255,255,255,0.75); font-size: 0.9rem;
-            line-height: 1.9; max-width: 560px; margin: 0 auto 1.75rem;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.9rem;
+            line-height: 1.9;
+            max-width: 560px;
+            margin: 0 auto 1.75rem;
         }
         @media (min-width: 640px) { .about-cta-text { font-size: 1rem; } }
 
         .about-cta-btn {
-            display: inline-flex; align-items: center; gap: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #FFFFFF !important; text-decoration: none;
-            padding: 0.85rem 1.15rem 0.85rem 1.4rem; border-radius: 9999px; font-weight: 800;
+            color: #FFFFFF !important;
+            text-decoration: none;
+            padding: 0.85rem 1.15rem 0.85rem 1.4rem;
+            border-radius: 9999px;
+            font-weight: 800;
             box-shadow: 0 15px 40px -12px rgba(255,122,0,0.85), 0 6px 20px -6px rgba(255,122,0,0.5);
             transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
             -webkit-tap-highlight-color: transparent;
             border: 2px solid rgba(255,255,255,0.15);
         }
         .about-cta-btn::before {
-            content: ''; position: absolute; inset: 0;
+            content: '';
+            position: absolute;
+            inset: 0;
             background: linear-gradient(135deg, #FFA64D 0%, #FF7A00 100%);
-            opacity: 0; transition: opacity 0.3s; z-index: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 0;
         }
         .about-cta-btn:hover::before { opacity: 1; }
         .about-cta-btn > * { position: relative; z-index: 1; }
+
         .about-cta-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 22px 50px -14px rgba(255,122,0,1), 0 10px 28px -8px rgba(255,122,0,0.6);
@@ -479,16 +570,37 @@
         .about-cta-btn:active { transform: translateY(-1px); }
 
         .about-cta-btn-icon {
-            width: 42px; height: 42px; border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
             background: rgba(255,255,255,0.22);
-            display: inline-flex; align-items: center; justify-content: center;
-            font-size: 1.05rem; flex-shrink: 0; transition: transform 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            flex-shrink: 0;
+            transition: transform 0.3s;
         }
         .about-cta-btn:hover .about-cta-btn-icon { transform: rotate(-15deg) scale(1.08); }
 
-        .about-cta-btn-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.25; text-align: right; }
-        .about-cta-btn-text strong { font-size: 1rem; font-weight: 900; letter-spacing: 0.2px; }
-        .about-cta-btn-text small { font-size: 0.7rem; font-weight: 600; opacity: 0.9; margin-top: 2px; }
+        .about-cta-btn-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.25;
+            text-align: right;
+        }
+        .about-cta-btn-text strong {
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: 0.2px;
+        }
+        .about-cta-btn-text small {
+            font-size: 0.7rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
         @media (min-width: 640px) {
             .about-cta-btn { padding: 1rem 1.35rem 1rem 1.65rem; gap: 16px; }
             .about-cta-btn-icon { width: 48px; height: 48px; font-size: 1.2rem; }
@@ -496,24 +608,50 @@
             .about-cta-btn-text small { font-size: 0.78rem; }
         }
 
-        .about-cta-btn-arrow { margin-right: auto; font-size: 0.85rem; opacity: 0.85; transition: transform 0.3s; flex-shrink: 0; }
-        .about-cta-btn:hover .about-cta-btn-arrow { transform: translateX(-5px); opacity: 1; }
+        .about-cta-btn-arrow {
+            margin-right: auto;
+            font-size: 0.85rem;
+            opacity: 0.85;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .about-cta-btn:hover .about-cta-btn-arrow {
+            transform: translateX(-5px);
+            opacity: 1;
+        }
 
         .about-cta-mini-features {
-            display: flex; flex-wrap: wrap; justify-content: center;
-            gap: 0.5rem 0.6rem; margin-top: 1.6rem; padding-top: 1.4rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem 0.6rem;
+            margin-top: 1.6rem;
+            padding-top: 1.4rem;
             border-top: 1px dashed rgba(255,255,255,0.15);
         }
         .about-cta-mini-features span {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.85); padding: 0.4rem 0.85rem; border-radius: 9999px;
-            font-size: 0.76rem; font-weight: 700; backdrop-filter: blur(6px); transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.85);
+            padding: 0.4rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            backdrop-filter: blur(6px);
+            transition: all 0.25s;
         }
         .about-cta-mini-features span:hover {
-            background: rgba(255,122,0,0.2); border-color: rgba(255,122,0,0.5); color: #FFA64D;
+            background: rgba(255,122,0,0.2);
+            border-color: rgba(255,122,0,0.5);
+            color: #FFA64D;
         }
-        .about-cta-mini-features span i { color: #FFA64D; font-size: 0.82rem; }
+        .about-cta-mini-features span i {
+            color: #FFA64D;
+            font-size: 0.82rem;
+        }
         @media (min-width: 640px) {
             .about-cta-mini-features { gap: 0.65rem; margin-top: 1.9rem; }
             .about-cta-mini-features span { font-size: 0.85rem; padding: 0.5rem 1rem; }
@@ -555,7 +693,10 @@
             border: 1px solid #FFE0BD; padding: 0.4rem 1rem; border-radius: 9999px;
             font-size: 0.78rem; font-weight: 800; margin-bottom: 0.9rem;
         }
-        .brand-cta-heading { font-size: 1.35rem; font-weight: 900; color: #1A1A1A; line-height: 1.4; margin: 0 auto 0.85rem; max-width: 640px; }
+        .brand-cta-heading {
+            font-size: 1.35rem; font-weight: 900; color: #1A1A1A;
+            line-height: 1.4; margin: 0 auto 0.85rem; max-width: 640px;
+        }
         @media (min-width: 640px) { .brand-cta-heading { font-size: 1.8rem; } }
         @media (min-width: 768px) { .brand-cta-heading { font-size: 2.1rem; } }
         .brand-cta-heading-accent {
@@ -564,9 +705,15 @@
             -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent; color: #FF7A00;
         }
-        .brand-cta-text { color: #4b5563; font-size: 0.9rem; line-height: 1.9; max-width: 620px; margin: 0 auto 1.6rem; }
+        .brand-cta-text {
+            color: #4b5563; font-size: 0.9rem; line-height: 1.9;
+            max-width: 620px; margin: 0 auto 1.6rem;
+        }
         @media (min-width: 640px) { .brand-cta-text { font-size: 1rem; margin-bottom: 1.9rem; } }
-        .brand-cta-actions { display: grid; grid-template-columns: 1fr; gap: 0.7rem; max-width: 480px; margin: 0 auto; }
+        .brand-cta-actions {
+            display: grid; grid-template-columns: 1fr; gap: 0.7rem;
+            max-width: 480px; margin: 0 auto;
+        }
         @media (min-width: 560px) { .brand-cta-actions { grid-template-columns: 1fr 1fr; gap: 0.85rem; } }
         .brand-cta-btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -584,7 +731,10 @@
             color: #FFFFFF; box-shadow: 0 10px 24px -8px rgba(37,211,102,0.5);
         }
         .brand-cta-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -8px rgba(37,211,102,0.65); }
-        .brand-cta-btn-outline { background: #FFFFFF; color: #FF7A00; border-color: #FF7A00; box-shadow: 0 4px 12px rgba(255,122,0,0.08); }
+        .brand-cta-btn-outline {
+            background: #FFFFFF; color: #FF7A00; border-color: #FF7A00;
+            box-shadow: 0 4px 12px rgba(255,122,0,0.08);
+        }
         .brand-cta-btn-outline:hover { background: #FFF7ED; transform: translateY(-2px); box-shadow: 0 10px 20px -6px rgba(255,122,0,0.25); }
         .brand-cta-features {
             display: flex; flex-wrap: wrap; justify-content: center;
@@ -604,7 +754,8 @@
 
         .followed-scroll-container {
             overflow-x: auto; overflow-y: hidden; display: flex; gap: 0.75rem;
-            padding: 0.75rem 0 1rem; scrollbar-width: thin; scrollbar-color: #FF7A00 #f1f1f1;
+            padding: 0.75rem 0 1rem; scrollbar-width: thin;
+            scrollbar-color: #FF7A00 #f1f1f1;
             -webkit-overflow-scrolling: touch;
         }
         @media (min-width: 640px) { .followed-scroll-container { gap: 1rem; } }
@@ -658,64 +809,119 @@
             border-radius: 1.25rem; padding: 1rem;
             margin-top: 4vh; max-height: 88vh;
             display: flex; flex-direction: column;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: zoomIn 0.25s;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            animation: zoomIn 0.25s;
         }
         @media (min-width: 640px) { .search-panel { border-radius: 1.5rem; padding: 1.25rem; } }
         .search-panel input[type="search"] { -webkit-appearance: none; appearance: none; background: transparent; border: none; }
         .search-panel input[type="search"]::-webkit-search-cancel-button { display: none; }
 
-        #logoMenuBtn { background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: opacity 0.2s; -webkit-tap-highlight-color: transparent; }
+        #logoMenuBtn {
+            background: transparent; border: none; padding: 0;
+            display: flex; align-items: center; gap: 0.5rem;
+            cursor: pointer; transition: opacity 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
         #logoMenuBtn:hover { opacity: 0.85; }
-        #logoMenuBtn .logo-menu-chevron { display: none; font-size: 0.7rem; color: #999; margin-right: 2px; transition: transform 0.3s; }
+        #logoMenuBtn .logo-menu-chevron {
+            display: none; font-size: 0.7rem; color: #999;
+            margin-right: 2px; transition: transform 0.3s;
+        }
         @media (max-width: 767px) {
             #logoMenuBtn .logo-menu-chevron { display: inline-block; }
             #logoMenuBtn.menu-open .logo-menu-chevron { transform: rotate(180deg); }
         }
 
         .add-products-link {
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 10px; padding: 0.75rem 1rem; border-radius: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 0.75rem 1rem;
+            border-radius: 0.85rem;
             background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
-            border: 1.5px solid #FFE0BD; color: #E06B00 !important;
-            font-weight: 800; font-size: 0.95rem; text-decoration: none;
-            transition: all 0.25s cubic-bezier(0.4,0,0.2,1); margin: 0.35rem 0;
+            border: 1.5px solid #FFE0BD;
+            color: #E06B00 !important;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+            margin: 0.35rem 0;
         }
         .add-products-link:hover {
             background: linear-gradient(135deg, #FF7A00, #FFA64D);
-            border-color: #FF7A00; color: #FFFFFF !important;
-            transform: translateY(-1px); box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6);
+            border-color: #FF7A00;
+            color: #FFFFFF !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6);
         }
         .add-products-link .add-icon {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 26px; height: 26px; border-radius: 50%;
-            background: #FF7A00; color: #FFFFFF; font-size: 0.9rem; font-weight: 900;
-            flex-shrink: 0; transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: #FF7A00;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            transition: all 0.25s;
         }
-        .add-products-link:hover .add-icon { background: #FFFFFF; color: #FF7A00; transform: rotate(90deg); }
+        .add-products-link:hover .add-icon {
+            background: #FFFFFF;
+            color: #FF7A00;
+            transform: rotate(90deg);
+        }
 
         .add-products-nav-link {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px; padding: 0.5rem 1rem; border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
             background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
-            border: 1.5px solid #FFE0BD; color: #E06B00 !important;
-            font-weight: 800; font-size: 0.9rem; text-decoration: none;
+            border: 1.5px solid #FFE0BD;
+            color: #E06B00 !important;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-decoration: none;
             transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
-            white-space: nowrap; -webkit-tap-highlight-color: transparent; line-height: 1;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+            line-height: 1;
         }
         .add-products-nav-link:hover {
             background: linear-gradient(135deg, #FF7A00, #FFA64D);
-            border-color: #FF7A00; color: #FFFFFF !important;
-            transform: translateY(-1px); box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6);
+            border-color: #FF7A00;
+            color: #FFFFFF !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6);
         }
         .add-products-nav-link .add-icon {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 22px; height: 22px; border-radius: 50%;
-            background: #FF7A00; color: #FFFFFF; font-size: 0.85rem; font-weight: 900;
-            flex-shrink: 0; transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: #FF7A00;
+            color: #FFFFFF;
+            font-size: 0.85rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            transition: all 0.25s;
         }
-        .add-products-nav-link:hover .add-icon { background: #FFFFFF; color: #FF7A00; transform: rotate(90deg); }
+        .add-products-nav-link:hover .add-icon {
+            background: #FFFFFF;
+            color: #FF7A00;
+            transform: rotate(90deg);
+        }
 
-        .store-cover-wrap { position: relative; width: 100%; height: 200px; flex-shrink: 0; overflow: hidden; background: #f5f5f5; }
+        .store-cover-wrap {
+            position: relative; width: 100%; height: 200px;
+            flex-shrink: 0; overflow: hidden; background: #f5f5f5;
+        }
         @media (min-width: 480px) { .store-cover-wrap { height: 240px; } }
         @media (min-width: 768px) { .store-cover-wrap { height: 300px; } }
         .store-cover-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -731,21 +937,35 @@
         }
         .store-close-btn:hover { background: #FFF3E6; transform: scale(1.06); }
         .store-close-btn:active { transform: scale(0.96); }
-        @media (min-width: 768px) { .store-close-btn { width: 48px; height: 48px; top: 18px; right: 18px; font-size: 1.3rem; } }
+        @media (min-width: 768px) {
+            .store-close-btn { width: 48px; height: 48px; top: 18px; right: 18px; font-size: 1.3rem; }
+        }
 
-        .store-info-card { position: relative; background: #FFFFFF; padding: 0 1rem 1.25rem; margin-top: -38px; z-index: 5; border-radius: 24px 24px 0 0; }
+        .store-info-card {
+            position: relative; background: #FFFFFF;
+            padding: 0 1rem 1.25rem; margin-top: -38px;
+            z-index: 5; border-radius: 24px 24px 0 0;
+        }
         @media (min-width: 640px) { .store-info-card { padding: 0 1.5rem 1.5rem; margin-top: -46px; } }
         @media (min-width: 768px) { .store-info-card { padding: 0 2rem 2rem; margin-top: -54px; } }
 
         .store-header-row { display: flex; align-items: flex-end; gap: 0.75rem; padding-top: 8px; }
         @media (min-width: 640px) { .store-header-row { gap: 1rem; padding-top: 10px; } }
 
-        .store-header-logo { width: 84px; height: 84px; border-radius: 50%; border: 4px solid #FFFFFF; object-fit: cover; background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,0.15); flex-shrink: 0; }
+        .store-header-logo {
+            width: 84px; height: 84px; border-radius: 50%;
+            border: 4px solid #FFFFFF; object-fit: cover; background: #fff;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15); flex-shrink: 0;
+        }
         @media (min-width: 640px) { .store-header-logo { width: 100px; height: 100px; } }
         @media (min-width: 768px) { .store-header-logo { width: 112px; height: 112px; border-width: 5px; } }
 
         .store-header-info { flex: 1; min-width: 0; padding-bottom: 4px; text-align: right; }
-        .store-header-name { font-size: 1.25rem; font-weight: 900; color: #1A1A1A; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; line-height: 1.2; }
+        .store-header-name {
+            font-size: 1.25rem; font-weight: 900; color: #1A1A1A;
+            display: flex; align-items: center; gap: 6px;
+            flex-wrap: wrap; line-height: 1.2;
+        }
         @media (min-width: 640px) { .store-header-name { font-size: 1.6rem; } }
         @media (min-width: 768px) { .store-header-name { font-size: 1.9rem; } }
         .store-header-name .verified-icon { width: 22px; height: 22px; font-size: 12px; }
@@ -753,7 +973,12 @@
         .store-header-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 0.9rem; flex-wrap: wrap; }
         @media (min-width: 640px) { .store-header-meta { gap: 10px; margin-top: 8px; font-size: 1rem; } }
 
-        .store-meta-rating { display: inline-flex; align-items: center; gap: 4px; color: #FF7A00; font-weight: 900; background: #FFF7ED; border: 1px solid #FFE0BD; padding: 0.2rem 0.55rem; border-radius: 9999px; }
+        .store-meta-rating {
+            display: inline-flex; align-items: center; gap: 4px;
+            color: #FF7A00; font-weight: 900;
+            background: #FFF7ED; border: 1px solid #FFE0BD;
+            padding: 0.2rem 0.55rem; border-radius: 9999px;
+        }
         .store-meta-rating .rating-num { font-size: 0.95rem; font-weight: 900; color: #FF7A00; }
         @media (min-width: 640px) { .store-meta-rating .rating-num { font-size: 1.05rem; } }
         .store-meta-rating i { color: #FF7A00; font-size: 0.85rem; }
@@ -761,15 +986,26 @@
 
         .store-meta-sep { color: #d1d5db; font-weight: 300; font-size: 0.9rem; }
 
-        .store-meta-category { display: inline-flex; align-items: center; gap: 5px; color: #4b5563; font-weight: 700; font-size: 0.85rem; background: #F3F4F6; padding: 0.2rem 0.6rem; border-radius: 9999px; }
+        .store-meta-category {
+            display: inline-flex; align-items: center; gap: 5px;
+            color: #4b5563; font-weight: 700; font-size: 0.85rem;
+            background: #F3F4F6; padding: 0.2rem 0.6rem; border-radius: 9999px;
+        }
         @media (min-width: 640px) { .store-meta-category { font-size: 0.95rem; } }
         .store-meta-category i { color: #FF7A00; font-size: 0.75rem; }
 
-        .store-desc { text-align: center; color: #4b5563; font-size: 0.92rem; line-height: 1.85; margin: 1rem auto 0; max-width: 640px; padding: 0 0.25rem; }
+        .store-desc {
+            text-align: center; color: #4b5563;
+            font-size: 0.92rem; line-height: 1.85;
+            margin: 1rem auto 0; max-width: 640px; padding: 0 0.25rem;
+        }
         @media (min-width: 640px) { .store-desc { font-size: 1.02rem; margin-top: 1.25rem; } }
         @media (min-width: 768px) { .store-desc { font-size: 1.1rem; line-height: 1.9; } }
 
-        .store-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-top: 1.25rem; width: 100%; }
+        .store-actions-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 0.65rem; margin-top: 1.25rem; width: 100%;
+        }
         @media (min-width: 480px) { .store-actions-grid { gap: 0.85rem; } }
         @media (min-width: 640px) { .store-actions-grid { gap: 1rem; margin-top: 1.5rem; } }
 
@@ -795,7 +1031,11 @@
         .store-action-btn.static:hover { background: #FFFFFF; transform: none; box-shadow: none; }
         .store-action-btn i.btn-icon { font-size: 1rem; flex-shrink: 0; }
         @media (min-width: 640px) { .store-action-btn i.btn-icon { font-size: 1.1rem; } }
-        .store-action-btn .icon-circle { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #FFFFFF; font-size: 0.95rem; background: #FF7A00; }
+        .store-action-btn .icon-circle {
+            width: 30px; height: 30px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            flex-shrink: 0; color: #FFFFFF; font-size: 0.95rem; background: #FF7A00;
+        }
         @media (min-width: 640px) { .store-action-btn .icon-circle { width: 34px; height: 34px; font-size: 1.05rem; } }
         .store-action-btn .btn-arrow { font-size: 0.7rem; color: #FF7A00; margin-right: auto; flex-shrink: 0; }
         @media (min-width: 640px) { .store-action-btn .btn-arrow { font-size: 0.85rem; } }
@@ -804,19 +1044,33 @@
         @media (min-width: 640px) { .store-divider { margin: 1.5rem -1.5rem; height: 10px; } }
         @media (min-width: 768px) { .store-divider { margin: 1.75rem -2rem; height: 12px; } }
 
-        .store-products-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.25rem 0; margin-bottom: 1rem; flex-wrap: wrap; }
+        .store-products-header {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 0.75rem; padding: 0.25rem 0; margin-bottom: 1rem; flex-wrap: wrap;
+        }
         @media (min-width: 640px) { .store-products-header { margin-bottom: 1.25rem; } }
-        .store-products-title { display: flex; align-items: center; gap: 8px; font-size: 1.15rem; font-weight: 900; color: #1A1A1A; }
+        .store-products-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 1.15rem; font-weight: 900; color: #1A1A1A;
+        }
         @media (min-width: 640px) { .store-products-title { font-size: 1.4rem; gap: 10px; } }
         .store-products-title i { color: #FF7A00; font-size: 1.15rem; }
         @media (min-width: 640px) { .store-products-title i { font-size: 1.4rem; } }
 
-        .store-products-count-pill { display: inline-flex; align-items: center; gap: 6px; background: #FFF7ED; color: #FF7A00; border: 1px solid #FFE0BD; border-radius: 9999px; padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 800; white-space: nowrap; }
+        .store-products-count-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #FFF7ED; color: #FF7A00;
+            border: 1px solid #FFE0BD; border-radius: 9999px;
+            padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 800; white-space: nowrap;
+        }
         @media (min-width: 640px) { .store-products-count-pill { font-size: 0.9rem; padding: 0.5rem 1rem; } }
         .store-products-count-pill i { font-size: 0.85rem; }
         @media (min-width: 640px) { .store-products-count-pill i { font-size: 0.95rem; } }
 
-        .store-products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; padding-bottom: 1.5rem; }
+        .store-products-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem; padding-bottom: 1.5rem;
+        }
         @media (min-width: 480px) { .store-products-grid { gap: 0.9rem; } }
         @media (min-width: 640px) { .store-products-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; } }
         @media (min-width: 1024px) { .store-products-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -829,7 +1083,11 @@
             transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
             display: flex; flex-direction: column;
         }
-        .store-product-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(255,122,0,0.15), 0 4px 12px rgba(0,0,0,0.08); border-color: #FFE0BD; }
+        .store-product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(255,122,0,0.15), 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #FFE0BD;
+        }
         .store-product-fav {
             position: absolute; top: 10px; left: 10px;
             width: 32px; height: 32px; border-radius: 50%;
@@ -844,21 +1102,38 @@
         .store-product-fav.active { background: #FF7A00; color: #FFFFFF; }
         @media (min-width: 640px) { .store-product-fav { width: 36px; height: 36px; font-size: 1rem; top: 12px; left: 12px; } }
 
-        .store-product-img-wrap { width: 100%; height: 130px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; padding: 8px; overflow: hidden; }
+        .store-product-img-wrap {
+            width: 100%; height: 130px; background: #FFFFFF;
+            display: flex; align-items: center; justify-content: center;
+            padding: 8px; overflow: hidden;
+        }
         @media (min-width: 480px) { .store-product-img-wrap { height: 150px; } }
         @media (min-width: 640px) { .store-product-img-wrap { height: 170px; padding: 10px; } }
         .store-product-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
         .store-product-card:hover .store-product-img-wrap img { transform: scale(1.05); }
 
-        .store-product-info { padding: 0.5rem 0.75rem 0.75rem; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+        .store-product-info {
+            padding: 0.5rem 0.75rem 0.75rem;
+            display: flex; flex-direction: column; gap: 6px; flex: 1;
+        }
         @media (min-width: 640px) { .store-product-info { padding: 0.65rem 0.9rem 0.9rem; } }
 
-        .store-product-name { font-size: 0.95rem; font-weight: 800; color: #1A1A1A; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.3; }
+        .store-product-name {
+            font-size: 0.95rem; font-weight: 800; color: #1A1A1A;
+            text-align: right; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap; line-height: 1.3;
+        }
         @media (min-width: 640px) { .store-product-name { font-size: 1.05rem; } }
-        .store-product-rating { display: flex; align-items: center; justify-content: flex-start; gap: 5px; font-size: 0.8rem; color: #FF7A00; font-weight: 800; }
+        .store-product-rating {
+            display: flex; align-items: center; justify-content: flex-start;
+            gap: 5px; font-size: 0.8rem; color: #FF7A00; font-weight: 800;
+        }
         @media (min-width: 640px) { .store-product-rating { font-size: 0.9rem; } }
         .store-product-rating i { font-size: 0.85rem; }
-        .store-product-price { font-size: 1rem; font-weight: 900; color: #FF7A00; text-align: right; margin-top: auto; padding-top: 2px; }
+        .store-product-price {
+            font-size: 1rem; font-weight: 900; color: #FF7A00;
+            text-align: right; margin-top: auto; padding-top: 2px;
+        }
         @media (min-width: 640px) { .store-product-price { font-size: 1.15rem; } }
         .store-product-btn {
             display: flex; align-items: center; justify-content: center;
@@ -1540,9 +1815,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
 
 <script>
-    // ⚠️⚠️⚠️ ضع مفتاح VAPID العام هنا (من Firebase Console → Project Settings → Cloud Messaging → Web Push certificates) ⚠️⚠️⚠️
-    const VAPID_PUBLIC_KEY = "
-BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw";
+    // ⚠️⚠️⚠️ ضع مفتاح VAPID العام هنا ⚠️⚠️⚠️
+    const VAPID_PUBLIC_KEY = "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
@@ -1571,19 +1845,15 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
 
     function getNotifPermission() {
         if (!isNotificationSupported()) return 'unsupported';
-        return Notification.permission; // 'default' | 'granted' | 'denied'
+        return Notification.permission;
     }
 
     function shouldShowNotifBanner() {
         if (!isNotificationSupported()) return false;
         const perm = getNotifPermission();
-        if (perm === 'granted') return false;
-        if (perm === 'denied') return false;
-
-        // لو رفض المستخدم البانر، لا نعرضه لمدة 3 أيام
+        if (perm === 'granted' || perm === 'denied') return false;
         const dismissedAt = parseInt(localStorage.getItem(NOTIF_DISMISS_KEY) || '0');
         if (dismissedAt && (Date.now() - dismissedAt) < 3 * 24 * 60 * 60 * 1000) return false;
-
         return true;
     }
 
@@ -1617,20 +1887,15 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
 
             messaging = firebase.messaging();
 
-            // تسجيل Service Worker
-            const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-                scope: '/'
-            });
+            const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
             console.log('✅ Service Worker مسجل:', registration.scope);
 
-            // استقبال الإشعارات في المقدمة (الموقع مفتوح)
             messaging.onMessage((payload) => {
                 console.log('📩 إشعار في المقدمة:', payload);
                 const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
                 const body = (payload.notification && payload.notification.body) || 'لديك جديد في بازارِنا';
                 showPushToast(title, body);
 
-                // إظهار إشعار النظام أيضاً
                 if (Notification.permission === 'granted') {
                     try {
                         const notif = new Notification(title, {
@@ -1651,11 +1916,9 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
                 }
             });
 
-            // إذا كانت الصلاحية ممنوحة مسبقاً، سجّل التوكن مباشرة
             if (Notification.permission === 'granted') {
                 await registerFCMToken(registration);
             } else if (shouldShowNotifBanner()) {
-                // اعرض البانر بعد 8 ثواني من فتح الموقع
                 setTimeout(showNotifBanner, 8000);
             }
 
@@ -1679,7 +1942,6 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
             console.log('✅ تم الحصول على FCM Token');
             localStorage.setItem(FCM_TOKEN_KEY, token);
 
-            // احفظ التوكن في Firestore (بس لو جديد)
             const previousToken = localStorage.getItem(FCM_TOKEN_KEY + '_saved');
             if (previousToken !== token) {
                 try {
@@ -1698,7 +1960,6 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
                     console.warn('⚠️ تعذر حفظ التوكن:', e);
                 }
             } else {
-                // حدّث lastSeen فقط
                 try {
                     await db.collection('fcm_tokens').doc(token).update({
                         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
@@ -1723,7 +1984,6 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
         setTimeout(() => t.classList.remove('show'), 5000);
     }
 
-    // ربط أزرار البانر
     document.addEventListener('DOMContentLoaded', () => {
         const enableBtn = document.getElementById('enableNotifBtn');
         const dismissBtn = document.getElementById('dismissNotifBtn');
@@ -1765,7 +2025,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
     });
 
     // ============================================
-    // 🗄️ نظام الكاش الذكي
+    // 🗄️ نظام الكاش الذكي - مدتة 100 ساعة
     // ============================================
     const CACHE_DURATION = 100 * 60 * 60 * 1000;
     const CACHE_PREFIX = 'bazrena_cache_';
@@ -1774,9 +2034,12 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
         set(key, value) {
             try {
                 localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({
-                    timestamp: Date.now(), value: value
+                    timestamp: Date.now(),
+                    value: value
                 }));
-            } catch (e) { console.warn('⚠️ فشل حفظ الكاش:', e); }
+            } catch (e) {
+                console.warn('⚠️ فشل حفظ الكاش:', e);
+            }
         },
         get(key) {
             try {
@@ -1835,7 +2098,11 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
         .catch((error) => {
             console.error('❌ فشل الاتصال الآمن:', error.code, error.message);
             document.body.insertAdjacentHTML('afterbegin', `
-                <div id="authErrorBanner" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#d32f2f;color:#fff;padding:1rem;text-align:center;font-family:'Cairo',sans-serif;font-weight:800;">
+                <div id="authErrorBanner" style="
+                    position:fixed;top:0;left:0;right:0;z-index:99999;
+                    background:#d32f2f;color:#fff;padding:1rem;text-align:center;
+                    font-family:'Cairo',sans-serif;font-weight:800;
+                ">
                     ⚠️ تعذر الاتصال الآمن بالخدمة. يرجى تحديث الصفحة.
                 </div>`);
             throw error;
@@ -1863,7 +2130,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
     let isFirstStoresSnapshot = true;
     let lastProductsFingerprint = '';
 
-    // متغيرات نظام إشعارات المتاجر
+    // متغيرات نظام إشعارات المتاجر داخل الموقع
     let knownStoreIds = [];
     try { knownStoreIds = JSON.parse(localStorage.getItem('bazrenaKnownStoreIds') || '[]'); } catch(e) { knownStoreIds = []; }
     let isFirstVisit = !localStorage.getItem('bazrenaVisitedBefore');
@@ -1996,7 +2263,9 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
 
     function updateAllProductsTotalBadge() {
         if (!allProductsTotalCount) return;
-        allProductsTotalCount.textContent = allProducts.length.toLocaleString();
+        const total = allProducts.length;
+        allProductsTotalCount.textContent = total.toLocaleString();
+
         if (allProductsTotalBadge) {
             allProductsTotalBadge.style.animation = 'none';
             void allProductsTotalBadge.offsetWidth;
@@ -2058,6 +2327,14 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
     if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
     if (isAppInstalled()) hideInstallButtons();
 
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered:', reg.scope))
+                .catch(err => console.error('Service Worker registration failed:', err));
+        });
+    }
+
     function sanitizeHTML(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
     function showToast(message) {
         toast.textContent = message;
@@ -2082,7 +2359,9 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
         if (!storesScrollContainer) return;
         requestAnimationFrame(() => {
             const max = getStoresMaxScroll();
-            if (max > 0 && storesScrollContainer.scrollLeft === 0) storesScrollContainer.scrollLeft = max;
+            if (max > 0 && storesScrollContainer.scrollLeft === 0) {
+                storesScrollContainer.scrollLeft = max;
+            }
         });
         autoScrollInterval = setInterval(() => {
             if (!storesScrollContainer) return;
@@ -2090,8 +2369,11 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
             if (Date.now() - lastStoresInteraction < AUTO_SCROLL_RESUME_DELAY) return;
             const max = getStoresMaxScroll();
             if (max <= 0) return;
-            if (storesScrollContainer.scrollLeft <= 0) storesScrollContainer.scrollLeft = max;
-            else storesScrollContainer.scrollLeft -= 1;
+            if (storesScrollContainer.scrollLeft <= 0) {
+                storesScrollContainer.scrollLeft = max;
+            } else {
+                storesScrollContainer.scrollLeft -= 1;
+            }
         }, 40);
     }
 
@@ -2100,17 +2382,30 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
     }
 
     ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
-        storesScrollContainer.addEventListener(evt, () => { lastStoresInteraction = Date.now(); }, { passive: true });
+        storesScrollContainer.addEventListener(evt, () => {
+            lastStoresInteraction = Date.now();
+        }, { passive: true });
     });
     storesScrollContainer.addEventListener('mouseenter', () => { isHoveringStores = true; });
-    storesScrollContainer.addEventListener('mouseleave', () => { isHoveringStores = false; lastStoresInteraction = Date.now(); });
+    storesScrollContainer.addEventListener('mouseleave', () => {
+        isHoveringStores = false;
+        lastStoresInteraction = Date.now();
+    });
 
-    prevStoresBtn.addEventListener('click', () => { lastStoresInteraction = Date.now(); storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' }); });
-    nextStoresBtn.addEventListener('click', () => { lastStoresInteraction = Date.now(); storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' }); });
+    prevStoresBtn.addEventListener('click', () => {
+        lastStoresInteraction = Date.now();
+        storesScrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
+    });
+    nextStoresBtn.addEventListener('click', () => {
+        lastStoresInteraction = Date.now();
+        storesScrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
+    });
 
     function setCardFollowBtnState(btn, following) {
         btn.classList.toggle('following', following);
-        btn.innerHTML = following ? '<i class="fas fa-check"></i><span>متابَع</span>' : '<i class="fas fa-plus"></i><span>متابعة</span>';
+        btn.innerHTML = following
+            ? '<i class="fas fa-check"></i><span>متابَع</span>'
+            : '<i class="fas fa-plus"></i><span>متابعة</span>';
     }
 
     function createStoreCard(store) {
@@ -2118,6 +2413,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
         const followed = isStoreFollowed(storeId);
         const card = document.createElement('div');
         card.className = 'store-card';
+
         const cover = document.createElement('img');
         cover.className = 'cover-image'; cover.loading = 'lazy';
         cover.alt = store.name || '';
@@ -2132,6 +2428,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
 
         const info = document.createElement('div');
         info.className = 'store-info';
+
         const nameRow = document.createElement('div');
         nameRow.className = 'store-name';
         nameRow.textContent = store.name || '';
@@ -2140,23 +2437,37 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
             v.className = 'verified-icon'; v.innerHTML = '<i class="fas fa-check"></i>';
             nameRow.appendChild(v);
         }
+
         const catRow = document.createElement('div');
         catRow.className = 'store-category';
         catRow.textContent = store.category || 'عام';
+
         const bottomRow = document.createElement('div');
         bottomRow.className = 'flex items-center justify-between gap-2 mt-2';
+
         const count = document.createElement('div');
         count.className = 'flex items-center gap-1 text-xs text-text-light';
         count.innerHTML = `<i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span>`;
+
         const followBtn = document.createElement('button');
         followBtn.className = 'card-follow-btn';
         followBtn.dataset.storeId = storeId;
         followBtn.title = 'متابعة المتجر';
         setCardFollowBtnState(followBtn, followed);
-        followBtn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); toggleFollowFromCard(store, followBtn); });
-        bottomRow.appendChild(count); bottomRow.appendChild(followBtn);
-        info.appendChild(nameRow); info.appendChild(catRow); info.appendChild(bottomRow);
-        card.appendChild(cover); card.appendChild(logo); card.appendChild(info);
+        followBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); e.preventDefault();
+            toggleFollowFromCard(store, followBtn);
+        });
+
+        bottomRow.appendChild(count);
+        bottomRow.appendChild(followBtn);
+        info.appendChild(nameRow);
+        info.appendChild(catRow);
+        info.appendChild(bottomRow);
+
+        card.appendChild(cover);
+        card.appendChild(logo);
+        card.appendChild(info);
         card.addEventListener('click', () => openStoreModal(store));
         return card;
     }
@@ -2187,12 +2498,15 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
             updateCardFollowButtons(storeId);
             renderFollowedStores();
             if (currentStoreId === storeId) {
-                isFollowing = !wasFollowing; currentFollowersCount = newCount;
-                updateFollowersDisplay(); updateFollowButtonUI();
+                isFollowing = !wasFollowing;
+                currentFollowersCount = newCount;
+                updateFollowersDisplay();
+                updateFollowButtonUI();
             }
             showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
-        } catch (err) { console.error(err); showToast('حدث خطأ، حاول مرة أخرى'); }
-        finally { btn.disabled = false; }
+        } catch (err) {
+            console.error(err); showToast('حدث خطأ، حاول مرة أخرى');
+        } finally { btn.disabled = false; }
     }
 
     function renderFollowedStores() {
@@ -2229,13 +2543,16 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
     }
 
     function openSearch() {
-        searchOverlay.classList.add('show'); updateBodyScroll();
+        searchOverlay.classList.add('show');
+        updateBodyScroll();
         performSearch(searchInput.value);
         setTimeout(() => { try { searchInput.focus(); } catch (e) {} }, 80);
     }
     function closeSearch() {
-        searchOverlay.classList.remove('show'); updateBodyScroll();
-        searchInput.value = ''; searchResults.innerHTML = '';
+        searchOverlay.classList.remove('show');
+        updateBodyScroll();
+        searchInput.value = '';
+        searchResults.innerHTML = '';
     }
 
     function goToCategory(cat) {
@@ -2349,46 +2666,73 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
 
     function setupRealtimeProductsListener() {
         if (productsUnsubscribe) return;
+
         console.log('🔄 بدء مراقبة المنتجات الحية...');
-        productsUnsubscribe = db.collection('products').onSnapshot((snapshot) => {
-            const freshProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-            freshProducts.sort((a, b) => {
-                const ta = a.created_at?.seconds || (a.created_at ? new Date(a.created_at).getTime()/1000 : 0);
-                const tb = b.created_at?.seconds || (b.created_at ? new Date(b.created_at).getTime()/1000 : 0);
-                return tb - ta;
-            });
-            const newFingerprint = getProductFingerprint(freshProducts);
-            if (isFirstProductsSnapshot) {
-                isFirstProductsSnapshot = false;
-                lastProductsFingerprint = newFingerprint;
-                const cachedProducts = cacheManager.get('all_products');
-                const cachedFingerprint = cachedProducts ? getProductFingerprint(cachedProducts) : '';
-                cacheManager.set('all_products', freshProducts);
-                if (cachedFingerprint !== newFingerprint) {
-                    allProducts = freshProducts;
-                    updateAllProductsTotalBadge();
-                    applyProductsFilter(currentCategory);
-                    if (currentStore && !storeModal.classList.contains('hidden')) {
-                        loadStoreProductsFromLocal(freshProducts, currentStore.name);
+
+        productsUnsubscribe = db.collection('products')
+            .onSnapshot((snapshot) => {
+                const freshProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                freshProducts.sort((a, b) => {
+                    const ta = a.created_at?.seconds || (a.created_at ? new Date(a.created_at).getTime()/1000 : 0);
+                    const tb = b.created_at?.seconds || (b.created_at ? new Date(b.created_at).getTime()/1000 : 0);
+                    return tb - ta;
+                });
+
+                const newFingerprint = getProductFingerprint(freshProducts);
+
+                if (isFirstProductsSnapshot) {
+                    isFirstProductsSnapshot = false;
+                    lastProductsFingerprint = newFingerprint;
+
+                    const cachedProducts = cacheManager.get('all_products');
+                    const cachedFingerprint = cachedProducts ? getProductFingerprint(cachedProducts) : '';
+
+                    cacheManager.set('all_products', freshProducts);
+
+                    if (cachedFingerprint !== newFingerprint) {
+                        console.log('📊 البيانات تغيرت منذ آخر زيارة - تحديث الواجهة');
+                        allProducts = freshProducts;
+                        updateAllProductsTotalBadge();
+                        applyProductsFilter(currentCategory);
+                        if (currentStore && !storeModal.classList.contains('hidden')) {
+                            loadStoreProductsFromLocal(freshProducts, currentStore.name);
+                        }
                     }
+                    return;
                 }
-                return;
-            }
-            if (newFingerprint === lastProductsFingerprint) return;
-            const changes = snapshot.docChanges();
-            const addedCount = changes.filter(c => c.type === 'added').length;
-            const removedCount = changes.filter(c => c.type === 'removed').length;
-            lastProductsFingerprint = newFingerprint;
-            allProducts = freshProducts;
-            cacheManager.set('all_products', freshProducts);
-            updateAllProductsTotalBadge();
-            applyProductsFilter(currentCategory);
-            if (currentStore && !storeModal.classList.contains('hidden')) {
-                loadStoreProductsFromLocal(freshProducts, currentStore.name);
-            }
-            if (addedCount > 0) showToast(`🆕 تم إضافة ${addedCount} ${addedCount === 1 ? 'منتج جديد' : 'منتجات جديدة'}!`);
-            else if (removedCount > 0) showToast(`🗑️ تم حذف ${removedCount} منتج`);
-        }, (error) => { console.warn('⚠️ خطأ في مراقبة المنتجات الحية:', error); });
+
+                if (newFingerprint === lastProductsFingerprint) {
+                    return;
+                }
+
+                const changes = snapshot.docChanges();
+                const addedCount = changes.filter(c => c.type === 'added').length;
+                const modifiedCount = changes.filter(c => c.type === 'modified').length;
+                const removedCount = changes.filter(c => c.type === 'removed').length;
+
+                console.log(`🆕 تحديث لحظي: +${addedCount} ~${modifiedCount} -${removedCount}`);
+
+                lastProductsFingerprint = newFingerprint;
+
+                allProducts = freshProducts;
+                cacheManager.set('all_products', freshProducts);
+
+                updateAllProductsTotalBadge();
+                applyProductsFilter(currentCategory);
+
+                if (currentStore && !storeModal.classList.contains('hidden')) {
+                    loadStoreProductsFromLocal(freshProducts, currentStore.name);
+                }
+
+                if (addedCount > 0) {
+                    showToast(`🆕 تم إضافة ${addedCount} ${addedCount === 1 ? 'منتج جديد' : 'منتجات جديدة'}!`);
+                } else if (removedCount > 0) {
+                    showToast(`🗑️ تم حذف ${removedCount} منتج`);
+                }
+            }, (error) => {
+                console.warn('⚠️ خطأ في مراقبة المنتجات الحية:', error);
+            });
     }
 
     function loadStoreProductsFromLocal(productsArray, storeNameParam) {
@@ -2404,31 +2748,40 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
 
     function setupRealtimeStoresListener() {
         if (storesUnsubscribe) return;
-        storesUnsubscribe = db.collection('stores').onSnapshot((snapshot) => {
-            const freshStores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-            if (isFirstStoresSnapshot) {
-                isFirstStoresSnapshot = false;
-                const cachedStores = cacheManager.get('stores_list');
-                if (cachedStores && cachedStores.length !== freshStores.length) {
-                    console.log('🏪 عدد المتاجر تغير - تحديث');
-                    cacheManager.remove('stores_list');
-                    setTimeout(() => loadStores(true), 100);
+
+        storesUnsubscribe = db.collection('stores')
+            .onSnapshot((snapshot) => {
+                const freshStores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                if (isFirstStoresSnapshot) {
+                    isFirstStoresSnapshot = false;
+
+                    const cachedStores = cacheManager.get('stores_list');
+                    if (cachedStores && cachedStores.length !== freshStores.length) {
+                        console.log('🏪 عدد المتاجر تغير - تحديث');
+                        cacheManager.remove('stores_list');
+                        setTimeout(() => loadStores(true), 100);
+                    }
+                    return;
                 }
-                return;
-            }
-            console.log('🏪 تحديث المتاجر اللحظي');
-            if (!isFirstStoresSnapshot) {
-                const currentIds = freshStores.map(s => s.id);
-                const newStores = freshStores.filter(s => !knownStoreIds.includes(s.id));
-                if (newStores.length > 0) {
-                    showStoreJoinNotification(newStores[0]);
-                    knownStoreIds = currentIds;
-                    localStorage.setItem('bazrenaKnownStoreIds', JSON.stringify(knownStoreIds));
+
+                console.log('🏪 تحديث المتاجر اللحظي');
+
+                if (!isFirstStoresSnapshot) {
+                    const currentIds = freshStores.map(s => s.id);
+                    const newStores = freshStores.filter(s => !knownStoreIds.includes(s.id));
+                    if (newStores.length > 0) {
+                        showStoreJoinNotification(newStores[0]);
+                        knownStoreIds = currentIds;
+                        localStorage.setItem('bazrenaKnownStoreIds', JSON.stringify(knownStoreIds));
+                    }
                 }
-            }
-            cacheManager.remove('stores_list');
-            setTimeout(() => loadStores(true), 100);
-        }, (error) => { console.warn('⚠️ خطأ في مراقبة المتاجر:', error); });
+
+                cacheManager.remove('stores_list');
+                setTimeout(() => loadStores(true), 100);
+            }, (error) => {
+                console.warn('⚠️ خطأ في مراقبة المتاجر:', error);
+            });
     }
 
     async function loadStores(forceRefresh = false) {
@@ -2450,7 +2803,9 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
                 }
                 return storesData;
             }, forceRefresh);
+
             stores = result;
+
             if (stores.length === 0) {
                 storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
                 storesEmpty.classList.remove('hidden');
@@ -2459,6 +2814,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
                 displayStores();
                 startAutoScroll();
                 renderFollowedStores();
+
                 if (isFirstVisit) {
                     localStorage.setItem('bazrenaVisitedBefore', 'true');
                     localStorage.setItem('bazrenaKnownStoreIds', JSON.stringify(stores.map(s => s.id)));
@@ -2491,28 +2847,37 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
         currentStoreId = getStoreId(store);
         currentFollowersCount = parseInt(store.followers) || 0;
         isFollowing = isStoreFollowed(currentStoreId);
+
         storeCoverImage.src = store.cover_url || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
         storeCoverImage.onerror = function () { this.src = 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover'; };
         storeLogo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
         storeLogo.onerror = function () { this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
+
         storeDescription.textContent = store.description || 'متجر مميز';
         storeRating.textContent = (parseFloat(store.ratting) || 0).toFixed(1);
         storeProductsCount.textContent = store.products_count || 0;
+
         const catValue = (store.category && String(store.category).trim()) ? store.category : 'عام';
         storeCategory.innerHTML = `<i class="fas fa-tag"></i><span>${sanitizeHTML(catValue)}</span>`;
+
         updateFollowersDisplay();
         updateFollowButtonUI();
+
         if (store.is_verified) {
             storeName.innerHTML = `${sanitizeHTML(store.name)} <span class="verified-icon"><i class="fas fa-check"></i></span>`;
         } else {
             storeName.textContent = store.name || '';
         }
+
         const phoneNumber = store.phone_number || '';
         const whatsappNumber = store.whatsapp_number || '';
+
         if (phoneNumber) { storeCallButton.href = `tel:${phoneNumber}`; storeCallButton.style.display = ''; }
         else { storeCallButton.style.display = 'none'; }
+
         if (whatsappNumber) { storeWhatsAppButton.href = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`; storeWhatsAppButton.style.display = ''; }
         else { storeWhatsAppButton.style.display = 'none'; }
+
         loadStoreProducts(store.name);
         storeModal.classList.remove('hidden');
         updateBodyScroll();
@@ -2590,6 +2955,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
                 });
                 return products;
             }, forceRefresh);
+
             if (storeProductsCount) storeProductsCount.textContent = data.length;
             if (currentStore) currentStore.products_count = data.length;
             if (!data || data.length === 0) {
@@ -2609,13 +2975,19 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
             const price = parseFloat(product.price) || 0;
             const rating = parseFloat(product.ratting) || 0;
             const fav = isProductFav(product.id);
+
             const productForModal = {
-                id: product.id, name: product.name, img_url: product.img_url, price,
+                id: product.id, name: product.name, img_url: product.img_url,
+                price,
                 original_price: product.original_price ? parseFloat(product.original_price) : null,
-                ratting: rating, store_name: product.store_name, description: product.description || ''
+                ratting: rating,
+                store_name: product.store_name,
+                description: product.description || ''
             };
+
             const card = document.createElement('div');
             card.className = 'store-product-card';
+
             const favBtn = document.createElement('button');
             favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
             favBtn.type = 'button';
@@ -2628,6 +3000,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
                 favBtn.innerHTML = `<i class="${nowActive ? 'fas' : 'far'} fa-heart"></i>`;
                 showToast(nowActive ? 'أُضيف إلى المفضلة' : 'أُزيل من المفضلة');
             });
+
             const imgWrap = document.createElement('div');
             imgWrap.className = 'store-product-img-wrap';
             const img = document.createElement('img');
@@ -2635,25 +3008,38 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
             img.src = product.img_url || 'https://via.placeholder.com/300';
             img.onerror = function () { this.src = 'https://via.placeholder.com/300'; };
             imgWrap.appendChild(img);
+
             const info = document.createElement('div');
             info.className = 'store-product-info';
+
             const nameEl = document.createElement('div');
             nameEl.className = 'store-product-name';
             nameEl.textContent = product.name || '';
+
             const ratingEl = document.createElement('div');
             ratingEl.className = 'store-product-rating';
             ratingEl.innerHTML = `<span>${rating}</span> <i class="fas fa-star"></i>`;
+
             const priceEl = document.createElement('div');
             priceEl.className = 'store-product-price';
             priceEl.textContent = `${price.toLocaleString()} ج.س`;
+
             const viewBtn = document.createElement('button');
             viewBtn.className = 'store-product-btn';
             viewBtn.type = 'button';
             viewBtn.innerHTML = `<span>عرض المنتج</span> <i class="fas fa-chevron-left"></i>`;
             viewBtn.addEventListener('click', (e) => { e.stopPropagation(); openProductModal(productForModal); });
-            info.appendChild(nameEl); info.appendChild(ratingEl); info.appendChild(priceEl); info.appendChild(viewBtn);
-            card.appendChild(favBtn); card.appendChild(imgWrap); card.appendChild(info);
+
+            info.appendChild(nameEl);
+            info.appendChild(ratingEl);
+            info.appendChild(priceEl);
+            info.appendChild(viewBtn);
+
+            card.appendChild(favBtn);
+            card.appendChild(imgWrap);
+            card.appendChild(info);
             card.addEventListener('click', () => openProductModal(productForModal));
+
             storeProductsGrid.appendChild(card);
         });
     }
@@ -2824,6 +3210,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
                 const snapshot = await db.collection('stores').get();
                 return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
             }, forceRefresh);
+
             const cats = [];
             storesData.forEach(s => {
                 const c = s.category;
@@ -2938,6 +3325,7 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
                 catch (e) { snapshot = await db.collection('products').get(); }
                 return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
             }, forceRefresh);
+
             allProducts = data;
             updateAllProductsTotalBadge();
             applyProductsFilter(currentCategory);
@@ -2949,15 +3337,23 @@ BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrA
 
     async function initApp() {
         const authOk = await ensureAuth();
-        if (!authOk) { console.warn('⛔ التطبيق لم يبدأ بسبب فشل المصادقة'); return; }
+        if (!authOk) {
+            console.warn('⛔ التطبيق لم يبدأ بسبب فشل المصادقة');
+            return;
+        }
 
         updateCartUI();
         updateAllProductsTotalBadge();
 
-        // تهيئة FCM بالتوازي مع باقي البيانات
+        // تهيئة FCM بالتوازي
         initFCM().catch(e => console.warn('⚠️ FCM init skipped:', e));
 
-        await Promise.all([ loadStores(), loadCategories(), loadAllProducts() ]);
+        await Promise.all([
+            loadStores(),
+            loadCategories(),
+            loadAllProducts()
+        ]);
+
         setupRealtimeProductsListener();
         setupRealtimeStoresListener();
 
