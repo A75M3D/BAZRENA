@@ -140,6 +140,41 @@
             transform: translateY(-1px);
         }
         .login-input::placeholder { color: #9ca3af; font-weight: 500; }
+
+        /* 🆕 حقل كلمة المرور مع زر العين */
+        .login-input.has-toggle {
+            padding-left: 3.1rem;
+        }
+        .password-toggle-btn {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF;
+            font-size: 0.95rem;
+            transition: all 0.22s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .password-toggle-btn:hover {
+            background: #FFF7ED;
+            color: #FF7A00;
+        }
+        .password-toggle-btn:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+        .password-toggle-btn.active {
+            color: #FF7A00;
+        }
+
         .login-btn {
             width: 100%;
             padding: 1.05rem;
@@ -207,7 +242,6 @@
         }
         @media (min-width: 1024px) { .app-container { padding-bottom: 2rem; } }
 
-        /* Top header */
         .app-header {
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
             padding: 1.25rem 1.25rem 3rem;
@@ -249,15 +283,47 @@
             min-width: 0;
         }
         .header-brand-logo {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: rgba(255,255,255,0.22);
-            backdrop-filter: blur(10px);
-            padding: 6px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            padding: 2.5px;
             flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            border: 1.5px solid rgba(255,255,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2.5px solid rgba(255,255,255,0.85);
+            box-shadow: 0 8px 22px -6px rgba(0,0,0,0.35);
+            overflow: hidden;
+            transition: all 0.3s;
         }
-        .header-brand-logo img { width: 100%; height: 100%; object-fit: contain; }
+        @media (min-width: 640px) {
+            .header-brand-logo {
+                width: 58px;
+                height: 58px;
+                padding: 3px;
+                border-width: 3px;
+            }
+        }
+        .header-brand-logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 28px -6px rgba(0,0,0,0.45);
+        }
+        .header-brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+        }
+        .header-brand-logo.fallback {
+            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+        }
+        .header-brand-logo.fallback img {
+            object-fit: contain;
+            padding: 6px;
+        }
+
         .header-brand-text { min-width: 0; }
         .header-brand-title {
             color: #fff;
@@ -296,7 +362,6 @@
         .logout-btn span { display: none; }
         @media (min-width: 400px) { .logout-btn span { display: inline; } }
 
-        /* Connection status pill */
         .connection-pill {
             display: inline-flex; align-items: center; gap: 8px;
             background: rgba(255,255,255,0.2);
@@ -324,7 +389,6 @@
             50% { opacity: 0.4; }
         }
 
-        /* Main content */
         .main-content {
             margin-top: -2.25rem;
             padding: 0 1rem;
@@ -333,7 +397,6 @@
         }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
 
-        /* Tabs as floating pills */
         .tabs-wrap {
             background: #fff;
             border-radius: 1.25rem;
@@ -379,7 +442,6 @@
             color: #C2410C;
         }
 
-        /* Card */
         .card {
             background: #fff;
             border-radius: 1.5rem;
@@ -412,7 +474,6 @@
             box-shadow: 0 6px 14px -4px rgba(255,122,0,0.5);
         }
 
-        /* Stats row */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -457,7 +518,6 @@
         }
         @media (min-width: 640px) { .stat-box-label { font-size: 0.78rem; } }
 
-        /* Form */
         .form-group { margin-bottom: 1.1rem; }
         .form-label {
             display: flex;
@@ -505,7 +565,44 @@
         }
         @media (min-width: 640px) { .form-hint { font-size: 0.78rem; } }
 
-        /* Section divider */
+        /* 🆕 حقل الإدخال مع زر داخلي */
+        .input-with-toggle {
+            position: relative;
+            width: 100%;
+        }
+        .input-with-toggle .form-input {
+            padding-left: 3rem;
+        }
+        .input-toggle-btn {
+            position: absolute;
+            left: 0.65rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            transition: all 0.22s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .input-toggle-btn:hover {
+            background: #FFF7ED;
+            color: #FF7A00;
+        }
+        .input-toggle-btn:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+        .input-toggle-btn.active {
+            color: #FF7A00;
+        }
+
         .section-divider {
             display: flex;
             align-items: center;
@@ -523,7 +620,6 @@
             background: linear-gradient(to left, transparent, #E5E7EB, transparent);
         }
 
-        /* Alert banners */
         .alert {
             display: flex;
             align-items: flex-start;
@@ -550,7 +646,6 @@
         }
         .alert-warning i { color: #D97706; }
 
-        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -593,7 +688,6 @@
         .btn-row { display: flex; gap: 0.6rem; }
         .btn-row .btn { flex: 1; width: auto; }
 
-        /* Readonly display */
         .readonly-field {
             background: #F9FAFB;
             border: 1.5px dashed #D1D5DB;
@@ -609,7 +703,6 @@
         }
         .readonly-field i.lock-icon { color: #9CA3AF; font-size: 0.8rem; }
 
-        /* Product list - Mobile friendly */
         .products-list { display: flex; flex-direction: column; gap: 0.75rem; }
         .product-row {
             background: #fff;
@@ -699,7 +792,6 @@
         }
         .icon-btn-delete:hover { background: #FEE2E2; transform: scale(1.05); }
 
-        /* Empty state */
         .empty-state {
             text-align: center;
             padding: 2.5rem 1rem;
@@ -725,7 +817,6 @@
             font-weight: 600;
         }
 
-        /* Image preview */
         .image-preview {
             width: 100%;
             height: 140px;
@@ -737,7 +828,6 @@
         }
         @media (min-width: 640px) { .image-preview { height: 170px; } }
 
-        /* Toast */
         .toast {
             position: fixed;
             top: 20px;
@@ -762,25 +852,20 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* Hide helper */
         .hidden { display: none !important; }
 
-        /* Smooth tab switch */
         .tab-content { animation: fadeSlideIn 0.35s ease; }
         @keyframes fadeSlideIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Loading state for button */
         .btn.loading { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
 
-        /* Bottom safe area for iOS */
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
             .app-container { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
         }
 
-        /* Desktop: 2-column layout for products */
         @media (min-width: 1024px) {
             .app-container { max-width: 1200px; padding-bottom: 2rem; }
             .products-layout {
@@ -793,13 +878,11 @@
             .products-layout .card:first-child { position: sticky; top: 1rem; }
         }
 
-        /* Focus ring */
         button:focus-visible, input:focus-visible, textarea:focus-visible {
             outline: 2px solid #FF7A00;
             outline-offset: 2px;
         }
 
-        /* Grid for readonly fields */
         .readonly-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -832,9 +915,14 @@
                 <input type="text" id="loginStoreName" class="login-input" placeholder="اسم المستخدم" required autocomplete="off" spellcheck="false">
                 <i class="fas fa-store login-field-icon"></i>
             </div>
+
+            <!-- 🆕 حقل كلمة المرور مع زر العين -->
             <div class="login-field">
-                <input type="password" id="loginPassword" class="login-input" placeholder="كلمة المرور" required autocomplete="off">
+                <input type="password" id="loginPassword" class="login-input has-toggle" placeholder="كلمة المرور" required autocomplete="off">
                 <i class="fas fa-lock login-field-icon"></i>
+                <button type="button" id="loginPasswordToggle" class="password-toggle-btn" aria-label="إظهار كلمة المرور" title="إظهار كلمة المرور">
+                    <i class="fas fa-eye" id="loginPasswordToggleIcon"></i>
+                </button>
             </div>
 
             <div id="loginError" class="login-error"></div>
@@ -872,8 +960,8 @@
         <div class="app-header">
             <div class="header-top">
                 <div class="header-brand">
-                    <div class="header-brand-logo">
-                        <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" alt="بازارِنا">
+                    <div class="header-brand-logo" id="headerBrandLogo">
+                        <img id="headerStoreLogo" src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" alt="شعار المتجر">
                     </div>
                     <div class="header-brand-text">
                         <div class="header-brand-title">مرحباً بك 👋</div>
@@ -908,12 +996,9 @@
                 </button>
             </div>
 
-            <!-- ============================================================
-                 🏪 قسم معلومات المتجر
-                 ============================================================ -->
+            <!-- Store Section -->
             <div id="storeSection" class="tab-content">
 
-                <!-- Stats -->
                 <div class="stats-grid">
                     <div class="stat-box">
                         <div class="stat-box-icon"><i class="fas fa-star"></i></div>
@@ -937,7 +1022,6 @@
                     </div>
                 </div>
 
-                <!-- Store Info Form -->
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">
@@ -948,7 +1032,6 @@
                         <form id="storeForm">
                             <input type="hidden" id="store_id">
 
-                            <!-- Basic info -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-store"></i>
@@ -962,13 +1045,19 @@
                                 </div>
                             </div>
 
+                            <!-- 🆕 حقل كلمة المرور مع زر العين -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-key"></i>
                                     <span>كلمة مرور الدخول</span>
                                     <span class="req">*</span>
                                 </label>
-                                <input type="text" id="store_login_password" class="form-input" required placeholder="كلمة المرور" minlength="4">
+                                <div class="input-with-toggle">
+                                    <input type="password" id="store_login_password" class="form-input" required placeholder="كلمة المرور" minlength="4" autocomplete="off">
+                                    <button type="button" id="storePasswordToggle" class="input-toggle-btn" aria-label="إظهار كلمة المرور" title="إظهار كلمة المرور">
+                                        <i class="fas fa-eye" id="storePasswordToggleIcon"></i>
+                                    </button>
+                                </div>
                                 <div class="form-hint">
                                     <i class="fas fa-info-circle"></i> احفظها في مكان آمن — ستحتاجها للدخول لاحقاً
                                 </div>
@@ -990,7 +1079,6 @@
                                 <textarea id="store_description" class="form-input" rows="3" placeholder="وصف مختصر عن المتجر" maxlength="500"></textarea>
                             </div>
 
-                            <!-- Divider -->
                             <div class="section-divider">
                                 <i class="fas fa-phone"></i>
                                 <span>معلومات الاتصال</span>
@@ -1014,7 +1102,6 @@
                                 <input type="tel" id="store_phone" class="form-input" placeholder="249912345678" dir="ltr" style="text-align: right;">
                             </div>
 
-                            <!-- Divider -->
                             <div class="section-divider">
                                 <i class="fas fa-image"></i>
                                 <span>الصور</span>
@@ -1038,7 +1125,6 @@
                                 <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.style.display='none'">
                             </div>
 
-                            <!-- Save Button -->
                             <div style="padding-top: 0.5rem;">
                                 <button type="submit" id="storeSubmitBtn" class="btn btn-primary">
                                     <i class="fas fa-save"></i>
@@ -1050,13 +1136,10 @@
                 </div>
             </div>
 
-            <!-- ============================================================
-                 📦 قسم المنتجات
-                 ============================================================ -->
+            <!-- Products Section -->
             <div id="productsSection" class="tab-content hidden">
                 <div class="products-layout">
 
-                    <!-- Form Card -->
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title">
@@ -1128,7 +1211,6 @@
                         </div>
                     </div>
 
-                    <!-- Products List Card -->
                     <div class="card">
                         <div class="card-body">
                             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; gap: 10px;">
@@ -1157,17 +1239,12 @@
     </div>
 </div>
 
-<!-- ============================================================
-     🔥 Firebase Scripts
-     ============================================================ -->
+<!-- Firebase Scripts -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-// ============================================================
-// 🔥 Firebase Init
-// ============================================================
 const firebaseConfig = {
     apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
     authDomain: "bazarena-725e4.firebaseapp.com",
@@ -1184,10 +1261,9 @@ const db = firebase.firestore();
 const storesTableName = 'stores';
 const productsTableName = 'products';
 const SESSION_KEY = 'bzr_store_session';
+const DEFAULT_LOGO = 'https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png';
 
-// ============================================================
 // 🗄️ نظام الكاش - 72 ساعة
-// ============================================================
 const CACHE_DURATION = 72 * 60 * 60 * 1000;
 const CACHE_PREFIX = 'bazrena_cache_';
 
@@ -1228,34 +1304,14 @@ const cacheManager = {
     }
 };
 
-async function fetchWithCache(cacheKey, fetchFunction, forceRefresh = false) {
-    if (!forceRefresh) {
-        const cached = cacheManager.get(cacheKey);
-        if (cached !== null) {
-            console.log(`⚡ [كاش] ${cacheKey} - العمر: ${cacheManager.getAge(cacheKey)} دقيقة`);
-            return cached;
-        }
-    }
-    console.log(`🌐 [Firestore] جلب ${cacheKey}...`);
-    const data = await fetchFunction();
-    cacheManager.set(cacheKey, data);
-    return data;
-}
-
 function getProductsFingerprint(products) {
     return products.map(p => p.id).sort().join('|');
 }
 
-// ============================================================
-// 🔐 Anonymous Auth
-// ============================================================
 firebase.auth().signInAnonymously()
     .then(() => console.log('%c✅ تم الاتصال الآمن', 'color:#25D366;font-weight:bold;'))
     .catch(err => console.warn('⚠️ فشلت المصادقة:', err.message));
 
-// ============================================================
-// 🌐 المتغيرات
-// ============================================================
 let currentStore = null;
 let productsData = [];
 let isSavingProduct = false;
@@ -1266,9 +1322,6 @@ let lastProductsFingerprint = '';
 
 const $ = id => document.getElementById(id);
 
-// ============================================================
-// 🛠️ Helpers
-// ============================================================
 function sanitizeInput(str) {
     if (!str) return '';
     return String(str).replace(/<[^>]*>/g, '').trim();
@@ -1319,6 +1372,77 @@ function updateConnectionStatus(success, message) {
     } else {
         dot.className = 'connection-dot dot-red';
         txt.textContent = 'فشل الاتصال ' + (message ? '• ' + message : '');
+    }
+}
+
+// ============================================================
+// 🆕 دالة لتفعيل/إلغاء زر العين لأي حقل كلمة مرور
+// ============================================================
+function setupPasswordToggle(inputId, buttonId, iconId) {
+    const input = $(inputId);
+    const button = $(buttonId);
+    const icon = $(iconId);
+    if (!input || !button || !icon) return;
+
+    button.addEventListener('click', () => {
+        const isPassword = input.type === 'password';
+
+        if (isPassword) {
+            // إظهار كلمة المرور
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            button.classList.add('active');
+            button.setAttribute('aria-label', 'إخفاء كلمة المرور');
+            button.setAttribute('title', 'إخفاء كلمة المرور');
+            // الحفاظ على موضع المؤشر في نهاية النص
+            const len = input.value.length;
+            try { input.setSelectionRange(len, len); } catch (e) {}
+        } else {
+            // إخفاء كلمة المرور
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            button.classList.remove('active');
+            button.setAttribute('aria-label', 'إظهار كلمة المرور');
+            button.setAttribute('title', 'إظهار كلمة المرور');
+            const len = input.value.length;
+            try { input.setSelectionRange(len, len); } catch (e) {}
+        }
+
+        // الحفاظ على التركيز على الحقل
+        setTimeout(() => input.focus(), 0);
+    });
+}
+
+// 🆕 تفعيل زرّي العين
+setupPasswordToggle('loginPassword', 'loginPasswordToggle', 'loginPasswordToggleIcon');
+setupPasswordToggle('store_login_password', 'storePasswordToggle', 'storePasswordToggleIcon');
+
+// ============================================================
+// 🆕 تحديث صورة البروفايل الدائرية في الرأس
+// ============================================================
+function updateHeaderLogo(store) {
+    const logoWrap = $('headerBrandLogo');
+    const logoImg = $('headerStoreLogo');
+    if (!logoImg || !logoWrap) return;
+
+    const logoUrl = store && store.logo_url ? String(store.logo_url).trim() : '';
+
+    if (logoUrl) {
+        logoWrap.classList.remove('fallback');
+        logoImg.src = logoUrl;
+        logoImg.alt = (store && store.name) ? store.name : 'شعار المتجر';
+        logoImg.onerror = function () {
+            logoWrap.classList.add('fallback');
+            this.src = DEFAULT_LOGO;
+            this.onerror = null;
+        };
+    } else {
+        logoWrap.classList.add('fallback');
+        logoImg.src = DEFAULT_LOGO;
+        logoImg.alt = 'بازارِنا';
+        logoImg.onerror = null;
     }
 }
 
@@ -1412,6 +1536,15 @@ $('loginForm').addEventListener('submit', async (e) => {
         errEl.textContent = '❌ ' + (err.message || 'حدث خطأ غير متوقع');
         errEl.classList.add('show');
         $('loginPassword').value = '';
+        // إعادة الحقل لوضع password بعد المسح
+        const passInput = $('loginPassword');
+        const icon = $('loginPasswordToggleIcon');
+        if (passInput.type !== 'password') {
+            passInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            $('loginPasswordToggle').classList.remove('active');
+        }
     } finally {
         setButtonLoading($('loginSubmitBtn'), false, '', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     }
@@ -1425,20 +1558,17 @@ async function enterDashboard() {
     $('dashboard').classList.remove('hidden');
 
     $('welcomeStoreName').textContent = currentStore.name;
-
+    updateHeaderLogo(currentStore);
     fillStoreForm(currentStore);
 
     $('product_store_name').value = currentStore.name;
     $('product_store_name_display').value = currentStore.name;
 
     await loadMyProducts();
-
     updateConnectionStatus(true, currentStore.name);
 }
 
-// ============================================================
 // 🔒 Logout
-// ============================================================
 $('logoutBtn').addEventListener('click', () => {
     if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
     if (productsUnsubscribe) {
@@ -1450,9 +1580,7 @@ $('logoutBtn').addEventListener('click', () => {
     location.reload();
 });
 
-// ============================================================
 // 🎨 Fill Store Form
-// ============================================================
 function fillStoreForm(store) {
     $('store_id').value = store.id || '';
     $('store_name').value = store.name || '';
@@ -1489,11 +1617,11 @@ function fillStoreForm(store) {
     } else {
         $('store_cover_preview').classList.add('hidden');
     }
+
+    updateHeaderLogo(store);
 }
 
-// ============================================================
 // 💾 Save Store
-// ============================================================
 $('storeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingStore || !currentStore) return;
@@ -1589,6 +1717,7 @@ $('storeForm').addEventListener('submit', async (e) => {
         currentStore = { ...currentStore, ...updateData };
         cacheManager.set(`store_${storeId}`, currentStore);
         fillStoreForm(currentStore);
+        updateHeaderLogo(currentStore);
 
         if (nameChanged) {
             setupRealtimeMyProductsListener();
@@ -1603,9 +1732,7 @@ $('storeForm').addEventListener('submit', async (e) => {
     }
 });
 
-// ============================================================
 // 📦 Load My Products
-// ============================================================
 async function loadMyProducts(forceRefresh = false) {
     if (!currentStore) return;
     const cacheKey = `store_products_${currentStore.name}`;
@@ -1642,9 +1769,7 @@ async function loadMyProducts(forceRefresh = false) {
     }
 }
 
-// ============================================================
 // 🆕 المراقبة الحية
-// ============================================================
 function setupRealtimeMyProductsListener() {
     if (!currentStore) return;
 
@@ -1707,9 +1832,7 @@ function setupRealtimeMyProductsListener() {
         });
 }
 
-// ============================================================
 // 🎨 تحديث واجهة المنتجات
-// ============================================================
 function updateProductsUI() {
     $('productsCount').textContent = productsData.length;
     $('productsCountBadge').textContent = productsData.length;
@@ -1717,9 +1840,7 @@ function updateProductsUI() {
     renderMyProductsList(productsData);
 }
 
-// ============================================================
-// 📋 Render Products List (نموذج جديد أنيق)
-// ============================================================
+// 📋 Render Products List
 function renderMyProductsList(products) {
     if (products.length === 0) {
         $('productsList').innerHTML = `
@@ -1766,9 +1887,7 @@ function renderMyProductsList(products) {
     $('productsList').innerHTML = html;
 }
 
-// ============================================================
 // ➕/✏️ Save Product
-// ============================================================
 $('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingProduct || !currentStore) return;
@@ -1895,9 +2014,7 @@ async function updateMyStoreProductsCount() {
     }
 }
 
-// ============================================================
 // 🎛️ Tabs
-// ============================================================
 $('tabStore').addEventListener('click', () => {
     $('tabStore').classList.add('active');
     $('tabProducts').classList.remove('active');
@@ -1912,23 +2029,7 @@ $('tabProducts').addEventListener('click', () => {
     loadMyProducts();
 });
 
-// ============================================================
-// 🔍 Connection Check
-// ============================================================
-$('checkConnectionBtn')?.addEventListener('click', async () => {
-    $('connectionStatusDot').className = 'connection-dot dot-yellow';
-    $('connectionStatusText').textContent = 'جارٍ الفحص...';
-    try {
-        await db.collection(storesTableName).limit(1).get();
-        updateConnectionStatus(true, currentStore ? currentStore.name : '');
-    } catch (err) {
-        updateConnectionStatus(false, err.message || 'خطأ');
-    }
-});
-
-// ============================================================
 // 🖼️ Image Previews
-// ============================================================
 $('store_logo').addEventListener('input', (e) => {
     const p = $('store_logo_preview');
     if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
@@ -1945,9 +2046,7 @@ $('product_img_url').addEventListener('input', (e) => {
     else p.classList.add('hidden');
 });
 
-// ============================================================
 // 🚀 Init
-// ============================================================
 async function init() {
     const session = getSession();
     if (!session || !session.id) {
