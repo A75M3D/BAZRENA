@@ -23,12 +23,12 @@
         manifest-src 'self';
         upgrade-insecure-requests;
     ">
-    <title>BAZRENA – بازارِنا | أفضل المتاجر والبراندات في مكان واحد</title>
+    <title>BranZar – برانزار | All Brand at one place</title>
 
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="بازارِنا">
+    <meta name="apple-mobile-web-app-title" content="BranZar">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1162,7 +1162,7 @@
                     <div style="font-size:5rem;margin-bottom:1rem;">🔒</div>
                     <h1 style="font-size:1.8rem;font-weight:900;color:#FF7A00;margin-bottom:1rem;">الوصول غير مصرح به</h1>
                     <p style="color:#999;line-height:2;max-width:500px;margin:0 auto;">هذه المنصة محمية ومسجلة قانونياً.<br>لا يُسمح باستخدام أو نسخ الكود خارج النطاق الرسمي.</p>
-                    <a href="https://bazrena.vercel.app" style="display:inline-block;margin-top:1.5rem;padding:.75rem 2rem;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;border-radius:9999px;text-decoration:none;font-weight:800;">زيارة الموقع الرسمي</a>
+                    <a href="https://branzar.vercel.app" style="display:inline-block;margin-top:1.5rem;padding:.75rem 2rem;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;border-radius:9999px;text-decoration:none;font-weight:800;">زيارة الموقع الرسمي</a>
                 </div>
             </div>`;
         throw new Error('⛔ Unauthorized domain');
@@ -1224,7 +1224,7 @@
         if (isInput) return true;
         e.preventDefault();
         try {
-            e.clipboardData.setData('text/plain', '\n\n© 2026 BAZRENA — بازارِنا\nالموقع الرسمي: https://bazrena.vercel.app\nالمحتوى محمي بحقوق النشر.\n');
+            e.clipboardData.setData('text/plain', '\n\n© 2026 BranZar — برانزار\nAll Brand at one place\nالموقع الرسمي: https://branzar.vercel.app\nالمحتوى محمي بحقوق النشر.\n');
         } catch (err) {}
     });
 
@@ -1234,7 +1234,7 @@
 
     const _origSetItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function(key, value) {
-        if (key === 'myStoresCart' || key === 'bazrenaFollowedStores') {
+        if (key === 'myStoresCart' || key === 'branzarFollowedStores') {
             try { JSON.parse(value); }
             catch (e) { console.warn('⚠️ محاولة تخزين بيانات غير صالحة'); return; }
         }
@@ -1280,7 +1280,7 @@
     }, true);
 
     Object.defineProperty(window, '_bzr_fingerprint', {
-        value: 'BAZRENA-' + btoa(currentHost + '|' + new Date().toISOString().slice(0,7)).slice(0, 16),
+        value: 'BRANZAR-' + btoa(currentHost + '|' + new Date().toISOString().slice(0,7)).slice(0, 16),
         writable: false,
         configurable: false
     });
@@ -1288,12 +1288,12 @@
 })();
 </script>
 
-<!-- ============ الشريط العلوي: تم إصلاح روابط التواصل الاجتماعي ============ -->
+<!-- ============ الشريط العلوي ============ -->
 <div class="top-bar hidden md:block">
     <div class="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center text-sm">
         <div class="flex items-center gap-4">
             <span><i class="fas fa-phone ml-1"></i> +249 924 299 798</span>
-            <span><i class="fas fa-envelope ml-1"></i> support@bazrena.com</span>
+            <span><i class="fas fa-envelope ml-1"></i> support@branzar.com</span>
         </div>
         <div class="flex gap-3">
             <a href="https://www.facebook.com/profile.php?id=61584644981535" target="_blank" rel="noopener noreferrer" class="hover:text-orange-100 transition" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
@@ -1307,10 +1307,10 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex justify-between items-center">
         <button id="logoMenuBtn" type="button" aria-label="القائمة" aria-expanded="false">
             <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-neon-glow overflow-hidden bg-white">
-                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
+                <img src="https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png" class="w-full h-full object-contain rounded-full" alt="شعار BranZar">
             </div>
             <span class="text-lg sm:text-2xl font-extrabold flex items-center gap-1">
-                <span class="text-orange-500">بازارِنا-BAZARENA</span>
+                <span class="text-orange-500">برانزار-BranZar</span>
             </span>
             <i class="fas fa-chevron-down logo-menu-chevron"></i>
         </button>
@@ -1377,7 +1377,7 @@
         </div>
         <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-1">
-                <span class="font-extrabold text-gray-800 text-sm">🔔 فعّل إشعارات بازارِنا</span>
+                <span class="font-extrabold text-gray-800 text-sm">🔔 فعّل إشعارات BranZar</span>
                 <span class="text-[10px] bg-orange-100 text-orange-600 font-bold px-2 py-0.5 rounded-full">جديد</span>
             </div>
             <p class="text-xs text-gray-500 leading-relaxed mb-3">
@@ -1402,7 +1402,7 @@
     </div>
     <div class="flex-1 min-w-0 text-right">
         <div id="pushToastTitle" class="font-extrabold text-sm text-gray-800 truncate">إشعار جديد</div>
-        <div id="pushToastBody" class="text-xs text-gray-500 truncate mt-0.5">لديك جديد في بازارِنا</div>
+        <div id="pushToastBody" class="text-xs text-gray-500 truncate mt-0.5">لديك جديد في BranZar</div>
     </div>
 </div>
 
@@ -1426,12 +1426,12 @@
 
 <section class="py-12 sm:py-16 md:py-24 text-center bg-gradient-to-b from-orange-50 to-white px-4">
     <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-3 sm:mb-4">اكتشف أفضل <span class="text-primary">المتاجر</span></h1>
-    <p class="text-text-light max-w-2xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base">أفضل المتاجر والبراندات في مكان واحد</p>
+    <p class="text-text-light max-w-2xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base">All Brand at one place</p>
 
     <div class="flex justify-center mb-6 sm:mb-8">
-        <a href="about.html" class="hero-logo-link" aria-label="من نحن - بازارِنا" title="تعرف على المنصة">
+        <a href="about.html" class="hero-logo-link" aria-label="من نحن - BranZar" title="تعرف على المنصة">
             <div class="w-32 h-32 xs:w-40 xs:h-40 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-[512px] lg:h-[512px] rounded-full overflow-hidden shadow-neon-glow bg-white">
-                <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain" alt="شعار بازارِنا">
+                <img src="https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png" class="w-full h-full object-contain" alt="شعار BranZar">
             </div>
         </a>
     </div>
@@ -1543,7 +1543,7 @@
 
             <h2 class="about-cta-heading">
                 هل تريد معرفة من نحن؟
-                <span class="about-cta-heading-accent">اكتشف قصة بازارِنا</span>
+                <span class="about-cta-heading-accent">اكتشف قصة برانزار</span>
             </h2>
 
             <p class="about-cta-text">
@@ -1587,7 +1587,7 @@
 
             <h2 class="brand-cta-heading">
                 هل تملك براند خاص بك؟
-                <span class="brand-cta-heading-accent">انطلق مع بازارِنا</span>
+                <span class="brand-cta-heading-accent">انطلق مع برانزار</span>
             </h2>
 
             <p class="brand-cta-text">
@@ -1596,7 +1596,7 @@
             </p>
 
             <div class="brand-cta-actions">
-                <a href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%A7%D8%B2%D8%A7%D8%B1%D9%86%D8%A7" target="_blank" rel="noopener noreferrer" class="brand-cta-btn brand-cta-btn-primary">
+                <a href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%B1%D8%A7%D9%86%D8%B2%D8%A7%D8%B1" target="_blank" rel="noopener noreferrer" class="brand-cta-btn brand-cta-btn-primary">
                     <i class="fab fa-whatsapp"></i>
                     <span>تواصل عبر واتساب</span>
                 </a>
@@ -1750,22 +1750,22 @@
 
 <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[3000] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
-<!-- ============ الفوتر: تم إصلاح روابط التواصل الاجتماعي ============ -->
+<!-- ============ الفوتر ============ -->
 <footer class="bg-gray-900 text-white py-12 mt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
-                <a href="about.html" class="flex items-center gap-2 mb-4 group transition-all hover:opacity-90" aria-label="من نحن - بازارِنا" title="تعرف على المنصة">
+                <a href="about.html" class="flex items-center gap-2 mb-4 group transition-all hover:opacity-90" aria-label="من نحن - BranZar" title="تعرف على المنصة">
                     <div class="w-10 h-10 rounded-full bg-white overflow-hidden transition-transform duration-300 group-hover:scale-110">
-                        <img src="https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png" class="w-full h-full object-contain rounded-full" alt="شعار بازارِنا">
+                        <img src="https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png" class="w-full h-full object-contain rounded-full" alt="شعار BranZar">
                     </div>
                     <span class="text-xl font-bold flex items-center gap-1">
-                        <span>بازارِنا</span>
+                        <span>برانزار</span>
                         <span class="text-primary font-bold">-</span>
-                        <span class="text-primary">BAZRENA</span>
+                        <span class="text-primary">BranZar</span>
                     </span>
                 </a>
-                <p class="text-gray-400 text-sm">أفضل المتاجر والبراندات في مكان واحد</p>
+                <p class="text-gray-400 text-sm">All Brand at one place</p>
             </div>
             <div>
                 <h5 class="font-bold mb-4">روابط سريعة</h5>
@@ -1801,7 +1801,7 @@
             </div>
         </div>
         <div class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
-            © 2026 BAZRENA – بازارِنا. جميع الحقوق محفوظة.
+            © 2026 BranZar – برانزار. All Brand at one place. جميع الحقوق محفوظة.
         </div>
     </div>
 </footer>
@@ -1829,8 +1829,8 @@
     const db = firebase.firestore();
 
     let messaging = null;
-    const FCM_TOKEN_KEY = 'bazrenaFcmToken';
-    const NOTIF_DISMISS_KEY = 'bazrenaNotifDismissed';
+    const FCM_TOKEN_KEY = 'branzarFcmToken';
+    const NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
 
     function isNotificationSupported() {
         return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
@@ -1886,22 +1886,22 @@
             messaging.onMessage((payload) => {
                 console.log('📩 إشعار في المقدمة:', payload);
                 const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
-                const body = (payload.notification && payload.notification.body) || 'لديك جديد في بازارِنا';
+                const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
                 showPushToast(title, body);
 
                 if (Notification.permission === 'granted') {
                     try {
                         const notif = new Notification(title, {
                             body: body,
-                            icon: (payload.notification && payload.notification.icon) || 'https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png',
-                            badge: 'https://i.ibb.co/nNx71bCg/file-00000000d3748243bced1f2d4357a546.png',
+                            icon: (payload.notification && payload.notification.icon) || 'https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png',
+                            badge: 'https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png',
                             dir: 'rtl',
                             lang: 'ar',
-                            tag: (payload.data && payload.data.tag) || 'bazrena-fg'
+                            tag: (payload.data && payload.data.tag) || 'branzar-fg'
                         });
                         notif.onclick = function() {
                             window.focus();
-                            const url = (payload.data && payload.data.url) || 'https://bazrena.vercel.app';
+                            const url = (payload.data && payload.data.url) || 'https://branzar.vercel.app';
                             window.location.href = url;
                             notif.close();
                         };
@@ -2018,7 +2018,7 @@
     });
 
     const CACHE_DURATION = 100 * 60 * 60 * 1000;
-    const CACHE_PREFIX = 'bazrena_cache_';
+    const CACHE_PREFIX = 'branzar_cache_';
 
     const cacheManager = {
         set(key, value) {
@@ -2121,11 +2121,11 @@
     let lastProductsFingerprint = '';
 
     let knownStoreIds = [];
-    try { knownStoreIds = JSON.parse(localStorage.getItem('bazrenaKnownStoreIds') || '[]'); } catch(e) { knownStoreIds = []; }
-    let isFirstVisit = !localStorage.getItem('bazrenaVisitedBefore');
+    try { knownStoreIds = JSON.parse(localStorage.getItem('branzarKnownStoreIds') || '[]'); } catch(e) { knownStoreIds = []; }
+    let isFirstVisit = !localStorage.getItem('branzarVisitedBefore');
     let storeNotifTimeout = null;
 
-    const PRODUCT_FAVS_KEY = 'bazrenaProductFavs';
+    const PRODUCT_FAVS_KEY = 'branzarProductFavs';
     function getProductFavs() { try { return JSON.parse(localStorage.getItem(PRODUCT_FAVS_KEY) || '[]'); } catch (e) { return []; } }
     function saveProductFavs(list) { localStorage.setItem(PRODUCT_FAVS_KEY, JSON.stringify(list)); }
     function isProductFav(id) { return getProductFavs().includes(id); }
@@ -2137,7 +2137,7 @@
         return list.includes(id);
     }
 
-    const FOLLOWED_STORES_KEY = 'bazrenaFollowedStores';
+    const FOLLOWED_STORES_KEY = 'branzarFollowedStores';
     let currentStoreId = null;
     let currentFollowersCount = 0;
     let isFollowing = false;
@@ -2294,7 +2294,7 @@
     function isAppInstalled() {
         return window.matchMedia('(display-mode: standalone)').matches ||
                window.navigator.standalone === true ||
-               localStorage.getItem('bazrenaInstalled') === 'true';
+               localStorage.getItem('branzarInstalled') === 'true';
     }
     function hideInstallButtons() { if (installButtonFloating) installButtonFloating.classList.remove('show'); }
     function showInstallButtons() { if (installButtonFloating) installButtonFloating.classList.add('show'); }
@@ -2303,14 +2303,14 @@
         if (!isAppInstalled()) showInstallButtons();
     });
     window.addEventListener('appinstalled', () => {
-        localStorage.setItem('bazrenaInstalled', 'true'); hideInstallButtons(); deferredPrompt = null;
+        localStorage.setItem('branzarInstalled', 'true'); hideInstallButtons(); deferredPrompt = null;
         showToast('تم تثبيت التطبيق بنجاح!');
     });
     async function handleInstallClick() {
         if (!deferredPrompt) return;
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') { localStorage.setItem('bazrenaInstalled', 'true'); hideInstallButtons(); deferredPrompt = null; }
+        if (outcome === 'accepted') { localStorage.setItem('branzarInstalled', 'true'); hideInstallButtons(); deferredPrompt = null; }
         else showToast('تم إلغاء التثبيت');
     }
     if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
@@ -2762,7 +2762,7 @@
                     if (newStores.length > 0) {
                         showStoreJoinNotification(newStores[0]);
                         knownStoreIds = currentIds;
-                        localStorage.setItem('bazrenaKnownStoreIds', JSON.stringify(knownStoreIds));
+                        localStorage.setItem('branzarKnownStoreIds', JSON.stringify(knownStoreIds));
                     }
                 }
 
@@ -2805,8 +2805,8 @@
                 renderFollowedStores();
 
                 if (isFirstVisit) {
-                    localStorage.setItem('bazrenaVisitedBefore', 'true');
-                    localStorage.setItem('bazrenaKnownStoreIds', JSON.stringify(stores.map(s => s.id)));
+                    localStorage.setItem('branzarVisitedBefore', 'true');
+                    localStorage.setItem('branzarKnownStoreIds', JSON.stringify(stores.map(s => s.id)));
                     isFirstVisit = false;
                 } else {
                     const currentIds = stores.map(s => s.id);
@@ -2814,7 +2814,7 @@
                     if (newStores.length > 0) {
                         setTimeout(() => { showStoreJoinNotification(newStores[0]); }, 1500);
                         knownStoreIds = currentIds;
-                        localStorage.setItem('bazrenaKnownStoreIds', JSON.stringify(knownStoreIds));
+                        localStorage.setItem('branzarKnownStoreIds', JSON.stringify(knownStoreIds));
                     }
                 }
             }
@@ -3345,7 +3345,7 @@
         setupRealtimeProductsListener();
         setupRealtimeStoresListener();
 
-        console.log('%c🟢 النظام جاهز - التحديث اللحظي مفعّل | إشعارات الويب مفعّلة', 'color:#25D366;font-weight:900;font-size:14px;');
+        console.log('%c🟢 BranZar جاهز - All Brand at one place | التحديث اللحظي مفعّل | إشعارات الويب مفعّلة', 'color:#25D366;font-weight:900;font-size:14px;');
     }
 
     if (document.readyState === 'loading') {
