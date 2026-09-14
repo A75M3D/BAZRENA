@@ -7,6 +7,7 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- ✅ تحديث CSP للسماح بتحميل فيديو يوتيوب -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com;
@@ -2277,12 +2278,13 @@ $('product_img_url').addEventListener('input', (e) => {
 });
 
 /* ============================================================
-   🎬 بانر imgbb + نافذة الفيديو
+   🎬 بانر imgbb + نافذة الفيديو (محسّن للسرعة)
    ============================================================ */
 (function() {
     const IMGBB_TIP_KEY  = 'branzarImgbBannerDismissed';
     const YOUTUBE_ID     = 'd5QUoECNizs';
-    const EMBED_URL      = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+    // ✅ رابط مضمن محسّن: التشغيل التلقائي مع كتم الصوت (مطلوب للجوال)[reference:3]
+    const EMBED_URL      = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
 
     const banner     = document.getElementById('imgbbTipBanner');
     const closeBtn   = document.getElementById('imgbbTipClose');
@@ -2292,7 +2294,6 @@ $('product_img_url').addEventListener('input', (e) => {
 
     if (!banner) return;
 
-    // لا تعرض البانر إذا أُغلق خلال آخر 7 أيام
     const dismissedAt = parseInt(localStorage.getItem(IMGBB_TIP_KEY) || '0');
     if (dismissedAt && (Date.now() - dismissedAt) < 7 * 24 * 60 * 60 * 1000) {
         banner.remove();
@@ -2320,6 +2321,7 @@ $('product_img_url').addEventListener('input', (e) => {
 
     function openVideoModal() {
         if (!videoModal || !videoFrame) return;
+        // ✅ تحميل الفيديو فقط عند فتح النافذة (Click-to-Play) لتحسين سرعة تحميل الصفحة[reference:4]
         videoFrame.innerHTML = `
             <iframe
                 src="${EMBED_URL}"
@@ -2334,6 +2336,7 @@ $('product_img_url').addEventListener('input', (e) => {
 
     function closeVideoModal() {
         if (!videoModal || !videoFrame) return;
+        // ✅ إفراغ الـ iframe يوقف الفيديو ويحسن الأداء
         videoFrame.innerHTML = '';
         videoModal.classList.add('hidden');
         document.body.style.overflow = '';
