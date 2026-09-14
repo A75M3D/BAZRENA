@@ -7,6 +7,21 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
+        font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: blob: https:;
+        connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.firebaseapp.com https://firebasestorage.googleapis.com;
+        frame-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com https://www.youtube.com https://www.youtube-nocookie.com;
+        worker-src 'self' blob:;
+        media-src 'self' https: blob:;
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+        upgrade-insecure-requests;
+    ">
     <title>لوحة تحكم المتجر -BranZar-برانزار</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -141,10 +156,7 @@
         }
         .login-input::placeholder { color: #9ca3af; font-weight: 500; }
 
-        /* 🆕 حقل كلمة المرور مع زر العين */
-        .login-input.has-toggle {
-            padding-left: 3.1rem;
-        }
+        .login-input.has-toggle { padding-left: 3.1rem; }
         .password-toggle-btn {
             position: absolute;
             left: 0.85rem;
@@ -164,16 +176,9 @@
             transition: all 0.22s;
             -webkit-tap-highlight-color: transparent;
         }
-        .password-toggle-btn:hover {
-            background: #FFF7ED;
-            color: #FF7A00;
-        }
-        .password-toggle-btn:active {
-            transform: translateY(-50%) scale(0.92);
-        }
-        .password-toggle-btn.active {
-            color: #FF7A00;
-        }
+        .password-toggle-btn:hover { background: #FFF7ED; color: #FF7A00; }
+        .password-toggle-btn:active { transform: translateY(-50%) scale(0.92); }
+        .password-toggle-btn.active { color: #FF7A00; }
 
         .login-btn {
             width: 100%;
@@ -232,7 +237,7 @@
         .login-footer-hint a:hover { text-decoration: underline; }
 
         /* ============================================================
-           🎨 لوحة التحكم - التصميم الجديد
+           🎨 لوحة التحكم
            ============================================================ */
         .app-container {
             max-width: 900px;
@@ -397,6 +402,220 @@
         }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
 
+        /* 🆕 بانر imgbb */
+        #imgbbTipBanner {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFE9D1 100%);
+            border: 1.5px solid #FFE0BD;
+            border-radius: 1.25rem;
+            padding: 0.75rem 0.9rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 8px 22px -12px rgba(255,122,0,0.4);
+            position: relative;
+            overflow: hidden;
+            animation: bannerSlideDown 0.6s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #imgbbTipBanner:hover {
+            background: linear-gradient(135deg, #FFE9D1 0%, #FFD9A8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px -12px rgba(255,122,0,0.6);
+        }
+        @keyframes bannerSlideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to   { transform: translateY(0);     opacity: 1; }
+        }
+        .imgbb-tip-inner {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .imgbb-tip-icon {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            box-shadow: 0 6px 16px -4px rgba(255,122,0,0.65);
+            animation: imgbbBellRing 3s ease-in-out infinite;
+        }
+        @keyframes imgbbBellRing {
+            0%, 100% { transform: rotate(0); }
+            8%, 24%  { transform: rotate(-12deg); }
+            16%      { transform: rotate(12deg); }
+            32%      { transform: rotate(0); }
+        }
+        .imgbb-tip-content { flex: 1; min-width: 0; text-align: right; }
+        .imgbb-tip-title {
+            font-weight: 900;
+            color: #1A1A1A;
+            font-size: 0.88rem;
+            margin-bottom: 2px;
+            line-height: 1.3;
+        }
+        .imgbb-tip-text {
+            color: #6B7280;
+            font-size: 0.72rem;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+        @media (min-width: 640px) {
+            #imgbbTipBanner { padding: 0.9rem 1.1rem; border-radius: 1.35rem; }
+            .imgbb-tip-title { font-size: 1rem; }
+            .imgbb-tip-text  { font-size: 0.82rem; }
+        }
+        .imgbb-tip-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-shrink: 0;
+        }
+        .imgbb-tip-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #FF7A00;
+            color: #fff !important;
+            text-decoration: none;
+            padding: 0.55rem 0.95rem;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            transition: all 0.25s;
+            white-space: nowrap;
+            box-shadow: 0 6px 16px -6px rgba(255,122,0,0.7);
+            border: none;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+        }
+        .imgbb-tip-btn:hover {
+            background: #E06B00;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px -6px rgba(255,122,0,0.85);
+        }
+        .imgbb-tip-btn i { font-size: 0.9rem; }
+        .imgbb-tip-close {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.85);
+            border: 1px solid #FFE0BD;
+            color: #999;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .imgbb-tip-close:hover {
+            background: #fff;
+            color: #FF7A00;
+            border-color: #FF7A00;
+        }
+        @media (max-width: 480px) {
+            .imgbb-tip-btn span { display: none; }
+            .imgbb-tip-btn { padding: 0.55rem 0.7rem; }
+            .imgbb-tip-icon { width: 38px; height: 38px; font-size: 1rem; }
+            .imgbb-tip-title { font-size: 0.82rem; }
+            .imgbb-tip-text  { font-size: 0.68rem; }
+        }
+
+        /* 🆕 نافذة الفيديو */
+        #videoModal {
+            position: fixed; inset: 0; z-index: 999999;
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            animation: videoFadeIn 0.3s ease;
+            direction: rtl;
+        }
+        #videoModal.hidden { display: none !important; }
+        @keyframes videoFadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .video-modal-box {
+            width: 100%;
+            max-width: 900px;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,122,0,0.3);
+            border: 2px solid rgba(255,122,0,0.35);
+            animation: videoZoomIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            position: relative;
+        }
+        @keyframes videoZoomIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to   { transform: scale(1);    opacity: 1; }
+        }
+        .video-modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.7rem 1rem;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: #fff;
+        }
+        .video-modal-title {
+            display: flex; align-items: center; gap: 8px;
+            font-weight: 800; font-size: 0.9rem;
+            min-width: 0;
+        }
+        .video-modal-title span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .video-modal-title i { font-size: 1.05rem; flex-shrink: 0; }
+        .video-modal-close {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255,255,255,0.22);
+            border: none; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+        .video-modal-close:hover {
+            background: rgba(255,255,255,0.4);
+            transform: rotate(90deg);
+        }
+        .video-modal-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            max-height: 75vh;
+            background: #000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        @media (min-width: 640px) {
+            .video-modal-frame { aspect-ratio: 16 / 9; }
+        }
+        .video-modal-frame iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            border: 0;
+            display: block;
+        }
+        .video-modal-footer {
+            padding: 0.7rem 1rem;
+            background: #111;
+            color: #ccc;
+            font-size: 0.75rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border-top: 1px solid rgba(255,122,0,0.25);
+            font-weight: 600;
+        }
+        .video-modal-footer i { color: #FF7A00; }
+
+        /* Tabs & Cards - existing */
         .tabs-wrap {
             background: #fff;
             border-radius: 1.25rem;
@@ -565,7 +784,6 @@
         }
         @media (min-width: 640px) { .form-hint { font-size: 0.78rem; } }
 
-        /* 🆕 حقل الإدخال مع زر داخلي */
         .input-with-toggle {
             position: relative;
             width: 100%;
@@ -916,7 +1134,6 @@
                 <i class="fas fa-store login-field-icon"></i>
             </div>
 
-            <!-- 🆕 حقل كلمة المرور مع زر العين -->
             <div class="login-field">
                 <input type="password" id="loginPassword" class="login-input has-toggle" placeholder="كلمة المرور" required autocomplete="off">
                 <i class="fas fa-lock login-field-icon"></i>
@@ -983,6 +1200,30 @@
         <!-- Main Content -->
         <div class="main-content">
 
+            <!-- ============================================================
+                 🆕 بانر imgbb
+                 ============================================================ -->
+            <div id="imgbbTipBanner" role="button" aria-label="شاهد شرح تحويل الصورة إلى رابط">
+                <div class="imgbb-tip-inner">
+                    <div class="imgbb-tip-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="imgbb-tip-content">
+                        <div class="imgbb-tip-title">💡 كيف تحوّل صورتك إلى رابط عبر imgbb؟</div>
+                        <div class="imgbb-tip-text">شاهد الشرح خطوة بخطوة — اضغط هنا للمشاهدة</div>
+                    </div>
+                    <div class="imgbb-tip-actions">
+                        <button id="imgbbTipClose" class="imgbb-tip-close" type="button" aria-label="إغلاق">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <button id="imgbbTipLink" type="button" class="imgbb-tip-btn">
+                            <i class="fab fa-youtube"></i>
+                            <span>شاهد الشرح</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tabs -->
             <div class="tabs-wrap">
                 <button id="tabStore" class="tab-item active">
@@ -1045,7 +1286,6 @@
                                 </div>
                             </div>
 
-                            <!-- 🆕 حقل كلمة المرور مع زر العين -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-key"></i>
@@ -1239,6 +1479,28 @@
     </div>
 </div>
 
+<!-- ============================================================
+     🎬 نافذة الفيديو
+     ============================================================ -->
+<div id="videoModal" class="hidden" role="dialog" aria-modal="true" aria-label="شرح الفيديو">
+    <div class="video-modal-box">
+        <div class="video-modal-header">
+            <div class="video-modal-title">
+                <i class="fab fa-youtube"></i>
+                <span>شرح تحويل الصورة إلى رابط عبر imgbb</span>
+            </div>
+            <button id="videoModalClose" class="video-modal-close" aria-label="إغلاق">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="video-modal-frame" id="videoModalFrame"></div>
+        <div class="video-modal-footer">
+            <i class="fas fa-info-circle"></i>
+            <span>اضغط خارج النافذة أو زر الإغلاق للعودة</span>
+        </div>
+    </div>
+</div>
+
 <!-- Firebase Scripts -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -1263,7 +1525,6 @@ const productsTableName = 'products';
 const SESSION_KEY = 'bzr_store_session';
 const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.pn';
 
-// 🗄️ نظام الكاش - 72 ساعة
 const CACHE_DURATION = 72 * 60 * 60 * 1000;
 const CACHE_PREFIX = 'bazrena_cache_';
 
@@ -1375,9 +1636,6 @@ function updateConnectionStatus(success, message) {
     }
 }
 
-// ============================================================
-// 🆕 دالة لتفعيل/إلغاء زر العين لأي حقل كلمة مرور
-// ============================================================
 function setupPasswordToggle(inputId, buttonId, iconId) {
     const input = $(inputId);
     const button = $(buttonId);
@@ -1388,18 +1646,15 @@ function setupPasswordToggle(inputId, buttonId, iconId) {
         const isPassword = input.type === 'password';
 
         if (isPassword) {
-            // إظهار كلمة المرور
             input.type = 'text';
             icon.classList.remove('fa-eye');
             icon.classList.add('fa-eye-slash');
             button.classList.add('active');
             button.setAttribute('aria-label', 'إخفاء كلمة المرور');
             button.setAttribute('title', 'إخفاء كلمة المرور');
-            // الحفاظ على موضع المؤشر في نهاية النص
             const len = input.value.length;
             try { input.setSelectionRange(len, len); } catch (e) {}
         } else {
-            // إخفاء كلمة المرور
             input.type = 'password';
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
@@ -1410,18 +1665,13 @@ function setupPasswordToggle(inputId, buttonId, iconId) {
             try { input.setSelectionRange(len, len); } catch (e) {}
         }
 
-        // الحفاظ على التركيز على الحقل
         setTimeout(() => input.focus(), 0);
     });
 }
 
-// 🆕 تفعيل زرّي العين
 setupPasswordToggle('loginPassword', 'loginPasswordToggle', 'loginPasswordToggleIcon');
 setupPasswordToggle('store_login_password', 'storePasswordToggle', 'storePasswordToggleIcon');
 
-// ============================================================
-// 🆕 تحديث صورة البروفايل الدائرية في الرأس
-// ============================================================
 function updateHeaderLogo(store) {
     const logoWrap = $('headerBrandLogo');
     const logoImg = $('headerStoreLogo');
@@ -1446,9 +1696,6 @@ function updateHeaderLogo(store) {
     }
 }
 
-// ============================================================
-// 🔐 Session
-// ============================================================
 function getSession() {
     try {
         const raw = sessionStorage.getItem(SESSION_KEY);
@@ -1466,9 +1713,6 @@ function clearSession() {
     sessionStorage.removeItem(SESSION_KEY);
 }
 
-// ============================================================
-// 🔐 Login
-// ============================================================
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -1536,7 +1780,6 @@ $('loginForm').addEventListener('submit', async (e) => {
         errEl.textContent = '❌ ' + (err.message || 'حدث خطأ غير متوقع');
         errEl.classList.add('show');
         $('loginPassword').value = '';
-        // إعادة الحقل لوضع password بعد المسح
         const passInput = $('loginPassword');
         const icon = $('loginPasswordToggleIcon');
         if (passInput.type !== 'password') {
@@ -1550,9 +1793,6 @@ $('loginForm').addEventListener('submit', async (e) => {
     }
 });
 
-// ============================================================
-// 🚀 Dashboard Entry
-// ============================================================
 async function enterDashboard() {
     $('loginOverlay').classList.add('hidden');
     $('dashboard').classList.remove('hidden');
@@ -1568,7 +1808,6 @@ async function enterDashboard() {
     updateConnectionStatus(true, currentStore.name);
 }
 
-// 🔒 Logout
 $('logoutBtn').addEventListener('click', () => {
     if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
     if (productsUnsubscribe) {
@@ -1580,7 +1819,6 @@ $('logoutBtn').addEventListener('click', () => {
     location.reload();
 });
 
-// 🎨 Fill Store Form
 function fillStoreForm(store) {
     $('store_id').value = store.id || '';
     $('store_name').value = store.name || '';
@@ -1621,7 +1859,6 @@ function fillStoreForm(store) {
     updateHeaderLogo(store);
 }
 
-// 💾 Save Store
 $('storeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingStore || !currentStore) return;
@@ -1732,7 +1969,6 @@ $('storeForm').addEventListener('submit', async (e) => {
     }
 });
 
-// 📦 Load My Products
 async function loadMyProducts(forceRefresh = false) {
     if (!currentStore) return;
     const cacheKey = `store_products_${currentStore.name}`;
@@ -1769,7 +2005,6 @@ async function loadMyProducts(forceRefresh = false) {
     }
 }
 
-// 🆕 المراقبة الحية
 function setupRealtimeMyProductsListener() {
     if (!currentStore) return;
 
@@ -1832,7 +2067,6 @@ function setupRealtimeMyProductsListener() {
         });
 }
 
-// 🎨 تحديث واجهة المنتجات
 function updateProductsUI() {
     $('productsCount').textContent = productsData.length;
     $('productsCountBadge').textContent = productsData.length;
@@ -1840,7 +2074,6 @@ function updateProductsUI() {
     renderMyProductsList(productsData);
 }
 
-// 📋 Render Products List
 function renderMyProductsList(products) {
     if (products.length === 0) {
         $('productsList').innerHTML = `
@@ -1887,7 +2120,6 @@ function renderMyProductsList(products) {
     $('productsList').innerHTML = html;
 }
 
-// ➕/✏️ Save Product
 $('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingProduct || !currentStore) return;
@@ -2014,7 +2246,6 @@ async function updateMyStoreProductsCount() {
     }
 }
 
-// 🎛️ Tabs
 $('tabStore').addEventListener('click', () => {
     $('tabStore').classList.add('active');
     $('tabProducts').classList.remove('active');
@@ -2029,7 +2260,6 @@ $('tabProducts').addEventListener('click', () => {
     loadMyProducts();
 });
 
-// 🖼️ Image Previews
 $('store_logo').addEventListener('input', (e) => {
     const p = $('store_logo_preview');
     if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
@@ -2046,7 +2276,84 @@ $('product_img_url').addEventListener('input', (e) => {
     else p.classList.add('hidden');
 });
 
-// 🚀 Init
+/* ============================================================
+   🎬 بانر imgbb + نافذة الفيديو
+   ============================================================ */
+(function() {
+    const IMGBB_TIP_KEY  = 'branzarImgbBannerDismissed';
+    const YOUTUBE_ID     = 'd5QUoECNizs';
+    const EMBED_URL      = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+
+    const banner     = document.getElementById('imgbbTipBanner');
+    const closeBtn   = document.getElementById('imgbbTipClose');
+    const videoModal = document.getElementById('videoModal');
+    const videoClose = document.getElementById('videoModalClose');
+    const videoFrame = document.getElementById('videoModalFrame');
+
+    if (!banner) return;
+
+    // لا تعرض البانر إذا أُغلق خلال آخر 7 أيام
+    const dismissedAt = parseInt(localStorage.getItem(IMGBB_TIP_KEY) || '0');
+    if (dismissedAt && (Date.now() - dismissedAt) < 7 * 24 * 60 * 60 * 1000) {
+        banner.remove();
+    } else {
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                banner.style.transition = 'all 0.4s cubic-bezier(0.4,0,0.2,1)';
+                banner.style.maxHeight = '0';
+                banner.style.padding = '0';
+                banner.style.margin = '0';
+                banner.style.opacity = '0';
+                banner.style.overflow = 'hidden';
+                setTimeout(() => banner.remove(), 400);
+                localStorage.setItem(IMGBB_TIP_KEY, Date.now().toString());
+            });
+        }
+
+        banner.addEventListener('click', (e) => {
+            if (e.target.closest('#imgbbTipClose')) return;
+            e.preventDefault();
+            openVideoModal();
+        });
+    }
+
+    function openVideoModal() {
+        if (!videoModal || !videoFrame) return;
+        videoFrame.innerHTML = `
+            <iframe
+                src="${EMBED_URL}"
+                title="شرح تحويل الصورة إلى رابط"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                loading="lazy">
+            </iframe>`;
+        videoModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+        if (!videoModal || !videoFrame) return;
+        videoFrame.innerHTML = '';
+        videoModal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    if (videoClose) videoClose.addEventListener('click', closeVideoModal);
+
+    if (videoModal) {
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) closeVideoModal();
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && videoModal && !videoModal.classList.contains('hidden')) {
+            closeVideoModal();
+        }
+    });
+})();
+
 async function init() {
     const session = getSession();
     if (!session || !session.id) {
