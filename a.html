@@ -7,7 +7,6 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <!-- ✅ تحديث CSP للسماح بتحميل فيديو يوتيوب -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com;
@@ -53,9 +52,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ============================================================
-           🔐 شاشة تسجيل الدخول
-           ============================================================ */
         .login-overlay {
             position: fixed;
             inset: 0;
@@ -237,9 +233,6 @@
         }
         .login-footer-hint a:hover { text-decoration: underline; }
 
-        /* ============================================================
-           🎨 لوحة التحكم
-           ============================================================ */
         .app-container {
             max-width: 900px;
             margin: 0 auto;
@@ -403,7 +396,6 @@
         }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
 
-        /* 🆕 بانر imgbb */
         #imgbbTipBanner {
             background: linear-gradient(135deg, #FFF7ED 0%, #FFE9D1 100%);
             border: 1.5px solid #FFE0BD;
@@ -521,7 +513,6 @@
             .imgbb-tip-text  { font-size: 0.68rem; }
         }
 
-        /* 🆕 نافذة الفيديو */
         #videoModal {
             position: fixed; inset: 0; z-index: 999999;
             display: flex; align-items: center; justify-content: center;
@@ -616,7 +607,6 @@
         }
         .video-modal-footer i { color: #FF7A00; }
 
-        /* Tabs & Cards - existing */
         .tabs-wrap {
             background: #fff;
             border-radius: 1.25rem;
@@ -1113,9 +1103,6 @@
 </head>
 <body>
 
-<!-- ============================================================
-     🔐 شاشة تسجيل الدخول
-     ============================================================ -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
 
@@ -1166,15 +1153,11 @@
     </div>
 </div>
 
-<!-- ============================================================
-     🎛️ لوحة التحكم
-     ============================================================ -->
 <div id="dashboard" class="hidden">
     <div id="toast" class="toast"></div>
 
     <div class="app-container">
 
-        <!-- Header -->
         <div class="app-header">
             <div class="header-top">
                 <div class="header-brand">
@@ -1198,12 +1181,8 @@
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
 
-            <!-- ============================================================
-                 🆕 بانر imgbb
-                 ============================================================ -->
             <div id="imgbbTipBanner" role="button" aria-label="شاهد شرح تحويل الصورة إلى رابط">
                 <div class="imgbb-tip-inner">
                     <div class="imgbb-tip-icon">
@@ -1225,7 +1204,6 @@
                 </div>
             </div>
 
-            <!-- Tabs -->
             <div class="tabs-wrap">
                 <button id="tabStore" class="tab-item active">
                     <i class="fas fa-store"></i>
@@ -1238,7 +1216,6 @@
                 </button>
             </div>
 
-            <!-- Store Section -->
             <div id="storeSection" class="tab-content">
 
                 <div class="stats-grid">
@@ -1377,7 +1354,6 @@
                 </div>
             </div>
 
-            <!-- Products Section -->
             <div id="productsSection" class="tab-content hidden">
                 <div class="products-layout">
 
@@ -1480,9 +1456,6 @@
     </div>
 </div>
 
-<!-- ============================================================
-     🎬 نافذة الفيديو
-     ============================================================ -->
 <div id="videoModal" class="hidden" role="dialog" aria-modal="true" aria-label="شرح الفيديو">
     <div class="video-modal-box">
         <div class="video-modal-header">
@@ -1496,13 +1469,12 @@
         </div>
         <div class="video-modal-frame" id="videoModalFrame"></div>
         <div class="video-modal-footer">
-            <i class="fas fa-info-circle"></i>
-            <span>اضغط خارج النافذة أو زر الإغلاق للعودة</span>
+            <i class="fas fa-volume-up"></i>
+            <span>اضغط زر التشغيل لتشغيل الفيديو بالصوت</span>
         </div>
     </div>
 </div>
 
-<!-- Firebase Scripts -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -2278,13 +2250,13 @@ $('product_img_url').addEventListener('input', (e) => {
 });
 
 /* ============================================================
-   🎬 بانر imgbb + نافذة الفيديو (محسّن للسرعة)
+   🎬 بانر imgbb + نافذة الفيديو (مع صوت كامل)
    ============================================================ */
 (function() {
     const IMGBB_TIP_KEY  = 'branzarImgbBannerDismissed';
     const YOUTUBE_ID     = 'd5QUoECNizs';
-    // ✅ رابط مضمن محسّن: التشغيل التلقائي مع كتم الصوت (مطلوب للجوال)[reference:3]
-    const EMBED_URL      = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
+    // ✅ إزالة autoplay و mute: الفيديو يظهر مع زر تشغيل، وعند الضغط يعمل بالصوت مباشرة
+    const EMBED_URL      = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?rel=0&modestbranding=1&playsinline=1`;
 
     const banner     = document.getElementById('imgbbTipBanner');
     const closeBtn   = document.getElementById('imgbbTipClose');
@@ -2321,7 +2293,8 @@ $('product_img_url').addEventListener('input', (e) => {
 
     function openVideoModal() {
         if (!videoModal || !videoFrame) return;
-        // ✅ تحميل الفيديو فقط عند فتح النافذة (Click-to-Play) لتحسين سرعة تحميل الصفحة[reference:4]
+        // ✅ تحميل الفيديو فقط عند فتح النافذة (لسرعة التحميل)
+        // ✅ بدون autoplay و mute: يظهر زر Play، عند الضغط يعمل بالصوت
         videoFrame.innerHTML = `
             <iframe
                 src="${EMBED_URL}"
@@ -2336,7 +2309,6 @@ $('product_img_url').addEventListener('input', (e) => {
 
     function closeVideoModal() {
         if (!videoModal || !videoFrame) return;
-        // ✅ إفراغ الـ iframe يوقف الفيديو ويحسن الأداء
         videoFrame.innerHTML = '';
         videoModal.classList.add('hidden');
         document.body.style.overflow = '';
