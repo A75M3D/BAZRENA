@@ -50,7 +50,7 @@ self.addEventListener('notificationclick', (event) => {
     // ⚠️ نقرأ الرابط من الـ Custom Data اللي بعته من Firebase
     const targetUrl =
         (event.notification.data && event.notification.data.url) ||
-        'https://bazrena.vercel.app';
+        'https://branzar.vercel.app/';
 
     event.waitUntil(
         clients
