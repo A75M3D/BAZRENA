@@ -67,6 +67,79 @@
         ::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #E06B00; }
 
+        /* ====== حل مشكلة الحواف الدائرية للصور ====== */
+        
+        /* 1. صور المنتجات في الشبكة العامة (جميع المنتجات) */
+        .product-image-container {
+            background-color: transparent !important;
+            border-radius: 16px !important;
+            overflow: hidden !important;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0.5rem;
+        }
+        .product-image-container img {
+            width: 100%; height: 100%; object-fit: contain; 
+            border-radius: 16px !important; /* تطبيق التدوير على الصورة نفسها */
+            transition: transform 0.3s ease;
+        }
+        .product-image-container img:hover { transform: scale(1.05); }
+
+        /* 2. صور المنتجات داخل متجر معين */
+        .store-product-img-wrap {
+            width: 100%; height: 130px; 
+            background-color: transparent !important; /* إزالة الخلفية البيضاء */
+            display: flex; align-items: center; justify-content: center;
+            padding: 8px; overflow: hidden;
+            border-radius: 16px !important;
+        }
+        @media (min-width: 480px) { .store-product-img-wrap { height: 150px; } }
+        @media (min-width: 640px) { .store-product-img-wrap { height: 170px; padding: 10px; } }
+        .store-product-img-wrap img { 
+            max-width: 100%; max-height: 100%; object-fit: contain; 
+            border-radius: 12px !important; /* تطبيق التدوير على الصورة نفسها */
+            transition: transform 0.3s ease; 
+        }
+        .store-product-card:hover .store-product-img-wrap img { transform: scale(1.05); }
+
+        /* 3. صورة المنتج في النافذة المنبثقة (Modal) */
+        .product-modal-image-wrapper {
+            width: 100%;
+            height: 350px;
+            background-color: transparent !important; /* إزالة الطبقة الرمادية */
+            border-radius: 2rem !important;
+            overflow: hidden !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 !important; /* إزالة الحواشي الداخلية */
+            border: none !important; /* إزالة الإطار */
+            box-shadow: none !important; /* إزالة الظل الداخلي */
+            transition: all 0.3s ease;
+        }
+        @media (min-width: 640px) { 
+            .product-modal-image-wrapper { height: 450px; border-radius: 2.5rem !important; } 
+        }
+        @media (min-width: 768px) { 
+            .product-modal-image-wrapper { height: 500px; border-radius: 3rem !important; } 
+        }
+        #productModalImage { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            border-radius: 2rem !important; /* تطبيق التدوير على الصورة نفسها */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .product-modal-image-wrapper:hover #productModalImage { transform: scale(1.05); }
+
+        /* 4. صورة المنتج في سلة التسوق */
+        .cart-item-image { 
+            width: 56px; height: 56px; object-fit: contain; 
+            background-color: transparent !important; /* إزالة الطبقة البيضاء */
+            border-radius: 12px !important; /* تدوير الحواف */
+            flex-shrink: 0; 
+        }
+        /* ========================================= */
+
         .store-card, .product-card {
             transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             cursor: pointer;
@@ -95,19 +168,6 @@
             display: flex; align-items: center; gap: 5px;
         }
         .store-card .store-category { color: #666; font-size: 0.85rem; }
-
-        /* --- تعديل: إزالة الخلفية البيضاء/الرمادية وتدوير الصورة --- */
-        .product-image-container {
-            background-color: transparent; /* تم التغيير لإزالة الطبقة */
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; border-radius: 0.75rem; margin: 0.5rem;
-        }
-        .product-image-container img {
-            width: 100%; height: 100%; object-fit: contain; 
-            border-radius: 12px; /* تم إضافة التدوير للصورة نفسها */
-            transition: transform 0.3s ease;
-        }
-        .product-image-container img:hover { transform: scale(1.05); }
 
         .verified-icon {
             display: inline-flex; align-items: center; justify-content: center;
@@ -216,48 +276,6 @@
         }
         @media (min-width: 640px) { .product-modal .product-modal-content { border-radius: 1.5rem; padding: 1.5rem; } }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* --- تعديل: إزالة الخلفية الرمادية والحدود من حول الصورة في النافذة المنبثقة --- */
-        .product-modal-image-wrapper {
-            width: 100%;
-            height: 350px;
-            background-color: transparent; /* تم التغيير لإزالة الطبقة الرمادية */
-            border-radius: 2rem;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0; /* إزالة الحواشي الداخلية لتأخذ الصورة كامل المساحة */
-            border: none; /* إزالة الإطار الرمادي */
-            box-shadow: none; /* إزالة الظل الداخلي */
-            transition: all 0.3s ease;
-        }
-        @media (min-width: 640px) { 
-            .product-modal-image-wrapper { height: 450px; border-radius: 2.5rem; } 
-        }
-        @media (min-width: 768px) { 
-            .product-modal-image-wrapper { height: 500px; border-radius: 3rem; } 
-        }
-
-        #productModalImage { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            border-radius: 2rem; /* تم إضافة التدوير للصورة نفسها */
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .product-modal-image-wrapper:hover #productModalImage {
-            transform: scale(1.05);
-        }
-
-        /* --- تعديل: تدوير صورة السلة وإزالة الخلفية --- */
-        .cart-item-image { 
-            width: 56px; height: 56px; object-fit: contain; 
-            background-color: transparent; /* إزالة الطبقة البيضاء */
-            border-radius: 12px; /* تدوير الحواف */
-            flex-shrink: 0; 
-        }
 
         .cart-badge-animate { animation: pulse 0.3s ease-in-out; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
@@ -1110,21 +1128,6 @@
         .store-product-fav:hover { background: #FFF3E6; transform: scale(1.08); }
         .store-product-fav.active { background: #FF7A00; color: #FFFFFF; }
         @media (min-width: 640px) { .store-product-fav { width: 36px; height: 36px; font-size: 1rem; top: 12px; left: 12px; } }
-
-        /* --- تعديل: إزالة الخلفية وتدوير صورة منتج المتجر --- */
-        .store-product-img-wrap {
-            width: 100%; height: 130px; background: transparent; /* تم التغيير لإزالة الطبقة */
-            display: flex; align-items: center; justify-content: center;
-            padding: 8px; overflow: hidden;
-        }
-        @media (min-width: 480px) { .store-product-img-wrap { height: 150px; } }
-        @media (min-width: 640px) { .store-product-img-wrap { height: 170px; padding: 10px; } }
-        .store-product-img-wrap img { 
-            max-width: 100%; max-height: 100%; object-fit: contain; 
-            border-radius: 12px; /* تم إضافة التدوير للصورة نفسها */
-            transition: transform 0.3s ease; 
-        }
-        .store-product-card:hover .store-product-img-wrap img { transform: scale(1.05); }
 
         .store-product-info {
             padding: 0.5rem 0.75rem 0.75rem;
