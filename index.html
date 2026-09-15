@@ -67,92 +67,6 @@
         ::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #E06B00; }
 
-        /* ====== حل جذري ومضمون لمشكلة الحواف الدائرية للصور ====== */
-        
-        /* 1. صور المنتجات في الشبكة العامة (جميع المنتجات) */
-        .product-image-container {
-            background-color: transparent !important;
-            border-radius: 30px !important; /* حواف دائرية كبيرة وواضحة */
-            overflow: hidden !important;
-            -webkit-mask-image: -webkit-radial-gradient(white, black) !important; /* إجبار المتصفح على القص الدائري */
-            mask-image: radial-gradient(white, black) !important;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0.5rem;
-        }
-        .product-image-container img {
-            width: 100%; height: 100%; object-fit: contain; 
-            border-radius: 30px !important; /* تطبيق التدوير على الصورة نفسها */
-            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-            mask-image: radial-gradient(white, black) !important;
-            transition: transform 0.3s ease;
-        }
-        .product-image-container img:hover { transform: scale(1.05); }
-
-        /* 2. صور المنتجات داخل متجر معين */
-        .store-product-img-wrap {
-            width: 100%; height: 130px; 
-            background-color: transparent !important; /* إزالة الخلفية البيضاء */
-            border-radius: 30px !important;
-            overflow: hidden !important;
-            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-            mask-image: radial-gradient(white, black) !important;
-            display: flex; align-items: center; justify-content: center;
-            padding: 0 !important; /* إزالة الحواشي لتأخذ الصورة كامل المساحة وتظهر الدائرية بوضوح */
-        }
-        @media (min-width: 480px) { .store-product-img-wrap { height: 150px; } }
-        @media (min-width: 640px) { .store-product-img-wrap { height: 170px; } }
-        .store-product-img-wrap img { 
-            width: 100%; height: 100%; object-fit: contain; 
-            border-radius: 30px !important; /* تطبيق التدوير على الصورة نفسها */
-            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-            mask-image: radial-gradient(white, black) !important;
-            transition: transform 0.3s ease; 
-        }
-        .store-product-card:hover .store-product-img-wrap img { transform: scale(1.05); }
-
-        /* 3. صورة المنتج في النافذة المنبثقة (Modal) */
-        .product-modal-image-wrapper {
-            width: 100%;
-            height: 350px;
-            background-color: transparent !important; /* إزالة الطبقة الرمادية */
-            border-radius: 40px !important; /* دائرية أكبر في النافذة المنبثقة */
-            overflow: hidden !important;
-            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-            mask-image: radial-gradient(white, black) !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 !important; /* إزالة الحواشي الداخلية */
-            border: none !important; /* إزالة الإطار */
-            box-shadow: none !important; /* إزالة الظل الداخلي */
-            transition: all 0.3s ease;
-        }
-        @media (min-width: 640px) { 
-            .product-modal-image-wrapper { height: 450px; border-radius: 40px !important; } 
-        }
-        @media (min-width: 768px) { 
-            .product-modal-image-wrapper { height: 500px; border-radius: 40px !important; } 
-        }
-        #productModalImage { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            border-radius: 40px !important; /* تطبيق التدوير على الصورة نفسها */
-            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-            mask-image: radial-gradient(white, black) !important;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .product-modal-image-wrapper:hover #productModalImage { transform: scale(1.05); }
-
-        /* 4. صورة المنتج في سلة التسوق */
-        .cart-item-image { 
-            width: 56px; height: 56px; object-fit: contain; 
-            background-color: transparent !important; /* إزالة الطبقة البيضاء */
-            border-radius: 16px !important; /* تدوير الحواف */
-            flex-shrink: 0; 
-        }
-        /* ========================================= */
-
         .store-card, .product-card {
             transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
             cursor: pointer;
@@ -181,6 +95,16 @@
             display: flex; align-items: center; gap: 5px;
         }
         .store-card .store-category { color: #666; font-size: 0.85rem; }
+
+        .product-image-container {
+            background-color: #FFFFFF; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; border-radius: 0.75rem; margin: 0.5rem;
+        }
+        .product-image-container img {
+            width: 100%; height: 100%; object-fit: contain; border-radius: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        .product-image-container img:hover { transform: scale(1.05); }
 
         .verified-icon {
             display: inline-flex; align-items: center; justify-content: center;
@@ -289,6 +213,40 @@
         }
         @media (min-width: 640px) { .product-modal .product-modal-content { border-radius: 1.5rem; padding: 1.5rem; } }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .product-modal-image-wrapper {
+            width: 100%;
+            height: 350px;
+            background-color: #F8F9FA;
+            border-radius: 2rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border: 1px solid #F0F0F0;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+        @media (min-width: 640px) { 
+            .product-modal-image-wrapper { height: 450px; border-radius: 2.5rem; } 
+        }
+        @media (min-width: 768px) { 
+            .product-modal-image-wrapper { height: 500px; border-radius: 3rem; } 
+        }
+
+        #productModalImage { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-modal-image-wrapper:hover #productModalImage {
+            transform: scale(1.05);
+        }
+
+        .cart-item-image { width: 56px; height: 56px; object-fit: contain; background-color: #FFFFFF; border-radius: 0.75rem; flex-shrink: 0; }
 
         .cart-badge-animate { animation: pulse 0.3s ease-in-out; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
@@ -1142,6 +1100,16 @@
         .store-product-fav.active { background: #FF7A00; color: #FFFFFF; }
         @media (min-width: 640px) { .store-product-fav { width: 36px; height: 36px; font-size: 1rem; top: 12px; left: 12px; } }
 
+        .store-product-img-wrap {
+            width: 100%; height: 130px; background: #FFFFFF;
+            display: flex; align-items: center; justify-content: center;
+            padding: 8px; overflow: hidden;
+        }
+        @media (min-width: 480px) { .store-product-img-wrap { height: 150px; } }
+        @media (min-width: 640px) { .store-product-img-wrap { height: 170px; padding: 10px; } }
+        .store-product-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
+        .store-product-card:hover .store-product-img-wrap img { transform: scale(1.05); }
+
         .store-product-info {
             padding: 0.5rem 0.75rem 0.75rem;
             display: flex; flex-direction: column; gap: 6px; flex: 1;
@@ -1733,7 +1701,7 @@
         <div class="flex flex-col md:flex-row gap-6 sm:gap-8 items-center">
             <div class="md:w-1/2 w-full">
                 <div class="product-modal-image-wrapper">
-                    <img id="productModalImage" src="" alt="صورة المنتج" style="border-radius: 40px !important; overflow: hidden;">
+                    <img id="productModalImage" src="" alt="صورة المنتج">
                 </div>
             </div>
             <div class="md:w-1/2 flex flex-col">
@@ -3024,12 +2992,9 @@
 
             const imgWrap = document.createElement('div');
             imgWrap.className = 'store-product-img-wrap';
-            imgWrap.style.borderRadius = '30px'; // تأكيد إضافي بالـ JS
-            imgWrap.style.overflow = 'hidden';
             const img = document.createElement('img');
             img.loading = 'lazy'; img.alt = product.name || '';
             img.src = product.img_url || 'https://via.placeholder.com/300';
-            img.style.borderRadius = '30px'; // تأكيد إضافي بالـ JS
             img.onerror = function () { this.src = 'https://via.placeholder.com/300'; };
             imgWrap.appendChild(img);
 
@@ -3082,8 +3047,8 @@
                 store_name: product.store_name, description: product.description || ''
             };
             card.innerHTML = `
-                <div class="product-image-container relative h-28 sm:h-36 md:h-40" style="border-radius: 30px !important; overflow: hidden !important;">
-                    <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" style="border-radius: 30px !important;" loading="lazy" alt="${sanitizeHTML(product.name)}">
+                <div class="product-image-container relative h-28 sm:h-36 md:h-40">
+                    <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
                     ${originalPrice ? '<span class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">خصم</span>' : ''}
                 </div>
                 <div class="p-2 sm:p-3">
@@ -3110,8 +3075,6 @@
         productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
         productModalImage.onload = function() { this.style.objectFit = 'contain'; };
         productModalImage.onerror = function() { this.src = 'https://via.placeholder.com/600'; };
-        productModalImage.style.borderRadius = '40px'; // تأكيد إضافي بالـ JS
-        productModalImage.style.overflow = 'hidden';
         productModalName.textContent = product.name;
         productModalRating.textContent = product.ratting || 0;
         productModalStore.textContent = product.store_name || 'غير محدد';
@@ -3162,7 +3125,7 @@
             cart.forEach(item => {
                 const div = document.createElement('div'); div.className = 'flex items-center gap-3 p-3 border-b';
                 div.innerHTML = `
-                    <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" style="border-radius: 16px !important;" alt="${sanitizeHTML(item.name)}" loading="lazy">
+                    <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
                     <div class="flex-1 min-w-0">
                         <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
                         ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
