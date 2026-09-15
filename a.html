@@ -1099,6 +1099,87 @@
         }
         @media (min-width: 640px) { .readonly-grid { gap: 0.85rem; } }
         @media (min-width: 768px) { .readonly-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        /* ====== تنسيق حقول الألوان الجديد ====== */
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            background: #F9FAFB;
+            padding: 8px;
+            border-radius: 12px;
+            border: 1.5px solid #E5E7EB;
+            animation: fadeSlideIn 0.3s ease;
+        }
+        .color-dot-preview {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #D1D5DB, 0 2px 4px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+            transition: background-color 0.3s;
+        }
+        .color-row input {
+            flex: 1;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            border: 1.5px solid #D1D5DB;
+            font-size: 0.85rem;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            color: #1A1A1A;
+            transition: all 0.2s;
+        }
+        .color-row input:focus {
+            outline: none;
+            border-color: #FF7A00;
+            box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+        }
+        .color-row input.color-name {
+            max-width: 100px;
+            text-align: center;
+        }
+        .color-row input.color-image {
+            flex: 2;
+            font-size: 0.75rem;
+        }
+        .remove-color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #FEF2F2;
+            color: #EF4444;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .remove-color-btn:hover { background: #FEE2E2; transform: scale(1.05); }
+        #addColorBtn {
+            background: #FFF7ED;
+            color: #FF7A00;
+            border: 1.5px dashed #FFA64D;
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+        }
+        #addColorBtn:hover {
+            background: #FFE0BD;
+            border-color: #FF7A00;
+        }
     </style>
 </head>
 <body>
@@ -1400,7 +1481,7 @@
                                 <div class="form-group">
                                     <label class="form-label">
                                         <i class="fas fa-image"></i>
-                                        <span>رابط الصورة</span>
+                                        <span>رابط الصورة الأساسية</span>
                                     </label>
                                     <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
                                     <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج" onerror="this.style.display='none'">
@@ -1413,6 +1494,23 @@
                                     </label>
                                     <input type="number" id="product_ratting" class="form-input" value="0" min="0" max="5" step="0.1" dir="ltr" style="text-align: right;">
                                 </div>
+
+                                <!-- ====== قسم الألوان الجديد ====== -->
+                                <div class="section-divider">
+                                    <i class="fas fa-palette"></i>
+                                    <span>ألوان المنتج (اختياري)</span>
+                                </div>
+                                <div class="form-group">
+                                    <div id="productColorsContainer"></div>
+                                    <button type="button" id="addColorBtn" class="btn-outline">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <span>إضافة لون جديد</span>
+                                    </button>
+                                    <div class="form-hint" style="margin-top: 0.5rem;">
+                                        <i class="fas fa-info-circle"></i> أضف اسم اللون ورابط الصورة الخاصة به. سيتم استنتاج كود اللون تلقائياً (مثال: أحمر، احمر، أزرق).
+                                    </div>
+                                </div>
+                                <!-- ============================== -->
 
                                 <div class="btn-row">
                                     <button type="submit" id="productSubmitBtn" class="btn btn-primary">
@@ -1667,6 +1765,53 @@ function updateHeaderLogo(store) {
         logoImg.alt = 'بازارِنا';
         logoImg.onerror = null;
     }
+}
+
+/* ============================================================
+   🎨 دوال الألوان الذكية (تطابق منطق المتجر)
+   ============================================================ */
+function normalizeArabicColorName(name) {
+    if (!name) return '';
+    return name.trim()
+        .replace(/[أإآ]/g, 'ا') // توحيد الألف (أحمر -> احمر)
+        .replace(/ة/g, 'ه')      // توحيد التاء المربوطة (وردية -> ورديه)
+        .replace(/ى/g, 'ي')      // توحيد الألف المقصورة (لبنى -> لبني)
+        .toLowerCase();          // توحيد الحروف الإنجليزية
+}
+
+function getFallbackHex(colorName) {
+    if (!colorName) return '#CCCCCC';
+    const name = normalizeArabicColorName(colorName);
+    const colorMap = {
+        'اسود': '#1A1A1A',
+        'ابيض': '#FFFFFF',
+        'احمر': '#EF4444',
+        'ازرق': '#3B82F6',
+        'اخضر': '#22C55E',
+        'اصفر': '#EAB308',
+        'رمادي': '#6B7280',
+        'بني': '#78350F',
+        'برتقالي': '#F97316',
+        'وردي': '#EC4899',
+        'بنفسجي': '#8B5CF6',
+        'ذهبي': '#F59E0B',
+        'فضي': '#9CA3AF',
+        'black': '#1A1A1A',
+        'white': '#FFFFFF',
+        'red': '#EF4444',
+        'blue': '#3B82F6',
+        'green': '#22C55E',
+        'yellow': '#EAB308',
+        'gray': '#6B7280',
+        'grey': '#6B7280',
+        'brown': '#78350F',
+        'orange': '#F97316',
+        'pink': '#EC4899',
+        'purple': '#8B5CF6',
+        'gold': '#F59E0B',
+        'silver': '#9CA3AF'
+    };
+    return colorMap[name] || '#D1D5DB'; // لون رمادي فاتح افتراضي
 }
 
 function getSession() {
@@ -2067,6 +2212,17 @@ function renderMyProductsList(products) {
             ? `<img src="${escapeHtml(product.img_url)}" class="product-thumb" alt="${escapeHtml(product.name)}" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
             : `<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
+        // إضافة دوائر الألوان في قائمة المنتجات
+        let colorDotsHTML = '';
+        if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
+            colorDotsHTML = `<div style="display:flex; gap:4px; align-items:center; margin-right: 6px;">` +
+                product.colors.slice(0, 4).map(c => 
+                    `<div style="width:12px;height:12px;border-radius:50%;background-color:${c.hex || getFallbackHex(c.name)};border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);" title="${escapeHtml(c.name)}"></div>`
+                ).join('') + 
+                (product.colors.length > 4 ? `<span style="font-size:10px;color:#9CA3AF;font-weight:bold;">+${product.colors.length - 4}</span>` : '') +
+            `</div>`;
+        }
+
         html += `
             <div class="product-row">
                 ${thumbHtml}
@@ -2077,6 +2233,7 @@ function renderMyProductsList(products) {
                         <span class="product-rating">
                             <i class="fas fa-star"></i> ${rating}
                         </span>
+                        ${colorDotsHTML}
                     </div>
                 </div>
                 <div class="product-actions">
@@ -2093,6 +2250,44 @@ function renderMyProductsList(products) {
     $('productsList').innerHTML = html;
 }
 
+/* ============================================================
+   🎨 إدارة حقول الألوان في النموذج
+   ============================================================ */
+function addColorRow(name = '', image = '') {
+    const container = document.getElementById('productColorsContainer');
+    const row = document.createElement('div');
+    row.className = 'color-row';
+    
+    // توليد كود اللون تلقائياً للمعاينة
+    const initialHex = getFallbackHex(name);
+    
+    row.innerHTML = `
+        <div class="color-dot-preview" style="background-color: ${initialHex}" title="معاينة اللون"></div>
+        <input type="text" class="color-name" placeholder="اسم اللون (مثال: أحمر)" value="${escapeHtml(name)}">
+        <input type="url" class="color-image" placeholder="رابط صورة هذا اللون (https://...)" value="${escapeHtml(image)}" dir="ltr" style="text-align: left;">
+        <button type="button" class="remove-color-btn" title="حذف هذا اللون"><i class="fas fa-times"></i></button>
+    `;
+
+    // تحديث دائرة المعاينة مباشرة عند كتابة اسم اللون
+    const nameInput = row.querySelector('.color-name');
+    const dotPreview = row.querySelector('.color-dot-preview');
+    nameInput.addEventListener('input', (e) => {
+        dotPreview.style.backgroundColor = getFallbackHex(e.target.value);
+    });
+
+    // زر الحذف
+    row.querySelector('.remove-color-btn').addEventListener('click', () => {
+        row.remove();
+    });
+
+    container.appendChild(row);
+}
+
+// زر إضافة لون جديد
+document.getElementById('addColorBtn').addEventListener('click', () => {
+    addColorRow();
+});
+
 $('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingProduct || !currentStore) return;
@@ -2104,12 +2299,34 @@ $('productForm').addEventListener('submit', async (e) => {
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (price <= 0) { showToast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
 
+    // تجميع الألوان من الحقول
+    const colorRows = document.querySelectorAll('#productColorsContainer .color-row');
+    const colors = [];
+    let hasColorError = false;
+
+    colorRows.forEach(row => {
+        const cName = sanitizeInput(row.querySelector('.color-name').value);
+        const cImage = sanitizeInput(row.querySelector('.color-image').value);
+        
+        if (cName && cImage) {
+            colors.push({ name: cName, image: cImage });
+        } else if (cName || cImage) {
+            hasColorError = true; // حقول ناقصة
+        }
+    });
+
+    if (hasColorError) {
+        showToast('⚠️ يجب إكمال بيانات كل لون (الاسم + رابط الصورة) أو حذفه', 'error');
+        return;
+    }
+
     const productData = {
         name: name,
         store_name: currentStore.name,
         price: price,
         img_url: sanitizeInput($('product_img_url').value),
-        ratting: toNumber($('product_ratting').value)
+        ratting: toNumber($('product_ratting').value),
+        colors: colors.length > 0 ? colors : null // إضافة الألوان أو null
     };
 
     isSavingProduct = true;
@@ -2148,6 +2365,9 @@ function resetProductForm() {
     $('product_img_preview').classList.add('hidden');
     $('product_store_name').value = currentStore.name;
     $('product_store_name_display').value = currentStore.name;
+    
+    // تفريغ حاوية الألوان
+    document.getElementById('productColorsContainer').innerHTML = '';
 }
 
 window.editProduct = async (id) => {
@@ -2171,6 +2391,15 @@ window.editProduct = async (id) => {
             $('product_img_preview').classList.remove('hidden');
         } else {
             $('product_img_preview').classList.add('hidden');
+        }
+
+        // تعبئة الألوان
+        const container = document.getElementById('productColorsContainer');
+        container.innerHTML = '';
+        if (data.colors && Array.isArray(data.colors)) {
+            data.colors.forEach(c => {
+                addColorRow(c.name, c.image);
+            });
         }
 
         $('productFormTitle').textContent = 'تعديل: ' + data.name;
@@ -2255,7 +2484,6 @@ $('product_img_url').addEventListener('input', (e) => {
 (function() {
     const IMGBB_TIP_KEY  = 'branzarImgbBannerDismissed';
     const YOUTUBE_ID     = 'd5QUoECNizs';
-    // ✅ إزالة autoplay و mute: الفيديو يظهر مع زر تشغيل، وعند الضغط يعمل بالصوت مباشرة
     const EMBED_URL      = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?rel=0&modestbranding=1&playsinline=1`;
 
     const banner     = document.getElementById('imgbbTipBanner');
@@ -2293,8 +2521,6 @@ $('product_img_url').addEventListener('input', (e) => {
 
     function openVideoModal() {
         if (!videoModal || !videoFrame) return;
-        // ✅ تحميل الفيديو فقط عند فتح النافذة (لسرعة التحميل)
-        // ✅ بدون autoplay و mute: يظهر زر Play، عند الضغط يعمل بالصوت
         videoFrame.innerHTML = `
             <iframe
                 src="${EMBED_URL}"
