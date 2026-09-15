@@ -1138,7 +1138,7 @@
             box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
         }
         .color-row input.color-name {
-            max-width: 100px;
+            max-width: 110px;
             text-align: center;
         }
         .color-row input.color-image {
@@ -1507,7 +1507,7 @@
                                         <span>إضافة لون جديد</span>
                                     </button>
                                     <div class="form-hint" style="margin-top: 0.5rem;">
-                                        <i class="fas fa-info-circle"></i> أضف اسم اللون ورابط الصورة الخاصة به. سيتم استنتاج كود اللون تلقائياً (مثال: أحمر، احمر، أزرق).
+                                        <i class="fas fa-info-circle"></i> اكتب اسم اللون يدوياً أو اختر من القائمة المنسدلة. سيتم استنتاج كود اللون تلقائياً.
                                     </div>
                                 </div>
                                 <!-- ============================== -->
@@ -1553,6 +1553,44 @@
         </div>
     </div>
 </div>
+
+<!-- ============ قائمة الألوان المنسدلة (Datalist) ============ -->
+<datalist id="colorList">
+    <option value="أسود"></option>
+    <option value="أبيض"></option>
+    <option value="رمادي"></option>
+    <option value="رمادي غامق"></option>
+    <option value="رمادي فاتح"></option>
+    <option value="أحمر"></option>
+    <option value="أحمر غامق"></option>
+    <option value="نبيتي"></option>
+    <option value="خمري"></option>
+    <option value="وردي"></option>
+    <option value="أزرق"></option>
+    <option value="أزرق فاتح"></option>
+    <option value="أزرق غامق"></option>
+    <option value="كحلي"></option>
+    <option value="سماوي"></option>
+    <option value="تركواز"></option>
+    <option value="أخضر"></option>
+    <option value="أخضر فاتح"></option>
+    <option value="أخضر غامق"></option>
+    <option value="زيتي"></option>
+    <option value="أصفر"></option>
+    <option value="أصفر فاتح"></option>
+    <option value="ذهبي"></option>
+    <option value="برتقالي"></option>
+    <option value="بني"></option>
+    <option value="بني فاتح"></option>
+    <option value="بني غامق"></option>
+    <option value="بيج"></option>
+    <option value="كريمي"></option>
+    <option value="بنفسجي"></option>
+    <option value="موف"></option>
+    <option value="لافندر"></option>
+    <option value="فضي"></option>
+    <option value="برونزي"></option>
+</datalist>
 
 <div id="videoModal" class="hidden" role="dialog" aria-modal="true" aria-label="شرح الفيديو">
     <div class="video-modal-box">
@@ -1782,34 +1820,36 @@ function normalizeArabicColorName(name) {
 function getFallbackHex(colorName) {
     if (!colorName) return '#CCCCCC';
     const name = normalizeArabicColorName(colorName);
+    
+    // قائمة ملونة شاملة ومحدثة
     const colorMap = {
-        'اسود': '#1A1A1A',
-        'ابيض': '#FFFFFF',
-        'احمر': '#EF4444',
-        'ازرق': '#3B82F6',
-        'اخضر': '#22C55E',
-        'اصفر': '#EAB308',
-        'رمادي': '#6B7280',
-        'بني': '#78350F',
-        'برتقالي': '#F97316',
-        'وردي': '#EC4899',
-        'بنفسجي': '#8B5CF6',
-        'ذهبي': '#F59E0B',
-        'فضي': '#9CA3AF',
-        'black': '#1A1A1A',
-        'white': '#FFFFFF',
-        'red': '#EF4444',
-        'blue': '#3B82F6',
-        'green': '#22C55E',
-        'yellow': '#EAB308',
-        'gray': '#6B7280',
-        'grey': '#6B7280',
-        'brown': '#78350F',
-        'orange': '#F97316',
-        'pink': '#EC4899',
-        'purple': '#8B5CF6',
-        'gold': '#F59E0B',
-        'silver': '#9CA3AF'
+        // درجات الأسود والرمادي
+        'اسود': '#1A1A1A', 'ابيض': '#FFFFFF', 'رمادي': '#6B7280',
+        'رمادي غامق': '#374151', 'رمادي فاتح': '#9CA3AF',
+        // درجات الأحمر
+        'احمر': '#EF4444', 'احمر غامق': '#991B1B', 'نبيتي': '#7F1D1D',
+        'خمري': '#831843', 'وردي': '#EC4899',
+        // درجات الأزرق
+        'ازرق': '#3B82F6', 'ازرق فاتح': '#60A5FA', 'ازرق غامق': '#1E3A8A',
+        'كحلي': '#1E3A8A', 'سماوي': '#38BDF8', 'تركواز': '#14B8A6',
+        // درجات الأخضر
+        'اخضر': '#22C55E', 'اخضر فاتح': '#4ADE80', 'اخضر غامق': '#166534',
+        'زيتي': '#4D7C0F',
+        // درجات الأصفر والذهبي
+        'اصفر': '#EAB308', 'اصفر فاتح': '#FDE047', 'ذهبي': '#F59E0B',
+        // درجات البني والبيج
+        'بني': '#78350F', 'بني فاتح': '#A16207', 'بني غامق': '#451A03',
+        'بيج': '#F5F5DC', 'كريمي': '#FFFDD0',
+        // درجات البنفسجي
+        'بنفسجي': '#8B5CF6', 'موف': '#A855F7', 'لافندر': '#D8B4FE',
+        // أخرى
+        'برتقالي': '#F97316', 'فضي': '#9CA3AF', 'برونزي': '#CD7F32',
+        // اللغة الإنجليزية (للدعم الإضافي)
+        'black': '#1A1A1A', 'white': '#FFFFFF', 'red': '#EF4444', 'blue': '#3B82F6',
+        'green': '#22C55E', 'yellow': '#EAB308', 'gray': '#6B7280', 'grey': '#6B7280',
+        'brown': '#78350F', 'orange': '#F97316', 'pink': '#EC4899', 'purple': '#8B5CF6',
+        'gold': '#F59E0B', 'silver': '#9CA3AF', 'beige': '#F5F5DC', 'cream': '#FFFDD0',
+        'navy': '#1E3A8A', 'teal': '#14B8A6', 'olive': '#4D7C0F', 'maroon': '#7F1D1D'
     };
     return colorMap[name] || '#D1D5DB'; // لون رمادي فاتح افتراضي
 }
@@ -2251,7 +2291,7 @@ function renderMyProductsList(products) {
 }
 
 /* ============================================================
-   🎨 إدارة حقول الألوان في النموذج
+   🎨 إدارة حقول الألوان في النموذج (مع دعم الكتابة والقائمة المنسدلة)
    ============================================================ */
 function addColorRow(name = '', image = '') {
     const container = document.getElementById('productColorsContainer');
@@ -2263,14 +2303,16 @@ function addColorRow(name = '', image = '') {
     
     row.innerHTML = `
         <div class="color-dot-preview" style="background-color: ${initialHex}" title="معاينة اللون"></div>
-        <input type="text" class="color-name" placeholder="اسم اللون (مثال: أحمر)" value="${escapeHtml(name)}">
+        <input type="text" class="color-name" list="colorList" placeholder="اكتب أو اختر اللون" value="${escapeHtml(name)}">
         <input type="url" class="color-image" placeholder="رابط صورة هذا اللون (https://...)" value="${escapeHtml(image)}" dir="ltr" style="text-align: left;">
         <button type="button" class="remove-color-btn" title="حذف هذا اللون"><i class="fas fa-times"></i></button>
     `;
 
-    // تحديث دائرة المعاينة مباشرة عند كتابة اسم اللون
+    // تحديث دائرة المعاينة مباشرة عند كتابة اسم اللون (أو اختياره من القائمة)
     const nameInput = row.querySelector('.color-name');
     const dotPreview = row.querySelector('.color-dot-preview');
+    
+    // نستخدم حدث input ليرصد الكتابة اليدوية والاختيار من datalist
     nameInput.addEventListener('input', (e) => {
         dotPreview.style.backgroundColor = getFallbackHex(e.target.value);
     });
