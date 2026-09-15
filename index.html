@@ -67,19 +67,23 @@
         ::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #E06B00; }
 
-        /* ====== حل مشكلة الحواف الدائرية للصور ====== */
+        /* ====== حل جذري ومضمون لمشكلة الحواف الدائرية للصور ====== */
         
         /* 1. صور المنتجات في الشبكة العامة (جميع المنتجات) */
         .product-image-container {
             background-color: transparent !important;
-            border-radius: 32px !important;
+            border-radius: 30px !important; /* حواف دائرية كبيرة وواضحة */
             overflow: hidden !important;
+            -webkit-mask-image: -webkit-radial-gradient(white, black) !important; /* إجبار المتصفح على القص الدائري */
+            mask-image: radial-gradient(white, black) !important;
             display: flex; align-items: center; justify-content: center;
             margin: 0.5rem;
         }
         .product-image-container img {
             width: 100%; height: 100%; object-fit: contain; 
-            border-radius: 32px !important; /* تطبيق التدوير على الصورة نفسها */
+            border-radius: 30px !important; /* تطبيق التدوير على الصورة نفسها */
+            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
+            mask-image: radial-gradient(white, black) !important;
             transition: transform 0.3s ease;
         }
         .product-image-container img:hover { transform: scale(1.05); }
@@ -88,15 +92,20 @@
         .store-product-img-wrap {
             width: 100%; height: 130px; 
             background-color: transparent !important; /* إزالة الخلفية البيضاء */
+            border-radius: 30px !important;
+            overflow: hidden !important;
+            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
+            mask-image: radial-gradient(white, black) !important;
             display: flex; align-items: center; justify-content: center;
-            padding: 8px; overflow: hidden;
-            border-radius: 32px !important;
+            padding: 0 !important; /* إزالة الحواشي لتأخذ الصورة كامل المساحة وتظهر الدائرية بوضوح */
         }
         @media (min-width: 480px) { .store-product-img-wrap { height: 150px; } }
-        @media (min-width: 640px) { .store-product-img-wrap { height: 170px; padding: 10px; } }
+        @media (min-width: 640px) { .store-product-img-wrap { height: 170px; } }
         .store-product-img-wrap img { 
-            max-width: 100%; max-height: 100%; object-fit: contain; 
-            border-radius: 12px !important; /* تطبيق التدوير على الصورة نفسها */
+            width: 100%; height: 100%; object-fit: contain; 
+            border-radius: 30px !important; /* تطبيق التدوير على الصورة نفسها */
+            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
+            mask-image: radial-gradient(white, black) !important;
             transition: transform 0.3s ease; 
         }
         .store-product-card:hover .store-product-img-wrap img { transform: scale(1.05); }
@@ -106,8 +115,10 @@
             width: 100%;
             height: 350px;
             background-color: transparent !important; /* إزالة الطبقة الرمادية */
-            border-radius: 2rem !important;
+            border-radius: 40px !important; /* دائرية أكبر في النافذة المنبثقة */
             overflow: hidden !important;
+            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
+            mask-image: radial-gradient(white, black) !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -117,16 +128,18 @@
             transition: all 0.3s ease;
         }
         @media (min-width: 640px) { 
-            .product-modal-image-wrapper { height: 450px; border-radius: 2.5rem !important; } 
+            .product-modal-image-wrapper { height: 450px; border-radius: 40px !important; } 
         }
         @media (min-width: 768px) { 
-            .product-modal-image-wrapper { height: 500px; border-radius: 3rem !important; } 
+            .product-modal-image-wrapper { height: 500px; border-radius: 40px !important; } 
         }
         #productModalImage { 
             width: 100%; 
             height: 100%; 
             object-fit: contain; 
-            border-radius: 2rem !important; /* تطبيق التدوير على الصورة نفسها */
+            border-radius: 40px !important; /* تطبيق التدوير على الصورة نفسها */
+            -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
+            mask-image: radial-gradient(white, black) !important;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .product-modal-image-wrapper:hover #productModalImage { transform: scale(1.05); }
@@ -135,7 +148,7 @@
         .cart-item-image { 
             width: 56px; height: 56px; object-fit: contain; 
             background-color: transparent !important; /* إزالة الطبقة البيضاء */
-            border-radius: 12px !important; /* تدوير الحواف */
+            border-radius: 16px !important; /* تدوير الحواف */
             flex-shrink: 0; 
         }
         /* ========================================= */
@@ -1720,7 +1733,7 @@
         <div class="flex flex-col md:flex-row gap-6 sm:gap-8 items-center">
             <div class="md:w-1/2 w-full">
                 <div class="product-modal-image-wrapper">
-                    <img id="productModalImage" src="" alt="صورة المنتج">
+                    <img id="productModalImage" src="" alt="صورة المنتج" style="border-radius: 40px !important; overflow: hidden;">
                 </div>
             </div>
             <div class="md:w-1/2 flex flex-col">
@@ -3011,9 +3024,12 @@
 
             const imgWrap = document.createElement('div');
             imgWrap.className = 'store-product-img-wrap';
+            imgWrap.style.borderRadius = '30px'; // تأكيد إضافي بالـ JS
+            imgWrap.style.overflow = 'hidden';
             const img = document.createElement('img');
             img.loading = 'lazy'; img.alt = product.name || '';
             img.src = product.img_url || 'https://via.placeholder.com/300';
+            img.style.borderRadius = '30px'; // تأكيد إضافي بالـ JS
             img.onerror = function () { this.src = 'https://via.placeholder.com/300'; };
             imgWrap.appendChild(img);
 
@@ -3066,8 +3082,8 @@
                 store_name: product.store_name, description: product.description || ''
             };
             card.innerHTML = `
-                <div class="product-image-container relative h-28 sm:h-36 md:h-40">
-                    <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
+                <div class="product-image-container relative h-28 sm:h-36 md:h-40" style="border-radius: 30px !important; overflow: hidden !important;">
+                    <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" style="border-radius: 30px !important;" loading="lazy" alt="${sanitizeHTML(product.name)}">
                     ${originalPrice ? '<span class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-full">خصم</span>' : ''}
                 </div>
                 <div class="p-2 sm:p-3">
@@ -3094,6 +3110,8 @@
         productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
         productModalImage.onload = function() { this.style.objectFit = 'contain'; };
         productModalImage.onerror = function() { this.src = 'https://via.placeholder.com/600'; };
+        productModalImage.style.borderRadius = '40px'; // تأكيد إضافي بالـ JS
+        productModalImage.style.overflow = 'hidden';
         productModalName.textContent = product.name;
         productModalRating.textContent = product.ratting || 0;
         productModalStore.textContent = product.store_name || 'غير محدد';
@@ -3144,7 +3162,7 @@
             cart.forEach(item => {
                 const div = document.createElement('div'); div.className = 'flex items-center gap-3 p-3 border-b';
                 div.innerHTML = `
-                    <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
+                    <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" style="border-radius: 16px !important;" alt="${sanitizeHTML(item.name)}" loading="lazy">
                     <div class="flex-1 min-w-0">
                         <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
                         ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
