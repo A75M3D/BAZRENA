@@ -239,12 +239,57 @@
             width: 100%; 
             height: 100%; 
             object-fit: contain; 
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
         }
 
         .product-modal-image-wrapper:hover #productModalImage {
             transform: scale(1.05);
         }
+
+        /* ====== تصميم أزرار الألوان (Color Swatches) ====== */
+        .color-swatch {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .color-swatch:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .color-swatch.active {
+            border-color: #FF7A00;
+            box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.25);
+            transform: scale(1.15);
+        }
+        .color-swatch.active::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: white;
+            font-size: 14px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+        }
+        .color-swatch.active.light-color::after {
+            color: #1A1A1A;
+            text-shadow: none;
+        }
+        .card-color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1.5px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .card-color-dot:hover { transform: scale(1.2); }
 
         .cart-item-image { width: 56px; height: 56px; object-fit: contain; background-color: #FFFFFF; border-radius: 0.75rem; flex-shrink: 0; }
 
@@ -1699,12 +1744,24 @@
             <i class="fas fa-times text-sm sm:text-base"></i>
         </button>
         <div class="flex flex-col md:flex-row gap-6 sm:gap-8 items-center">
-            <div class="md:w-1/2 w-full">
-                <div class="product-modal-image-wrapper">
-                    <img id="productModalImage" src="" alt="صورة المنتج">
+            <!-- عمود الصورة والألوان -->
+            <div class="md:w-1/2 w-full flex flex-col items-center">
+                <div class="product-modal-image-wrapper w-full relative">
+                    <img id="productModalImage" src="" alt="صورة المنتج" class="transition-opacity duration-300">
+                </div>
+                
+                <!-- حاوية ألوان المنتج -->
+                <div id="productColorsContainer" class="mt-4 w-full hidden flex-col items-center md:items-start transition-all duration-300">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-sm font-bold text-gray-600">اللون:</span>
+                        <span id="selectedColorName" class="text-sm font-extrabold text-primary bg-orange-50 px-3 py-1 rounded-full border border-orange-100"></span>
+                    </div>
+                    <div id="productColorSwatches" class="flex flex-wrap gap-3 justify-center md:justify-start"></div>
                 </div>
             </div>
-            <div class="md:w-1/2 flex flex-col">
+            
+            <!-- عمود التفاصيل والأزرار -->
+            <div class="md:w-1/2 flex flex-col w-full">
                 <h2 id="productModalName" class="text-xl sm:text-2xl font-extrabold mb-2"></h2>
                 <div class="flex items-center gap-2 mb-3 text-sm sm:text-base">
                     <span class="text-yellow-400"><i class="fas fa-star"></i></span>
@@ -2332,6 +2389,52 @@
         window.toastTimeout = setTimeout(() => { toast.classList.add('opacity-0'); toast.classList.remove('opacity-100'); }, 2500);
     }
     function animateCartBadge() { cartCount.classList.add('cart-badge-animate'); setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300); }
+
+    // ====== دالة ذكية لتوحيد أسماء الألوان العربية ======
+    function normalizeArabicColorName(name) {
+        if (!name) return '';
+        return name.trim()
+            .replace(/[أإآ]/g, 'ا') // توحيد الألف (أحمر -> احمر)
+            .replace(/ة/g, 'ه')      // توحيد التاء المربوطة (وردية -> ورديه)
+            .replace(/ى/g, 'ي')      // توحيد الألف المقصورة (لبنى -> لبني)
+            .toLowerCase();          // توحيد الحروف الإنجليزية
+    }
+
+    // دالة ذكية لتحويل اسم اللون إلى كود Hex تلقائياً
+    function getFallbackHex(colorName) {
+        if (!colorName) return '#CCCCCC';
+        const name = normalizeArabicColorName(colorName);
+        const colorMap = {
+            'اسود': '#1A1A1A',
+            'ابيض': '#FFFFFF',
+            'احمر': '#EF4444',
+            'ازرق': '#3B82F6',
+            'اخضر': '#22C55E',
+            'اصفر': '#EAB308',
+            'رمادي': '#6B7280',
+            'بني': '#78350F',
+            'برتقالي': '#F97316',
+            'وردي': '#EC4899',
+            'بنفسجي': '#8B5CF6',
+            'ذهبي': '#F59E0B',
+            'فضي': '#9CA3AF',
+            'black': '#1A1A1A',
+            'white': '#FFFFFF',
+            'red': '#EF4444',
+            'blue': '#3B82F6',
+            'green': '#22C55E',
+            'yellow': '#EAB308',
+            'gray': '#6B7280',
+            'grey': '#6B7280',
+            'brown': '#78350F',
+            'orange': '#F97316',
+            'pink': '#EC4899',
+            'purple': '#8B5CF6',
+            'gold': '#F59E0B',
+            'silver': '#9CA3AF'
+        };
+        return colorMap[name] || '#D1D5DB'; // لون رمادي فاتح افتراضي
+    }
 
     let autoScrollInterval = null;
     let isHoveringStores = false;
@@ -2971,7 +3074,8 @@
                 original_price: product.original_price ? parseFloat(product.original_price) : null,
                 ratting: rating,
                 store_name: product.store_name,
-                description: product.description || ''
+                description: product.description || '',
+                colors: product.colors || null // <-- تمرير الألوان
             };
 
             const card = document.createElement('div');
@@ -3009,6 +3113,26 @@
             ratingEl.className = 'store-product-rating';
             ratingEl.innerHTML = `<span>${rating}</span> <i class="fas fa-star"></i>`;
 
+            // إضافة دوائر الألوان الصغيرة على الكارت (مع الدالة الذكية)
+            if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
+                const colorDotsWrap = document.createElement('div');
+                colorDotsWrap.className = 'flex gap-1 mt-1 justify-end';
+                product.colors.slice(0, 4).forEach(c => {
+                    const dot = document.createElement('div');
+                    dot.className = 'card-color-dot';
+                    dot.style.backgroundColor = c.hex || getFallbackHex(c.name);
+                    dot.title = c.name;
+                    colorDotsWrap.appendChild(dot);
+                });
+                if (product.colors.length > 4) {
+                    const moreSpan = document.createElement('span');
+                    moreSpan.className = 'text-[10px] text-gray-400 font-bold self-center';
+                    moreSpan.textContent = `+${product.colors.length - 4}`;
+                    colorDotsWrap.appendChild(moreSpan);
+                }
+                info.appendChild(colorDotsWrap);
+            }
+
             const priceEl = document.createElement('div');
             priceEl.className = 'store-product-price';
             priceEl.textContent = `${price.toLocaleString()} ج.س`;
@@ -3044,8 +3168,21 @@
             const productForModal = {
                 id: product.id, name: product.name, img_url: product.img_url,
                 price, original_price: originalPrice, ratting: rating,
-                store_name: product.store_name, description: product.description || ''
+                store_name: product.store_name, description: product.description || '',
+                colors: product.colors || null // <-- تمرير الألوان
             };
+
+            // بناء HTML لدوائر الألوان
+            let colorDotsHTML = '';
+            if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
+                colorDotsHTML = `
+                    <div class="flex gap-1 mb-2 justify-end">
+                        ${product.colors.slice(0, 4).map(c => `<div class="card-color-dot" style="background-color:${c.hex || getFallbackHex(c.name)}" title="${c.name}"></div>`).join('')}
+                        ${product.colors.length > 4 ? `<span class="text-[10px] text-gray-400 font-bold self-center">+${product.colors.length - 4}</span>` : ''}
+                    </div>
+                `;
+            }
+
             card.innerHTML = `
                 <div class="product-image-container relative h-28 sm:h-36 md:h-40">
                     <img src="${sanitizeHTML(product.img_url) || 'https://via.placeholder.com/300'}" class="w-full h-full object-contain" loading="lazy" alt="${sanitizeHTML(product.name)}">
@@ -3059,6 +3196,7 @@
                         <span class="font-bold text-primary text-xs sm:text-sm">${price.toLocaleString()} ج.س</span>
                         ${originalPrice ? `<span class="text-xs line-through text-text-light">${originalPrice.toLocaleString()} ج.س</span>` : ''}
                     </div>
+                    ${colorDotsHTML}
                     <button class="open-product-btn w-full bg-primary text-white py-2 rounded-lg text-xs sm:text-sm hover:bg-primary-dark transition" data-product='${JSON.stringify(productForModal).replace(/'/g, "&#39;")}'>عرض المنتج</button>
                 </div>`;
             container.appendChild(card);
@@ -3071,23 +3209,102 @@
         });
     }
 
+    // ====== متغيرات نافذة المنتج ======
+    let currentModalProduct = null;
+    let selectedColorVariant = null;
+
     function openProductModal(product) {
-        productModalImage.src = product.img_url || 'https://via.placeholder.com/600';
-        productModalImage.onload = function() { this.style.objectFit = 'contain'; };
+        currentModalProduct = product;
+        selectedColorVariant = null;
+        
+        // إعداد الصورة الافتراضية
+        const defaultImg = product.img_url || 'https://via.placeholder.com/600';
+        productModalImage.src = defaultImg;
+        productModalImage.style.opacity = '1';
+        
         productModalImage.onerror = function() { this.src = 'https://via.placeholder.com/600'; };
         productModalName.textContent = product.name;
         productModalRating.textContent = product.ratting || 0;
         productModalStore.textContent = product.store_name || 'غير محدد';
         productModalPrice.textContent = `${(product.price || 0).toLocaleString()} ج.س`;
+        
         if (product.original_price) {
             productModalOriginalPrice.textContent = `${product.original_price.toLocaleString()} ج.س`;
             productModalOriginalPrice.classList.remove('hidden');
         } else {
             productModalOriginalPrice.textContent = ''; productModalOriginalPrice.classList.add('hidden');
         }
-        productModal.classList.remove('hidden'); updateBodyScroll();
-        addToCartFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
-        buyNowFromModal.dataset.product = JSON.stringify(product).replace(/'/g, "&#39;");
+
+        // ---- منطق الألوان ----
+        const colorsContainer = document.getElementById('productColorsContainer');
+        const swatchesContainer = document.getElementById('productColorSwatches');
+        const selectedColorName = document.getElementById('selectedColorName');
+        
+        swatchesContainer.innerHTML = '';
+        
+        if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
+            colorsContainer.classList.remove('hidden');
+            colorsContainer.classList.add('flex');
+            
+            // اختيار اللون الأول تلقائياً
+            selectedColorVariant = product.colors[0];
+            productModalImage.src = selectedColorVariant.image || defaultImg;
+            selectedColorName.textContent = selectedColorVariant.name;
+
+            product.colors.forEach((color, index) => {
+                const swatch = document.createElement('div');
+                
+                // استخدام كود اللون إذا وجد، أو استنتاجه من الاسم تلقائياً
+                const hexColor = color.hex || getFallbackHex(color.name);
+                const isLight = ['#ffffff', '#fff', '#f8f9fa', 'white'].includes(hexColor.toLowerCase());
+                
+                swatch.className = `color-swatch ${isLight ? 'light-color' : ''} ${index === 0 ? 'active' : ''}`;
+                swatch.style.backgroundColor = hexColor;
+                swatch.title = color.name;
+                
+                swatch.onclick = () => {
+                    if (selectedColorVariant && selectedColorVariant.name === color.name) return;
+                    
+                    // تأثير انتقال الصورة
+                    productModalImage.style.opacity = '0';
+                    setTimeout(() => {
+                        selectedColorVariant = color;
+                        productModalImage.src = color.image || defaultImg;
+                        productModalImage.onload = () => { productModalImage.style.opacity = '1'; };
+                    }, 200);
+
+                    // تحديث الواجهة
+                    document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+                    swatch.classList.add('active');
+                    selectedColorName.textContent = color.name;
+                    
+                    // تحديث بيانات الأزرار
+                    updateModalActionButtons();
+                };
+                swatchesContainer.appendChild(swatch);
+            });
+        } else {
+            colorsContainer.classList.add('hidden');
+            colorsContainer.classList.remove('flex');
+        }
+
+        productModal.classList.remove('hidden'); 
+        updateBodyScroll();
+        
+        // تحديث بيانات الأزرار لتشمل اللون المختار
+        updateModalActionButtons();
+    }
+
+    // دالة لتحديث أزرار الإضافة للسلة ببيانات اللون
+    function updateModalActionButtons() {
+        const productToSave = { ...currentModalProduct };
+        if (selectedColorVariant) {
+            productToSave.selectedColor = selectedColorVariant.name;
+            productToSave.img_url = selectedColorVariant.image || currentModalProduct.img_url;
+        }
+        const dataStr = JSON.stringify(productToSave).replace(/'/g, "&#39;");
+        addToCartFromModal.dataset.product = dataStr;
+        buyNowFromModal.dataset.product = dataStr;
     }
 
     document.getElementById('closeProductModal').addEventListener('click', () => { productModal.classList.add('hidden'); updateBodyScroll(); });
@@ -3105,17 +3322,37 @@
         const store = stores.find(s => s.name === product.store_name);
         if (store && store.whatsapp_number) whatsappNumber = store.whatsapp_number;
         if (!whatsappNumber) { showToast('رقم الواتساب غير متوفر لهذا المتجر'); return; }
-        const message = `مرحباً، أريد شراء هذا المنتج:\n\n${product.name}\nالسعر: ${(product.price || 0).toLocaleString()} ج.س\n${product.store_name ? 'من متجر: ' + product.store_name : ''}`;
+        const message = `مرحباً، أريد شراء هذا المنتج:\n\n${product.name}\n${product.selectedColor ? 'اللون: ' + product.selectedColor + '\n' : ''}السعر: ${(product.price || 0).toLocaleString()} ج.س\n${product.store_name ? 'من متجر: ' + product.store_name : ''}`;
         window.open(`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
     });
 
     function addToCart(product) {
         const store = stores.find(s => s.name === product.store_name);
-        const cartItem = { ...product, quantity: 1, store_whatsapp: store?.whatsapp_number || '' };
-        const existing = cart.find(i => i.id === product.id);
-        if (existing) existing.quantity += 1; else cart.push(cartItem);
-        updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); animateCartBadge(); showToast('تمت الإضافة إلى السلة');
+        
+        // إنشاء معرف فريد يعتمد على رقم المنتج + اللون
+        const cartItemId = product.selectedColor ? `${product.id}_${product.selectedColor}` : product.id;
+        
+        const cartItem = { 
+            ...product, 
+            cartItemId: cartItemId, 
+            quantity: 1, 
+            store_whatsapp: store?.whatsapp_number || '' 
+        };
+        
+        const existing = cart.find(i => (i.cartItemId || i.id) === cartItemId);
+        
+        if (existing) {
+            existing.quantity += 1; 
+        } else {
+            cart.push(cartItem);
+        }
+        
+        updateCartUI(); 
+        localStorage.setItem('myStoresCart', JSON.stringify(cart)); 
+        animateCartBadge(); 
+        showToast('تمت الإضافة إلى السلة');
     }
+
     function updateCartUI() {
         const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
         cartCount.textContent = totalItems; cartItems.innerHTML = '';
@@ -3124,20 +3361,22 @@
         } else {
             cart.forEach(item => {
                 const div = document.createElement('div'); div.className = 'flex items-center gap-3 p-3 border-b';
+                const itemId = item.cartItemId || item.id;
                 div.innerHTML = `
                     <img src="${sanitizeHTML(item.img_url) || 'https://via.placeholder.com/80'}" class="cart-item-image" alt="${sanitizeHTML(item.name)}" loading="lazy">
                     <div class="flex-1 min-w-0">
                         <h5 class="font-semibold text-sm truncate">${sanitizeHTML(item.name)}</h5>
-                        ${item.store_name ? `<span class="text-xs text-primary">${sanitizeHTML(item.store_name)}</span>` : ''}
+                        ${item.store_name ? `<span class="text-xs text-primary block">${sanitizeHTML(item.store_name)}</span>` : ''}
+                        ${item.selectedColor ? `<span class="text-xs text-gray-500 font-bold bg-gray-100 px-2 py-0.5 rounded mt-1 inline-block">اللون: ${sanitizeHTML(item.selectedColor)}</span>` : ''}
                         <div class="flex items-center gap-2 mt-1">
-                            <button class="decrease-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">-</button>
+                            <button class="decrease-btn w-6 h-6 rounded-full bg-gray-100" data-id="${itemId}">-</button>
                             <span>${item.quantity}</span>
-                            <button class="increase-btn w-6 h-6 rounded-full bg-gray-100" data-id="${item.id}">+</button>
+                            <button class="increase-btn w-6 h-6 rounded-full bg-gray-100" data-id="${itemId}">+</button>
                         </div>
                     </div>
                     <div class="text-left flex-shrink-0">
                         <div class="font-bold text-primary">${(item.price * item.quantity).toLocaleString()} ج.س</div>
-                        <button class="remove-btn text-red-500 mt-1" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+                        <button class="remove-btn text-red-500 mt-1" data-id="${itemId}"><i class="fas fa-trash"></i></button>
                     </div>`;
                 cartItems.appendChild(div);
             });
@@ -3148,8 +3387,19 @@
         const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
         cartTotal.querySelector('span:last-child').textContent = total.toLocaleString() + ' ج.س';
     }
-    function changeQuantity(id, delta) { const item = cart.find(i => i.id === id); if (!item) return; item.quantity = Math.max(1, item.quantity + delta); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); }
-    function removeFromCart(id) { cart = cart.filter(i => i.id !== id); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); showToast('تمت الإزالة'); }
+    function changeQuantity(id, delta) { 
+        const item = cart.find(i => (i.cartItemId || i.id) === id); 
+        if (!item) return; 
+        item.quantity = Math.max(1, item.quantity + delta); 
+        updateCartUI(); 
+        localStorage.setItem('myStoresCart', JSON.stringify(cart)); 
+    }
+    function removeFromCart(id) { 
+        cart = cart.filter(i => (i.cartItemId || i.id) !== id); 
+        updateCartUI(); 
+        localStorage.setItem('myStoresCart', JSON.stringify(cart)); 
+        showToast('تمت الإزالة'); 
+    }
     function openCart() { cartSidebar.classList.add('open'); updateBodyScroll(); }
     function closeCart() { cartSidebar.classList.remove('open'); updateBodyScroll(); }
     document.getElementById('cartButton').addEventListener('click', openCart);
@@ -3171,6 +3421,7 @@
             let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
             groupedByWhatsApp[wa].forEach(item => {
                 message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+                if (item.selectedColor) message += `اللون: ${item.selectedColor}\n`;
                 if (item.store_name) message += `من متجر: ${item.store_name}\n`;
             });
             const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
@@ -3184,6 +3435,7 @@
                     let message = 'مرحباً، أريد طلب المنتجات التالية:\n\n';
                     groupedByWhatsApp[wa].forEach(item => {
                         message += `${item.name} (x${item.quantity}) - ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+                        if (item.selectedColor) message += `اللون: ${item.selectedColor}\n`;
                         if (item.store_name) message += `من متجر: ${item.store_name}\n`;
                     });
                     const finalWa = wa === 'default' ? '0924299798' : wa;
