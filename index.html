@@ -72,14 +72,14 @@
         /* 1. صور المنتجات في الشبكة العامة (جميع المنتجات) */
         .product-image-container {
             background-color: transparent !important;
-            border-radius: 16px !important;
+            border-radius: 32px !important;
             overflow: hidden !important;
             display: flex; align-items: center; justify-content: center;
             margin: 0.5rem;
         }
         .product-image-container img {
             width: 100%; height: 100%; object-fit: contain; 
-            border-radius: 16px !important; /* تطبيق التدوير على الصورة نفسها */
+            border-radius: 32px !important; /* تطبيق التدوير على الصورة نفسها */
             transition: transform 0.3s ease;
         }
         .product-image-container img:hover { transform: scale(1.05); }
@@ -90,7 +90,7 @@
             background-color: transparent !important; /* إزالة الخلفية البيضاء */
             display: flex; align-items: center; justify-content: center;
             padding: 8px; overflow: hidden;
-            border-radius: 16px !important;
+            border-radius: 32px !important;
         }
         @media (min-width: 480px) { .store-product-img-wrap { height: 150px; } }
         @media (min-width: 640px) { .store-product-img-wrap { height: 170px; padding: 10px; } }
