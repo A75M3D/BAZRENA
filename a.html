@@ -1100,55 +1100,77 @@
         @media (min-width: 640px) { .readonly-grid { gap: 0.85rem; } }
         @media (min-width: 768px) { .readonly-grid { grid-template-columns: repeat(4, 1fr); } }
 
-        /* ====== تنسيق حقول الألوان الجديد ====== */
+        /* ============================================================
+           🎨 حقول الألوان الجديدة - تصميم متجاوب مع معاينة الصور
+           ============================================================ */
+        #productColorsContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
         .color-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            background: #F9FAFB;
+            border-radius: 14px;
+            border: 1.5px solid #E5E7EB;
+            transition: all 0.25s;
+            animation: fadeSlideIn 0.3s ease;
+            position: relative;
+        }
+        .color-row:hover {
+            border-color: #FFE0BD;
+            background: #FFFBF5;
+        }
+
+        .color-row-top {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
-            background: #F9FAFB;
-            padding: 8px;
-            border-radius: 12px;
-            border: 1.5px solid #E5E7EB;
-            animation: fadeSlideIn 0.3s ease;
         }
+
         .color-dot-preview {
-            width: 26px;
-            height: 26px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 1px #D1D5DB, 0 2px 4px rgba(0,0,0,0.1);
+            border: 2.5px solid #fff;
+            box-shadow: 0 0 0 1.5px #D1D5DB, 0 2px 6px rgba(0,0,0,0.1);
             flex-shrink: 0;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
-        .color-row input {
+        .color-dot-preview:hover { transform: scale(1.05); }
+
+        .color-name {
             flex: 1;
-            padding: 0.55rem 0.75rem;
-            border-radius: 8px;
-            border: 1.5px solid #D1D5DB;
-            font-size: 0.85rem;
+            min-width: 0;
+            padding: 0.65rem 0.85rem !important;
+            border-radius: 10px !important;
+            border: 1.5px solid #D1D5DB !important;
+            font-size: 0.9rem !important;
+            font-weight: 700 !important;
             font-family: 'Cairo', sans-serif;
-            font-weight: 600;
             color: #1A1A1A;
-            transition: all 0.2s;
+            background: #fff;
+            transition: all 0.22s;
         }
-        .color-row input:focus {
+        .color-name:focus {
             outline: none;
-            border-color: #FF7A00;
-            box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+            border-color: #FF7A00 !important;
+            box-shadow: 0 0 0 3px rgba(255,122,0,0.12) !important;
         }
-        .color-row input.color-name {
-            max-width: 110px;
-            text-align: center;
+        .color-name::placeholder {
+            color: #9CA3AF;
+            font-weight: 500;
         }
-        .color-row input.color-image {
-            flex: 2;
-            font-size: 0.75rem;
-        }
+
         .remove-color-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             background: #FEF2F2;
             color: #EF4444;
             border: none;
@@ -1156,29 +1178,149 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.22s;
             flex-shrink: 0;
+            font-size: 0.9rem;
+            -webkit-tap-highlight-color: transparent;
         }
-        .remove-color-btn:hover { background: #FEE2E2; transform: scale(1.05); }
+        .remove-color-btn:hover {
+            background: #FEE2E2;
+            transform: scale(1.05);
+        }
+        .remove-color-btn:active {
+            transform: scale(0.95);
+        }
+
+        .color-row-bottom {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .color-image {
+            flex: 1;
+            min-width: 0;
+            padding: 0.65rem 0.85rem !important;
+            border-radius: 10px !important;
+            border: 1.5px solid #D1D5DB !important;
+            font-size: 0.78rem !important;
+            font-weight: 600 !important;
+            font-family: 'Cairo', sans-serif;
+            color: #1A1A1A;
+            background: #fff;
+            transition: all 0.22s;
+            direction: ltr;
+            text-align: left;
+        }
+        .color-image:focus {
+            outline: none;
+            border-color: #FF7A00 !important;
+            box-shadow: 0 0 0 3px rgba(255,122,0,0.12) !important;
+        }
+        .color-image::placeholder {
+            color: #9CA3AF;
+            font-weight: 500;
+            font-size: 0.74rem;
+        }
+
+        .color-image-preview {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1.5px solid #E5E7EB;
+            background: #fff;
+            flex-shrink: 0;
+            display: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: opacity 0.25s;
+        }
+        .color-image-preview.visible {
+            display: block;
+            animation: fadeSlideIn 0.25s ease;
+        }
+
         #addColorBtn {
             background: #FFF7ED;
             color: #FF7A00;
             border: 1.5px dashed #FFA64D;
-            border-radius: 10px;
-            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            padding: 0.7rem 1rem;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             width: 100%;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         #addColorBtn:hover {
             background: #FFE0BD;
             border-color: #FF7A00;
+            transform: translateY(-1px);
+        }
+        #addColorBtn:active {
+            transform: translateY(0);
+        }
+
+        /* 📱 شاشات صغيرة جداً */
+        @media (max-width: 360px) {
+            .color-dot-preview { width: 36px; height: 36px; }
+            .color-image-preview { width: 40px; height: 40px; }
+            .remove-color-btn { width: 34px; height: 34px; font-size: 0.82rem; }
+            .color-name { font-size: 0.85rem !important; padding: 0.55rem 0.7rem !important; }
+            .color-image { font-size: 0.72rem !important; padding: 0.55rem 0.7rem !important; }
+        }
+
+        /* 💻 شاشات كبيرة: صف واحد أفقي مريح */
+        @media (min-width: 640px) {
+            .color-row {
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                grid-template-rows: auto auto;
+                gap: 8px 10px;
+                align-items: center;
+                padding: 12px;
+            }
+            .color-row-top {
+                grid-column: 1 / 3;
+                display: contents;
+            }
+            .color-dot-preview {
+                grid-column: 1;
+                grid-row: 1;
+                width: 46px;
+                height: 46px;
+            }
+            .color-name {
+                grid-column: 2;
+                grid-row: 1;
+            }
+            .remove-color-btn {
+                grid-column: 3;
+                grid-row: 1 / 3;
+                width: 42px;
+                height: 100%;
+                min-height: 42px;
+                align-self: stretch;
+                border-radius: 12px;
+            }
+            .color-row-bottom {
+                grid-column: 1 / 3;
+                grid-row: 2;
+                display: contents;
+            }
+            .color-image {
+                grid-column: 1 / 3;
+                grid-row: 2;
+            }
+            .color-image-preview {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -1495,19 +1637,19 @@
                                     <input type="number" id="product_ratting" class="form-input" value="0" min="0" max="5" step="0.1" dir="ltr" style="text-align: right;">
                                 </div>
 
-                                <!-- ====== قسم الألوان الجديد ====== -->
+                                <!-- ====== قسم الألوان ====== -->
                                 <div class="section-divider">
                                     <i class="fas fa-palette"></i>
                                     <span>ألوان المنتج (اختياري)</span>
                                 </div>
                                 <div class="form-group">
                                     <div id="productColorsContainer"></div>
-                                    <button type="button" id="addColorBtn" class="btn-outline">
+                                    <button type="button" id="addColorBtn">
                                         <i class="fas fa-plus-circle"></i>
                                         <span>إضافة لون جديد</span>
                                     </button>
                                     <div class="form-hint" style="margin-top: 0.5rem;">
-                                        <i class="fas fa-info-circle"></i> اكتب اسم اللون يدوياً أو اختر من القائمة المنسدلة.
+                                        <i class="fas fa-info-circle"></i> اكتب اسم اللون يدوياً أو اختر من القائمة — إذا لم يكن اللون معروفاً سيُعرض بالرمادي.
                                     </div>
                                 </div>
                                 <!-- ============================== -->
@@ -1554,40 +1696,60 @@
     </div>
 </div>
 
-<!-- ============ قائمة الألوان المنسدلة (Datalist) ============ -->
+<!-- ============ قائمة الألوان المنسدلة (مرتبة حسب العائلات) ============ -->
 <datalist id="colorList">
+    <!-- محايد -->
     <option value="أسود"></option>
-    <option value="أبيض"></option>
-    <option value="رمادي"></option>
     <option value="رمادي غامق"></option>
+    <option value="رمادي"></option>
     <option value="رمادي فاتح"></option>
+    <option value="أبيض"></option>
+    <option value="بيج"></option>
+    <option value="كريمي"></option>
+
+    <!-- الأحمر ودرجاته -->
     <option value="أحمر"></option>
+    <option value="أحمر فاتح"></option>
     <option value="أحمر غامق"></option>
+    <option value="أحمر داكن"></option>
     <option value="نبيتي"></option>
     <option value="خمري"></option>
     <option value="وردي"></option>
+
+    <!-- الأزرق ودرجاته -->
     <option value="أزرق"></option>
     <option value="أزرق فاتح"></option>
     <option value="أزرق غامق"></option>
+    <option value="أزرق داكن"></option>
     <option value="كحلي"></option>
     <option value="سماوي"></option>
     <option value="تركواز"></option>
+
+    <!-- الأخضر ودرجاته -->
     <option value="أخضر"></option>
     <option value="أخضر فاتح"></option>
     <option value="أخضر غامق"></option>
+    <option value="أخضر داكن"></option>
     <option value="زيتي"></option>
+
+    <!-- الأصفر والذهبي -->
     <option value="أصفر"></option>
     <option value="أصفر فاتح"></option>
     <option value="ذهبي"></option>
-    <option value="برتقالي"></option>
+
+    <!-- البني ودرجاته -->
     <option value="بني"></option>
     <option value="بني فاتح"></option>
     <option value="بني غامق"></option>
-    <option value="بيج"></option>
-    <option value="كريمي"></option>
+    <option value="بني داكن"></option>
+
+    <!-- البنفسجي ودرجاته -->
     <option value="بنفسجي"></option>
     <option value="موف"></option>
     <option value="لافندر"></option>
+
+    <!-- ألوان متنوعة -->
+    <option value="برتقالي"></option>
     <option value="فضي"></option>
     <option value="برونزي"></option>
 </datalist>
@@ -1806,52 +1968,145 @@ function updateHeaderLogo(store) {
 }
 
 /* ============================================================
-   🎨 دوال الألوان الذكية (تطابق منطق المتجر)
+   🎨 نظام الألوان الذكي
+   - توحيد الاسم العربي (أحمر / احمر / أحمر ==> احمر)
+   - خريطة شاملة لكل الألوان المذكورة في القائمة
+   - fallback رمادي واضح للألوان غير المعروفة
    ============================================================ */
+const UNKNOWN_COLOR_HEX = '#9CA3AF'; // رمادي متوسط واضح
+
 function normalizeArabicColorName(name) {
     if (!name) return '';
-    return name.trim()
-        .replace(/[أإآ]/g, 'ا') // توحيد الألف (أحمر -> احمر)
-        .replace(/ة/g, 'ه')      // توحيد التاء المربوطة (وردية -> ورديه)
-        .replace(/ى/g, 'ي')      // توحيد الألف المقصورة (لبنى -> لبني)
-        .toLowerCase();          // توحيد الحروف الإنجليزية
+    return String(name).trim()
+        .replace(/[أإآ]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .toLowerCase();
 }
 
 function getFallbackHex(colorName) {
-    if (!colorName) return '#CCCCCC';
+    if (!colorName) return UNKNOWN_COLOR_HEX;
     const name = normalizeArabicColorName(colorName);
-    
-    // قائمة ملونة شاملة ومحدثة
+
     const colorMap = {
-        // درجات الأسود والرمادي
-        'اسود': '#1A1A1A', 'ابيض': '#FFFFFF', 'رمادي': '#6B7280',
-        'رمادي غامق': '#374151', 'رمادي فاتح': '#9CA3AF',
-        // درجات الأحمر
-        'احمر': '#EF4444', 'احمر غامق': '#991B1B', 'نبيتي': '#7F1D1D',
-        'خمري': '#831843', 'وردي': '#EC4899',
-        // درجات الأزرق
-        'ازرق': '#3B82F6', 'ازرق فاتح': '#60A5FA', 'ازرق غامق': '#1E3A8A',
-        'كحلي': '#1E3A8A', 'سماوي': '#38BDF8', 'تركواز': '#14B8A6',
-        // درجات الأخضر
-        'اخضر': '#22C55E', 'اخضر فاتح': '#4ADE80', 'اخضر غامق': '#166534',
+        // محايد
+        'اسود': '#1A1A1A',
+        'رمادي غامق': '#374151',
+        'رمادي': '#6B7280',
+        'رمادي فاتح': '#9CA3AF',
+        'ابيض': '#FFFFFF',
+        'بيج': '#E8D5B7',
+        'كريمي': '#FFF8DC',
+
+        // الأحمر ودرجاته
+        'احمر': '#EF4444',
+        'احمر فاتح': '#F87171',
+        'احمر غامق': '#991B1B',
+        'احمر داكن': '#991B1B',
+        'نبيتي': '#7F1D1D',
+        'خمري': '#831843',
+        'وردي': '#EC4899',
+        'وردي فاتح': '#F9A8D4',
+        'وردي غامق': '#BE185D',
+
+        // الأزرق ودرجاته
+        'ازرق': '#3B82F6',
+        'ازرق فاتح': '#60A5FA',
+        'ازرق غامق': '#1E3A8A',
+        'ازرق داكن': '#1E3A8A',
+        'كحلي': '#1E3A8A',
+        'سماوي': '#38BDF8',
+        'تركواز': '#14B8A6',
+        'تركوازي': '#14B8A6',
+
+        // الأخضر ودرجاته
+        'اخضر': '#22C55E',
+        'اخضر فاتح': '#4ADE80',
+        'اخضر غامق': '#166534',
+        'اخضر داكن': '#166534',
         'زيتي': '#4D7C0F',
-        // درجات الأصفر والذهبي
-        'اصفر': '#EAB308', 'اصفر فاتح': '#FDE047', 'ذهبي': '#F59E0B',
-        // درجات البني والبيج
-        'بني': '#78350F', 'بني فاتح': '#A16207', 'بني غامق': '#451A03',
-        'بيج': '#F5F5DC', 'كريمي': '#FFFDD0',
-        // درجات البنفسجي
-        'بنفسجي': '#8B5CF6', 'موف': '#A855F7', 'لافندر': '#D8B4FE',
-        // أخرى
-        'برتقالي': '#F97316', 'فضي': '#9CA3AF', 'برونزي': '#CD7F32',
-        // اللغة الإنجليزية (للدعم الإضافي)
-        'black': '#1A1A1A', 'white': '#FFFFFF', 'red': '#EF4444', 'blue': '#3B82F6',
-        'green': '#22C55E', 'yellow': '#EAB308', 'gray': '#6B7280', 'grey': '#6B7280',
-        'brown': '#78350F', 'orange': '#F97316', 'pink': '#EC4899', 'purple': '#8B5CF6',
-        'gold': '#F59E0B', 'silver': '#9CA3AF', 'beige': '#F5F5DC', 'cream': '#FFFDD0',
-        'navy': '#1E3A8A', 'teal': '#14B8A6', 'olive': '#4D7C0F', 'maroon': '#7F1D1D'
+        'ليموني': '#A3E635',
+
+        // الأصفر والذهبي
+        'اصفر': '#EAB308',
+        'اصفر فاتح': '#FDE047',
+        'ذهبي': '#F59E0B',
+        'نحاسي': '#B87333',
+
+        // البني ودرجاته
+        'بني': '#78350F',
+        'بني فاتح': '#A16207',
+        'بني غامق': '#451A03',
+        'بني داكن': '#451A03',
+        'شوكولاتي': '#5C3A21',
+        'جملي': '#C19A6B',
+
+        // البنفسجي ودرجاته
+        'بنفسجي': '#8B5CF6',
+        'موف': '#A855F7',
+        'لافندر': '#D8B4FE',
+        'ارجواني': '#7C3AED',
+
+        // ألوان متنوعة
+        'برتقالي': '#F97316',
+        'برتقالي فاتح': '#FB923C',
+        'برتقالي غامق': '#C2410C',
+        'فضي': '#9CA3AF',
+        'برونزي': '#CD7F32',
+        'سكري': '#F5DEB3',
+
+        // English fallback
+        'black': '#1A1A1A',
+        'white': '#FFFFFF',
+        'red': '#EF4444',
+        'blue': '#3B82F6',
+        'green': '#22C55E',
+        'yellow': '#EAB308',
+        'gray': '#6B7280',
+        'grey': '#6B7280',
+        'brown': '#78350F',
+        'orange': '#F97316',
+        'pink': '#EC4899',
+        'purple': '#8B5CF6',
+        'gold': '#F59E0B',
+        'silver': '#9CA3AF',
+        'beige': '#E8D5B7',
+        'cream': '#FFF8DC',
+        'navy': '#1E3A8A',
+        'teal': '#14B8A6',
+        'olive': '#4D7C0F',
+        'maroon': '#7F1D1D'
     };
-    return colorMap[name] || '#D1D5DB'; // لون رمادي فاتح افتراضي
+
+    return colorMap[name] || UNKNOWN_COLOR_HEX;
+}
+
+/* 🎨 ترتيب عائلات الألوان لعرضها مرتّبة */
+const COLOR_FAMILY_ORDER = {
+    'اسود': 1, 'رمادي غامق': 2, 'رمادي': 3, 'رمادي فاتح': 4, 'ابيض': 5, 'بيج': 6, 'كريمي': 7, 'سكري': 8,
+    'احمر': 10, 'احمر فاتح': 11, 'احمر غامق': 12, 'احمر داكن': 12, 'نبيتي': 13, 'خمري': 14, 'وردي': 15, 'وردي فاتح': 16, 'وردي غامق': 17,
+    'ازرق': 20, 'ازرق فاتح': 21, 'ازرق غامق': 22, 'ازرق داكن': 22, 'كحلي': 23, 'سماوي': 24, 'تركواز': 25, 'تركوازي': 25,
+    'اخضر': 30, 'اخضر فاتح': 31, 'اخضر غامق': 32, 'اخضر داكن': 32, 'زيتي': 33, 'ليموني': 34,
+    'اصفر': 40, 'اصفر فاتح': 41, 'ذهبي': 42, 'نحاسي': 43,
+    'بني': 50, 'بني فاتح': 51, 'بني غامق': 52, 'بني داكن': 52, 'شوكولاتي': 53, 'جملي': 54,
+    'بنفسجي': 60, 'موف': 61, 'لافندر': 62, 'ارجواني': 63,
+    'برتقالي': 70, 'برتقالي فاتح': 71, 'برتقالي غامق': 72,
+    'فضي': 80, 'برونزي': 81
+};
+
+function getColorSortOrder(name) {
+    const normalized = normalizeArabicColorName(name);
+    return COLOR_FAMILY_ORDER[normalized] ?? 999;
+}
+
+function sortColorsByFamily(colors) {
+    if (!Array.isArray(colors)) return [];
+    return colors.slice().sort((a, b) => {
+        const oa = getColorSortOrder(a.name);
+        const ob = getColorSortOrder(b.name);
+        if (oa !== ob) return oa - ob;
+        return String(a.name || '').localeCompare(String(b.name || ''), 'ar');
+    });
 }
 
 function getSession() {
@@ -1912,7 +2167,7 @@ $('loginForm').addEventListener('submit', async (e) => {
 
         if (!verifiedFromCache) {
             const snapshot = await db.collection(storesTableName).get();
-            const freshStores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            const freshStores = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             cacheManager.set('stores_list', freshStores);
 
             foundStore = null;
@@ -2144,7 +2399,7 @@ async function loadMyProducts(forceRefresh = false) {
                 .where('store_name', '==', currentStore.name)
                 .get();
 
-            productsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            productsData = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             productsData.sort((a, b) => {
                 const ta = a.created_at?.seconds || 0;
                 const tb = b.created_at?.seconds || 0;
@@ -2176,7 +2431,7 @@ function setupRealtimeMyProductsListener() {
     productsUnsubscribe = db.collection(productsTableName)
         .where('store_name', '==', currentStore.name)
         .onSnapshot((snapshot) => {
-            const freshProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            const freshProducts = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             freshProducts.sort((a, b) => {
                 const ta = a.created_at?.seconds || 0;
                 const tb = b.created_at?.seconds || 0;
@@ -2252,14 +2507,16 @@ function renderMyProductsList(products) {
             ? `<img src="${escapeHtml(product.img_url)}" class="product-thumb" alt="${escapeHtml(product.name)}" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
             : `<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
-        // إضافة دوائر الألوان في قائمة المنتجات
+        // 🎨 دوائر الألوان (مرتبة حسب العائلة)
         let colorDotsHTML = '';
         if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
+            const sortedColors = sortColorsByFamily(product.colors);
+            const visibleColors = sortedColors.slice(0, 5);
             colorDotsHTML = `<div style="display:flex; gap:4px; align-items:center; margin-right: 6px;">` +
-                product.colors.slice(0, 4).map(c => 
-                    `<div style="width:12px;height:12px;border-radius:50%;background-color:${c.hex || getFallbackHex(c.name)};border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);" title="${escapeHtml(c.name)}"></div>`
+                visibleColors.map(c => 
+                    `<div style="width:14px;height:14px;border-radius:50%;background-color:${getFallbackHex(c.name)};border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);" title="${escapeHtml(c.name)}"></div>`
                 ).join('') + 
-                (product.colors.length > 4 ? `<span style="font-size:10px;color:#9CA3AF;font-weight:bold;">+${product.colors.length - 4}</span>` : '') +
+                (sortedColors.length > 5 ? `<span style="font-size:10px;color:#9CA3AF;font-weight:bold;">+${sortedColors.length - 5}</span>` : '') +
             `</div>`;
         }
 
@@ -2291,38 +2548,108 @@ function renderMyProductsList(products) {
 }
 
 /* ============================================================
-   🎨 إدارة حقول الألوان في النموذج (مع دعم الكتابة والقائمة المنسدلة)
+   🎨 إدارة حقول الألوان (مع معاينة صورة + توافق كامل مع الهاتف)
    ============================================================ */
 function addColorRow(name = '', image = '') {
     const container = document.getElementById('productColorsContainer');
     const row = document.createElement('div');
     row.className = 'color-row';
-    
-    // توليد كود اللون تلقائياً للمعاينة
-    const initialHex = getFallbackHex(name);
-    
+
     row.innerHTML = `
-        <div class="color-dot-preview" style="background-color: ${initialHex}" title="معاينة اللون"></div>
-        <input type="text" class="color-name" list="colorList" placeholder="اكتب أو اختر اللون" value="${escapeHtml(name)}">
-        <input type="url" class="color-image" placeholder="رابط صورة هذا اللون (https://...)" value="${escapeHtml(image)}" dir="ltr" style="text-align: left;">
-        <button type="button" class="remove-color-btn" title="حذف هذا اللون"><i class="fas fa-times"></i></button>
+        <div class="color-row-top">
+            <div class="color-dot-preview" title="معاينة اللون"></div>
+            <input type="text" class="color-name" list="colorList" placeholder="اكتب أو اختر اللون" autocomplete="off">
+            <button type="button" class="remove-color-btn" title="حذف هذا اللون" aria-label="حذف اللون">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="color-row-bottom">
+            <input type="url" class="color-image" placeholder="رابط صورة المنتج بهذا اللون (اختياري)" dir="ltr">
+            <img class="color-image-preview" alt="معاينة" onerror="this.classList.remove('visible')">
+        </div>
     `;
 
-    // تحديث دائرة المعاينة مباشرة عند كتابة اسم اللون (أو اختياره من القائمة)
     const nameInput = row.querySelector('.color-name');
+    const imageInput = row.querySelector('.color-image');
     const dotPreview = row.querySelector('.color-dot-preview');
-    
-    // نستخدم حدث input ليرصد الكتابة اليدوية والاختيار من datalist
+    const imagePreview = row.querySelector('.color-image-preview');
+    const removeBtn = row.querySelector('.remove-color-btn');
+
+    // تعيين القيم عبر الخصائص (آمن ضد HTML injection)
+    nameInput.value = name || '';
+    imageInput.value = image || '';
+
+    // تعيين لون المعاينة الأولي
+    const initialHex = getFallbackHex(name);
+    dotPreview.style.backgroundColor = initialHex;
+
+    // هل اللون معروف؟ (يستخدم لتمييز الألوان غير المعروفة)
+    const normalizedName = normalizeArabicColorName(name);
+    if (name && !COLOR_FAMILY_ORDER[normalizedName] && initialHex === UNKNOWN_COLOR_HEX) {
+        dotPreview.title = `لون غير معروف "${name}" — تم استخدام الرمادي`;
+    } else if (name) {
+        dotPreview.title = `اللون: ${name}`;
+    }
+
+    // تحديث لون الدائرة عند الكتابة أو الاختيار من القائمة
     nameInput.addEventListener('input', (e) => {
-        dotPreview.style.backgroundColor = getFallbackHex(e.target.value);
+        const value = e.target.value;
+        const hex = getFallbackHex(value);
+        dotPreview.style.backgroundColor = hex;
+
+        const norm = normalizeArabicColorName(value);
+        if (value && !COLOR_FAMILY_ORDER[norm] && hex === UNKNOWN_COLOR_HEX) {
+            dotPreview.title = `لون غير معروف "${value}" — تم استخدام الرمادي`;
+        } else if (value) {
+            dotPreview.title = `اللون: ${value}`;
+        } else {
+            dotPreview.title = 'معاينة اللون';
+        }
     });
 
-    // زر الحذف
-    row.querySelector('.remove-color-btn').addEventListener('click', () => {
-        row.remove();
+    // 📸 معاينة الصورة عند إدخال الرابط
+    imageInput.addEventListener('input', (e) => {
+        const url = e.target.value.trim();
+        if (url) {
+            imagePreview.src = url;
+            imagePreview.classList.add('visible');
+        } else {
+            imagePreview.src = '';
+            imagePreview.classList.remove('visible');
+        }
+    });
+
+    // إظهار معاينة الصورة الأولية إن وُجدت
+    if (image) {
+        imagePreview.src = image;
+        imagePreview.classList.add('visible');
+    }
+
+    // معالجة خطأ تحميل الصورة
+    imagePreview.addEventListener('error', () => {
+        imagePreview.classList.remove('visible');
+    });
+
+    // زر الحذف مع أنيميشن
+    removeBtn.addEventListener('click', () => {
+        row.style.transition = 'all 0.25s ease';
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
+        row.style.maxHeight = row.scrollHeight + 'px';
+        setTimeout(() => {
+            row.style.maxHeight = '0';
+            row.style.padding = '0';
+            row.style.marginBottom = '0';
+            setTimeout(() => row.remove(), 250);
+        }, 250);
     });
 
     container.appendChild(row);
+
+    // تمرير تلقائي لعرض الصف الجديد على الهاتف
+    setTimeout(() => {
+        row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
 }
 
 // زر إضافة لون جديد
@@ -2349,11 +2676,11 @@ $('productForm').addEventListener('submit', async (e) => {
     colorRows.forEach(row => {
         const cName = sanitizeInput(row.querySelector('.color-name').value);
         const cImage = sanitizeInput(row.querySelector('.color-image').value);
-        
+
         if (cName && cImage) {
             colors.push({ name: cName, image: cImage });
         } else if (cName || cImage) {
-            hasColorError = true; // حقول ناقصة
+            hasColorError = true;
         }
     });
 
@@ -2368,7 +2695,7 @@ $('productForm').addEventListener('submit', async (e) => {
         price: price,
         img_url: sanitizeInput($('product_img_url').value),
         ratting: toNumber($('product_ratting').value),
-        colors: colors.length > 0 ? colors : null // إضافة الألوان أو null
+        colors: colors.length > 0 ? colors : null
     };
 
     isSavingProduct = true;
@@ -2407,8 +2734,7 @@ function resetProductForm() {
     $('product_img_preview').classList.add('hidden');
     $('product_store_name').value = currentStore.name;
     $('product_store_name_display').value = currentStore.name;
-    
-    // تفريغ حاوية الألوان
+
     document.getElementById('productColorsContainer').innerHTML = '';
 }
 
@@ -2416,7 +2742,7 @@ window.editProduct = async (id) => {
     try {
         const snap = await db.collection(productsTableName).doc(id).get();
         if (!snap.exists) throw new Error('المنتج غير موجود');
-        const data = { id: snap.id, ...snap.data() };
+        const data = { ...snap.data(), id: snap.id };
 
         if (data.store_name !== currentStore.name) {
             throw new Error('لا تملك صلاحية تعديل هذا المنتج');
@@ -2435,11 +2761,12 @@ window.editProduct = async (id) => {
             $('product_img_preview').classList.add('hidden');
         }
 
-        // تعبئة الألوان
+        // تعبئة الألوان (مرتبة حسب العائلة للعرض)
         const container = document.getElementById('productColorsContainer');
         container.innerHTML = '';
-        if (data.colors && Array.isArray(data.colors)) {
-            data.colors.forEach(c => {
+        if (data.colors && Array.isArray(data.colors) && data.colors.length > 0) {
+            const sortedColors = sortColorsByFamily(data.colors);
+            sortedColors.forEach(c => {
                 addColorRow(c.name, c.image);
             });
         }
@@ -2521,7 +2848,7 @@ $('product_img_url').addEventListener('input', (e) => {
 });
 
 /* ============================================================
-   🎬 بانر imgbb + نافذة الفيديو (مع صوت كامل)
+   🎬 بانر imgbb + نافذة الفيديو
    ============================================================ */
 (function() {
     const IMGBB_TIP_KEY  = 'branzarImgbBannerDismissed';
@@ -2615,7 +2942,7 @@ async function init() {
 
             db.collection(storesTableName).doc(session.id).get().then(snap => {
                 if (snap.exists) {
-                    const freshStore = { id: snap.id, ...snap.data() };
+                    const freshStore = { ...snap.data(), id: snap.id };
                     cacheManager.set(`store_${session.id}`, freshStore);
                     if (JSON.stringify(freshStore) !== JSON.stringify(cachedStore)) {
                         currentStore = freshStore;
@@ -2635,7 +2962,7 @@ async function init() {
             $('dashboard').classList.add('hidden');
             return;
         }
-        currentStore = { id: snap.id, ...snap.data() };
+        currentStore = { ...snap.data(), id: snap.id };
         cacheManager.set(`store_${session.id}`, currentStore);
         await enterDashboard();
     } catch (err) {
