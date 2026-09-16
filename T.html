@@ -23,51 +23,35 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ============================================================
-           🔐 شاشة تسجيل الدخول - Dark Admin Theme
-           ============================================================ */
         .admin-login-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: radial-gradient(ellipse at top, #1a1a1a 0%, #0a0a0a 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 99999;
-            overflow-y: auto;
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem; z-index: 99999; overflow-y: auto;
         }
         .admin-login-overlay::before {
-            content: '';
-            position: absolute;
-            top: -180px; right: -140px;
+            content: ''; position: absolute; top: -180px; right: -140px;
             width: 480px; height: 480px; border-radius: 50%;
             background: radial-gradient(circle, rgba(255,122,0,0.28) 0%, transparent 65%);
-            pointer-events: none;
-            animation: float1 9s ease-in-out infinite;
+            pointer-events: none; animation: float1 9s ease-in-out infinite;
         }
         .admin-login-overlay::after {
-            content: '';
-            position: absolute;
-            bottom: -200px; left: -160px;
+            content: ''; position: absolute; bottom: -200px; left: -160px;
             width: 520px; height: 520px; border-radius: 50%;
             background: radial-gradient(circle, rgba(255,166,77,0.18) 0%, transparent 65%);
-            pointer-events: none;
-            animation: float2 11s ease-in-out infinite;
+            pointer-events: none; animation: float2 11s ease-in-out infinite;
         }
         @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-25px, 35px); } }
         @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(35px, -25px); } }
 
         .admin-login-card {
-            position: relative;
-            z-index: 2;
+            position: relative; z-index: 2;
             background: rgba(26,26,26,0.95);
             backdrop-filter: blur(24px);
             border: 1.5px solid rgba(255,122,0,0.28);
             border-radius: 2rem;
             padding: 2.5rem 1.75rem;
-            max-width: 440px;
-            width: 100%;
+            max-width: 440px; width: 100%;
             box-shadow: 0 30px 80px -25px rgba(255,122,0,0.55), 0 10px 40px rgba(0,0,0,0.5);
             animation: loginCardIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
         }
@@ -90,38 +74,21 @@
             0%, 100% { box-shadow: 0 16px 44px -12px rgba(255,122,0,0.85), 0 0 0 8px rgba(255,122,0,0.08); }
             50% { box-shadow: 0 20px 55px -12px rgba(255,122,0,1), 0 0 0 16px rgba(255,122,0,0.04); }
         }
-        .admin-login-title {
-            font-size: 1.5rem; font-weight: 900; color: #FFFFFF;
-            text-align: center; margin-bottom: 0.5rem;
-            letter-spacing: -0.3px;
-        }
+        .admin-login-title { font-size: 1.5rem; font-weight: 900; color: #FFFFFF; text-align: center; margin-bottom: 0.5rem; letter-spacing: -0.3px; }
         @media (min-width: 640px) { .admin-login-title { font-size: 1.75rem; } }
-        .admin-login-subtitle {
-            text-align: center; color: #9ca3af; font-size: 0.88rem;
-            margin-bottom: 1.75rem; line-height: 1.7;
-        }
+        .admin-login-subtitle { text-align: center; color: #9ca3af; font-size: 0.88rem; margin-bottom: 1.75rem; line-height: 1.7; }
         @media (min-width: 640px) { .admin-login-subtitle { font-size: 0.93rem; } }
 
         .admin-login-field { position: relative; margin-bottom: 1rem; }
-        .admin-login-field-icon {
-            position: absolute;
-            right: 1.15rem; top: 50%; transform: translateY(-50%);
-            color: #FF7A00; font-size: 1rem; pointer-events: none;
-        }
+        .admin-login-field-icon { position: absolute; right: 1.15rem; top: 50%; transform: translateY(-50%); color: #FF7A00; font-size: 1rem; pointer-events: none; }
         .admin-login-input {
-            width: 100%;
-            padding: 1rem 3.1rem 1rem 1rem;
-            border: 2px solid rgba(255,255,255,0.08);
-            border-radius: 1.1rem;
-            font-size: 0.95rem;
-            background: rgba(255,255,255,0.04);
-            color: #FFFFFF;
-            transition: all 0.25s;
-            font-weight: 600;
+            width: 100%; padding: 1rem 3.1rem 1rem 1rem;
+            border: 2px solid rgba(255,255,255,0.08); border-radius: 1.1rem;
+            font-size: 0.95rem; background: rgba(255,255,255,0.04);
+            color: #FFFFFF; transition: all 0.25s; font-weight: 600;
         }
         .admin-login-input:focus {
-            outline: none;
-            border-color: #FF7A00;
+            outline: none; border-color: #FF7A00;
             background: rgba(255,122,0,0.08);
             box-shadow: 0 0 0 5px rgba(255,122,0,0.15);
             transform: translateY(-1px);
@@ -129,152 +96,74 @@
         .admin-login-input::placeholder { color: #6b7280; font-weight: 500; }
 
         .admin-login-btn {
-            width: 100%;
-            padding: 1.05rem;
+            width: 100%; padding: 1.05rem;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
             color: #fff; border: none; border-radius: 1.1rem;
-            font-weight: 800; font-size: 1.05rem;
-            cursor: pointer;
+            font-weight: 800; font-size: 1.05rem; cursor: pointer;
             transition: all 0.25s;
             box-shadow: 0 14px 34px -10px rgba(255,122,0,0.75);
             display: flex; align-items: center; justify-content: center; gap: 10px;
             margin-top: 1.5rem;
         }
-        .admin-login-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 44px -10px rgba(255,122,0,0.9);
-        }
+        .admin-login-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 44px -10px rgba(255,122,0,0.9); }
         .admin-login-btn:active:not(:disabled) { transform: translateY(0); }
         .admin-login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .admin-login-error {
-            background: rgba(220,38,38,0.15);
-            border: 1.5px solid rgba(220,38,38,0.4);
-            color: #fca5a5;
-            padding: 0.9rem 1rem;
-            border-radius: 0.9rem;
-            font-size: 0.87rem;
-            font-weight: 700;
-            text-align: center;
-            margin-top: 1rem;
-            display: none;
-            animation: shake 0.4s;
-            line-height: 1.6;
+            background: rgba(220,38,38,0.15); border: 1.5px solid rgba(220,38,38,0.4);
+            color: #fca5a5; padding: 0.9rem 1rem; border-radius: 0.9rem;
+            font-size: 0.87rem; font-weight: 700; text-align: center;
+            margin-top: 1rem; display: none; animation: shake 0.4s; line-height: 1.6;
         }
         .admin-login-error.show { display: block; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-        .admin-login-footer {
-            text-align: center;
-            margin-top: 1.75rem;
-            padding-top: 1.5rem;
-            border-top: 1px dashed rgba(255,122,0,0.25);
-            color: #6b7280;
-            font-size: 0.82rem;
-            line-height: 1.9;
-        }
-        .admin-login-footer a {
-            color: #FF7A00; text-decoration: none; font-weight: 700;
-            transition: all 0.2s;
-            display: inline-flex; align-items: center; gap: 5px;
-        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+        .admin-login-footer { text-align: center; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px dashed rgba(255,122,0,0.25); color: #6b7280; font-size: 0.82rem; line-height: 1.9; }
+        .admin-login-footer a { color: #FF7A00; text-decoration: none; font-weight: 700; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .admin-login-footer a:hover { text-decoration: underline; }
 
-        /* ============================================================
-           🎨 لوحة التحكم - التصميم الجديد
-           ============================================================ */
-        .app-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 0 100px 0;
-            min-height: 100vh;
-        }
+        .app-container { max-width: 900px; margin: 0 auto; padding: 0 0 100px 0; min-height: 100vh; }
         @media (min-width: 1024px) { .app-container { max-width: 1200px; padding-bottom: 2rem; } }
 
-        /* Dark Admin Header */
         .app-header {
             background: linear-gradient(150deg, #1a1a1a 0%, #2d2d2d 50%, #3d2412 100%);
-            padding: 1.25rem 1.25rem 3rem;
-            border-radius: 0 0 2rem 2rem;
-            position: relative;
-            overflow: hidden;
+            padding: 1.25rem 1.25rem 3rem; border-radius: 0 0 2rem 2rem;
+            position: relative; overflow: hidden;
             box-shadow: 0 12px 30px -12px rgba(0,0,0,0.6);
         }
         @media (min-width: 640px) { .app-header { padding: 1.75rem 2rem 3.5rem; border-radius: 0 0 2.5rem 2.5rem; } }
         .app-header::before {
-            content: '';
-            position: absolute;
-            top: -80px; right: -60px;
+            content: ''; position: absolute; top: -80px; right: -60px;
             width: 260px; height: 260px; border-radius: 50%;
             background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, transparent 70%);
             pointer-events: none;
         }
         .app-header::after {
-            content: '';
-            position: absolute;
-            bottom: -120px; left: -80px;
+            content: ''; position: absolute; bottom: -120px; left: -80px;
             width: 300px; height: 300px; border-radius: 50%;
             background: radial-gradient(circle, rgba(255,166,77,0.18) 0%, transparent 70%);
             pointer-events: none;
         }
-        .header-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            z-index: 2;
-            gap: 10px;
-        }
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            min-width: 0;
-        }
+        .header-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; gap: 10px; }
+        .header-brand { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
         .header-brand-logo {
             width: 44px; height: 44px; border-radius: 14px;
             background: linear-gradient(135deg, #FF7A00, #FFA64D);
-            padding: 8px;
-            flex-shrink: 0;
+            padding: 8px; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 8px 22px -6px rgba(255,122,0,0.7);
         }
         .header-brand-logo i { color: #fff; font-size: 1.2rem; }
         .header-brand-text { min-width: 0; }
-        .header-brand-title {
-            color: #9ca3af;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-        .header-brand-subtitle {
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 900;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            line-height: 1.2;
-        }
+        .header-brand-title { color: #9ca3af; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px; }
+        .header-brand-subtitle { color: #fff; font-size: 1rem; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.2; }
         @media (min-width: 640px) { .header-brand-subtitle { font-size: 1.15rem; } }
 
         .logout-btn {
             display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(239,68,68,0.15);
-            border: 1.5px solid rgba(239,68,68,0.4);
-            color: #fca5a5;
-            padding: 0.55rem 0.9rem;
-            border-radius: 9999px;
-            font-weight: 800;
-            font-size: 0.82rem;
-            cursor: pointer;
-            transition: all 0.22s;
-            backdrop-filter: blur(10px);
-            flex-shrink: 0;
+            background: rgba(239,68,68,0.15); border: 1.5px solid rgba(239,68,68,0.4);
+            color: #fca5a5; padding: 0.55rem 0.9rem; border-radius: 9999px;
+            font-weight: 800; font-size: 0.82rem; cursor: pointer;
+            transition: all 0.22s; backdrop-filter: blur(10px); flex-shrink: 0;
         }
         .logout-btn:hover { background: rgba(239,68,68,0.25); transform: translateY(-1px); }
         .logout-btn:active { transform: translateY(0); }
@@ -283,60 +172,30 @@
 
         .connection-pill {
             display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
-            padding: 0.45rem 0.9rem;
-            border-radius: 9999px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            margin-top: 1rem;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 2;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; padding: 0.45rem 0.9rem; border-radius: 9999px;
+            font-size: 0.78rem; font-weight: 700; margin-top: 1rem;
+            backdrop-filter: blur(10px); position: relative; z-index: 2;
         }
-        .connection-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            animation: pulse 2s infinite;
-            flex-shrink: 0;
-        }
+        .connection-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
         .dot-green { background: #4ADE80; box-shadow: 0 0 10px rgba(74,222,128,0.9); }
         .dot-red { background: #F87171; box-shadow: 0 0 10px rgba(248,113,113,0.9); }
         .dot-yellow { background: #FBBF24; box-shadow: 0 0 10px rgba(251,191,36,0.9); }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        /* Main content */
-        .main-content {
-            margin-top: -2.25rem;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 3;
-        }
+        .main-content { margin-top: -2.25rem; padding: 0 1rem; position: relative; z-index: 3; }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
 
-        /* Tabs */
         .tabs-wrap {
-            background: #fff;
-            border-radius: 1.25rem;
-            padding: 0.45rem;
-            display: flex;
-            gap: 0.35rem;
+            background: #fff; border-radius: 1.25rem; padding: 0.45rem;
+            display: flex; gap: 0.35rem;
             box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04);
             margin-bottom: 1.25rem;
         }
         .tab-item {
-            flex: 1;
-            padding: 0.75rem 0.75rem;
-            border-radius: 0.95rem;
-            font-weight: 800;
-            font-size: 0.85rem;
-            border: none;
-            background: transparent;
-            color: #6B7280;
-            cursor: pointer;
+            flex: 1; padding: 0.75rem 0.75rem; border-radius: 0.95rem;
+            font-weight: 800; font-size: 0.85rem; border: none;
+            background: transparent; color: #6B7280; cursor: pointer;
             transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             white-space: nowrap;
@@ -350,208 +209,96 @@
         }
         .tab-item.active i { color: #FF7A00; }
         .tab-item .count-badge {
-            background: rgba(255,255,255,0.25);
-            color: #fff;
-            padding: 0.1rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.7rem;
-            min-width: 24px;
-            text-align: center;
-            font-weight: 900;
+            background: rgba(255,255,255,0.25); color: #fff;
+            padding: 0.1rem 0.5rem; border-radius: 9999px;
+            font-size: 0.7rem; min-width: 24px; text-align: center; font-weight: 900;
         }
-        .tab-item:not(.active) .count-badge {
-            background: #FFEDD5;
-            color: #C2410C;
-        }
+        .tab-item:not(.active) .count-badge { background: #FFEDD5; color: #C2410C; }
 
-        /* Stat cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.65rem;
-            margin-bottom: 1.25rem;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.25rem; }
         @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 0.85rem; } }
         .stat-card {
-            background: #fff;
-            border-radius: 1.25rem;
-            padding: 1rem 0.85rem;
-            border: 1.5px solid #F0F0F0;
-            transition: all 0.28s;
-            position: relative;
-            overflow: hidden;
+            background: #fff; border-radius: 1.25rem; padding: 1rem 0.85rem;
+            border: 1.5px solid #F0F0F0; transition: all 0.28s;
+            position: relative; overflow: hidden;
         }
         @media (min-width: 640px) { .stat-card { padding: 1.25rem; border-radius: 1.5rem; } }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: #FFE0BD;
-            box-shadow: 0 16px 40px -12px rgba(255,122,0,0.3);
-        }
+        .stat-card:hover { transform: translateY(-4px); border-color: #FFE0BD; box-shadow: 0 16px 40px -12px rgba(255,122,0,0.3); }
         .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -40px; right: -40px;
-            width: 100px; height: 100px;
-            border-radius: 50%;
+            content: ''; position: absolute; top: -40px; right: -40px;
+            width: 100px; height: 100px; border-radius: 50%;
             background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-            pointer-events: none;
-            opacity: 0.5;
+            pointer-events: none; opacity: 0.5;
         }
-        .stat-card-inner {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-            z-index: 2;
-        }
+        .stat-card-inner { display: flex; align-items: center; gap: 10px; position: relative; z-index: 2; }
         @media (min-width: 640px) { .stat-card-inner { gap: 14px; } }
         .stat-icon {
-            width: 42px; height: 42px;
-            border-radius: 12px;
+            width: 42px; height: 42px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1.05rem;
-            flex-shrink: 0;
+            color: #fff; font-size: 1.05rem; flex-shrink: 0;
             box-shadow: 0 8px 20px -6px rgba(0,0,0,0.25);
         }
         @media (min-width: 640px) { .stat-icon { width: 52px; height: 52px; border-radius: 14px; font-size: 1.3rem; } }
         .stat-info { min-width: 0; flex: 1; }
-        .stat-value {
-            font-size: 1.3rem; font-weight: 900; color: #1A1A1A;
-            line-height: 1;
-            letter-spacing: -0.5px;
-        }
+        .stat-value { font-size: 1.3rem; font-weight: 900; color: #1A1A1A; line-height: 1; letter-spacing: -0.5px; }
         @media (min-width: 640px) { .stat-value { font-size: 1.75rem; } }
-        .stat-label {
-            color: #6b7280; font-size: 0.68rem; font-weight: 700;
-            margin-top: 0.35rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .stat-label { color: #6b7280; font-size: 0.68rem; font-weight: 700; margin-top: 0.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         @media (min-width: 640px) { .stat-label { font-size: 0.78rem; } }
 
-        /* Card */
         .card {
-            background: #fff;
-            border-radius: 1.5rem;
+            background: #fff; border-radius: 1.5rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.03);
+            overflow: hidden; border: 1px solid rgba(0,0,0,0.03);
         }
         .card-body { padding: 1rem; }
         @media (min-width: 640px) { .card-body { padding: 1.5rem; } }
 
-        /* Filter bar */
-        .filter-bar {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-bottom: 1.25rem;
-        }
-        @media (min-width: 640px) {
-            .filter-bar {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                gap: 1rem;
-            }
-        }
-        .filter-input-wrap {
-            position: relative;
-            flex: 1;
-            min-width: 0;
-        }
-        .filter-input-icon {
-            position: absolute;
-            right: 1rem; top: 50%; transform: translateY(-50%);
-            color: #9ca3af; font-size: 0.9rem;
-            pointer-events: none;
-        }
+        .filter-bar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+        @media (min-width: 640px) { .filter-bar { flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem; } }
+        .filter-input-wrap { position: relative; flex: 1; min-width: 0; }
+        .filter-input-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.9rem; pointer-events: none; }
         .filter-input {
-            width: 100%;
-            padding: 0.85rem 2.75rem 0.85rem 1rem;
-            border: 1.5px solid #E5E7EB;
-            border-radius: 0.9rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.22s;
-            background: #fff;
-            color: #1A1A1A;
+            width: 100%; padding: 0.85rem 2.75rem 0.85rem 1rem;
+            border: 1.5px solid #E5E7EB; border-radius: 0.9rem;
+            font-size: 0.9rem; font-weight: 600; transition: all 0.22s;
+            background: #fff; color: #1A1A1A;
         }
-        .filter-input:focus {
-            outline: none;
-            border-color: #FF7A00;
-            box-shadow: 0 0 0 4px rgba(255,122,0,0.1);
-        }
+        .filter-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
         .filter-select {
-            padding: 0.85rem 1rem;
-            border: 1.5px solid #E5E7EB;
-            border-radius: 0.9rem;
-            font-size: 0.9rem;
-            font-weight: 700;
-            transition: all 0.22s;
-            background: #fff;
-            color: #1A1A1A;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            width: 100%;
+            padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB;
+            border-radius: 0.9rem; font-size: 0.9rem; font-weight: 700;
+            transition: all 0.22s; background: #fff; color: #1A1A1A;
+            cursor: pointer; font-family: 'Cairo', sans-serif; width: 100%;
         }
         @media (min-width: 640px) { .filter-select { min-width: 200px; width: auto; } }
-        .filter-select:focus {
-            outline: none;
-            border-color: #FF7A00;
-            box-shadow: 0 0 0 4px rgba(255,122,0,0.1);
-        }
+        .filter-select:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
 
         .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             padding: 0.85rem 1.25rem;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-            border: none;
-            border-radius: 0.9rem;
-            font-weight: 800;
-            font-size: 0.88rem;
-            cursor: pointer;
+            color: #fff; border: none; border-radius: 0.9rem;
+            font-weight: 800; font-size: 0.88rem; cursor: pointer;
             transition: all 0.25s;
             box-shadow: 0 12px 28px -10px rgba(255,122,0,0.7);
-            font-family: 'Cairo', sans-serif;
-            white-space: nowrap;
+            font-family: 'Cairo', sans-serif; white-space: nowrap;
         }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 34px -10px rgba(255,122,0,0.9);
-        }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(255,122,0,0.9); }
         .btn-primary:active:not(:disabled) { transform: translateY(0); }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
 
-        /* Admin Cards - Mobile-friendly */
         .items-list { display: flex; flex-direction: column; gap: 0.75rem; }
         .item-card {
-            background: #fff;
-            border: 1.5px solid #F3F4F6;
-            border-radius: 1.1rem;
-            padding: 0.9rem;
-            display: flex;
-            gap: 0.85rem;
-            transition: all 0.22s;
+            background: #fff; border: 1.5px solid #F3F4F6;
+            border-radius: 1.1rem; padding: 0.9rem;
+            display: flex; gap: 0.85rem; transition: all 0.22s;
             position: relative;
         }
         @media (min-width: 640px) { .item-card { padding: 1rem 1.15rem; } }
-        .item-card:hover {
-            border-color: #FFE0BD;
-            box-shadow: 0 8px 24px -10px rgba(255,122,0,0.3);
-            transform: translateY(-2px);
-        }
+        .item-card:hover { border-color: #FFE0BD; box-shadow: 0 8px 24px -10px rgba(255,122,0,0.3); transform: translateY(-2px); }
         .item-thumb {
-            width: 56px; height: 56px;
-            border-radius: 0.9rem;
-            object-fit: cover;
-            background: #F9FAFB;
-            flex-shrink: 0;
+            width: 56px; height: 56px; border-radius: 0.9rem;
+            object-fit: cover; background: #F9FAFB; flex-shrink: 0;
             border: 1px solid #F0F0F0;
         }
         @media (min-width: 640px) { .item-thumb { width: 68px; height: 68px; border-radius: 1rem; } }
@@ -560,34 +307,14 @@
             color: #D1D5DB; font-size: 1.4rem;
         }
         .item-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.35rem; }
-        .item-name {
-            font-weight: 900;
-            font-size: 0.92rem;
-            color: #1A1A1A;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        .item-name { font-weight: 900; font-size: 0.92rem; color: #1A1A1A; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         @media (min-width: 640px) { .item-name { font-size: 1rem; } }
-        .item-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem 0.75rem;
-            align-items: center;
-            font-size: 0.75rem;
-            color: #6B7280;
-            font-weight: 700;
-        }
+        .item-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 0.75rem; align-items: center; font-size: 0.75rem; color: #6B7280; font-weight: 700; }
         @media (min-width: 640px) { .item-meta { font-size: 0.8rem; } }
         .meta-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 0.2rem 0.55rem;
-            border-radius: 9999px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            white-space: nowrap;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 0.2rem 0.55rem; border-radius: 9999px;
+            font-size: 0.7rem; font-weight: 800; white-space: nowrap;
         }
         .meta-pill-cat { background: #F3F4F6; color: #4B5563; }
         .meta-pill-count { background: #EFF6FF; color: #1E40AF; }
@@ -596,22 +323,11 @@
         .meta-pill-price { background: #FFF7ED; color: #E06B00; }
         .meta-pill-rating { background: #FEF3C7; color: #92400E; }
 
-        .item-actions {
-            display: flex;
-            gap: 0.35rem;
-            flex-shrink: 0;
-            align-items: flex-start;
-        }
+        .item-actions { display: flex; gap: 0.35rem; flex-shrink: 0; align-items: flex-start; }
         .icon-btn {
-            width: 36px; height: 36px;
-            border-radius: 0.75rem;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.22s;
-            font-size: 0.82rem;
+            width: 36px; height: 36px; border-radius: 0.75rem; border: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.22s; font-size: 0.82rem;
         }
         @media (min-width: 640px) { .icon-btn { width: 40px; height: 40px; font-size: 0.88rem; } }
         .icon-btn-edit { background: #EFF6FF; color: #3B82F6; }
@@ -621,52 +337,28 @@
         .icon-btn-delete { background: #FEF2F2; color: #EF4444; }
         .icon-btn-delete:hover { background: #FEE2E2; transform: scale(1.05); }
 
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 2.5rem 1rem;
-        }
+        .empty-state { text-align: center; padding: 2.5rem 1rem; }
         .empty-state-icon {
-            width: 80px; height: 80px;
-            margin: 0 auto 1rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
+            width: 80px; height: 80px; margin: 0 auto 1rem;
+            border-radius: 50%; background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
             display: flex; align-items: center; justify-content: center;
-            font-size: 2rem;
-            color: #FFA64D;
+            font-size: 2rem; color: #FFA64D;
         }
-        .empty-state-title {
-            font-size: 1rem;
-            font-weight: 900;
-            color: #374151;
-            margin-bottom: 0.35rem;
-        }
-        .empty-state-text {
-            font-size: 0.82rem;
-            color: #9CA3AF;
-            font-weight: 600;
-        }
+        .empty-state-title { font-size: 1rem; font-weight: 900; color: #374151; margin-bottom: 0.35rem; }
+        .empty-state-text { font-size: 0.82rem; color: #9CA3AF; font-weight: 600; }
 
-        /* Modal */
         .modal-overlay {
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
             display: flex; align-items: flex-start; justify-content: center;
-            padding: 1rem;
-            z-index: 99998;
-            overflow-y: auto;
+            padding: 1rem; z-index: 99998; overflow-y: auto;
             animation: fadeIn 0.22s;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content {
-            background: #FFFFFF;
-            border-radius: 1.5rem;
-            max-width: 640px;
-            width: 100%;
-            padding: 1.5rem;
-            margin-top: 2vh;
-            margin-bottom: 2vh;
+            background: #FFFFFF; border-radius: 1.5rem;
+            max-width: 640px; width: 100%; padding: 1.5rem;
+            margin-top: 2vh; margin-bottom: 2vh;
             animation: modalIn 0.32s cubic-bezier(0.34,1.56,0.64,1);
             box-shadow: 0 30px 80px -20px rgba(0,0,0,0.5);
         }
@@ -677,177 +369,87 @@
         }
         .modal-header {
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #F3F4F6;
-            gap: 12px;
+            margin-bottom: 1.5rem; padding-bottom: 1rem;
+            border-bottom: 2px solid #F3F4F6; gap: 12px;
         }
-        .modal-header-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-        }
+        .modal-header-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
         .modal-header-icon {
-            width: 42px; height: 42px;
-            border-radius: 12px;
+            width: 42px; height: 42px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1.1rem;
-            flex-shrink: 0;
+            color: #fff; font-size: 1.1rem; flex-shrink: 0;
             box-shadow: 0 6px 16px -4px rgba(0,0,0,0.25);
         }
-        .modal-header-text {
-            font-size: 1.05rem;
-            font-weight: 900;
-            color: #1A1A1A;
-            line-height: 1.2;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        .modal-header-text { font-size: 1.05rem; font-weight: 900; color: #1A1A1A; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         @media (min-width: 640px) { .modal-header-text { font-size: 1.25rem; } }
         .modal-close {
             width: 38px; height: 38px; border-radius: 50%;
             background: #F3F4F6; border: none; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            color: #6b7280; transition: all 0.25s;
-            flex-shrink: 0;
+            color: #6b7280; transition: all 0.25s; flex-shrink: 0;
         }
         .modal-close:hover { background: #EF4444; color: #fff; transform: rotate(90deg); }
 
-        /* Form */
         .form-group { margin-bottom: 1rem; }
-        .form-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.83rem;
-            font-weight: 800;
-            color: #374151;
-            margin-bottom: 0.45rem;
-        }
+        .form-label { display: flex; align-items: center; gap: 6px; font-size: 0.83rem; font-weight: 800; color: #374151; margin-bottom: 0.45rem; }
         @media (min-width: 640px) { .form-label { font-size: 0.88rem; } }
         .form-label i { color: #FF7A00; font-size: 0.78rem; }
         .form-label .req { color: #EF4444; }
         .form-input {
-            width: 100%;
-            padding: 0.85rem 1rem;
-            border: 1.5px solid #E5E7EB;
-            border-radius: 0.9rem;
-            font-size: 0.92rem;
-            font-weight: 600;
-            transition: all 0.22s;
-            background: #fff;
-            color: #1A1A1A;
-            font-family: 'Cairo', sans-serif;
+            width: 100%; padding: 0.85rem 1rem;
+            border: 1.5px solid #E5E7EB; border-radius: 0.9rem;
+            font-size: 0.92rem; font-weight: 600; transition: all 0.22s;
+            background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif;
         }
         @media (min-width: 640px) { .form-input { padding: 0.9rem 1.1rem; font-size: 0.95rem; } }
-        .form-input:focus {
-            outline: none;
-            border-color: #FF7A00;
-            box-shadow: 0 0 0 4px rgba(255,122,0,0.1);
-        }
+        .form-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
         .form-input::placeholder { color: #9CA3AF; font-weight: 500; }
-        .form-hint {
-            font-size: 0.72rem;
-            color: #6B7280;
-            margin-top: 0.35rem;
-            line-height: 1.6;
-            font-weight: 600;
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-        }
+        .form-hint { font-size: 0.72rem; color: #6B7280; margin-top: 0.35rem; line-height: 1.6; font-weight: 600; }
+        .form-row { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
         @media (min-width: 640px) { .form-row { grid-template-columns: 1fr 1fr; } }
 
         .checkbox-wrap {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 0.85rem 1rem;
-            background: #FFF7ED;
-            border: 1.5px solid #FFE0BD;
-            border-radius: 0.9rem;
-            cursor: pointer;
-            transition: all 0.22s;
+            display: flex; align-items: center; gap: 10px;
+            padding: 0.85rem 1rem; background: #FFF7ED;
+            border: 1.5px solid #FFE0BD; border-radius: 0.9rem;
+            cursor: pointer; transition: all 0.22s;
         }
         .checkbox-wrap:hover { background: #FFF1E0; }
-        .checkbox-wrap input[type="checkbox"] {
-            width: 20px; height: 20px;
-            cursor: pointer;
-            accent-color: #FF7A00;
-            flex-shrink: 0;
-        }
-        .checkbox-wrap span {
-            font-weight: 800;
-            font-size: 0.88rem;
-            color: #92400E;
-        }
+        .checkbox-wrap input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #FF7A00; flex-shrink: 0; }
+        .checkbox-wrap span { font-weight: 800; font-size: 0.88rem; color: #92400E; }
 
         .image-preview {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 0.9rem;
-            margin-top: 0.65rem;
-            border: 1.5px solid #F0F0F0;
-            background: #F9FAFB;
+            width: 100%; height: 140px; object-fit: cover;
+            border-radius: 0.9rem; margin-top: 0.65rem;
+            border: 1.5px solid #F0F0F0; background: #F9FAFB;
+            display: block;
         }
         @media (min-width: 640px) { .image-preview { height: 170px; } }
 
-        /* Buttons in modal */
         .btn-row { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
         .btn-row .btn-primary { flex: 1; }
         .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 0.85rem 1.25rem;
-            background: #F3F4F6;
-            color: #4B5563;
-            border: none;
-            border-radius: 0.9rem;
-            font-weight: 800;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: all 0.22s;
-            font-family: 'Cairo', sans-serif;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 0.85rem 1.25rem; background: #F3F4F6;
+            color: #4B5563; border: none; border-radius: 0.9rem;
+            font-weight: 800; font-size: 0.88rem; cursor: pointer;
+            transition: all 0.22s; font-family: 'Cairo', sans-serif;
         }
         .btn-secondary:hover { background: #E5E7EB; }
 
-        .btn-loading {
-            opacity: 0.7 !important;
-            cursor: not-allowed !important;
-            pointer-events: none !important;
-        }
+        .btn-loading { opacity: 0.7 !important; cursor: not-allowed !important; pointer-events: none !important; }
 
-        /* Toast */
         .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
+            position: fixed; top: 20px; left: 50%;
             transform: translateX(-50%) translateY(-100px);
-            background: #1F2937;
-            color: #fff;
-            padding: 0.9rem 1.5rem;
-            border-radius: 0.9rem;
-            z-index: 999999;
-            opacity: 0;
+            background: #1F2937; color: #fff;
+            padding: 0.9rem 1.5rem; border-radius: 0.9rem;
+            z-index: 999999; opacity: 0;
             transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-            pointer-events: none;
-            font-weight: 800;
-            font-size: 0.88rem;
+            pointer-events: none; font-weight: 800; font-size: 0.88rem;
             box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
-            max-width: calc(100% - 32px);
-            text-align: center;
+            max-width: calc(100% - 32px); text-align: center;
         }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .hidden { display: none !important; }
         .tab-content { animation: fadeSlideIn 0.35s ease; }
@@ -856,8 +458,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
         button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-            outline: 2px solid #FF7A00;
-            outline-offset: 2px;
+            outline: 2px solid #FF7A00; outline-offset: 2px;
         }
 
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
@@ -867,20 +468,15 @@
 </head>
 <body>
 
-<!-- ============================================================
-     🔐 شاشة تسجيل الدخول
-     ============================================================ -->
+<!-- Login Overlay -->
 <div id="adminLoginOverlay" class="admin-login-overlay">
     <div class="admin-login-card">
-        <div class="admin-shield-icon">
-            <i class="fas fa-shield-halved"></i>
-        </div>
+        <div class="admin-shield-icon"><i class="fas fa-shield-halved"></i></div>
         <h1 class="admin-login-title">لوحة تحكم الأدمن</h1>
         <p class="admin-login-subtitle">
             الدخول مخصص لإدارة منصة بازارِنا فقط<br>
             إدارة كاملة للمتاجر والمنتجات
         </p>
-
         <form id="adminLoginForm" autocomplete="off">
             <div class="admin-login-field">
                 <input type="email" id="adminEmail" class="admin-login-input" placeholder="البريد الإلكتروني" required autocomplete="off" spellcheck="false" dir="ltr" style="text-align: right;">
@@ -890,15 +486,12 @@
                 <input type="password" id="adminPassword" class="admin-login-input" placeholder="كلمة المرور" required autocomplete="off">
                 <i class="fas fa-lock admin-login-field-icon"></i>
             </div>
-
             <div id="adminLoginError" class="admin-login-error"></div>
-
             <button type="submit" id="adminLoginBtn" class="admin-login-btn">
                 <i class="fas fa-sign-in-alt"></i>
                 <span>دخول آمن</span>
             </button>
         </form>
-
         <div class="admin-login-footer">
             <i class="fas fa-lock"></i> منطقة محظورة — الوصول مصرّح به فقط للإدارة
             <br>
@@ -909,21 +502,14 @@
     </div>
 </div>
 
-<!-- ============================================================
-     🎛️ لوحة التحكم
-     ============================================================ -->
+<!-- Dashboard -->
 <div id="adminDashboard" class="hidden">
     <div id="toast" class="toast"></div>
-
     <div class="app-container">
-
-        <!-- Header -->
         <div class="app-header">
             <div class="header-top">
                 <div class="header-brand">
-                    <div class="header-brand-logo">
-                        <i class="fas fa-shield-halved"></i>
-                    </div>
+                    <div class="header-brand-logo"><i class="fas fa-shield-halved"></i></div>
                     <div class="header-brand-text">
                         <div class="header-brand-title">لوحة الأدمن</div>
                         <div class="header-brand-subtitle" id="adminEmailDisplay">Admin</div>
@@ -934,23 +520,17 @@
                     <span>خروج</span>
                 </button>
             </div>
-
             <div class="connection-pill">
                 <span id="connectionStatusDot" class="connection-dot dot-yellow"></span>
                 <span id="connectionStatusText">جارٍ فحص الاتصال...</span>
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
-
-            <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card" style="--glow-color: rgba(255,122,0,0.4);">
                     <div class="stat-card-inner">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #FF7A00, #FFA64D);">
-                            <i class="fas fa-store"></i>
-                        </div>
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #FF7A00, #FFA64D);"><i class="fas fa-store"></i></div>
                         <div class="stat-info">
                             <div class="stat-value" id="statStoresCount">0</div>
                             <div class="stat-label">إجمالي المتاجر</div>
@@ -959,9 +539,7 @@
                 </div>
                 <div class="stat-card" style="--glow-color: rgba(59,130,246,0.4);">
                     <div class="stat-card-inner">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">
-                            <i class="fas fa-box"></i>
-                        </div>
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);"><i class="fas fa-box"></i></div>
                         <div class="stat-info">
                             <div class="stat-value" id="statProductsCount">0</div>
                             <div class="stat-label">إجمالي المنتجات</div>
@@ -970,9 +548,7 @@
                 </div>
                 <div class="stat-card" style="--glow-color: rgba(16,185,129,0.4);">
                     <div class="stat-card-inner">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #34d399);"><i class="fas fa-check-circle"></i></div>
                         <div class="stat-info">
                             <div class="stat-value" id="statVerifiedCount">0</div>
                             <div class="stat-label">موثّقة</div>
@@ -981,9 +557,7 @@
                 </div>
                 <div class="stat-card" style="--glow-color: rgba(245,158,11,0.4);">
                     <div class="stat-card-inner">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
-                            <i class="fas fa-star"></i>
-                        </div>
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);"><i class="fas fa-star"></i></div>
                         <div class="stat-info">
                             <div class="stat-value" id="statAvgRating">0.0</div>
                             <div class="stat-label">متوسط التقييم</div>
@@ -992,7 +566,6 @@
                 </div>
             </div>
 
-            <!-- Tabs -->
             <div class="tabs-wrap">
                 <button id="tabStores" class="tab-item active">
                     <i class="fas fa-store"></i>
@@ -1006,7 +579,6 @@
                 </button>
             </div>
 
-            <!-- Stores Section -->
             <div id="storesSection" class="tab-content">
                 <div class="card">
                     <div class="card-body">
@@ -1025,7 +597,6 @@
                 </div>
             </div>
 
-            <!-- Products Section -->
             <div id="productsSection" class="tab-content hidden">
                 <div class="card">
                     <div class="card-body">
@@ -1046,14 +617,11 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
-<!-- ============================================================
-     🏪 Modal: Store
-     ============================================================ -->
+<!-- Store Modal -->
 <div id="storeModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
@@ -1063,14 +631,11 @@
                 </div>
                 <div class="modal-header-text" id="storeModalTitle">إضافة متجر جديد</div>
             </div>
-            <button class="modal-close" onclick="closeStoreModal()">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="modal-close" onclick="closeStoreModal()"><i class="fas fa-times"></i></button>
         </div>
 
         <form id="storeForm">
             <input type="hidden" id="store_id">
-            <!-- 🆕 حقل مخفي: يخزن الاسم الأصلي للمتجر عند التعديل -->
             <input type="hidden" id="store_original_name">
 
             <div class="form-group">
@@ -1112,15 +677,15 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-image"></i><span>رابط الشعار</span></label>
+                <label class="form-label"><i class="fas fa-image"></i><span>رابط الشعار (Logo)</span></label>
                 <input type="url" id="store_logo" class="form-input" placeholder="https://example.com/logo.png" dir="ltr" style="text-align: left;">
-                <img id="store_logo_preview" class="image-preview hidden" alt="معاينة" onerror="this.style.display='none'">
+                <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار" onerror="this.classList.add('hidden')">
             </div>
 
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-panorama"></i><span>رابط الغلاف</span></label>
+                <label class="form-label"><i class="fas fa-panorama"></i><span>رابط الغلاف (Cover)</span></label>
                 <input type="url" id="store_cover" class="form-input" placeholder="https://example.com/cover.png" dir="ltr" style="text-align: left;">
-                <img id="store_cover_preview" class="image-preview hidden" alt="معاينة" onerror="this.style.display='none'">
+                <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.classList.add('hidden')">
             </div>
 
             <div class="form-row">
@@ -1148,21 +713,15 @@
     </div>
 </div>
 
-<!-- ============================================================
-     📦 Modal: Product
-     ============================================================ -->
+<!-- Product Modal -->
 <div id="productModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
             <div class="modal-header-title">
-                <div class="modal-header-icon" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">
-                    <i class="fas fa-box"></i>
-                </div>
+                <div class="modal-header-icon" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);"><i class="fas fa-box"></i></div>
                 <div class="modal-header-text" id="productModalTitle">إضافة منتج جديد</div>
             </div>
-            <button class="modal-close" onclick="closeProductModal()">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="modal-close" onclick="closeProductModal()"><i class="fas fa-times"></i></button>
         </div>
 
         <form id="productForm">
@@ -1194,7 +753,7 @@
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-image"></i><span>رابط الصورة</span></label>
                 <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
-                <img id="product_img_preview" class="image-preview hidden" alt="معاينة" onerror="this.style.display='none'">
+                <img id="product_img_preview" class="image-preview hidden" alt="معاينة الصورة" onerror="this.classList.add('hidden')">
             </div>
 
             <div class="btn-row">
@@ -1208,14 +767,15 @@
     </div>
 </div>
 
-<!-- ============================================================
-     🔥 Firebase Scripts
-     ============================================================ -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
+// ============================================================
+// 🔥 Firebase Config
+// ============================================================
 const firebaseConfig = {
     apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
     authDomain: "bazarena-725e4.firebaseapp.com",
@@ -1233,10 +793,10 @@ const STORES_COLLECTION = 'stores';
 const PRODUCTS_COLLECTION = 'products';
 
 // ============================================================
-// 🗄️ نظام الكاش - 100 ساعة
+// 🗄️ Cache - 100 hours
 // ============================================================
-const CACHE_DURATION = 100 * 60 * 60 * 1000; // ⏱️ 100 ساعة
-const CACHE_PREFIX = 'bazrena_admin_cache_';
+const CACHE_DURATION = 100 * 60 * 60 * 1000;
+const CACHE_PREFIX = 'bazrena_admin_cache_v2_';
 
 const cacheManager = {
     set(key, value) {
@@ -1245,29 +805,27 @@ const cacheManager = {
                 timestamp: Date.now(),
                 value: value
             }));
-        } catch (e) { console.warn('⚠️ فشل حفظ الكاش:', e); }
+        } catch (e) { console.warn('⚠️ Cache write failed:', e); }
     },
     get(key) {
         try {
             const raw = localStorage.getItem(CACHE_PREFIX + key);
             if (!raw) return null;
-            const cacheData = JSON.parse(raw);
-            if (Date.now() - cacheData.timestamp > CACHE_DURATION) {
+            const data = JSON.parse(raw);
+            if (Date.now() - data.timestamp > CACHE_DURATION) {
                 localStorage.removeItem(CACHE_PREFIX + key);
                 return null;
             }
-            return cacheData.value;
+            return data.value;
         } catch (e) { return null; }
     },
     getAge(key) {
         try {
             const raw = localStorage.getItem(CACHE_PREFIX + key);
             if (!raw) return -1;
-            const cacheData = JSON.parse(raw);
-            return Math.floor((Date.now() - cacheData.timestamp) / 60000);
+            return Math.floor((Date.now() - JSON.parse(raw).timestamp) / 60000);
         } catch (e) { return -1; }
     },
-    remove(key) { localStorage.removeItem(CACHE_PREFIX + key); },
     clearAll() {
         Object.keys(localStorage)
             .filter(k => k.startsWith(CACHE_PREFIX))
@@ -1276,31 +834,20 @@ const cacheManager = {
 };
 
 // ============================================================
-// 🔑 بصمة شاملة: تعتمد على البيانات كاملة وليس الـ ID فقط
-//    ⚠️ هذا يُتيح كشف تعديلات المحتوى (update) وليس فقط الإضافة/الحذف
+// 🧬 Fingerprint - كشف كل تغييرات المحتوى
 // ============================================================
 function getFingerprint(items) {
     if (!Array.isArray(items) || items.length === 0) return 'empty';
-
-    return items
-        .map(item => {
-            const keys = Object.keys(item).sort();
-            const parts = keys.map(k => {
-                let v = item[k];
-                // معالجة Firestore Timestamp (يعمل مع الكاش والقراءة المباشرة)
-                if (v && typeof v === 'object' && 'seconds' in v) {
-                    v = v.seconds;
-                }
-                // معالجة القيم المركّبة الأخرى
-                if (v && typeof v === 'object') {
-                    v = JSON.stringify(v);
-                }
-                return k + ':' + String(v);
-            });
-            return parts.join('~');
-        })
-        .sort()
-        .join('||');
+    return items.map(item => {
+        const keys = Object.keys(item).sort();
+        const parts = keys.map(k => {
+            let v = item[k];
+            if (v && typeof v === 'object' && 'seconds' in v) v = v.seconds;
+            else if (v && typeof v === 'object') v = JSON.stringify(v);
+            return k + ':' + String(v);
+        });
+        return parts.join('~');
+    }).sort().join('||');
 }
 
 // ============================================================
@@ -1311,16 +858,25 @@ let allProducts = [];
 let filteredStores = [];
 let filteredProducts = [];
 let adminUser = '';
+
 let isSavingStore = false;
 let isSavingProduct = false;
 
-// 🆕 Realtime listeners
+// 🛡️ Guards ضد التهيئة المزدوجة
+let dashboardInitialized = false;
+let listenersSetup = false;
+
+// 📡 Realtime listeners
 let storesUnsubscribe = null;
 let productsUnsubscribe = null;
 let isFirstStoresSnapshot = true;
 let isFirstProductsSnapshot = true;
 let lastStoresFingerprint = '';
 let lastProductsFingerprint = '';
+
+// 🎯 Suppression - لا تظهر رسائل الـ listener أثناء الكتابة اليدوية
+let suppressStoresToast = false;
+let suppressProductsToast = false;
 
 const $ = id => document.getElementById(id);
 
@@ -1347,6 +903,7 @@ function escapeHtml(str) {
 }
 function showToast(msg, type = 'success') {
     const t = $('toast');
+    if (!t) return;
     t.textContent = msg;
     t.className = 'toast show';
     t.style.background = type === 'error'
@@ -1358,6 +915,7 @@ function showToast(msg, type = 'success') {
     window._toastT = setTimeout(() => t.classList.remove('show'), 3500);
 }
 function setBtnLoading(btn, loading, text, normal) {
+    if (!btn) return;
     if (loading) {
         btn.disabled = true;
         btn.classList.add('btn-loading');
@@ -1371,6 +929,7 @@ function setBtnLoading(btn, loading, text, normal) {
 function updateConnectionStatus(ok, msg) {
     const dot = $('connectionStatusDot');
     const txt = $('connectionStatusText');
+    if (!dot || !txt) return;
     if (ok) {
         dot.className = 'connection-dot dot-green';
         txt.textContent = 'متصل ' + (msg ? '• ' + msg : '');
@@ -1388,7 +947,7 @@ async function verifyAdminAccess() {
         await db.collection('admin').doc('config').get();
         return true;
     } catch (err) {
-        console.warn('Admin verification failed:', err.code);
+        console.warn('⚠️ Admin verification failed:', err.code);
         return false;
     }
 }
@@ -1414,10 +973,8 @@ $('adminLoginForm').addEventListener('submit', async (e) => {
     setBtnLoading($('adminLoginBtn'), true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>دخول آمن</span>');
 
     try {
-        const userCredential = await firebase.auth()
-            .signInWithEmailAndPassword(email, password);
-
-        adminUser = userCredential.user.email;
+        const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+        adminUser = cred.user.email;
 
         const isAdmin = await verifyAdminAccess();
         if (!isAdmin) {
@@ -1448,28 +1005,34 @@ $('adminLoginForm').addEventListener('submit', async (e) => {
 
 $('adminLogoutBtn').addEventListener('click', async () => {
     if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
-    // إيقاف المراقبة
     if (storesUnsubscribe) { storesUnsubscribe(); storesUnsubscribe = null; }
     if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
+    listenersSetup = false;
     try { await firebase.auth().signOut(); } catch (e) {}
     location.reload();
 });
 
 // ============================================================
-// 🚀 Dashboard Entry
+// 🚀 Dashboard Entry (محمي ضد الاستدعاء المزدوج)
 // ============================================================
 async function enterDashboard() {
+    if (dashboardInitialized) return;
+    dashboardInitialized = true;
+
     $('adminLoginOverlay').classList.add('hidden');
     $('adminDashboard').classList.remove('hidden');
     $('adminEmailDisplay').textContent = adminUser;
 
     await loadAllData();
+    setupAllListeners();
+    updateConnectionStatus(true, 'متصل بقاعدة البيانات');
+}
 
-    // 🆕 بدء المراقبة الحية
+function setupAllListeners() {
+    if (listenersSetup) return;
+    listenersSetup = true;
     setupRealtimeStoresListener();
     setupRealtimeProductsListener();
-
-    updateConnectionStatus(true, 'متصل بقاعدة البيانات');
 }
 
 // ============================================================
@@ -1477,51 +1040,43 @@ async function enterDashboard() {
 // ============================================================
 async function loadAllData() {
     try {
-        // ✅ جرّب الكاش أولاً
         const cachedStores = cacheManager.get('stores_list');
         const cachedProducts = cacheManager.get('all_products');
 
         if (cachedStores && cachedProducts) {
-            console.log(`⚡ [كاش] stores_list - العمر: ${cacheManager.getAge('stores_list')} دقيقة`);
-            console.log(`⚡ [كاش] all_products - العمر: ${cacheManager.getAge('all_products')} دقيقة`);
+            console.log(`⚡ [Cache] stores: ${cacheManager.getAge('stores_list')} min | products: ${cacheManager.getAge('all_products')} min`);
             allStores = cachedStores;
             allProducts = cachedProducts;
             processLoadedData();
             return;
         }
 
-        // جلب من Firestore
-        console.log('🌐 [Firestore] جلب البيانات...');
-        let storeSnap;
-        try {
-            storeSnap = await db.collection(STORES_COLLECTION).orderBy('created_at', 'desc').get();
-        } catch {
-            storeSnap = await db.collection(STORES_COLLECTION).get();
-        }
-        // ✅ الإصلاح: id يأتي في النهاية لضمان عدم استبداله بأي حقل id داخل البيانات
-        allStores = storeSnap.docs.map(d => ({ ...d.data(), id: d.id }));
-        cacheManager.set('stores_list', allStores);
+        console.log('🌐 [Firestore] Fetching data...');
 
-        let productSnap;
-        try {
-            productSnap = await db.collection(PRODUCTS_COLLECTION).orderBy('created_at', 'desc').get();
-        } catch {
-            productSnap = await db.collection(PRODUCTS_COLLECTION).get();
-        }
-        // ✅ الإصلاح: id يأتي في النهاية لضمان عدم استبداله بأي حقل id داخل البيانات
+        // ✅ بدون orderBy — نتجنب مشاكل الـ index وترتيب serverTimestamp
+        const [storeSnap, productSnap] = await Promise.all([
+            db.collection(STORES_COLLECTION).get(),
+            db.collection(PRODUCTS_COLLECTION).get()
+        ]);
+
+        // ✅ id في النهاية لضمان عدم استبداله
+        allStores = storeSnap.docs.map(d => ({ ...d.data(), id: d.id }));
         allProducts = productSnap.docs.map(d => ({ ...d.data(), id: d.id }));
+
+        cacheManager.set('stores_list', allStores);
         cacheManager.set('all_products', allProducts);
 
         processLoadedData();
 
     } catch (err) {
-        console.error(err);
+        console.error('❌ Load error:', err);
         showToast('فشل تحميل البيانات: ' + err.message, 'error');
+        updateConnectionStatus(false, err.code || '');
     }
 }
 
 function processLoadedData() {
-    // عدّ المنتجات لكل متجر
+    // حساب عدد المنتجات لكل متجر
     const counts = {};
     allProducts.forEach(p => {
         if (p.store_name) counts[p.store_name] = (counts[p.store_name] || 0) + 1;
@@ -1533,7 +1088,7 @@ function processLoadedData() {
     $('tabStoresCount').textContent = allStores.length;
     $('tabProductsCount').textContent = allProducts.length;
 
-    // فلاتر المتاجر
+    // Filter dropdown
     const sel = $('productsStoreFilter');
     const currentFilter = sel.value;
     sel.innerHTML = '<option value="">كل المتاجر</option>';
@@ -1545,7 +1100,7 @@ function processLoadedData() {
     });
     if (currentFilter) sel.value = currentFilter;
 
-    // قائمة المتاجر في نموذج المنتج
+    // Product form store dropdown
     const psel = $('product_store_name');
     const currentProductStore = psel.value;
     psel.innerHTML = '<option value="">اختر المتجر</option>';
@@ -1572,7 +1127,7 @@ function updateStats() {
 }
 
 // ============================================================
-// 🏪 Stores List
+// 🏪 Stores Rendering
 // ============================================================
 function applyStoresFilter() {
     const q = ($('storesSearchInput').value || '').trim().toLowerCase();
@@ -1600,7 +1155,7 @@ function renderStoresList() {
     let html = '';
     filteredStores.forEach(s => {
         const logoHtml = s.logo_url
-            ? `<img src="${escapeHtml(s.logo_url)}" class="item-thumb" alt="${escapeHtml(s.name)}" onerror="this.outerHTML='<div class=\\'item-thumb item-thumb-placeholder\\'><i class=\\'fas fa-store\\'></i></div>'">`
+            ? `<img src="${escapeHtml(s.logo_url)}" class="item-thumb" alt="" onerror="this.outerHTML='<div class=\\'item-thumb item-thumb-placeholder\\'><i class=\\'fas fa-store\\'></i></div>'">`
             : `<div class="item-thumb item-thumb-placeholder"><i class="fas fa-store"></i></div>`;
 
         const verifiedBadge = s.is_verified
@@ -1611,7 +1166,7 @@ function renderStoresList() {
             ? `<a href="https://wa.me/${cleanPhone(s.whatsapp_number)}" target="_blank" rel="noopener" style="color:#25D366;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:4px;"><i class="fab fa-whatsapp"></i> ${escapeHtml(s.whatsapp_number)}</a>`
             : '<span style="color:#9ca3af;">—</span>';
 
-        const safeName = escapeHtml(s.name || '').replace(/'/g, "\\'");
+        const safeName = escapeHtml(s.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
         html += `
             <div class="item-card">
@@ -1623,20 +1178,12 @@ function renderStoresList() {
                         <span class="meta-pill meta-pill-count"><i class="fas fa-box"></i> ${s.products_count || 0}</span>
                         ${verifiedBadge}
                     </div>
-                    <div style="font-size:0.72rem;color:#6B7280;font-weight:700;">
-                        ${whatsappHtml}
-                    </div>
+                    <div style="font-size:0.72rem;color:#6B7280;font-weight:700;">${whatsappHtml}</div>
                 </div>
                 <div class="item-actions">
-                    <button class="icon-btn icon-btn-edit" onclick="openStoreEdit('${s.id}')" title="تعديل">
-                        <i class="fas fa-pen"></i>
-                    </button>
-                    <button class="icon-btn icon-btn-view" onclick="viewStoreProducts('${safeName}')" title="عرض المنتجات">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="icon-btn icon-btn-delete" onclick="deleteStore('${s.id}')" title="حذف">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <button class="icon-btn icon-btn-edit" onclick="openStoreEdit('${s.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
+                    <button class="icon-btn icon-btn-view" onclick="viewStoreProducts('${safeName}')" title="عرض المنتجات"><i class="fas fa-eye"></i></button>
+                    <button class="icon-btn icon-btn-delete" onclick="deleteStore('${s.id}')" title="حذف"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         `;
@@ -1645,7 +1192,7 @@ function renderStoresList() {
 }
 
 // ============================================================
-// 📦 Products List
+// 📦 Products Rendering
 // ============================================================
 function applyProductsFilter() {
     const q = ($('productsSearchInput').value || '').trim().toLowerCase();
@@ -1675,7 +1222,7 @@ function renderProductsList() {
     let html = '';
     filteredProducts.forEach(p => {
         const imgHtml = p.img_url
-            ? `<img src="${escapeHtml(p.img_url)}" class="item-thumb" alt="${escapeHtml(p.name)}" onerror="this.outerHTML='<div class=\\'item-thumb item-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
+            ? `<img src="${escapeHtml(p.img_url)}" class="item-thumb" alt="" onerror="this.outerHTML='<div class=\\'item-thumb item-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
             : `<div class="item-thumb item-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
         const price = parseFloat(p.price || 0);
@@ -1693,12 +1240,8 @@ function renderProductsList() {
                     </div>
                 </div>
                 <div class="item-actions">
-                    <button class="icon-btn icon-btn-edit" onclick="openProductEdit('${p.id}')" title="تعديل">
-                        <i class="fas fa-pen"></i>
-                    </button>
-                    <button class="icon-btn icon-btn-delete" onclick="deleteProduct('${p.id}')" title="حذف">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <button class="icon-btn icon-btn-edit" onclick="openProductEdit('${p.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
+                    <button class="icon-btn icon-btn-delete" onclick="deleteProduct('${p.id}')" title="حذف"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         `;
@@ -1723,66 +1266,88 @@ $('tabProducts').addEventListener('click', () => {
 });
 
 // ============================================================
-// 🆕 Realtime Stores Listener
+// 📡 Realtime Stores Listener (نسخة محسّنة)
 // ============================================================
 function setupRealtimeStoresListener() {
     if (storesUnsubscribe) return;
-
-    console.log('🔄 بدء مراقبة المتاجر الحية...');
+    console.log('📡 Starting stores listener...');
 
     storesUnsubscribe = db.collection(STORES_COLLECTION)
         .onSnapshot((snapshot) => {
-            // ✅ الإصلاح: id في النهاية لضمان عدم استبداله
             const freshStores = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             const newFingerprint = getFingerprint(freshStores);
 
+            // 🔹 أول snapshot - نزامن مع الكاش بدون toast
             if (isFirstStoresSnapshot) {
                 isFirstStoresSnapshot = false;
                 lastStoresFingerprint = newFingerprint;
 
                 const cached = cacheManager.get('stores_list');
                 const cachedFp = cached ? getFingerprint(cached) : '';
+
+                // ✅ نحدّث الكاش دائماً بالبيانات الحية
                 cacheManager.set('stores_list', freshStores);
 
+                // فقط إذا اختلف الكاش - نعرض التغيير
                 if (cachedFp && cachedFp !== newFingerprint) {
-                    console.log('🏪 المتاجر تغيرت - تحديث');
+                    console.log('🏪 Stores changed since cache - updating UI');
                     allStores = freshStores;
                     processLoadedData();
+                } else {
+                    console.log('✅ Stores cache is up-to-date');
                 }
                 return;
             }
 
+            // 🔹 لا تغيير حقيقي
             if (newFingerprint === lastStoresFingerprint) return;
 
+            // 🔹 احسب نوع التغيير
             const changes = snapshot.docChanges();
             const added = changes.filter(c => c.type === 'added').length;
             const removed = changes.filter(c => c.type === 'removed').length;
             const modified = changes.filter(c => c.type === 'modified').length;
 
-            console.log(`🏪 تحديث لحظي: +${added} -${removed} ✎${modified}`);
+            console.log(`🏪 Live update: +${added} -${removed} ✎${modified}`);
 
             lastStoresFingerprint = newFingerprint;
             allStores = freshStores;
             cacheManager.set('stores_list', freshStores);
             processLoadedData();
 
-            if (added > 0) showToast(`🆕 تم إضافة ${added} متجر جديد!`);
-            else if (removed > 0) showToast(`🗑️ تم حذف ${removed} متجر`);
-            else if (modified > 0) showToast(`✏️ تم تعديل ${modified} متجر`);
-        }, err => console.warn('⚠️ خطأ في مراقبة المتاجر:', err));
+            // 🔇 لا تُظهر رسالة لو العملية من المستخدم نفسه
+            if (suppressStoresToast) return;
+
+            // 🎯 رسالة موحّدة (تدعم الأنواع المختلطة)
+            const messages = [];
+            if (added > 0) messages.push(`+${added}`);
+            if (removed > 0) messages.push(`-${removed}`);
+            if (modified > 0) messages.push(`✎${modified}`);
+
+            if (messages.length === 1 && added === 1 && removed === 0 && modified === 0) {
+                showToast(`🆕 تم إضافة متجر جديد`);
+            } else if (messages.length === 1 && removed === 1 && added === 0 && modified === 0) {
+                showToast(`🗑️ تم حذف متجر`, 'warning');
+            } else if (messages.length === 1 && modified === 1 && added === 0 && removed === 0) {
+                showToast(`✏️ تم تعديل متجر`);
+            } else {
+                showToast(`🏪 تحديث: ${messages.join(' ')}`);
+            }
+        }, err => {
+            console.warn('⚠️ Stores listener error:', err);
+            updateConnectionStatus(false, err.code || '');
+        });
 }
 
 // ============================================================
-// 🆕 Realtime Products Listener
+// 📡 Realtime Products Listener
 // ============================================================
 function setupRealtimeProductsListener() {
     if (productsUnsubscribe) return;
-
-    console.log('🔄 بدء مراقبة المنتجات الحية...');
+    console.log('📡 Starting products listener...');
 
     productsUnsubscribe = db.collection(PRODUCTS_COLLECTION)
         .onSnapshot((snapshot) => {
-            // ✅ الإصلاح: id في النهاية لضمان عدم استبداله
             const freshProducts = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             const newFingerprint = getFingerprint(freshProducts);
 
@@ -1795,7 +1360,7 @@ function setupRealtimeProductsListener() {
                 cacheManager.set('all_products', freshProducts);
 
                 if (cachedFp && cachedFp !== newFingerprint) {
-                    console.log('📦 المنتجات تغيرت - تحديث');
+                    console.log('📦 Products changed since cache - updating UI');
                     allProducts = freshProducts;
                     processLoadedData();
                 }
@@ -1809,17 +1374,32 @@ function setupRealtimeProductsListener() {
             const removed = changes.filter(c => c.type === 'removed').length;
             const modified = changes.filter(c => c.type === 'modified').length;
 
-            console.log(`📦 تحديث لحظي: +${added} -${removed} ✎${modified}`);
+            console.log(`📦 Live update: +${added} -${removed} ✎${modified}`);
 
             lastProductsFingerprint = newFingerprint;
             allProducts = freshProducts;
             cacheManager.set('all_products', freshProducts);
             processLoadedData();
 
-            if (added > 0) showToast(`🆕 تم إضافة ${added} منتج جديد!`);
-            else if (removed > 0) showToast(`🗑️ تم حذف ${removed} منتج`);
-            else if (modified > 0) showToast(`✏️ تم تعديل ${modified} منتج`);
-        }, err => console.warn('⚠️ خطأ في مراقبة المنتجات:', err));
+            if (suppressProductsToast) return;
+
+            const messages = [];
+            if (added > 0) messages.push(`+${added}`);
+            if (removed > 0) messages.push(`-${removed}`);
+            if (modified > 0) messages.push(`✎${modified}`);
+
+            if (messages.length === 1 && added === 1 && removed === 0 && modified === 0) {
+                showToast(`🆕 تم إضافة منتج جديد`);
+            } else if (messages.length === 1 && removed === 1 && added === 0 && modified === 0) {
+                showToast(`🗑️ تم حذف منتج`, 'warning');
+            } else if (messages.length === 1 && modified === 1 && added === 0 && removed === 0) {
+                showToast(`✏️ تم تعديل منتج`);
+            } else {
+                showToast(`📦 تحديث: ${messages.join(' ')}`);
+            }
+        }, err => {
+            console.warn('⚠️ Products listener error:', err);
+        });
 }
 
 // ============================================================
@@ -1830,13 +1410,15 @@ function openStoreModal(store = null) {
     $('storeModalTitle').textContent = isEdit ? 'تعديل المتجر' : 'إضافة متجر جديد';
     $('storeForm').reset();
     $('store_id').value = '';
-    $('store_original_name').value = '';   // 🆕 تصفير الاسم الأصلي
+    $('store_original_name').value = '';
     $('store_logo_preview').classList.add('hidden');
+    $('store_logo_preview').removeAttribute('src');
     $('store_cover_preview').classList.add('hidden');
+    $('store_cover_preview').removeAttribute('src');
 
     if (isEdit) {
         $('store_id').value = store.id;
-        $('store_original_name').value = store.name || '';  // 🆕 حفظ الاسم الأصلي
+        $('store_original_name').value = store.name || '';
         $('store_name').value = store.name || '';
         $('store_login_password').value = store.login_password || '';
         $('store_category').value = store.category || '';
@@ -1865,12 +1447,12 @@ function openStoreModal(store = null) {
 
 function closeStoreModal() {
     $('storeModal').classList.add('hidden');
-    $('store_original_name').value = '';   // 🆕 تصفير الاسم الأصلي عند الإغلاق
+    $('store_original_name').value = '';
     document.body.style.overflow = '';
 }
 
 window.openStoreEdit = (id) => {
-    const store = allStores.find(s => s.id === id);
+    const store = allStores.find(s => String(s.id) === String(id));
     if (store) openStoreModal(store);
 };
 
@@ -1889,31 +1471,27 @@ $('storeForm').addEventListener('submit', async (e) => {
     if (!password || password.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
     if (!whatsapp || whatsapp.length < 10) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
 
-    // ✅ الإصلاح: فحص التكرار المُحصَّن
-    // - يقارن الـ id كسلاسل نصية (يتجنب مشاكل النوع string/number)
-    // - يقارن الأسماء بتجاهل حالة الأحرف والمسافات
-    // - يتجاهل المتجر نفسه بشكل صريح
-    // - لا يفحص أصلاً إذا لم يتغير الاسم في وضع التعديل
     const isEdit = !!id;
     const originalName = ($('store_original_name').value || '').trim().toLowerCase();
     const newNameLower = String(name).trim().toLowerCase();
     const nameChanged = !isEdit || (originalName !== newNameLower);
 
+    // فحص تكرار الاسم
     if (nameChanged) {
-        const existingWithName = allStores.find(s => {
-            // تجاهل المتجر نفسه بشكل صريح
+        const existing = allStores.find(s => {
             if (String(s.id) === String(id)) return false;
-            const existingName = String(s.name || '').trim().toLowerCase();
-            return existingName === newNameLower && existingName.length > 0;
+            return String(s.name || '').trim().toLowerCase() === newNameLower;
         });
-        if (existingWithName) {
+        if (existing) {
             showToast('يوجد متجر آخر بنفس الاسم', 'error');
             return;
         }
     }
 
+    // ✅ استخدام Date.now() بدل serverTimestamp() لتجنّب مشكلة الـ local/server mismatch
+    const now = Date.now();
     const data = {
-        name: name,
+        name,
         login_password: password,
         category: sanitize($('store_category').value),
         ratting: toNum($('store_ratting').value),
@@ -1923,11 +1501,15 @@ $('storeForm').addEventListener('submit', async (e) => {
         logo_url: sanitize($('store_logo').value),
         cover_url: sanitize($('store_cover').value),
         followers: parseInt($('store_followers').value) || 0,
-        is_verified: $('store_is_verified').checked
+        is_verified: $('store_is_checked') ? false : $('store_is_verified').checked,
+        updated_at: now
     };
 
     isSavingStore = true;
-    setBtnLoading($('storeSubmitBtn'), true, isEdit ? 'جارٍ التعديل...' : 'جارٍ الإضافة...',
+    suppressStoresToast = true; // 🔇 لا تظهر رسائل الـ listener أثناء الكتابة
+
+    setBtnLoading($('storeSubmitBtn'), true,
+        isEdit ? 'جارٍ التعديل...' : 'جارٍ الإضافة...',
         '<i class="fas fa-save"></i> <span>حفظ المتجر</span>');
 
     try {
@@ -1935,31 +1517,33 @@ $('storeForm').addEventListener('submit', async (e) => {
             const oldStore = allStores.find(s => String(s.id) === String(id));
             await db.collection(STORES_COLLECTION).doc(id).update(data);
 
-            // إذا تغير اسم المتجر، حدّث اسم المتجر في كل منتجاته
+            // تحديث اسم المتجر في منتجاته إذا تغيّر
             if (oldStore && oldStore.name !== name) {
                 const prodSnap = await db.collection(PRODUCTS_COLLECTION)
                     .where('store_name', '==', oldStore.name).get();
-                const updates = prodSnap.docs.map(d =>
-                    db.collection(PRODUCTS_COLLECTION).doc(d.id).update({ store_name: name })
-                );
-                await Promise.all(updates);
+                if (!prodSnap.empty) {
+                    await Promise.all(prodSnap.docs.map(d =>
+                        db.collection(PRODUCTS_COLLECTION).doc(d.id).update({ store_name: name })
+                    ));
+                }
             }
-
-            showToast('تم تعديل المتجر بنجاح ✅');
+            showToast('✅ تم تعديل المتجر بنجاح');
         } else {
-            data.created_at = firebase.firestore.FieldValue.serverTimestamp();
+            data.created_at = now;
             data.products_count = 0;
             await db.collection(STORES_COLLECTION).add(data);
-            showToast('تمت إضافة المتجر بنجاح ✅');
+            showToast('✅ تمت إضافة المتجر بنجاح');
         }
 
         closeStoreModal();
-        // onSnapshot سيتكفل بالتحديث في الواجهة
+
     } catch (err) {
-        console.error(err);
-        showToast('فشل الحفظ: ' + err.message, 'error');
+        console.error('❌ Save store error:', err);
+        showToast('❌ فشل الحفظ: ' + (err.message || 'خطأ غير معروف'), 'error');
     } finally {
         isSavingStore = false;
+        // 🔓 أعد تشغيل رسائل الـ listener بعد 2 ثانية
+        setTimeout(() => { suppressStoresToast = false; }, 2000);
         setBtnLoading($('storeSubmitBtn'), false, '',
             '<i class="fas fa-save"></i> <span>حفظ المتجر</span>');
     }
@@ -1976,18 +1560,29 @@ window.deleteStore = async (id) => {
 
     if (!confirm(msg)) return;
 
+    suppressStoresToast = true;
+    suppressProductsToast = true;
+
     try {
         const prodSnap = await db.collection(PRODUCTS_COLLECTION)
             .where('store_name', '==', store.name).get();
-        await Promise.all(prodSnap.docs.map(d =>
-            db.collection(PRODUCTS_COLLECTION).doc(d.id).delete()
-        ));
+
+        if (!prodSnap.empty) {
+            await Promise.all(prodSnap.docs.map(d =>
+                db.collection(PRODUCTS_COLLECTION).doc(d.id).delete()
+            ));
+        }
 
         await db.collection(STORES_COLLECTION).doc(id).delete();
-        showToast('تم حذف المتجر وجميع منتجاته ✅');
+        showToast('✅ تم حذف المتجر وجميع منتجاته');
     } catch (err) {
-        console.error(err);
-        showToast('فشل الحذف: ' + err.message, 'error');
+        console.error('❌ Delete error:', err);
+        showToast('❌ فشل الحذف: ' + (err.message || 'خطأ غير معروف'), 'error');
+    } finally {
+        setTimeout(() => {
+            suppressStoresToast = false;
+            suppressProductsToast = false;
+        }, 2000);
     }
 };
 
@@ -2007,6 +1602,7 @@ function openProductModal(product = null) {
     $('productForm').reset();
     $('product_id').value = '';
     $('product_img_preview').classList.add('hidden');
+    $('product_img_preview').removeAttribute('src');
 
     if (isEdit) {
         $('product_id').value = product.id;
@@ -2051,35 +1647,41 @@ $('productForm').addEventListener('submit', async (e) => {
     if (!storeName) { showToast('يجب اختيار المتجر', 'error'); return; }
     if (price <= 0) { showToast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
 
+    const now = Date.now();
     const data = {
-        name: name,
+        name,
         store_name: storeName,
-        price: price,
+        price,
         ratting: toNum($('product_ratting').value),
-        img_url: sanitize($('product_img_url').value)
+        img_url: sanitize($('product_img_url').value),
+        updated_at: now
     };
 
     isSavingProduct = true;
+    suppressProductsToast = true;
+
     const isEdit = !!id;
-    setBtnLoading($('productSubmitBtn'), true, isEdit ? 'جارٍ التعديل...' : 'جارٍ الإضافة...',
+    setBtnLoading($('productSubmitBtn'), true,
+        isEdit ? 'جارٍ التعديل...' : 'جارٍ الإضافة...',
         '<i class="fas fa-save"></i> <span>حفظ المنتج</span>');
 
     try {
         if (isEdit) {
             await db.collection(PRODUCTS_COLLECTION).doc(id).update(data);
-            showToast('تم تعديل المنتج ✅');
+            showToast('✅ تم تعديل المنتج');
         } else {
-            data.created_at = firebase.firestore.FieldValue.serverTimestamp();
+            data.created_at = now;
             await db.collection(PRODUCTS_COLLECTION).add(data);
-            showToast('تمت إضافة المنتج ✅');
+            showToast('✅ تمت إضافة المنتج');
         }
         closeProductModal();
-        // onSnapshot سيتكفل بالتحديث
+
     } catch (err) {
-        console.error(err);
-        showToast('فشل الحفظ: ' + err.message, 'error');
+        console.error('❌ Save product error:', err);
+        showToast('❌ فشل الحفظ: ' + (err.message || 'خطأ غير معروف'), 'error');
     } finally {
         isSavingProduct = false;
+        setTimeout(() => { suppressProductsToast = false; }, 2000);
         setBtnLoading($('productSubmitBtn'), false, '',
             '<i class="fas fa-save"></i> <span>حفظ المنتج</span>');
     }
@@ -2090,33 +1692,52 @@ window.deleteProduct = async (id) => {
     if (!product) return;
     if (!confirm(`هل أنت متأكد من حذف المنتج "${product.name}"؟`)) return;
 
+    suppressProductsToast = true;
+
     try {
         await db.collection(PRODUCTS_COLLECTION).doc(id).delete();
-        showToast('تم حذف المنتج ✅');
+        showToast('✅ تم حذف المنتج');
     } catch (err) {
-        console.error(err);
-        showToast('فشل الحذف: ' + err.message, 'error');
+        console.error('❌ Delete error:', err);
+        showToast('❌ فشل الحذف: ' + (err.message || 'خطأ غير معروف'), 'error');
+    } finally {
+        setTimeout(() => { suppressProductsToast = false; }, 2000);
     }
 };
 
 // ============================================================
-// 🖼️ Image Previews
+// 🖼️ Image Previews — مع معاينة فورية
 // ============================================================
-$('store_logo').addEventListener('input', (e) => {
-    const p = $('store_logo_preview');
-    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
-    else p.classList.add('hidden');
-});
-$('store_cover').addEventListener('input', (e) => {
-    const p = $('store_cover_preview');
-    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
-    else p.classList.add('hidden');
-});
-$('product_img_url').addEventListener('input', (e) => {
-    const p = $('product_img_preview');
-    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
-    else p.classList.add('hidden');
-});
+function attachImagePreview(inputId, previewId) {
+    const input = $(inputId);
+    const preview = $(previewId);
+    if (!input || !preview) return;
+
+    input.addEventListener('input', () => {
+        const url = input.value.trim();
+        if (url) {
+            preview.src = url;
+            preview.classList.remove('hidden');
+        } else {
+            preview.classList.add('hidden');
+            preview.removeAttribute('src');
+        }
+    });
+
+    // إعادة الظهور عند تحميل صورة صالحة
+    preview.addEventListener('load', () => {
+        if (preview.getAttribute('src')) {
+            preview.classList.remove('hidden');
+        }
+    });
+    preview.addEventListener('error', () => {
+        preview.classList.add('hidden');
+    });
+}
+
+attachImagePreview('store_logo', 'store_logo_preview');
+attachImagePreview('store_cover', 'store_cover_preview');
+attachImagePreview('product_img_url', 'product_img_preview');
 
 // ============================================================
 // 🔍 Filters
@@ -2126,7 +1747,7 @@ $('productsSearchInput').addEventListener('input', applyProductsFilter);
 $('productsStoreFilter').addEventListener('change', applyProductsFilter);
 
 // ============================================================
-// 🎯 Keyboard & Modal clicks
+// ⌨️ Keyboard & Modal clicks
 // ============================================================
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -2141,20 +1762,26 @@ $('productModal').addEventListener('click', (e) => {
     if (e.target === $('productModal')) closeProductModal();
 });
 
+// تصدير الدوال المطلوبة عبر onclick
+window.closeStoreModal = closeStoreModal;
+window.closeProductModal = closeProductModal;
+
 // ============================================================
-// 🚀 Auto-login
+// 🚀 Auto-login / Auth State
 // ============================================================
 firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
+        // لم يتم الدخول - أعد إظهار شاشة الدخول
         $('adminLoginOverlay').classList.remove('hidden');
         $('adminDashboard').classList.add('hidden');
-        setTimeout(() => $('adminEmail').focus(), 200);
+        setTimeout(() => $('adminEmail')?.focus(), 200);
         return;
     }
 
+    // تم الدخول - تحقق من الصلاحية
     const isAdmin = await verifyAdminAccess();
     if (!isAdmin) {
-        await firebase.auth().signOut();
+        try { await firebase.auth().signOut(); } catch (e) {}
         $('adminLoginOverlay').classList.remove('hidden');
         $('adminDashboard').classList.add('hidden');
         return;
