@@ -1273,8 +1273,32 @@ const cacheManager = {
     }
 };
 
+// ============================================================
+// 🔑 بصمة شاملة: تعتمد على البيانات كاملة وليس الـ ID فقط
+//    ⚠️ هذا يُتيح كشف تعديلات المحتوى (update) وليس فقط الإضافة/الحذف
+// ============================================================
 function getFingerprint(items) {
-    return items.map(i => i.id).sort().join('|');
+    if (!Array.isArray(items) || items.length === 0) return 'empty';
+
+    return items
+        .map(item => {
+            const keys = Object.keys(item).sort();
+            const parts = keys.map(k => {
+                let v = item[k];
+                // معالجة Firestore Timestamp (يعمل مع الكاش والقراءة المباشرة)
+                if (v && typeof v === 'object' && 'seconds' in v) {
+                    v = v.seconds;
+                }
+                // معالجة القيم المركّبة الأخرى
+                if (v && typeof v === 'object') {
+                    v = JSON.stringify(v);
+                }
+                return k + ':' + String(v);
+            });
+            return parts.join('~');
+        })
+        .sort()
+        .join('||');
 }
 
 // ============================================================
@@ -1507,6 +1531,7 @@ function processLoadedData() {
 
     // فلاتر المتاجر
     const sel = $('productsStoreFilter');
+    const currentFilter = sel.value;
     sel.innerHTML = '<option value="">كل المتاجر</option>';
     allStores.slice().sort((a, b) => (a.name || '').localeCompare(b.name || '')).forEach(s => {
         const o = document.createElement('option');
@@ -1514,9 +1539,11 @@ function processLoadedData() {
         o.textContent = s.name;
         sel.appendChild(o);
     });
+    if (currentFilter) sel.value = currentFilter;
 
     // قائمة المتاجر في نموذج المنتج
     const psel = $('product_store_name');
+    const currentProductStore = psel.value;
     psel.innerHTML = '<option value="">اختر المتجر</option>';
     allStores.forEach(s => {
         const o = document.createElement('option');
@@ -1524,6 +1551,7 @@ function processLoadedData() {
         o.textContent = s.name;
         psel.appendChild(o);
     });
+    if (currentProductStore) psel.value = currentProductStore;
 
     applyStoresFilter();
     applyProductsFilter();
@@ -1597,7 +1625,7 @@ function renderStoresList() {
                     <button class="icon-btn icon-btn-edit" onclick="openStoreEdit('${s.id}')" title="تعديل">
                         <i class="fas fa-pen"></i>
                     </button>
-                    <button class="icon-btn icon-btn-view" onclick="viewStoreProducts('${escapeHtml(s.name)}')" title="عرض المنتجات">
+                    <button class="icon-btn icon-btn-view" onclick="viewStoreProducts('${escapeHtml(s.name).replace(/'/g, "\\'")}')" title="عرض المنتجات">
                         <i class="fas fa-eye"></i>
                     </button>
                     <button class="icon-btn icon-btn-delete" onclick="deleteStore('${s.id}')" title="حذف">
@@ -1722,8 +1750,9 @@ function setupRealtimeStoresListener() {
             const changes = snapshot.docChanges();
             const added = changes.filter(c => c.type === 'added').length;
             const removed = changes.filter(c => c.type === 'removed').length;
+            const modified = changes.filter(c => c.type === 'modified').length;
 
-            console.log(`🏪 تحديث لحظي: +${added} -${removed}`);
+            console.log(`🏪 تحديث لحظي: +${added} -${removed} ✎${modified}`);
 
             lastStoresFingerprint = newFingerprint;
             allStores = freshStores;
@@ -1732,6 +1761,7 @@ function setupRealtimeStoresListener() {
 
             if (added > 0) showToast(`🆕 تم إضافة ${added} متجر جديد!`);
             else if (removed > 0) showToast(`🗑️ تم حذف ${removed} متجر`);
+            else if (modified > 0) showToast(`✏️ تم تعديل ${modified} متجر`);
         }, err => console.warn('⚠️ خطأ في مراقبة المتاجر:', err));
 }
 
@@ -1769,8 +1799,9 @@ function setupRealtimeProductsListener() {
             const changes = snapshot.docChanges();
             const added = changes.filter(c => c.type === 'added').length;
             const removed = changes.filter(c => c.type === 'removed').length;
+            const modified = changes.filter(c => c.type === 'modified').length;
 
-            console.log(`📦 تحديث لحظي: +${added} -${removed}`);
+            console.log(`📦 تحديث لحظي: +${added} -${removed} ✎${modified}`);
 
             lastProductsFingerprint = newFingerprint;
             allProducts = freshProducts;
@@ -1779,6 +1810,7 @@ function setupRealtimeProductsListener() {
 
             if (added > 0) showToast(`🆕 تم إضافة ${added} منتج جديد!`);
             else if (removed > 0) showToast(`🗑️ تم حذف ${removed} منتج`);
+            else if (modified > 0) showToast(`✏️ تم تعديل ${modified} منتج`);
         }, err => console.warn('⚠️ خطأ في مراقبة المنتجات:', err));
 }
 
