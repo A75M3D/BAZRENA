@@ -1100,6 +1100,9 @@
         @media (min-width: 640px) { .readonly-grid { gap: 0.85rem; } }
         @media (min-width: 768px) { .readonly-grid { grid-template-columns: repeat(4, 1fr); } }
 
+        /* ============================================================
+           🎨 حقول الألوان - متجاوبة + معاينة صور
+           ============================================================ */
         #productColorsContainer {
             display: flex;
             flex-direction: column;
@@ -1788,8 +1791,7 @@ const db = firebase.firestore();
 const storesTableName = 'stores';
 const productsTableName = 'products';
 const SESSION_KEY = 'bzr_store_session';
-// ✅ تم إصلاح الامتداد من .pn إلى .png
-const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.png';
+const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.pn';
 
 const CACHE_DURATION = 72 * 60 * 60 * 1000;
 const CACHE_PREFIX = 'bazrena_cache_';
@@ -1964,6 +1966,9 @@ function updateHeaderLogo(store) {
 
 /* ============================================================
    🎨 نظام الألوان الذكي
+   ============================================================
+   - يُظهر اللون الفعلي لأي اسم (فاتح/غامق/داكن...)
+   - الألوان غير المعروفة → رمادي بدون أي تلميح
    ============================================================ */
 
 const UNKNOWN_COLOR_HEX = '#9CA3AF';
@@ -2253,9 +2258,6 @@ function clearSession() {
     sessionStorage.removeItem(SESSION_KEY);
 }
 
-/* ============================================================
-   🔐 Login Handler
-   ============================================================ */
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -2402,9 +2404,6 @@ function fillStoreForm(store) {
     updateHeaderLogo(store);
 }
 
-/* ============================================================
-   💾 حفظ بيانات المتجر — الإصدار المُحصَّن
-   ============================================================ */
 $('storeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingStore || !currentStore) return;
@@ -2415,11 +2414,6 @@ $('storeForm').addEventListener('submit', async (e) => {
     const whatsapp = cleanPhone($('store_whatsapp').value);
     const phone = cleanPhone($('store_phone').value);
 
-    // ===== التحقق من المدخلات =====
-    if (!storeId) {
-        showToast('⚠️ خطأ: لم يتم تحديد المتجر. أعد تسجيل الدخول.', 'error');
-        return;
-    }
     if (!newName || newName.length < 2) {
         showToast('اسم المتجر مطلوب (حرفان على الأقل)', 'error');
         return;
@@ -2451,7 +2445,6 @@ $('storeForm').addEventListener('submit', async (e) => {
         if (!confirmChange) return;
     }
 
-    // ===== البيانات المرسلة =====
     const updateData = {
         name: newName,
         login_password: newPassword,
@@ -2460,67 +2453,26 @@ $('storeForm').addEventListener('submit', async (e) => {
         logo_url: sanitizeInput($('store_logo').value),
         cover_url: sanitizeInput($('store_cover').value),
         category: sanitizeInput($('store_category').value),
-        description: sanitizeInput($('store_description').value),
-        updated_at: Date.now()
+        description: sanitizeInput($('store_description').value)
     };
-
-    console.log('📤 [Firestore] حفظ بيانات المتجر:', storeId, updateData);
 
     isSavingStore = true;
     setButtonLoading($('storeSubmitBtn'), true, 'جارٍ الحفظ...', '<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');
 
     try {
-        // ✅ 1) استخدام set(merge:true) بدل update() — أكثر أماناً
-        const docRef = db.collection(storesTableName).doc(storeId);
-        await docRef.set(updateData, { merge: true });
-        console.log('✅ [Firestore] تم تحديث المستند');
+        await db.collection(storesTableName).doc(storeId).update(updateData);
 
-        // ✅ 2) التحقق من نجاح الحفظ فعلياً
-        const verifySnap = await docRef.get();
-        if (!verifySnap.exists) {
-            throw new Error('المستند غير موجود في قاعدة البيانات');
-        }
-        const saved = verifySnap.data();
-
-        // ✅ 3) التأكد من الحقول الحرجة
-        const verification = {
-            name: saved.name === newName,
-            password: saved.login_password === newPassword,
-            whatsapp: saved.whatsapp_number === whatsapp
-        };
-        console.log('🔍 [Verification]', verification);
-
-        if (!verification.name || !verification.password) {
-            throw new Error(
-                'تم إرسال البيانات لكن لم تُحفظ. تأكد من صلاحيات Firestore (Rules).'
-            );
-        }
-
-        // ✅ 4) تحديث أسماء المنتجات إذا تغيّر الاسم
-        let updatedProductsCount = 0;
         if (nameChanged) {
             showToast('جاري تحديث المنتجات...', 'warning');
 
-            try {
-                const productsSnap = await db.collection(productsTableName)
-                    .where('store_name', '==', oldName)
-                    .get();
+            const productsSnap = await db.collection(productsTableName)
+                .where('store_name', '==', oldName)
+                .get();
 
-                if (!productsSnap.empty) {
-                    const updates = productsSnap.docs.map(doc =>
-                        db.collection(productsTableName).doc(doc.id)
-                            .update({ store_name: newName })
-                            .catch(err => {
-                                console.warn('⚠️ فشل تحديث منتج:', doc.id, err.message);
-                                return null;
-                            })
-                    );
-                    const results = await Promise.all(updates);
-                    updatedProductsCount = results.filter(r => r !== null).length;
-                }
-            } catch (pErr) {
-                console.warn('⚠️ خطأ تحديث المنتجات:', pErr.message);
-            }
+            const updates = productsSnap.docs.map(doc =>
+                db.collection(productsTableName).doc(doc.id).update({ store_name: newName })
+            );
+            await Promise.all(updates);
 
             cacheManager.remove(`store_products_${oldName}`);
             cacheManager.remove(`store_products_${newName}`);
@@ -2539,38 +2491,23 @@ $('storeForm').addEventListener('submit', async (e) => {
             $('product_store_name').value = newName;
             $('product_store_name_display').value = newName;
 
-            showToast(`✅ تم تحديث الاسم و ${updatedProductsCount} منتج`);
+            showToast(`✅ تم تحديث الاسم و ${updates.length} منتج`);
         } else {
-            showToast('✅ تم حفظ التعديلات بنجاح');
+            showToast('تم حفظ التعديلات بنجاح ✅');
         }
 
-        // ✅ 5) تحديث الكاش والحالة المحلية
-        currentStore = { ...currentStore, ...updateData, id: storeId };
+        currentStore = { ...currentStore, ...updateData };
         cacheManager.set(`store_${storeId}`, currentStore);
+        fillStoreForm(currentStore);
+        updateHeaderLogo(currentStore);
 
-        // ✅ 6) تحديث النموذج بالقيم المحفوظة من Firestore
-        const finalStore = { ...saved, id: storeId };
-        fillStoreForm(finalStore);
-        updateHeaderLogo(finalStore);
-
-        // ✅ 7) إعادة تشغيل المراقبة الحية عند تغيير الاسم
         if (nameChanged) {
             setupRealtimeMyProductsListener();
         }
 
     } catch (err) {
-        console.error('❌ خطأ حفظ المتجر:', err);
-
-        let msg = err.message || 'خطأ غير معروف';
-        if (err.code === 'permission-denied') {
-            msg = 'صلاحيات Firestore مرفوضة. تأكد من أن Rules تسمح بـ update للمستخدمين المسجلين.';
-        } else if (err.code === 'not-found') {
-            msg = 'المستند غير موجود. أعد تسجيل الدخول';
-        } else if (err.code === 'unavailable') {
-            msg = 'تعذّر الاتصال بالإنترنت';
-        }
-
-        showToast('❌ فشل الحفظ: ' + msg, 'error');
+        console.error('خطأ حفظ المتجر:', err);
+        showToast('فشل الحفظ: ' + err.message, 'error');
     } finally {
         isSavingStore = false;
         setButtonLoading($('storeSubmitBtn'), false, '', '<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');
@@ -2748,6 +2685,7 @@ function updateColorPreview(nameInput, dotPreview) {
     const value = nameInput.value;
     const hex = getFallbackHex(value);
     dotPreview.style.backgroundColor = hex;
+    // بدون أي تلميح — يظهر اللون فقط
     dotPreview.removeAttribute('title');
 }
 
@@ -3097,9 +3035,6 @@ $('product_img_url').addEventListener('input', (e) => {
     });
 })();
 
-/* ============================================================
-   🚀 التهيئة الأولية — الإصدار المُحصَّن
-   ============================================================ */
 async function init() {
     const session = getSession();
     if (!session || !session.id) {
@@ -3116,29 +3051,15 @@ async function init() {
             currentStore = cachedStore;
             await enterDashboard();
 
-            // ✅ تحديث خلفي بمقارنة آمنة (ترتيب ثابت للحقول)
             db.collection(storesTableName).doc(session.id).get().then(snap => {
                 if (snap.exists) {
                     const freshStore = { ...snap.data(), id: snap.id };
                     cacheManager.set(`store_${session.id}`, freshStore);
-
-                    const sortedKeys = obj => Object.keys(obj).sort().reduce((acc, k) => {
-                        acc[k] = obj[k]; return acc;
-                    }, {});
-                    const same = JSON.stringify(sortedKeys(freshStore)) === JSON.stringify(sortedKeys(cachedStore));
-
-                    if (!same) {
-                        console.log('🔄 تم اكتشاف تحديث من Firestore - إعادة التحميل');
+                    if (JSON.stringify(freshStore) !== JSON.stringify(cachedStore)) {
                         currentStore = freshStore;
                         fillStoreForm(currentStore);
                         $('welcomeStoreName').textContent = currentStore.name;
-                        updateHeaderLogo(currentStore);
                     }
-                } else {
-                    console.warn('⚠️ المستند غير موجود — إنهاء الجلسة');
-                    clearSession();
-                    cacheManager.remove(`store_${session.id}`);
-                    location.reload();
                 }
             }).catch(err => console.warn('تعذر التحديث الخلفي:', err));
 
