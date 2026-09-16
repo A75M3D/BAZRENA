@@ -1101,7 +1101,7 @@
         @media (min-width: 768px) { .readonly-grid { grid-template-columns: repeat(4, 1fr); } }
 
         /* ============================================================
-           🎨 حقول الألوان الجديدة - تصميم متجاوب مع معاينة الصور
+           🎨 حقول الألوان - متجاوبة + معاينة صور
            ============================================================ */
         #productColorsContainer {
             display: flex;
@@ -1267,7 +1267,6 @@
             transform: translateY(0);
         }
 
-        /* 📱 شاشات صغيرة جداً */
         @media (max-width: 360px) {
             .color-dot-preview { width: 36px; height: 36px; }
             .color-image-preview { width: 40px; height: 40px; }
@@ -1276,7 +1275,6 @@
             .color-image { font-size: 0.72rem !important; padding: 0.55rem 0.7rem !important; }
         }
 
-        /* 💻 شاشات كبيرة: صف واحد أفقي مريح */
         @media (min-width: 640px) {
             .color-row {
                 display: grid;
@@ -1637,7 +1635,6 @@
                                     <input type="number" id="product_ratting" class="form-input" value="0" min="0" max="5" step="0.1" dir="ltr" style="text-align: right;">
                                 </div>
 
-                                <!-- ====== قسم الألوان ====== -->
                                 <div class="section-divider">
                                     <i class="fas fa-palette"></i>
                                     <span>ألوان المنتج (اختياري)</span>
@@ -1649,10 +1646,9 @@
                                         <span>إضافة لون جديد</span>
                                     </button>
                                     <div class="form-hint" style="margin-top: 0.5rem;">
-                                        <i class="fas fa-info-circle"></i> اكتب اسم اللون يدوياً أو اختر من القائمة — إذا لم يكن اللون معروفاً سيُعرض بالرمادي.
+                                        <i class="fas fa-info-circle"></i> اكتب اسم اللون أو اختره من القائمة — يدعم "فاتح/غامق/داكن".
                                     </div>
                                 </div>
-                                <!-- ============================== -->
 
                                 <div class="btn-row">
                                     <button type="submit" id="productSubmitBtn" class="btn btn-primary">
@@ -1696,18 +1692,15 @@
     </div>
 </div>
 
-<!-- ============ قائمة الألوان المنسدلة (مرتبة حسب العائلات) ============ -->
 <datalist id="colorList">
-    <!-- محايد -->
     <option value="أسود"></option>
-    <option value="رمادي غامق"></option>
     <option value="رمادي"></option>
     <option value="رمادي فاتح"></option>
+    <option value="رمادي غامق"></option>
     <option value="أبيض"></option>
     <option value="بيج"></option>
     <option value="كريمي"></option>
 
-    <!-- الأحمر ودرجاته -->
     <option value="أحمر"></option>
     <option value="أحمر فاتح"></option>
     <option value="أحمر غامق"></option>
@@ -1715,8 +1708,9 @@
     <option value="نبيتي"></option>
     <option value="خمري"></option>
     <option value="وردي"></option>
+    <option value="وردي فاتح"></option>
+    <option value="وردي غامق"></option>
 
-    <!-- الأزرق ودرجاته -->
     <option value="أزرق"></option>
     <option value="أزرق فاتح"></option>
     <option value="أزرق غامق"></option>
@@ -1725,31 +1719,34 @@
     <option value="سماوي"></option>
     <option value="تركواز"></option>
 
-    <!-- الأخضر ودرجاته -->
     <option value="أخضر"></option>
     <option value="أخضر فاتح"></option>
     <option value="أخضر غامق"></option>
     <option value="أخضر داكن"></option>
     <option value="زيتي"></option>
+    <option value="ليموني"></option>
 
-    <!-- الأصفر والذهبي -->
     <option value="أصفر"></option>
     <option value="أصفر فاتح"></option>
     <option value="ذهبي"></option>
+    <option value="نحاسي"></option>
 
-    <!-- البني ودرجاته -->
     <option value="بني"></option>
     <option value="بني فاتح"></option>
     <option value="بني غامق"></option>
     <option value="بني داكن"></option>
+    <option value="شوكولاتي"></option>
+    <option value="جملي"></option>
 
-    <!-- البنفسجي ودرجاته -->
     <option value="بنفسجي"></option>
     <option value="موف"></option>
     <option value="لافندر"></option>
+    <option value="أرجواني"></option>
 
-    <!-- ألوان متنوعة -->
     <option value="برتقالي"></option>
+    <option value="برتقالي فاتح"></option>
+    <option value="برتقالي غامق"></option>
+
     <option value="فضي"></option>
     <option value="برونزي"></option>
 </datalist>
@@ -1969,134 +1966,269 @@ function updateHeaderLogo(store) {
 
 /* ============================================================
    🎨 نظام الألوان الذكي
-   - توحيد الاسم العربي (أحمر / احمر / أحمر ==> احمر)
-   - خريطة شاملة لكل الألوان المذكورة في القائمة
-   - fallback رمادي واضح للألوان غير المعروفة
+   ============================================================
+   - يُظهر اللون الفعلي لأي اسم (فاتح/غامق/داكن...)
+   - الألوان غير المعروفة → رمادي بدون أي تلميح
    ============================================================ */
-const UNKNOWN_COLOR_HEX = '#9CA3AF'; // رمادي متوسط واضح
 
-function normalizeArabicColorName(name) {
+const UNKNOWN_COLOR_HEX = '#9CA3AF';
+
+const BASE_COLOR_MAP = {
+    'اسود': '#1A1A1A',
+    'ابيض': '#FFFFFF',
+    'رمادي': '#6B7280',
+    'احمر': '#EF4444',
+    'نبيتي': '#7F1D1D',
+    'خمري': '#831843',
+    'وردي': '#EC4899',
+    'ازرق': '#3B82F6',
+    'كحلي': '#1E3A8A',
+    'سماوي': '#38BDF8',
+    'تركواز': '#14B8A6',
+    'تركوازي': '#14B8A6',
+    'اخضر': '#22C55E',
+    'زيتي': '#4D7C0F',
+    'ليموني': '#A3E635',
+    'اصفر': '#EAB308',
+    'ذهبي': '#F59E0B',
+    'نحاسي': '#B87333',
+    'بني': '#78350F',
+    'شوكولاتي': '#5C3A21',
+    'جملي': '#C19A6B',
+    'بيج': '#E8D5B7',
+    'كريمي': '#FFF8DC',
+    'سكري': '#F5DEB3',
+    'بنفسجي': '#8B5CF6',
+    'موف': '#A855F7',
+    'لافندر': '#D8B4FE',
+    'ارجواني': '#7C3AED',
+    'برتقالي': '#F97316',
+    'فضي': '#9CA3AF',
+    'برونزي': '#CD7F32',
+
+    'black': '#1A1A1A',
+    'white': '#FFFFFF',
+    'gray': '#6B7280',
+    'grey': '#6B7280',
+    'red': '#EF4444',
+    'blue': '#3B82F6',
+    'green': '#22C55E',
+    'yellow': '#EAB308',
+    'brown': '#78350F',
+    'orange': '#F97316',
+    'pink': '#EC4899',
+    'purple': '#8B5CF6',
+    'gold': '#F59E0B',
+    'silver': '#9CA3AF',
+    'beige': '#E8D5B7',
+    'cream': '#FFF8DC',
+    'navy': '#1E3A8A',
+    'teal': '#14B8A6',
+    'olive': '#4D7C0F',
+    'maroon': '#7F1D1D'
+};
+
+const LIGHT_KEYWORDS = [
+    'فاتح', 'فاتحة', 'فاتحه', 'باهت', 'باهتة', 'باهته',
+    'خفيف', 'خفيفة', 'خفيفه', 'ساطع', 'ساطعة', 'ساطعه',
+    'light', 'pale', 'soft'
+];
+
+const DARK_KEYWORDS = [
+    'غامق', 'غامقة', 'غامقه', 'داكن', 'داكنة', 'داكنه',
+    'عميق', 'عميقة', 'عميقه', 'قاتم', 'قاتمة', 'قاتمه',
+    'dark', 'deep', 'strong'
+];
+
+function normalizeColorName(name) {
     if (!name) return '';
-    return String(name).trim()
-        .replace(/[أإآ]/g, 'ا')
+    return String(name)
+        .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
+        .replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '')
+        .replace(/[أإآٱ]/g, 'ا')
         .replace(/ة/g, 'ه')
         .replace(/ى/g, 'ي')
+        .replace(/[ئ]/g, 'ي')
+        .replace(/ؤ/g, 'و')
+        .replace(/\s+/g, ' ')
+        .trim()
         .toLowerCase();
+}
+
+function hexToRgb(hex) {
+    const cleaned = String(hex).replace('#', '');
+    if (cleaned.length !== 6) return null;
+    return {
+        r: parseInt(cleaned.substr(0, 2), 16),
+        g: parseInt(cleaned.substr(2, 2), 16),
+        b: parseInt(cleaned.substr(4, 2), 16)
+    };
+}
+function rgbToHex(r, g, b) {
+    const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
+    const toHex = v => clamp(v).toString(16).padStart(2, '0');
+    return '#' + toHex(r) + toHex(g) + toHex(b);
+}
+
+function applyModifier(hex, modifier) {
+    if (!modifier || !hex) return hex;
+    const rgb = hexToRgb(hex);
+    if (!rgb) return hex;
+
+    let { r, g, b } = rgb;
+
+    switch (modifier) {
+        case 'light': {
+            r = r + (255 - r) * 0.40;
+            g = g + (255 - g) * 0.40;
+            b = b + (255 - b) * 0.40;
+            break;
+        }
+        case 'dark': {
+            r = r * 0.60;
+            g = g * 0.60;
+            b = b * 0.60;
+            break;
+        }
+    }
+    return rgbToHex(r, g, b);
 }
 
 function getFallbackHex(colorName) {
     if (!colorName) return UNKNOWN_COLOR_HEX;
-    const name = normalizeArabicColorName(colorName);
 
-    const colorMap = {
-        // محايد
-        'اسود': '#1A1A1A',
-        'رمادي غامق': '#374151',
-        'رمادي': '#6B7280',
-        'رمادي فاتح': '#9CA3AF',
-        'ابيض': '#FFFFFF',
-        'بيج': '#E8D5B7',
-        'كريمي': '#FFF8DC',
+    const normalized = normalizeColorName(colorName);
+    if (!normalized) return UNKNOWN_COLOR_HEX;
 
-        // الأحمر ودرجاته
-        'احمر': '#EF4444',
-        'احمر فاتح': '#F87171',
-        'احمر غامق': '#991B1B',
-        'احمر داكن': '#991B1B',
-        'نبيتي': '#7F1D1D',
-        'خمري': '#831843',
-        'وردي': '#EC4899',
-        'وردي فاتح': '#F9A8D4',
-        'وردي غامق': '#BE185D',
+    if (BASE_COLOR_MAP[normalized]) {
+        return BASE_COLOR_MAP[normalized];
+    }
 
-        // الأزرق ودرجاته
-        'ازرق': '#3B82F6',
-        'ازرق فاتح': '#60A5FA',
-        'ازرق غامق': '#1E3A8A',
-        'ازرق داكن': '#1E3A8A',
-        'كحلي': '#1E3A8A',
-        'سماوي': '#38BDF8',
-        'تركواز': '#14B8A6',
-        'تركوازي': '#14B8A6',
+    let modifier = null;
+    let baseCandidate = normalized;
 
-        // الأخضر ودرجاته
-        'اخضر': '#22C55E',
-        'اخضر فاتح': '#4ADE80',
-        'اخضر غامق': '#166534',
-        'اخضر داكن': '#166534',
-        'زيتي': '#4D7C0F',
-        'ليموني': '#A3E635',
+    const allModifiers = [
+        ...LIGHT_KEYWORDS.map(k => ({ word: normalizeColorName(k), type: 'light' })),
+        ...DARK_KEYWORDS.map(k => ({ word: normalizeColorName(k), type: 'dark' }))
+    ].sort((a, b) => b.word.length - a.word.length);
 
-        // الأصفر والذهبي
-        'اصفر': '#EAB308',
-        'اصفر فاتح': '#FDE047',
-        'ذهبي': '#F59E0B',
-        'نحاسي': '#B87333',
+    for (const mod of allModifiers) {
+        if (!mod.word) continue;
+        if (normalized === mod.word) {
+            modifier = mod.type;
+            baseCandidate = '';
+            break;
+        }
+        if (normalized.includes(mod.word)) {
+            modifier = mod.type;
+            baseCandidate = normalized
+                .replace(mod.word, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            break;
+        }
+    }
 
-        // البني ودرجاته
-        'بني': '#78350F',
-        'بني فاتح': '#A16207',
-        'بني غامق': '#451A03',
-        'بني داكن': '#451A03',
-        'شوكولاتي': '#5C3A21',
-        'جملي': '#C19A6B',
+    if (baseCandidate && BASE_COLOR_MAP[baseCandidate]) {
+        return applyModifier(BASE_COLOR_MAP[baseCandidate], modifier);
+    }
 
-        // البنفسجي ودرجاته
-        'بنفسجي': '#8B5CF6',
-        'موف': '#A855F7',
-        'لافندر': '#D8B4FE',
-        'ارجواني': '#7C3AED',
+    const sortedBaseKeys = Object.keys(BASE_COLOR_MAP).sort((a, b) => b.length - a.length);
 
-        // ألوان متنوعة
-        'برتقالي': '#F97316',
-        'برتقالي فاتح': '#FB923C',
-        'برتقالي غامق': '#C2410C',
-        'فضي': '#9CA3AF',
-        'برونزي': '#CD7F32',
-        'سكري': '#F5DEB3',
+    if (baseCandidate) {
+        for (const key of sortedBaseKeys) {
+            if (baseCandidate.includes(key)) {
+                return applyModifier(BASE_COLOR_MAP[key], modifier);
+            }
+        }
+    }
 
-        // English fallback
-        'black': '#1A1A1A',
-        'white': '#FFFFFF',
-        'red': '#EF4444',
-        'blue': '#3B82F6',
-        'green': '#22C55E',
-        'yellow': '#EAB308',
-        'gray': '#6B7280',
-        'grey': '#6B7280',
-        'brown': '#78350F',
-        'orange': '#F97316',
-        'pink': '#EC4899',
-        'purple': '#8B5CF6',
-        'gold': '#F59E0B',
-        'silver': '#9CA3AF',
-        'beige': '#E8D5B7',
-        'cream': '#FFF8DC',
-        'navy': '#1E3A8A',
-        'teal': '#14B8A6',
-        'olive': '#4D7C0F',
-        'maroon': '#7F1D1D'
-    };
+    for (const key of sortedBaseKeys) {
+        if (normalized.includes(key)) {
+            let inferredModifier = null;
+            for (const mod of allModifiers) {
+                if (!mod.word) continue;
+                if (normalized.includes(mod.word)) {
+                    inferredModifier = mod.type;
+                    break;
+                }
+            }
+            return applyModifier(BASE_COLOR_MAP[key], inferredModifier);
+        }
+    }
 
-    return colorMap[name] || UNKNOWN_COLOR_HEX;
+    return UNKNOWN_COLOR_HEX;
 }
 
-/* 🎨 ترتيب عائلات الألوان لعرضها مرتّبة */
 const COLOR_FAMILY_ORDER = {
-    'اسود': 1, 'رمادي غامق': 2, 'رمادي': 3, 'رمادي فاتح': 4, 'ابيض': 5, 'بيج': 6, 'كريمي': 7, 'سكري': 8,
-    'احمر': 10, 'احمر فاتح': 11, 'احمر غامق': 12, 'احمر داكن': 12, 'نبيتي': 13, 'خمري': 14, 'وردي': 15, 'وردي فاتح': 16, 'وردي غامق': 17,
-    'ازرق': 20, 'ازرق فاتح': 21, 'ازرق غامق': 22, 'ازرق داكن': 22, 'كحلي': 23, 'سماوي': 24, 'تركواز': 25, 'تركوازي': 25,
-    'اخضر': 30, 'اخضر فاتح': 31, 'اخضر غامق': 32, 'اخضر داكن': 32, 'زيتي': 33, 'ليموني': 34,
+    'اسود': 1, 'رمادي غامق': 2, 'رمادي': 3, 'رمادي فاتح': 4,
+    'ابيض': 5, 'بيج': 6, 'كريمي': 7, 'سكري': 8,
+    'احمر': 10, 'احمر فاتح': 11, 'احمر غامق': 12, 'احمر داكن': 13,
+    'نبيتي': 14, 'خمري': 15, 'وردي': 16, 'وردي فاتح': 17, 'وردي غامق': 18,
+    'ازرق': 20, 'ازرق فاتح': 21, 'ازرق غامق': 22, 'ازرق داكن': 23,
+    'كحلي': 24, 'سماوي': 25, 'تركواز': 26, 'تركوازي': 27,
+    'اخضر': 30, 'اخضر فاتح': 31, 'اخضر غامق': 32, 'اخضر داكن': 33,
+    'زيتي': 34, 'ليموني': 35,
     'اصفر': 40, 'اصفر فاتح': 41, 'ذهبي': 42, 'نحاسي': 43,
-    'بني': 50, 'بني فاتح': 51, 'بني غامق': 52, 'بني داكن': 52, 'شوكولاتي': 53, 'جملي': 54,
+    'بني': 50, 'بني فاتح': 51, 'بني غامق': 52, 'بني داكن': 53,
+    'شوكولاتي': 54, 'جملي': 55,
     'بنفسجي': 60, 'موف': 61, 'لافندر': 62, 'ارجواني': 63,
     'برتقالي': 70, 'برتقالي فاتح': 71, 'برتقالي غامق': 72,
     'فضي': 80, 'برونزي': 81
 };
 
 function getColorSortOrder(name) {
-    const normalized = normalizeArabicColorName(name);
-    return COLOR_FAMILY_ORDER[normalized] ?? 999;
+    const normalized = normalizeColorName(name);
+    if (!normalized) return 999;
+
+    if (COLOR_FAMILY_ORDER[normalized] !== undefined) {
+        return COLOR_FAMILY_ORDER[normalized];
+    }
+
+    let baseName = normalized;
+    let modifier = null;
+
+    for (const k of [...DARK_KEYWORDS, ...LIGHT_KEYWORDS]) {
+        const w = normalizeColorName(k);
+        if (w && normalized.includes(w)) {
+            baseName = normalized.replace(w, ' ').replace(/\s+/g, ' ').trim();
+            modifier = DARK_KEYWORDS.includes(k) ? 'dark' : 'light';
+            break;
+        }
+    }
+
+    let baseOrder = 999;
+    const sortedKeys = Object.keys(BASE_COLOR_MAP).sort((a, b) => b.length - a.length);
+    for (const key of sortedKeys) {
+        if (baseName.includes(key) || key.includes(baseName)) {
+            for (const [k, v] of Object.entries(COLOR_FAMILY_ORDER)) {
+                if (k.startsWith(key)) {
+                    baseOrder = v;
+                    break;
+                }
+            }
+            if (baseOrder !== 999) break;
+        }
+    }
+    if (baseOrder === 999) {
+        for (const key of sortedKeys) {
+            if (normalized.includes(key)) {
+                for (const [k, v] of Object.entries(COLOR_FAMILY_ORDER)) {
+                    if (k.startsWith(key)) {
+                        baseOrder = v;
+                        break;
+                    }
+                }
+                if (baseOrder !== 999) break;
+            }
+        }
+    }
+
+    let modifierOffset = 0;
+    if (modifier === 'light') modifierOffset = 0.1;
+    else if (modifier === 'dark') modifierOffset = 0.2;
+
+    return baseOrder + modifierOffset;
 }
 
 function sortColorsByFamily(colors) {
@@ -2507,7 +2639,6 @@ function renderMyProductsList(products) {
             ? `<img src="${escapeHtml(product.img_url)}" class="product-thumb" alt="${escapeHtml(product.name)}" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
             : `<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
-        // 🎨 دوائر الألوان (مرتبة حسب العائلة)
         let colorDotsHTML = '';
         if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
             const sortedColors = sortColorsByFamily(product.colors);
@@ -2548,8 +2679,16 @@ function renderMyProductsList(products) {
 }
 
 /* ============================================================
-   🎨 إدارة حقول الألوان (مع معاينة صورة + توافق كامل مع الهاتف)
+   🎨 إدارة حقول الألوان
    ============================================================ */
+function updateColorPreview(nameInput, dotPreview) {
+    const value = nameInput.value;
+    const hex = getFallbackHex(value);
+    dotPreview.style.backgroundColor = hex;
+    // بدون أي تلميح — يظهر اللون فقط
+    dotPreview.removeAttribute('title');
+}
+
 function addColorRow(name = '', image = '') {
     const container = document.getElementById('productColorsContainer');
     const row = document.createElement('div');
@@ -2557,7 +2696,7 @@ function addColorRow(name = '', image = '') {
 
     row.innerHTML = `
         <div class="color-row-top">
-            <div class="color-dot-preview" title="معاينة اللون"></div>
+            <div class="color-dot-preview"></div>
             <input type="text" class="color-name" list="colorList" placeholder="اكتب أو اختر اللون" autocomplete="off">
             <button type="button" class="remove-color-btn" title="حذف هذا اللون" aria-label="حذف اللون">
                 <i class="fas fa-times"></i>
@@ -2575,39 +2714,18 @@ function addColorRow(name = '', image = '') {
     const imagePreview = row.querySelector('.color-image-preview');
     const removeBtn = row.querySelector('.remove-color-btn');
 
-    // تعيين القيم عبر الخصائص (آمن ضد HTML injection)
     nameInput.value = name || '';
     imageInput.value = image || '';
 
-    // تعيين لون المعاينة الأولي
-    const initialHex = getFallbackHex(name);
-    dotPreview.style.backgroundColor = initialHex;
+    updateColorPreview(nameInput, dotPreview);
 
-    // هل اللون معروف؟ (يستخدم لتمييز الألوان غير المعروفة)
-    const normalizedName = normalizeArabicColorName(name);
-    if (name && !COLOR_FAMILY_ORDER[normalizedName] && initialHex === UNKNOWN_COLOR_HEX) {
-        dotPreview.title = `لون غير معروف "${name}" — تم استخدام الرمادي`;
-    } else if (name) {
-        dotPreview.title = `اللون: ${name}`;
-    }
-
-    // تحديث لون الدائرة عند الكتابة أو الاختيار من القائمة
-    nameInput.addEventListener('input', (e) => {
-        const value = e.target.value;
-        const hex = getFallbackHex(value);
-        dotPreview.style.backgroundColor = hex;
-
-        const norm = normalizeArabicColorName(value);
-        if (value && !COLOR_FAMILY_ORDER[norm] && hex === UNKNOWN_COLOR_HEX) {
-            dotPreview.title = `لون غير معروف "${value}" — تم استخدام الرمادي`;
-        } else if (value) {
-            dotPreview.title = `اللون: ${value}`;
-        } else {
-            dotPreview.title = 'معاينة اللون';
-        }
+    nameInput.addEventListener('input', () => {
+        updateColorPreview(nameInput, dotPreview);
+    });
+    nameInput.addEventListener('change', () => {
+        updateColorPreview(nameInput, dotPreview);
     });
 
-    // 📸 معاينة الصورة عند إدخال الرابط
     imageInput.addEventListener('input', (e) => {
         const url = e.target.value.trim();
         if (url) {
@@ -2619,18 +2737,15 @@ function addColorRow(name = '', image = '') {
         }
     });
 
-    // إظهار معاينة الصورة الأولية إن وُجدت
     if (image) {
         imagePreview.src = image;
         imagePreview.classList.add('visible');
     }
 
-    // معالجة خطأ تحميل الصورة
     imagePreview.addEventListener('error', () => {
         imagePreview.classList.remove('visible');
     });
 
-    // زر الحذف مع أنيميشن
     removeBtn.addEventListener('click', () => {
         row.style.transition = 'all 0.25s ease';
         row.style.opacity = '0';
@@ -2646,13 +2761,11 @@ function addColorRow(name = '', image = '') {
 
     container.appendChild(row);
 
-    // تمرير تلقائي لعرض الصف الجديد على الهاتف
     setTimeout(() => {
         row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, 100);
 }
 
-// زر إضافة لون جديد
 document.getElementById('addColorBtn').addEventListener('click', () => {
     addColorRow();
 });
@@ -2668,7 +2781,6 @@ $('productForm').addEventListener('submit', async (e) => {
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (price <= 0) { showToast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
 
-    // تجميع الألوان من الحقول
     const colorRows = document.querySelectorAll('#productColorsContainer .color-row');
     const colors = [];
     let hasColorError = false;
@@ -2761,7 +2873,6 @@ window.editProduct = async (id) => {
             $('product_img_preview').classList.add('hidden');
         }
 
-        // تعبئة الألوان (مرتبة حسب العائلة للعرض)
         const container = document.getElementById('productColorsContainer');
         container.innerHTML = '';
         if (data.colors && Array.isArray(data.colors) && data.colors.length > 0) {
