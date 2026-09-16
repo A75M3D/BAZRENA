@@ -1070,6 +1070,8 @@
 
         <form id="storeForm">
             <input type="hidden" id="store_id">
+            <!-- 🆕 حقل مخفي: يخزن الاسم الأصلي للمتجر عند التعديل -->
+            <input type="hidden" id="store_original_name">
 
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-store"></i><span>اسم المتجر</span><span class="req">*</span></label>
@@ -1496,7 +1498,8 @@ async function loadAllData() {
         } catch {
             storeSnap = await db.collection(STORES_COLLECTION).get();
         }
-        allStores = storeSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        // ✅ الإصلاح: id يأتي في النهاية لضمان عدم استبداله بأي حقل id داخل البيانات
+        allStores = storeSnap.docs.map(d => ({ ...d.data(), id: d.id }));
         cacheManager.set('stores_list', allStores);
 
         let productSnap;
@@ -1505,7 +1508,8 @@ async function loadAllData() {
         } catch {
             productSnap = await db.collection(PRODUCTS_COLLECTION).get();
         }
-        allProducts = productSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        // ✅ الإصلاح: id يأتي في النهاية لضمان عدم استبداله بأي حقل id داخل البيانات
+        allProducts = productSnap.docs.map(d => ({ ...d.data(), id: d.id }));
         cacheManager.set('all_products', allProducts);
 
         processLoadedData();
@@ -1607,6 +1611,8 @@ function renderStoresList() {
             ? `<a href="https://wa.me/${cleanPhone(s.whatsapp_number)}" target="_blank" rel="noopener" style="color:#25D366;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:4px;"><i class="fab fa-whatsapp"></i> ${escapeHtml(s.whatsapp_number)}</a>`
             : '<span style="color:#9ca3af;">—</span>';
 
+        const safeName = escapeHtml(s.name || '').replace(/'/g, "\\'");
+
         html += `
             <div class="item-card">
                 ${logoHtml}
@@ -1625,7 +1631,7 @@ function renderStoresList() {
                     <button class="icon-btn icon-btn-edit" onclick="openStoreEdit('${s.id}')" title="تعديل">
                         <i class="fas fa-pen"></i>
                     </button>
-                    <button class="icon-btn icon-btn-view" onclick="viewStoreProducts('${escapeHtml(s.name).replace(/'/g, "\\'")}')" title="عرض المنتجات">
+                    <button class="icon-btn icon-btn-view" onclick="viewStoreProducts('${safeName}')" title="عرض المنتجات">
                         <i class="fas fa-eye"></i>
                     </button>
                     <button class="icon-btn icon-btn-delete" onclick="deleteStore('${s.id}')" title="حذف">
@@ -1726,7 +1732,8 @@ function setupRealtimeStoresListener() {
 
     storesUnsubscribe = db.collection(STORES_COLLECTION)
         .onSnapshot((snapshot) => {
-            const freshStores = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            // ✅ الإصلاح: id في النهاية لضمان عدم استبداله
+            const freshStores = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             const newFingerprint = getFingerprint(freshStores);
 
             if (isFirstStoresSnapshot) {
@@ -1775,7 +1782,8 @@ function setupRealtimeProductsListener() {
 
     productsUnsubscribe = db.collection(PRODUCTS_COLLECTION)
         .onSnapshot((snapshot) => {
-            const freshProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            // ✅ الإصلاح: id في النهاية لضمان عدم استبداله
+            const freshProducts = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             const newFingerprint = getFingerprint(freshProducts);
 
             if (isFirstProductsSnapshot) {
@@ -1822,11 +1830,13 @@ function openStoreModal(store = null) {
     $('storeModalTitle').textContent = isEdit ? 'تعديل المتجر' : 'إضافة متجر جديد';
     $('storeForm').reset();
     $('store_id').value = '';
+    $('store_original_name').value = '';   // 🆕 تصفير الاسم الأصلي
     $('store_logo_preview').classList.add('hidden');
     $('store_cover_preview').classList.add('hidden');
 
     if (isEdit) {
         $('store_id').value = store.id;
+        $('store_original_name').value = store.name || '';  // 🆕 حفظ الاسم الأصلي
         $('store_name').value = store.name || '';
         $('store_login_password').value = store.login_password || '';
         $('store_category').value = store.category || '';
@@ -1855,6 +1865,7 @@ function openStoreModal(store = null) {
 
 function closeStoreModal() {
     $('storeModal').classList.add('hidden');
+    $('store_original_name').value = '';   // 🆕 تصفير الاسم الأصلي عند الإغلاق
     document.body.style.overflow = '';
 }
 
@@ -1878,10 +1889,27 @@ $('storeForm').addEventListener('submit', async (e) => {
     if (!password || password.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
     if (!whatsapp || whatsapp.length < 10) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
 
-    const existingWithName = allStores.find(s => s.name === name && s.id !== id);
-    if (existingWithName) {
-        showToast('يوجد متجر آخر بنفس الاسم', 'error');
-        return;
+    // ✅ الإصلاح: فحص التكرار المُحصَّن
+    // - يقارن الـ id كسلاسل نصية (يتجنب مشاكل النوع string/number)
+    // - يقارن الأسماء بتجاهل حالة الأحرف والمسافات
+    // - يتجاهل المتجر نفسه بشكل صريح
+    // - لا يفحص أصلاً إذا لم يتغير الاسم في وضع التعديل
+    const isEdit = !!id;
+    const originalName = ($('store_original_name').value || '').trim().toLowerCase();
+    const newNameLower = String(name).trim().toLowerCase();
+    const nameChanged = !isEdit || (originalName !== newNameLower);
+
+    if (nameChanged) {
+        const existingWithName = allStores.find(s => {
+            // تجاهل المتجر نفسه بشكل صريح
+            if (String(s.id) === String(id)) return false;
+            const existingName = String(s.name || '').trim().toLowerCase();
+            return existingName === newNameLower && existingName.length > 0;
+        });
+        if (existingWithName) {
+            showToast('يوجد متجر آخر بنفس الاسم', 'error');
+            return;
+        }
     }
 
     const data = {
@@ -1899,15 +1927,15 @@ $('storeForm').addEventListener('submit', async (e) => {
     };
 
     isSavingStore = true;
-    const isEdit = !!id;
     setBtnLoading($('storeSubmitBtn'), true, isEdit ? 'جارٍ التعديل...' : 'جارٍ الإضافة...',
         '<i class="fas fa-save"></i> <span>حفظ المتجر</span>');
 
     try {
         if (isEdit) {
-            const oldStore = allStores.find(s => s.id === id);
+            const oldStore = allStores.find(s => String(s.id) === String(id));
             await db.collection(STORES_COLLECTION).doc(id).update(data);
 
+            // إذا تغير اسم المتجر، حدّث اسم المتجر في كل منتجاته
             if (oldStore && oldStore.name !== name) {
                 const prodSnap = await db.collection(PRODUCTS_COLLECTION)
                     .where('store_name', '==', oldStore.name).get();
@@ -1926,7 +1954,7 @@ $('storeForm').addEventListener('submit', async (e) => {
         }
 
         closeStoreModal();
-        // onSnapshot سيتكفل بالتحديث
+        // onSnapshot سيتكفل بالتحديث في الواجهة
     } catch (err) {
         console.error(err);
         showToast('فشل الحفظ: ' + err.message, 'error');
@@ -1938,7 +1966,7 @@ $('storeForm').addEventListener('submit', async (e) => {
 });
 
 window.deleteStore = async (id) => {
-    const store = allStores.find(s => s.id === id);
+    const store = allStores.find(s => String(s.id) === String(id));
     if (!store) return;
 
     const productsCount = store.products_count || 0;
@@ -2004,7 +2032,7 @@ function closeProductModal() {
 }
 
 window.openProductEdit = (id) => {
-    const product = allProducts.find(p => p.id === id);
+    const product = allProducts.find(p => String(p.id) === String(id));
     if (product) openProductModal(product);
 };
 
@@ -2058,7 +2086,7 @@ $('productForm').addEventListener('submit', async (e) => {
 });
 
 window.deleteProduct = async (id) => {
-    const product = allProducts.find(p => p.id === id);
+    const product = allProducts.find(p => String(p.id) === String(id));
     if (!product) return;
     if (!confirm(`هل أنت متأكد من حذف المنتج "${product.name}"؟`)) return;
 
