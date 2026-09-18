@@ -1791,22 +1791,6 @@
     </a>
 </section>
 
-<section id="categories" class="py-8 sm:py-12">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4">
-        <div class="flex justify-between items-end mb-4 sm:mb-6">
-            <div>
-                <h2 class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">تصفح حسب الفئة</h2>
-                <p class="text-text-light text-sm sm:text-base">اختر الفئة المناسبة لك</p>
-            </div>
-            <div class="flex gap-2">
-                <button id="prevCategoriesBtn" class="scroll-btn"><i class="fas fa-chevron-right"></i></button>
-                <button id="nextCategoriesBtn" class="scroll-btn"><i class="fas fa-chevron-left"></i></button>
-            </div>
-        </div>
-        <div id="categoriesContainer" class="categories-scroll-container"></div>
-    </div>
-</section>
-
 <section id="followedStoresSection" class="pt-4 sm:pt-6 pb-2 hidden">
     <div class="max-w-7xl mx-auto px-3 sm:px-4">
         <div class="flex items-center justify-between mb-2">
@@ -1842,6 +1826,23 @@
             <p id="storesErrorMessage" class="text-text-light mb-4">لا توجد متاجر</p>
             <button id="retryStoresBtn" class="btn-primary px-6 py-2 rounded-full">إعادة المحاولة</button>
         </div>
+    </div>
+</section>
+
+<!-- ===== الفئات - تم نقلها لتكون فوق المنتجات مباشرة ===== -->
+<section id="categories" class="pt-6 sm:pt-8 pb-2 bg-white border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4">
+        <div class="flex justify-between items-end mb-4 sm:mb-6">
+            <div>
+                <h2 class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">تصفح حسب الفئة</h2>
+                <p class="text-text-light text-sm sm:text-base">اختر الفئة المناسبة لفلترة المنتجات بسهولة</p>
+            </div>
+            <div class="flex gap-2">
+                <button id="prevCategoriesBtn" class="scroll-btn"><i class="fas fa-chevron-right"></i></button>
+                <button id="nextCategoriesBtn" class="scroll-btn"><i class="fas fa-chevron-left"></i></button>
+            </div>
+        </div>
+        <div id="categoriesContainer" class="categories-scroll-container"></div>
     </div>
 </section>
 
