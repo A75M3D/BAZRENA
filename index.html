@@ -1829,12 +1829,19 @@
     </div>
 </section>
 
-<!-- ===== الفئات - تم نقلها لتكون فوق المنتجات مباشرة ===== -->
+<!-- ===== الفئات - مع شارة عدد المنتجات ===== -->
 <section id="categories" class="pt-6 sm:pt-8 pb-2 bg-white border-t border-gray-100">
     <div class="max-w-7xl mx-auto px-3 sm:px-4">
         <div class="flex justify-between items-end mb-4 sm:mb-6">
             <div>
-                <h2 class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">تصفح حسب الفئة</h2>
+                <div class="flex items-center gap-3 flex-wrap mb-1 sm:mb-2">
+                    <h2 class="text-xl sm:text-3xl font-extrabold">تصفح حسب الفئة</h2>
+                    <span id="categoriesTotalBadge" class="all-products-total-badge" title="عدد المنتجات">
+                        <i class="fas fa-boxes-stacked"></i>
+                        <span id="categoriesTotalCount">0</span>
+                        <span>منتج</span>
+                    </span>
+                </div>
                 <p class="text-text-light text-sm sm:text-base">اختر الفئة المناسبة لفلترة المنتجات بسهولة</p>
             </div>
             <div class="flex gap-2">
@@ -1850,14 +1857,7 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-4">
         <div class="flex justify-between items-end mb-4 sm:mb-8">
             <div>
-                <div class="flex items-center gap-3 flex-wrap mb-1 sm:mb-2">
-                    <h2 id="allProductsTitle" class="text-xl sm:text-3xl font-extrabold">جميع المنتجات</h2>
-                    <span id="allProductsTotalBadge" class="all-products-total-badge" title="إجمالي المنتجات في الموقع">
-                        <i class="fas fa-boxes-stacked"></i>
-                        <span id="allProductsTotalCount">0</span>
-                        <span>منتج</span>
-                    </span>
-                </div>
+                <h2 id="allProductsTitle" class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">جميع المنتجات</h2>
                 <p id="allProductsSubtitle" class="text-text-light text-sm sm:text-base">تصفح كل المنتجات المتاحة</p>
             </div>
         </div>
@@ -2555,8 +2555,9 @@
     const allProductsEmpty = document.getElementById('allProductsEmpty');
     const allProductsTitle = document.getElementById('allProductsTitle');
     const allProductsSubtitle = document.getElementById('allProductsSubtitle');
-    const allProductsTotalCount = document.getElementById('allProductsTotalCount');
-    const allProductsTotalBadge = document.getElementById('allProductsTotalBadge');
+    // ✅ الجديد: شارة عدد المنتجات في قسم الفئات
+    const categoriesTotalBadge = document.getElementById('categoriesTotalBadge');
+    const categoriesTotalCount = document.getElementById('categoriesTotalCount');
     const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
     const installButtonFloating = document.getElementById('installButtonFloating');
     const storeFollowButton = document.getElementById('storeFollowButton');
@@ -2613,16 +2614,16 @@
         });
     }
 
-    function updateAllProductsTotalBadge() {
-        if (!allProductsTotalCount) return;
-        const total = allProducts.length;
-        allProductsTotalCount.textContent = total.toLocaleString();
+    /* ===== ✅ دالة جديدة: تحديث شارة عدد المنتجات في قسم الفئات ===== */
+    function updateCategoriesTotalBadge(count) {
+        if (!categoriesTotalCount || !categoriesTotalBadge) return;
+        const total = (typeof count === 'number') ? count : (currentCategory ? filteredProducts.length : allProducts.length);
+        categoriesTotalCount.textContent = total.toLocaleString();
 
-        if (allProductsTotalBadge) {
-            allProductsTotalBadge.style.animation = 'none';
-            void allProductsTotalBadge.offsetWidth;
-            allProductsTotalBadge.style.animation = 'badgePop 0.5s cubic-bezier(0.4,0,0.2,1)';
-        }
+        // إعادة تشغيل الأنيميشن
+        categoriesTotalBadge.style.animation = 'none';
+        void categoriesTotalBadge.offsetWidth;
+        categoriesTotalBadge.style.animation = 'badgePop 0.5s cubic-bezier(0.4,0,0.2,1)';
     }
 
     function updateBodyScroll() {
@@ -2698,98 +2699,43 @@
 
     /* ============================================================
        🎨 نظام الألوان الذكي الشامل
-       - يدعم جميع الألوان + المعدلات (فاتح/غامق/داكن/باهت/عميق...)
-       - أي لون + أي معدل يعمل تلقائياً
-       - الألوان غير المعروفة → رمادي بصمت
        ============================================================ */
 
-    // تطبيع اسم اللون العربي (شامل)
     function normalizeArabicColorName(name) {
         if (!name) return '';
         return String(name)
-            .replace(/[\u064B-\u0652\u0670\u0640]/g, '')                     // إزالة التشكيل
-            .replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '') // محارف مخفية
-            .replace(/[أإآٱ]/g, 'ا')                                          // توحيد الألف
-            .replace(/ة/g, 'ه')                                                // توحيد التاء المربوطة
-            .replace(/ى/g, 'ي')                                                // توحيد الألف المقصورة
+            .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
+            .replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '')
+            .replace(/[أإآٱ]/g, 'ا')
+            .replace(/ة/g, 'ه')
+            .replace(/ى/g, 'ي')
             .replace(/[ئ]/g, 'ي')
             .replace(/ؤ/g, 'و')
-            .replace(/\s+/g, ' ')                                              // مسافات متعددة
+            .replace(/\s+/g, ' ')
             .trim()
             .toLowerCase();
     }
 
     const UNKNOWN_COLOR_HEX = '#9CA3AF';
 
-    // الألوان الأساسية بدون معدلات
     const BASE_COLOR_MAP = {
-        'اسود': '#1A1A1A',
-        'ابيض': '#FFFFFF',
-        'رمادي': '#6B7280',
-        'احمر': '#EF4444',
-        'نبيتي': '#7F1D1D',
-        'خمري': '#831843',
-        'وردي': '#EC4899',
-        'ازرق': '#3B82F6',
-        'كحلي': '#1E3A8A',
-        'سماوي': '#38BDF8',
-        'تركواز': '#14B8A6',
-        'تركوازي': '#14B8A6',
-        'اخضر': '#22C55E',
-        'زيتي': '#4D7C0F',
-        'ليموني': '#A3E635',
-        'اصفر': '#EAB308',
-        'ذهبي': '#F59E0B',
-        'نحاسي': '#B87333',
-        'بني': '#78350F',
-        'شوكولاتي': '#5C3A21',
-        'جملي': '#C19A6B',
-        'بيج': '#E8D5B7',
-        'كريمي': '#FFF8DC',
-        'سكري': '#F5DEB3',
-        'بنفسجي': '#8B5CF6',
-        'موف': '#A855F7',
-        'لافندر': '#D8B4FE',
-        'ارجواني': '#7C3AED',
-        'برتقالي': '#F97316',
-        'فضي': '#9CA3AF',
-        'برونزي': '#CD7F32',
-        // English
-        'black': '#1A1A1A',
-        'white': '#FFFFFF',
-        'gray': '#6B7280',
-        'grey': '#6B7280',
-        'red': '#EF4444',
-        'blue': '#3B82F6',
-        'green': '#22C55E',
-        'yellow': '#EAB308',
-        'brown': '#78350F',
-        'orange': '#F97316',
-        'pink': '#EC4899',
-        'purple': '#8B5CF6',
-        'gold': '#F59E0B',
-        'silver': '#9CA3AF',
-        'beige': '#E8D5B7',
-        'cream': '#FFF8DC',
-        'navy': '#1E3A8A',
-        'teal': '#14B8A6',
-        'olive': '#4D7C0F',
-        'maroon': '#7F1D1D'
+        'اسود': '#1A1A1A', 'ابيض': '#FFFFFF', 'رمادي': '#6B7280', 'احمر': '#EF4444',
+        'نبيتي': '#7F1D1D', 'خمري': '#831843', 'وردي': '#EC4899', 'ازرق': '#3B82F6',
+        'كحلي': '#1E3A8A', 'سماوي': '#38BDF8', 'تركواز': '#14B8A6', 'تركوازي': '#14B8A6',
+        'اخضر': '#22C55E', 'زيتي': '#4D7C0F', 'ليموني': '#A3E635', 'اصفر': '#EAB308',
+        'ذهبي': '#F59E0B', 'نحاسي': '#B87333', 'بني': '#78350F', 'شوكولاتي': '#5C3A21',
+        'جملي': '#C19A6B', 'بيج': '#E8D5B7', 'كريمي': '#FFF8DC', 'سكري': '#F5DEB3',
+        'بنفسجي': '#8B5CF6', 'موف': '#A855F7', 'لافندر': '#D8B4FE', 'ارجواني': '#7C3AED',
+        'برتقالي': '#F97316', 'فضي': '#9CA3AF', 'برونزي': '#CD7F32',
+        'black': '#1A1A1A', 'white': '#FFFFFF', 'gray': '#6B7280', 'grey': '#6B7280',
+        'red': '#EF4444', 'blue': '#3B82F6', 'green': '#22C55E', 'yellow': '#EAB308',
+        'brown': '#78350F', 'orange': '#F97316', 'pink': '#EC4899', 'purple': '#8B5CF6',
+        'gold': '#F59E0B', 'silver': '#9CA3AF', 'beige': '#E8D5B7', 'cream': '#FFF8DC',
+        'navy': '#1E3A8A', 'teal': '#14B8A6', 'olive': '#4D7C0F', 'maroon': '#7F1D1D'
     };
 
-    // كلمات "فاتح"
-    const LIGHT_KEYWORDS = [
-        'فاتح', 'فاتحة', 'فاتحه', 'باهت', 'باهتة', 'باهته',
-        'خفيف', 'خفيفة', 'خفيفه', 'ساطع', 'ساطعة', 'ساطعه',
-        'light', 'pale', 'soft'
-    ];
-
-    // كلمات "غامق"
-    const DARK_KEYWORDS = [
-        'غامق', 'غامقة', 'غامقه', 'داكن', 'داكنة', 'داكنه',
-        'عميق', 'عميقة', 'عميقه', 'قاتم', 'قاتمة', 'قاتمه',
-        'dark', 'deep', 'strong'
-    ];
+    const LIGHT_KEYWORDS = ['فاتح', 'فاتحة', 'فاتحه', 'باهت', 'باهتة', 'باهته', 'خفيف', 'خفيفة', 'خفيفه', 'ساطع', 'ساطعة', 'ساطعه', 'light', 'pale', 'soft'];
+    const DARK_KEYWORDS = ['غامق', 'غامقة', 'غامقه', 'داكن', 'داكنة', 'داكنه', 'عميق', 'عميقة', 'عميقه', 'قاتم', 'قاتمة', 'قاتمه', 'dark', 'deep', 'strong'];
 
     function hexToRgb(hex) {
         const cleaned = String(hex).replace('#', '');
@@ -2810,9 +2756,7 @@
         if (!modifier || !hex) return hex;
         const rgb = hexToRgb(hex);
         if (!rgb) return hex;
-
         let { r, g, b } = rgb;
-
         if (modifier === 'light') {
             r = r + (255 - r) * 0.40;
             g = g + (255 - g) * 0.40;
@@ -2825,17 +2769,12 @@
         return rgbToHex(r, g, b);
     }
 
-    // 🎯 الدالة الرئيسية: أي اسم لون → HEX فعلي
     function getFallbackHex(colorName) {
         if (!colorName) return UNKNOWN_COLOR_HEX;
-
         const normalized = normalizeArabicColorName(colorName);
         if (!normalized) return UNKNOWN_COLOR_HEX;
-
-        // مطابقة مباشرة
         if (BASE_COLOR_MAP[normalized]) return BASE_COLOR_MAP[normalized];
 
-        // استخراج المُعدِّل
         let modifier = null;
         let baseCandidate = normalized;
 
@@ -2846,11 +2785,7 @@
 
         for (const mod of allModifiers) {
             if (!mod.word) continue;
-            if (normalized === mod.word) {
-                modifier = mod.type;
-                baseCandidate = '';
-                break;
-            }
+            if (normalized === mod.word) { modifier = mod.type; baseCandidate = ''; break; }
             if (normalized.includes(mod.word)) {
                 modifier = mod.type;
                 baseCandidate = normalized.replace(mod.word, ' ').replace(/\s+/g, ' ').trim();
@@ -2866,9 +2801,7 @@
 
         if (baseCandidate) {
             for (const key of sortedBaseKeys) {
-                if (baseCandidate.includes(key)) {
-                    return applyColorModifier(BASE_COLOR_MAP[key], modifier);
-                }
+                if (baseCandidate.includes(key)) return applyColorModifier(BASE_COLOR_MAP[key], modifier);
             }
         }
 
@@ -2877,10 +2810,7 @@
                 let inferredModifier = null;
                 for (const mod of allModifiers) {
                     if (!mod.word) continue;
-                    if (normalized.includes(mod.word)) {
-                        inferredModifier = mod.type;
-                        break;
-                    }
+                    if (normalized.includes(mod.word)) { inferredModifier = mod.type; break; }
                 }
                 return applyColorModifier(BASE_COLOR_MAP[key], inferredModifier);
             }
@@ -3238,7 +3168,7 @@
                     if (cachedFingerprint !== newFingerprint) {
                         console.log('📊 البيانات تغيرت منذ آخر زيارة - تحديث الواجهة');
                         allProducts = freshProducts;
-                        updateAllProductsTotalBadge();
+                        updateCategoriesTotalBadge();
                         applyProductsFilter(currentCategory);
                         if (currentStore && !storeModal.classList.contains('hidden')) {
                             loadStoreProductsFromLocal(freshProducts, currentStore.name);
@@ -3263,7 +3193,6 @@
                 allProducts = freshProducts;
                 cacheManager.set('all_products', freshProducts);
 
-                updateAllProductsTotalBadge();
                 applyProductsFilter(currentCategory);
 
                 if (currentStore && !storeModal.classList.contains('hidden')) {
@@ -3566,7 +3495,6 @@
             ratingEl.className = 'store-product-rating';
             ratingEl.innerHTML = `<span>${rating}</span> <i class="fas fa-star"></i>`;
 
-            // إضافة دوائر الألوان الصغيرة على الكارت (مع الدالة الذكية)
             if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
                 const colorDotsWrap = document.createElement('div');
                 colorDotsWrap.className = 'flex gap-1 mt-1 justify-end';
@@ -3625,7 +3553,6 @@
                 colors: product.colors || null
             };
 
-            // بناء HTML لدوائر الألوان
             let colorDotsHTML = '';
             if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
                 colorDotsHTML = `
@@ -3662,7 +3589,6 @@
         });
     }
 
-    // ====== متغيرات نافذة المنتج ======
     let currentModalProduct = null;
     let selectedColorVariant = null;
 
@@ -3670,7 +3596,6 @@
         currentModalProduct = product;
         selectedColorVariant = null;
         
-        // إعداد الصورة الافتراضية
         const defaultImg = product.img_url || 'https://via.placeholder.com/600';
         productModalImage.src = defaultImg;
         productModalImage.style.opacity = '1';
@@ -3688,7 +3613,6 @@
             productModalOriginalPrice.textContent = ''; productModalOriginalPrice.classList.add('hidden');
         }
 
-        // ---- منطق الألوان ----
         const colorsContainer = document.getElementById('productColorsContainer');
         const swatchesContainer = document.getElementById('productColorSwatches');
         const selectedColorName = document.getElementById('selectedColorName');
@@ -3699,15 +3623,12 @@
             colorsContainer.classList.remove('hidden');
             colorsContainer.classList.add('flex');
             
-            // اختيار اللون الأول تلقائياً
             selectedColorVariant = product.colors[0];
             productModalImage.src = selectedColorVariant.image || defaultImg;
             selectedColorName.textContent = selectedColorVariant.name;
 
             product.colors.forEach((color, index) => {
                 const swatch = document.createElement('div');
-                
-                // استخدام كود اللون إذا وجد، أو استنتاجه من الاسم تلقائياً
                 const hexColor = color.hex || getFallbackHex(color.name);
                 const isLight = ['#ffffff', '#fff', '#f8f9fa', 'white'].includes(hexColor.toLowerCase());
                 
@@ -3717,8 +3638,6 @@
                 
                 swatch.onclick = () => {
                     if (selectedColorVariant && selectedColorVariant.name === color.name) return;
-                    
-                    // تأثير انتقال الصورة
                     productModalImage.style.opacity = '0';
                     setTimeout(() => {
                         selectedColorVariant = color;
@@ -3726,12 +3645,9 @@
                         productModalImage.onload = () => { productModalImage.style.opacity = '1'; };
                     }, 200);
 
-                    // تحديث الواجهة
                     document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
                     swatch.classList.add('active');
                     selectedColorName.textContent = color.name;
-                    
-                    // تحديث بيانات الأزرار
                     updateModalActionButtons();
                 };
                 swatchesContainer.appendChild(swatch);
@@ -3743,12 +3659,9 @@
 
         productModal.classList.remove('hidden'); 
         updateBodyScroll();
-        
-        // تحديث بيانات الأزرار لتشمل اللون المختار
         updateModalActionButtons();
     }
 
-    // دالة لتحديث أزرار الإضافة للسلة ببيانات اللون
     function updateModalActionButtons() {
         const productToSave = { ...currentModalProduct };
         if (selectedColorVariant) {
@@ -3781,25 +3694,16 @@
 
     function addToCart(product) {
         const store = stores.find(s => s.name === product.store_name);
-        
-        // إنشاء معرف فريد يعتمد على رقم المنتج + اللون
         const cartItemId = product.selectedColor ? `${product.id}_${product.selectedColor}` : product.id;
-        
         const cartItem = { 
             ...product, 
             cartItemId: cartItemId, 
             quantity: 1, 
             store_whatsapp: store?.whatsapp_number || '' 
         };
-        
         const existing = cart.find(i => (i.cartItemId || i.id) === cartItemId);
-        
-        if (existing) {
-            existing.quantity += 1; 
-        } else {
-            cart.push(cartItem);
-        }
-        
+        if (existing) { existing.quantity += 1; }
+        else { cart.push(cartItem); }
         updateCartUI(); 
         localStorage.setItem('myStoresCart', JSON.stringify(cart)); 
         animateCartBadge(); 
@@ -3962,6 +3866,7 @@
     prevCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' }));
     nextCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' }));
 
+    /* ===== ✅ تم تحديث الدالة لتحديث شارة عدد المنتجات أيضاً ===== */
     function applyProductsFilter(category) {
         if (!category) {
             filteredProducts = [...allProducts];
@@ -3973,6 +3878,9 @@
             allProductsTitle.textContent = `منتجات فئة: ${category}`;
             allProductsSubtitle.textContent = `${filteredProducts.length} منتج متاح`;
         }
+        // ✅ تحديث شارة عدد المنتجات بناءً على الفلترة
+        updateCategoriesTotalBadge(filteredProducts.length);
+
         displayedProductsCount = 0;
         allProductsGrid.innerHTML = '';
         renderNextProductsPage();
@@ -4021,7 +3929,6 @@
             }, forceRefresh);
 
             allProducts = data;
-            updateAllProductsTotalBadge();
             applyProductsFilter(currentCategory);
         } catch (err) {
             console.error('فشل تحميل المنتجات:', err);
@@ -4033,7 +3940,7 @@
        💡 إشعار وضع سطح المكتب (بعد 3 دقائق من أول زيارة)
        ============================================================ */
     const DESKTOP_BANNER_KEY = 'branzarDesktopBannerShown';
-    const DESKTOP_BANNER_DELAY = 3 * 60 * 1000; // 3 دقائق
+    const DESKTOP_BANNER_DELAY = 3 * 60 * 1000;
 
     function isMobileDevice() {
         return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent)
@@ -4041,9 +3948,7 @@
     }
 
     function shouldShowDesktopBanner() {
-        // فقط على الجوال
         if (!isMobileDevice()) return false;
-        // مرة واحدة فقط لكل مستخدم
         if (localStorage.getItem(DESKTOP_BANNER_KEY) === 'true') return false;
         return true;
     }
@@ -4070,13 +3975,10 @@
     function initDesktopModeBanner() {
         if (!shouldShowDesktopBanner()) return;
 
-        // انتظر 3 دقائق من فتح الصفحة
         setTimeout(() => {
-            // لا تعرض إذا كان المستخدم مشغولاً بنافذة أخرى
             if (!document.hidden) {
                 showDesktopBanner();
             } else {
-                // انتظر عودته للصفحة
                 const onVisible = () => {
                     if (!document.hidden) {
                         document.removeEventListener('visibilitychange', onVisible);
@@ -4087,7 +3989,6 @@
             }
         }, DESKTOP_BANNER_DELAY);
 
-        // ربط الأزرار
         const closeBtn = document.getElementById('closeDesktopBanner');
         const gotItBtn = document.getElementById('gotItDesktopBanner');
         const dismissBtn = document.getElementById('dismissDesktopBanner');
@@ -4097,7 +3998,6 @@
         if (gotItBtn) gotItBtn.addEventListener('click', hideDesktopBanner);
         if (overlay) overlay.addEventListener('click', hideDesktopBanner);
         if (dismissBtn) dismissBtn.addEventListener('click', () => {
-            // "لاحقاً" — يعرضه مرة أخرى بعد 24 ساعة
             localStorage.removeItem(DESKTOP_BANNER_KEY);
             localStorage.setItem(DESKTOP_BANNER_KEY + '_dismissedAt', Date.now().toString());
             hideDesktopBanner();
@@ -4112,11 +4012,11 @@
         }
 
         updateCartUI();
-        updateAllProductsTotalBadge();
+        // ✅ تهيئة الشارة بالصفر — سيتم تحديثها بعد تحميل المنتجات
+        updateCategoriesTotalBadge(0);
 
         initFCM().catch(e => console.warn('⚠️ FCM init skipped:', e));
 
-        // شغّل إشعار وضع سطح المكتب
         initDesktopModeBanner();
 
         await Promise.all([
