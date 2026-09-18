@@ -1190,6 +1190,248 @@
         .store-product-btn:active { transform: translateY(0); }
         .store-product-btn i { font-size: 0.7rem; }
         @media (min-width: 640px) { .store-product-btn { height: 44px; font-size: 0.95rem; border-radius: 14px; } }
+
+        /* ====== إشعار وضع سطح المكتب ====== */
+        #desktopModeBanner {
+            position: fixed;
+            inset: 0;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeIn 0.35s ease;
+        }
+        #desktopModeBanner.hidden { display: none; }
+
+        .desktop-modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .desktop-modal-box {
+            position: relative;
+            background: linear-gradient(160deg, #FFFFFF 0%, #FFF8F1 60%, #FFF1E0 100%);
+            border: 1.5px solid #FFE0BD;
+            border-radius: 1.75rem;
+            padding: 2rem 1.25rem 1.5rem;
+            max-width: 440px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 80px -20px rgba(255,122,0,0.45), 0 10px 30px rgba(0,0,0,0.15);
+            animation: desktopBoxIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            direction: rtl;
+            text-align: center;
+            -webkit-overflow-scrolling: touch;
+        }
+        @media (min-width: 480px) {
+            .desktop-modal-box { padding: 2.25rem 1.75rem 1.75rem; border-radius: 2rem; }
+        }
+
+        @keyframes desktopBoxIn {
+            0% { transform: translateY(40px) scale(0.92); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .desktop-close-btn {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 1px solid #FFE0BD;
+            color: #FF7A00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.25s;
+            z-index: 2;
+        }
+        .desktop-close-btn:hover {
+            background: #FFF3E6;
+            transform: rotate(90deg) scale(1.06);
+        }
+
+        .desktop-modal-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 15px 35px -10px rgba(255,122,0,0.65);
+            animation: desktopIconFloat 3s ease-in-out infinite;
+        }
+        .desktop-modal-icon i {
+            color: #FFFFFF;
+            font-size: 2rem;
+        }
+        @keyframes desktopIconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .desktop-modal-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,122,0,0.12);
+            border: 1px solid rgba(255,122,0,0.4);
+            color: #E06B00;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 0.85rem;
+        }
+        .desktop-modal-eyebrow i { color: #FF7A00; font-size: 0.8rem; }
+
+        .desktop-modal-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #1A1A1A;
+            line-height: 1.45;
+            margin: 0 0 0.75rem;
+        }
+        @media (min-width: 480px) { .desktop-modal-title { font-size: 1.5rem; } }
+
+        .desktop-accent {
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #FF7A00;
+        }
+
+        .desktop-modal-desc {
+            color: #4b5563;
+            font-size: 0.88rem;
+            line-height: 1.8;
+            margin: 0 auto 1.25rem;
+            max-width: 360px;
+        }
+        .desktop-modal-desc strong { color: #FF7A00; }
+
+        .desktop-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 1.4rem;
+            text-align: right;
+        }
+
+        .desktop-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            background: #FFFFFF;
+            border: 1px solid #FFE0BD;
+            border-radius: 1rem;
+            padding: 0.75rem 0.9rem;
+            box-shadow: 0 3px 10px rgba(255,122,0,0.06);
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        .desktop-step:hover {
+            transform: translateX(-3px);
+            box-shadow: 0 6px 16px rgba(255,122,0,0.15);
+        }
+
+        .step-num {
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: #FFFFFF;
+            font-weight: 900;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px -2px rgba(255,122,0,0.6);
+        }
+
+        .step-text {
+            flex: 1;
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #1A1A1A;
+            line-height: 1.4;
+        }
+        .step-text span {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-top: 3px;
+            line-height: 1.5;
+        }
+        .step-text strong { color: #FF7A00; font-weight: 800; }
+        .step-text i { color: #FF7A00; font-size: 0.75rem; }
+
+        .desktop-modal-actions {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+
+        .desktop-btn-primary {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 48px;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 24px -8px rgba(255,122,0,0.7);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .desktop-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px -8px rgba(255,122,0,0.9);
+        }
+        .desktop-btn-primary:active { transform: translateY(0); }
+
+        .desktop-btn-secondary {
+            height: 48px;
+            padding: 0 1.2rem;
+            background: #F3F4F6;
+            color: #6B7280;
+            border: none;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .desktop-btn-secondary:hover { background: #E5E7EB; color: #374151; }
+
+        @media (max-width: 380px) {
+            .desktop-modal-box { padding: 1.6rem 1rem 1.25rem; }
+            .desktop-modal-icon { width: 60px; height: 60px; }
+            .desktop-modal-icon i { font-size: 1.6rem; }
+            .desktop-modal-title { font-size: 1.15rem; }
+            .desktop-btn-primary, .desktop-btn-secondary { height: 44px; font-size: 0.82rem; }
+        }
     </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -1437,6 +1679,69 @@
                     لاحقاً
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ إشعار وضع سطح المكتب ============ -->
+<div id="desktopModeBanner" class="hidden">
+    <div class="desktop-modal-overlay" id="desktopBannerOverlay"></div>
+    <div class="desktop-modal-box">
+        <button id="closeDesktopBanner" class="desktop-close-btn" aria-label="إغلاق">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="desktop-modal-icon">
+            <i class="fas fa-desktop"></i>
+        </div>
+
+        <div class="desktop-modal-eyebrow">
+            <i class="fas fa-lightbulb"></i>
+            <span>نصيحة سريعة لرؤية أفضل</span>
+        </div>
+
+        <h3 class="desktop-modal-title">
+            جرّب <span class="desktop-accent">وضع سطح المكتب</span>
+            <br>لتجربة أوسع وأجمل!
+        </h3>
+
+        <p class="desktop-modal-desc">
+            هل تعلم أنه يمكنك رؤية الموقع بشكل أوسع وأوضح على جوالك؟
+            فعّل <strong>«موقع سطح المكتب»</strong> من متصفحك واستمتع بعرض كامل.
+        </p>
+
+        <div class="desktop-steps">
+            <div class="desktop-step">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                    افتح قائمة المتصفح
+                    <span>اضغط على النقاط الثلاث <i class="fas fa-ellipsis-vertical"></i> في الأعلى</span>
+                </div>
+            </div>
+            <div class="desktop-step">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                    اختر «موقع سطح المكتب»
+                    <span>ابحث عن خيار <strong>Desktop site</strong> أو <strong>موقع سطح المكتب</strong></span>
+                </div>
+            </div>
+            <div class="desktop-step">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                    استمتع بالعرض الكامل 🎉
+                    <span>سيتم تحديث الصفحة تلقائياً بعرض أوسع</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="desktop-modal-actions">
+            <button id="gotItDesktopBanner" class="desktop-btn-primary">
+                <i class="fas fa-check-circle"></i>
+                <span>فهمت، شكراً!</span>
+            </button>
+            <button id="dismissDesktopBanner" class="desktop-btn-secondary">
+                لاحقاً
+            </button>
         </div>
     </div>
 </div>
@@ -3723,6 +4028,81 @@
         } finally { allProductsLoader.classList.add('hidden'); }
     }
 
+    /* ============================================================
+       💡 إشعار وضع سطح المكتب (بعد 3 دقائق من أول زيارة)
+       ============================================================ */
+    const DESKTOP_BANNER_KEY = 'branzarDesktopBannerShown';
+    const DESKTOP_BANNER_DELAY = 3 * 60 * 1000; // 3 دقائق
+
+    function isMobileDevice() {
+        return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent)
+            || window.matchMedia('(max-width: 767px)').matches;
+    }
+
+    function shouldShowDesktopBanner() {
+        // فقط على الجوال
+        if (!isMobileDevice()) return false;
+        // مرة واحدة فقط لكل مستخدم
+        if (localStorage.getItem(DESKTOP_BANNER_KEY) === 'true') return false;
+        return true;
+    }
+
+    function showDesktopBanner() {
+        const banner = document.getElementById('desktopModeBanner');
+        if (!banner) return;
+        banner.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        localStorage.setItem(DESKTOP_BANNER_KEY, 'true');
+    }
+
+    function hideDesktopBanner() {
+        const banner = document.getElementById('desktopModeBanner');
+        if (!banner) return;
+        banner.style.opacity = '0';
+        setTimeout(() => {
+            banner.classList.add('hidden');
+            banner.style.opacity = '';
+            updateBodyScroll();
+        }, 300);
+    }
+
+    function initDesktopModeBanner() {
+        if (!shouldShowDesktopBanner()) return;
+
+        // انتظر 3 دقائق من فتح الصفحة
+        setTimeout(() => {
+            // لا تعرض إذا كان المستخدم مشغولاً بنافذة أخرى
+            if (!document.hidden) {
+                showDesktopBanner();
+            } else {
+                // انتظر عودته للصفحة
+                const onVisible = () => {
+                    if (!document.hidden) {
+                        document.removeEventListener('visibilitychange', onVisible);
+                        setTimeout(showDesktopBanner, 500);
+                    }
+                };
+                document.addEventListener('visibilitychange', onVisible);
+            }
+        }, DESKTOP_BANNER_DELAY);
+
+        // ربط الأزرار
+        const closeBtn = document.getElementById('closeDesktopBanner');
+        const gotItBtn = document.getElementById('gotItDesktopBanner');
+        const dismissBtn = document.getElementById('dismissDesktopBanner');
+        const overlay = document.getElementById('desktopBannerOverlay');
+
+        if (closeBtn) closeBtn.addEventListener('click', hideDesktopBanner);
+        if (gotItBtn) gotItBtn.addEventListener('click', hideDesktopBanner);
+        if (overlay) overlay.addEventListener('click', hideDesktopBanner);
+        if (dismissBtn) dismissBtn.addEventListener('click', () => {
+            // "لاحقاً" — يعرضه مرة أخرى بعد 24 ساعة
+            localStorage.removeItem(DESKTOP_BANNER_KEY);
+            localStorage.setItem(DESKTOP_BANNER_KEY + '_dismissedAt', Date.now().toString());
+            hideDesktopBanner();
+        });
+    }
+
     async function initApp() {
         const authOk = await ensureAuth();
         if (!authOk) {
@@ -3734,6 +4114,9 @@
         updateAllProductsTotalBadge();
 
         initFCM().catch(e => console.warn('⚠️ FCM init skipped:', e));
+
+        // شغّل إشعار وضع سطح المكتب
+        initDesktopModeBanner();
 
         await Promise.all([
             loadStores(),
@@ -3758,6 +4141,8 @@
             if (!storeModal.classList.contains('hidden')) { closeStoreModal(); return; }
             if (cartSidebar.classList.contains('open')) { closeCart(); return; }
             if (mobileMenu && !mobileMenu.classList.contains('hidden')) toggleMobileMenu(false);
+            const desktopBanner = document.getElementById('desktopModeBanner');
+            if (desktopBanner && !desktopBanner.classList.contains('hidden')) { hideDesktopBanner(); return; }
         }
     });
 
