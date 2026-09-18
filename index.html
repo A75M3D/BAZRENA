@@ -246,7 +246,6 @@
             transform: scale(1.05);
         }
 
-        /* ====== تصميم أزرار الألوان (Color Swatches) ====== */
         .color-swatch {
             width: 38px;
             height: 38px;
@@ -1191,7 +1190,6 @@
         .store-product-btn i { font-size: 0.7rem; }
         @media (min-width: 640px) { .store-product-btn { height: 44px; font-size: 0.95rem; border-radius: 14px; } }
 
-        /* ====== إشعار وضع سطح المكتب ====== */
         #desktopModeBanner {
             position: fixed;
             inset: 0;
@@ -1853,14 +1851,9 @@
     </div>
 </section>
 
-<section id="all-products" class="py-8 sm:py-12 bg-white">
+<!-- ===== المنتجات - بدون عنوان ===== -->
+<section id="all-products" class="pt-4 sm:pt-6 pb-8 sm:pb-12 bg-white">
     <div class="max-w-7xl mx-auto px-3 sm:px-4">
-        <div class="flex justify-between items-end mb-4 sm:mb-8">
-            <div>
-                <h2 id="allProductsTitle" class="text-xl sm:text-3xl font-extrabold mb-1 sm:mb-2">جميع المنتجات</h2>
-                <p id="allProductsSubtitle" class="text-text-light text-sm sm:text-base">تصفح كل المنتجات المتاحة</p>
-            </div>
-        </div>
         <div id="allProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"></div>
         <div id="allProductsLoader" class="hidden text-center py-10">
             <i class="fas fa-spinner fa-spin text-4xl text-primary mb-3"></i>
@@ -2050,13 +2043,11 @@
             <i class="fas fa-times text-sm sm:text-base"></i>
         </button>
         <div class="flex flex-col md:flex-row gap-6 sm:gap-8 items-center">
-            <!-- عمود الصورة والألوان -->
             <div class="md:w-1/2 w-full flex flex-col items-center">
                 <div class="product-modal-image-wrapper w-full relative">
                     <img id="productModalImage" src="" alt="صورة المنتج" class="transition-opacity duration-300">
                 </div>
                 
-                <!-- حاوية ألوان المنتج -->
                 <div id="productColorsContainer" class="mt-4 w-full hidden flex-col items-center md:items-start transition-all duration-300">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="text-sm font-bold text-gray-600">اللون:</span>
@@ -2066,7 +2057,6 @@
                 </div>
             </div>
             
-            <!-- عمود التفاصيل والأزرار -->
             <div class="md:w-1/2 flex flex-col w-full">
                 <h2 id="productModalName" class="text-xl sm:text-2xl font-extrabold mb-2"></h2>
                 <div class="flex items-center gap-2 mb-3 text-sm sm:text-base">
@@ -2553,9 +2543,7 @@
     const allProductsGrid = document.getElementById('allProductsGrid');
     const allProductsLoader = document.getElementById('allProductsLoader');
     const allProductsEmpty = document.getElementById('allProductsEmpty');
-    const allProductsTitle = document.getElementById('allProductsTitle');
-    const allProductsSubtitle = document.getElementById('allProductsSubtitle');
-    // ✅ الجديد: شارة عدد المنتجات في قسم الفئات
+    // ✅ شارة عدد المنتجات في قسم الفئات
     const categoriesTotalBadge = document.getElementById('categoriesTotalBadge');
     const categoriesTotalCount = document.getElementById('categoriesTotalCount');
     const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
@@ -2614,13 +2602,11 @@
         });
     }
 
-    /* ===== ✅ دالة جديدة: تحديث شارة عدد المنتجات في قسم الفئات ===== */
+    /* ===== ✅ دالة تحديث شارة عدد المنتجات ===== */
     function updateCategoriesTotalBadge(count) {
         if (!categoriesTotalCount || !categoriesTotalBadge) return;
         const total = (typeof count === 'number') ? count : (currentCategory ? filteredProducts.length : allProducts.length);
         categoriesTotalCount.textContent = total.toLocaleString();
-
-        // إعادة تشغيل الأنيميشن
         categoriesTotalBadge.style.animation = 'none';
         void categoriesTotalBadge.offsetWidth;
         categoriesTotalBadge.style.animation = 'badgePop 0.5s cubic-bezier(0.4,0,0.2,1)';
@@ -3168,7 +3154,6 @@
                     if (cachedFingerprint !== newFingerprint) {
                         console.log('📊 البيانات تغيرت منذ آخر زيارة - تحديث الواجهة');
                         allProducts = freshProducts;
-                        updateCategoriesTotalBadge();
                         applyProductsFilter(currentCategory);
                         if (currentStore && !storeModal.classList.contains('hidden')) {
                             loadStoreProductsFromLocal(freshProducts, currentStore.name);
@@ -3866,19 +3851,15 @@
     prevCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' }));
     nextCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' }));
 
-    /* ===== ✅ تم تحديث الدالة لتحديث شارة عدد المنتجات أيضاً ===== */
+    /* ===== ✅ الفلترة + تحديث الشارة ===== */
     function applyProductsFilter(category) {
         if (!category) {
             filteredProducts = [...allProducts];
-            allProductsTitle.textContent = 'جميع المنتجات';
-            allProductsSubtitle.textContent = 'تصفح كل المنتجات المتاحة';
         } else {
             const storeNamesInCategory = stores.filter(s => s.category === category).map(s => s.name);
             filteredProducts = allProducts.filter(p => storeNamesInCategory.includes(p.store_name));
-            allProductsTitle.textContent = `منتجات فئة: ${category}`;
-            allProductsSubtitle.textContent = `${filteredProducts.length} منتج متاح`;
         }
-        // ✅ تحديث شارة عدد المنتجات بناءً على الفلترة
+        // ✅ تحديث شارة عدد المنتجات
         updateCategoriesTotalBadge(filteredProducts.length);
 
         displayedProductsCount = 0;
@@ -4012,7 +3993,6 @@
         }
 
         updateCartUI();
-        // ✅ تهيئة الشارة بالصفر — سيتم تحديثها بعد تحميل المنتجات
         updateCategoriesTotalBadge(0);
 
         initFCM().catch(e => console.warn('⚠️ FCM init skipped:', e));
