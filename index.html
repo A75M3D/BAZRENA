@@ -113,15 +113,10 @@
         }
 
         .all-products-total-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            display: inline-flex; align-items: center; gap: 6px;
             background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #FFFFFF;
-            border-radius: 9999px;
-            padding: 0.35rem 0.85rem;
-            font-size: 0.78rem;
-            font-weight: 800;
+            color: #FFFFFF; border-radius: 9999px;
+            padding: 0.35rem 0.85rem; font-size: 0.78rem; font-weight: 800;
             white-space: nowrap;
             box-shadow: 0 6px 16px -6px rgba(255,122,0,0.65);
             letter-spacing: 0.3px;
@@ -1430,6 +1425,78 @@
             .desktop-modal-title { font-size: 1.15rem; }
             .desktop-btn-primary, .desktop-btn-secondary { height: 44px; font-size: 0.82rem; }
         }
+
+        /* ============================================================
+           🔗 أزرار مشاركة المتجر
+           ============================================================ */
+        .store-share-btn {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            color: #FF7A00;
+            border: 1.5px solid #FFE0BD;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+            box-shadow: 0 6px 18px rgba(255,122,0,0.2);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .store-share-btn:hover {
+            background: #FF7A00;
+            color: #FFFFFF;
+            border-color: #FF7A00;
+            transform: scale(1.08);
+            box-shadow: 0 10px 26px rgba(255,122,0,0.45);
+        }
+        .store-share-btn:active { transform: scale(0.95); }
+        @media (min-width: 640px) {
+            .store-share-btn { width: 46px; height: 46px; font-size: 1.05rem; top: 16px; left: 16px; }
+        }
+
+        .card-share-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #FFF7ED;
+            color: #FF7A00;
+            border: 1.5px solid #FFE0BD;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            transition: all 0.25s;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+            padding: 0;
+        }
+        .card-share-btn:hover {
+            background: #FF7A00;
+            color: #FFFFFF;
+            border-color: #FF7A00;
+            transform: scale(1.08);
+        }
+        .card-share-btn:active { transform: scale(0.94); }
+
+        @keyframes shareCopyPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,122,0,0.6); }
+            100% { box-shadow: 0 0 0 20px rgba(255,122,0,0); }
+        }
+        .store-share-btn.copied,
+        .card-share-btn.copied {
+            background: #10B981 !important;
+            color: #FFFFFF !important;
+            border-color: #10B981 !important;
+            animation: shareCopyPulse 0.6s ease-out;
+        }
     </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -1970,6 +2037,9 @@
         </div>
 
         <div class="store-info-card">
+            <button id="storeShareBtn" class="store-share-btn" type="button" aria-label="مشاركة المتجر" title="مشاركة المتجر">
+                <i class="fas fa-share-alt"></i>
+            </button>
             <div class="store-header-row">
                 <img id="storeLogo" class="store-header-logo" src="" alt="شعار المتجر">
                 <div class="store-header-info">
@@ -2519,6 +2589,7 @@
     const storeProductsGrid = document.getElementById('storeProductsGrid');
     const storeCallButton = document.getElementById('storeCallButton');
     const storeWhatsAppButton = document.getElementById('storeWhatsAppButton');
+    const storeShareBtn = document.getElementById('storeShareBtn');
     const productModal = document.getElementById('productModal');
     const productModalImage = document.getElementById('productModalImage');
     const productModalName = document.getElementById('productModalName');
@@ -2542,7 +2613,6 @@
     const allProductsGrid = document.getElementById('allProductsGrid');
     const allProductsLoader = document.getElementById('allProductsLoader');
     const allProductsEmpty = document.getElementById('allProductsEmpty');
-    // ✅ شارة عدد المنتجات في قسم الفئات
     const categoriesTotalBadge = document.getElementById('categoriesTotalBadge');
     const categoriesTotalCount = document.getElementById('categoriesTotalCount');
     const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
@@ -2565,6 +2635,257 @@
     const notificationStoreCategory = document.getElementById('notificationStoreCategory');
     const closeNotification = document.getElementById('closeNotification');
     const viewNotificationStore = document.getElementById('viewNotificationStore');
+
+    /* ============================================================
+       🔗 نظام مشاركة المتاجر - رابط فريد لكل متجر
+       ============================================================ */
+
+    function getStoreShareUrl(store) {
+        if (!store) return '';
+        const storeId = getStoreId(store);
+        const baseUrl = window.location.origin + window.location.pathname.replace(/[?#].*$/, '');
+        return `${baseUrl}?store=${encodeURIComponent(storeId)}`;
+    }
+
+    async function shareStore(store, btnEl = null) {
+        if (!store) {
+            showToast('⚠️ لم يتم العثور على المتجر');
+            return;
+        }
+
+        const shareUrl = getStoreShareUrl(store);
+        const shareTitle = store.name ? `${store.name} - BranZar` : 'متجر على BranZar';
+        const shareText = store.description
+            ? `${store.description}\n\nتسوّق الآن من ${store.name || 'متجرنا'} على BranZar`
+            : `تسوّق الآن من ${store.name || 'هذا المتجر'} على منصة BranZar 🛒`;
+
+        if (navigator.share && typeof navigator.share === 'function') {
+            try {
+                await navigator.share({
+                    title: shareTitle,
+                    text: shareText,
+                    url: shareUrl
+                });
+                if (btnEl) markShareButtonSuccess(btnEl);
+                return;
+            } catch (err) {
+                if (err && err.name === 'AbortError') return;
+                console.warn('Web Share failed, falling back to clipboard:', err);
+            }
+        }
+
+        const copied = await copyToClipboard(shareUrl);
+
+        if (copied) {
+            if (btnEl) markShareButtonSuccess(btnEl);
+            showToast('✅ تم نسخ رابط المتجر بنجاح');
+        } else {
+            showShareFallbackModal(shareUrl, store);
+        }
+    }
+
+    async function copyToClipboard(text) {
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                return true;
+            }
+        } catch (e) {
+            console.warn('Clipboard API failed:', e);
+        }
+
+        try {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '0';
+            textarea.style.left = '0';
+            textarea.style.opacity = '0';
+            textarea.style.pointerEvents = 'none';
+            textarea.setAttribute('readonly', '');
+            document.body.appendChild(textarea);
+
+            const range = document.createRange();
+            range.selectNodeContents(textarea);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textarea.setSelectionRange(0, text.length);
+
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            return successful;
+        } catch (err) {
+            console.error('Fallback copy failed:', err);
+            return false;
+        }
+    }
+
+    function markShareButtonSuccess(btnEl) {
+        if (!btnEl) return;
+        const originalHTML = btnEl.innerHTML;
+        btnEl.classList.add('copied');
+        btnEl.innerHTML = '<i class="fas fa-check"></i>';
+
+        setTimeout(() => {
+            btnEl.classList.remove('copied');
+            btnEl.innerHTML = originalHTML;
+        }, 1800);
+    }
+
+    function showShareFallbackModal(url, store) {
+        const existing = document.getElementById('shareFallbackModal');
+        if (existing) existing.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'shareFallbackModal';
+        modal.style.cssText = `
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem; animation: fadeIn 0.2s;
+        `;
+
+        modal.innerHTML = `
+            <div style="
+                background: #FFFFFF; border-radius: 1.5rem;
+                padding: 1.75rem 1.5rem; max-width: 480px; width: 100%;
+                box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+                direction: rtl; text-align: center;
+                animation: zoomIn 0.3s;
+            ">
+                <div style="
+                    width: 64px; height: 64px; margin: 0 auto 1rem;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, #FF7A00, #FFA64D);
+                    display: flex; align-items: center; justify-content: center;
+                    color: #fff; font-size: 1.5rem;
+                    box-shadow: 0 10px 25px -8px rgba(255,122,0,0.7);
+                ">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h3 style="font-weight: 900; color: #1A1A1A; margin: 0 0 0.5rem; font-size: 1.15rem;">
+                    رابط مشاركة ${sanitizeHTML(store.name || 'المتجر')}
+                </h3>
+                <p style="color: #6B7280; font-size: 0.85rem; margin: 0 0 1.25rem; line-height: 1.7;">
+                    انسخ الرابط يدوياً وشاركه مع من تريد
+                </p>
+                <div id="shareUrlText" style="
+                    background: #F9FAFB; border: 1.5px dashed #D1D5DB;
+                    border-radius: 12px; padding: 0.85rem 1rem;
+                    font-family: 'Courier New', monospace; font-size: 0.78rem;
+                    color: #1A1A1A; word-break: break-all; margin-bottom: 1rem;
+                    direction: ltr; text-align: left; user-select: all;
+                    -webkit-user-select: all;
+                ">${sanitizeHTML(url)}</div>
+                <div style="display: flex; gap: 0.6rem;">
+                    <button id="shareModalCopyBtn" style="
+                        flex: 1; height: 46px;
+                        background: linear-gradient(135deg, #FF7A00, #FFA64D);
+                        color: #fff; border: none; border-radius: 9999px;
+                        font-weight: 800; font-size: 0.9rem; cursor: pointer;
+                        box-shadow: 0 10px 22px -8px rgba(255,122,0,0.7);
+                        font-family: 'Cairo', sans-serif;
+                    ">
+                        <i class="fas fa-copy"></i> نسخ الرابط
+                    </button>
+                    <button id="shareModalCloseBtn" style="
+                        height: 46px; padding: 0 1.25rem;
+                        background: #F3F4F6; color: #4B5563;
+                        border: none; border-radius: 9999px;
+                        font-weight: 700; font-size: 0.88rem; cursor: pointer;
+                        font-family: 'Cairo', sans-serif;
+                    ">إغلاق</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const urlTextEl = modal.querySelector('#shareUrlText');
+        const copyBtn = modal.querySelector('#shareModalCopyBtn');
+        const closeBtn = modal.querySelector('#shareModalCloseBtn');
+
+        urlTextEl.addEventListener('click', () => {
+            try {
+                const range = document.createRange();
+                range.selectNodeContents(urlTextEl);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } catch (e) {}
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            const ok = await copyToClipboard(url);
+            if (ok) {
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                copyBtn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+                setTimeout(() => {
+                    modal.remove();
+                }, 900);
+            }
+        });
+
+        closeBtn.addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+    }
+
+    if (storeShareBtn) {
+        storeShareBtn.addEventListener('click', () => {
+            if (currentStore) shareStore(currentStore, storeShareBtn);
+        });
+    }
+
+    /* ============================================================
+       🔗 معالجة الرابط الفريد ?store=xxx لفتح المتجر تلقائياً
+       ============================================================ */
+    async function handleStoreDeepLink() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const storeId = params.get('store');
+            if (!storeId) return;
+
+            console.log('🔗 اكتشاف رابط متجر فريد:', storeId);
+
+            // ننتظر تحميل المتاجر
+            let attempts = 0;
+            const maxAttempts = 40; // ~8 ثواني كحد أقصى
+
+            const tryOpen = () => {
+                const store = stores.find(s => getStoreId(s) === storeId);
+                if (store) {
+                    // تنظيف الرابط (اختياري: إزالة الباراميتر من العنوان)
+                    try {
+                        const cleanUrl = window.location.origin + window.location.pathname;
+                        window.history.replaceState({}, document.title, cleanUrl);
+                    } catch (e) {}
+
+                    openStoreModal(store);
+                    return true;
+                }
+                return false;
+            };
+
+            if (tryOpen()) return;
+
+            const interval = setInterval(() => {
+                attempts++;
+                if (tryOpen() || attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    if (attempts >= maxAttempts) {
+                        console.warn('⚠️ لم يتم العثور على المتجر المطلوب');
+                        showToast('⚠️ المتجر غير موجود أو تم حذفه');
+                    }
+                }
+            }, 200);
+
+        } catch (err) {
+            console.warn('Deep link error:', err);
+        }
+    }
 
     function showStoreJoinNotification(store) {
         if (!store || !newStoreNotification) return;
@@ -2601,7 +2922,6 @@
         });
     }
 
-    /* ===== ✅ دالة تحديث شارة عدد المنتجات ===== */
     function updateCategoriesTotalBadge(count) {
         if (!categoriesTotalCount || !categoriesTotalBadge) return;
         const total = (typeof count === 'number') ? count : (currentCategory ? filteredProducts.length : allProducts.length);
@@ -2909,6 +3229,9 @@
         count.className = 'flex items-center gap-1 text-xs text-text-light';
         count.innerHTML = `<i class="fas fa-shopping-bag"></i><span>${store.products_count || 0} منتج</span>`;
 
+        const actionsWrap = document.createElement('div');
+        actionsWrap.className = 'flex items-center gap-1.5';
+
         const followBtn = document.createElement('button');
         followBtn.className = 'card-follow-btn';
         followBtn.dataset.storeId = storeId;
@@ -2919,8 +3242,21 @@
             toggleFollowFromCard(store, followBtn);
         });
 
+        const shareBtn = document.createElement('button');
+        shareBtn.className = 'card-share-btn';
+        shareBtn.type = 'button';
+        shareBtn.title = 'مشاركة المتجر';
+        shareBtn.setAttribute('aria-label', 'مشاركة المتجر');
+        shareBtn.innerHTML = '<i class="fas fa-share-alt"></i>';
+        shareBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); e.preventDefault();
+            shareStore(store, shareBtn);
+        });
+
+        actionsWrap.appendChild(followBtn);
+        actionsWrap.appendChild(shareBtn);
         bottomRow.appendChild(count);
-        bottomRow.appendChild(followBtn);
+        bottomRow.appendChild(actionsWrap);
         info.appendChild(nameRow);
         info.appendChild(catRow);
         info.appendChild(bottomRow);
@@ -3850,7 +4186,6 @@
     prevCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: -200, behavior: 'smooth' }));
     nextCategoriesBtn.addEventListener('click', () => categoriesContainer.scrollBy({ left: 200, behavior: 'smooth' }));
 
-    /* ===== ✅ الفلترة + تحديث الشارة ===== */
     function applyProductsFilter(category) {
         if (!category) {
             filteredProducts = [...allProducts];
@@ -3858,7 +4193,6 @@
             const storeNamesInCategory = stores.filter(s => s.category === category).map(s => s.name);
             filteredProducts = allProducts.filter(p => storeNamesInCategory.includes(p.store_name));
         }
-        // ✅ تحديث شارة عدد المنتجات
         updateCategoriesTotalBadge(filteredProducts.length);
 
         displayedProductsCount = 0;
@@ -4007,7 +4341,10 @@
         setupRealtimeProductsListener();
         setupRealtimeStoresListener();
 
-        console.log('%c🟢 BranZar جاهز - All Brand at one place | التحديث اللحظي مفعّل | إشعارات الويب مفعّلة', 'color:#25D366;font-weight:900;font-size:14px;');
+        // 🔗 فتح المتجر تلقائياً من الرابط الفريد إن وُجد
+        handleStoreDeepLink();
+
+        console.log('%c🟢 BranZar جاهز - All Brand at one place | التحديث اللحظي مفعّل | إشعارات الويب مفعّلة | نظام مشاركة المتاجر مفعّل', 'color:#25D366;font-weight:900;font-size:14px;');
     }
 
     if (document.readyState === 'loading') {
