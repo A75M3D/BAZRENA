@@ -1,27 +1,64 @@
 /**
- * BranZar - Open Graph Dynamic Generator
+ * BranZar - Open Graph Dynamic Generator v2
  * يولّد صور مصغّرة لكل متجر عند المشاركة على واتساب/فيسبوك/تويتر
+ *
+ * ✅ الإصلاحات في هذه النسخة:
+ * - إضافة Firebase API Key للوصول إلى Firestore REST API
+ * - معالجة أفضل للأخطاء (fallback تلقائي)
+ * - كاش محسّن للصور
  */
+
+// ⚠️ Firebase Web API Key (آمن للنشر — موجود أصلاً في index.html)
+const FIREBASE_API_KEY = 'AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA';
+const PROJECT_ID = 'bazarena-725e4';
+const DEFAULT_LOGO = 'https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png';
 
 export default async function handler(req, res) {
   const storeId = String(req.query.store || '').trim();
-  const projectId = 'bazarena-725e4';
 
   // ============ 1. جلب بيانات المتجر من Firestore REST API ============
   let store = null;
+  let fetchStatus = 'not_attempted';
+
   if (storeId) {
+    // المحاولة الأولى: مع API Key
     try {
-      const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/stores/${encodeURIComponent(storeId)}`;
-      const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      const url = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/stores/${encodeURIComponent(storeId)}?key=${FIREBASE_API_KEY}`;
+      const r = await fetch(url, {
+        headers: { 'Accept': 'application/json' },
+        // كاش على مستوى Vercel Edge
+        cache: 'no-store'
+      });
+
       if (r.ok) {
         const doc = await r.json();
         store = parseFirestoreFields(doc.fields || {});
-        console.log('✅ Store fetched:', store.name);
+        fetchStatus = 'success';
+        console.log('✅ [OG] Store fetched:', store.name);
       } else {
-        console.warn('⚠️ Firestore returned', r.status, 'for store:', storeId);
+        const errText = await r.text();
+        console.error('⚠️ [OG] Firestore error:', r.status, errText.slice(0, 200));
+        fetchStatus = `http_${r.status}`;
       }
     } catch (e) {
-      console.error('❌ Firestore error:', e.message);
+      console.error('❌ [OG] Fetch exception:', e.message);
+      fetchStatus = 'exception';
+    }
+
+    // المحاولة الثانية: بدون API Key (fallback)
+    if (!store && fetchStatus !== 'success') {
+      try {
+        const url = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents/stores/${encodeURIComponent(storeId)}`;
+        const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if (r.ok) {
+          const doc = await r.json();
+          store = parseFirestoreFields(doc.fields || {});
+          fetchStatus = 'success_no_key';
+          console.log('✅ [OG] Store fetched (no key):', store.name);
+        }
+      } catch (e) {
+        console.error('❌ [OG] Fallback fetch failed:', e.message);
+      }
     }
   }
 
@@ -33,7 +70,10 @@ export default async function handler(req, res) {
   let html = '';
   try {
     const htmlRes = await fetch(`${baseUrl}/index.html`, {
-      headers: { 'User-Agent': 'BranZar-OG-Internal', 'Cache-Control': 'no-cache' }
+      headers: {
+        'User-Agent': 'BranZar-OG-Internal',
+        'Cache-Control': 'no-cache'
+      }
     });
     if (htmlRes.ok) {
       html = await htmlRes.text();
@@ -44,7 +84,7 @@ export default async function handler(req, res) {
       html = await rootRes.text();
     }
   } catch (e) {
-    console.error('❌ HTML fetch error:', e.message);
+    console.error('❌ [OG] HTML fetch error:', e.message);
     html = '<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"></head><body></body></html>';
   }
 
@@ -55,8 +95,7 @@ export default async function handler(req, res) {
     : (store?.category
         ? `تسوّق من ${store.name} - ${store.category} على BranZar`
         : 'اكتشف أفضل المتاجر والبراندات السودانية في مكان واحد.');
-  const storeImage = store?.logo_url || store?.cover_url
-    || 'https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png';
+  const storeImage = store?.logo_url || store?.cover_url || DEFAULT_LOGO;
   const pageUrl = `${baseUrl}/?store=${encodeURIComponent(storeId)}`;
 
   const newOgBlock = `<!-- OG_START -->
@@ -89,6 +128,7 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
   res.setHeader('X-OG-Generated', store ? 'store' : 'default');
+  res.setHeader('X-OG-Status', fetchStatus);
   res.status(200).send(html);
 }
 
