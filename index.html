@@ -25,6 +25,26 @@
     ">
     <title>BranZar – بران زار | All Brand at one place</title>
 
+    <!-- ============ Open Graph (يتم استبدالها ديناميكياً لكل متجر) ============ -->
+    <!-- OG_START -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="BranZar - بران زار">
+    <meta property="og:title" content="BranZar | بران زار - All Brand at one place">
+    <meta property="og:description" content="اكتشف أفضل المتاجر والبراندات السودانية في مكان واحد. تسوّق الآن.">
+    <meta property="og:image" content="https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png">
+    <meta property="og:image:secure_url" content="https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="BranZar Logo">
+    <meta property="og:url" content="https://branzar.vercel.app/">
+    <meta property="og:locale" content="ar_AR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BranZar | بران زار">
+    <meta name="twitter:description" content="اكتشف أفضل المتاجر والبراندات السودانية في مكان واحد.">
+    <meta name="twitter:image" content="https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png">
+    <!-- OG_END -->
+    <!-- ============ نهاية Open Graph ============ -->
+
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -1745,7 +1765,6 @@
     </div>
 </div>
 
-<!-- ============ إشعار وضع سطح المكتب ============ -->
 <div id="desktopModeBanner" class="hidden">
     <div class="desktop-modal-overlay" id="desktopBannerOverlay"></div>
     <div class="desktop-modal-box">
@@ -1891,7 +1910,6 @@
     </div>
 </section>
 
-<!-- ===== الفئات - مع شارة عدد المنتجات ===== -->
 <section id="categories" class="pt-6 sm:pt-8 pb-2 bg-white border-t border-gray-100">
     <div class="max-w-7xl mx-auto px-3 sm:px-4">
         <div class="flex justify-between items-end mb-4 sm:mb-6">
@@ -1914,7 +1932,6 @@
     </div>
 </section>
 
-<!-- ===== المنتجات - بدون عنوان ===== -->
 <section id="all-products" class="pt-4 sm:pt-6 pb-8 sm:pb-12 bg-white">
     <div class="max-w-7xl mx-auto px-3 sm:px-4">
         <div id="allProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"></div>
@@ -2169,7 +2186,6 @@
 
 <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full z-[3000] opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
-<!-- ============ الفوتر ============ -->
 <footer class="bg-gray-900 text-white py-12 mt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -2410,9 +2426,6 @@
     let currentCategory = null;
     const PRODUCTS_PER_PAGE = 9;
 
-    /* ============================================================
-       🔗 نظام انتظار تحميل المتاجر (لحل مشكلة الـ Deep Link)
-       ============================================================ */
     let storesLoadPromise = null;
     let storesResolve = null;
 
@@ -2537,13 +2550,12 @@
         return `${baseUrl}?store=${encodeURIComponent(storeId)}`;
     }
 
-    // ✅ الدالة المحدثة: تنسخ الرابط فقط بدون أي وصف
     async function shareStore(store, btnEl = null) {
         if (!store) { showToast('⚠️ لم يتم العثور على المتجر'); return; }
 
         const shareUrl = getStoreShareUrl(store);
 
-        // ✅ الخطوة 1: نسخ الرابط مباشرة إلى الحافظة
+        // ✅ 1: نسخ الرابط مباشرة (بدون أي وصف)
         const copied = await copyToClipboard(shareUrl);
         if (copied) {
             if (btnEl) markShareButtonSuccess(btnEl);
@@ -2551,7 +2563,7 @@
             return;
         }
 
-        // ✅ الخطوة 2: إذا فشل النسخ المباشر، نستخدم navigator.share (بالرابط فقط)
+        // ✅ 2: fallback - مشاركة الرابط فقط
         if (navigator.share && typeof navigator.share === 'function') {
             try {
                 await navigator.share({ url: shareUrl });
@@ -2563,7 +2575,7 @@
             }
         }
 
-        // ✅ الخطوة 3: آخر حل — عرض مودال النسخ اليدوي
+        // ✅ 3: مودال النسخ اليدوي
         showShareFallbackModal(shareUrl, store);
     }
 
@@ -3165,7 +3177,7 @@
             resolveStoresPromise(stores);
 
             if (stores.length === 0) {
-                storesErrorMessage.textContent = '⚠️ تنبيه: يبدو أن هناك مشكلة في الاتصال بالشبكة. يُرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.';
+                storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
                 storesEmpty.classList.remove('hidden');
                 renderFollowedStores();
             } else {
@@ -3814,7 +3826,7 @@
 
         handleStoreDeepLink();
 
-        console.log('%c🟢 BranZar جاهز | مشاركة الرابط فقط مفعّلة', 'color:#25D366;font-weight:900;font-size:14px;');
+        console.log('%c🟢 BranZar جاهز | مشاركة + OG Images مفعّلة', 'color:#25D366;font-weight:900;font-size:14px;');
     }
 
     if (document.readyState === 'loading') {
