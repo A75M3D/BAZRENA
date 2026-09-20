@@ -3165,7 +3165,7 @@
             resolveStoresPromise(stores);
 
             if (stores.length === 0) {
-                storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
+                storesErrorMessage.textContent = '⚠️ تنبيه: يبدو أن هناك مشكلة في الاتصال بالشبكة. يُرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.';
                 storesEmpty.classList.remove('hidden');
                 renderFollowedStores();
             } else {
