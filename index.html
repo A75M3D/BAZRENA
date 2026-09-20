@@ -23,13 +23,15 @@
         manifest-src 'self';
         upgrade-insecure-requests;
     ">
-    <title>BranZar – بران زار | All Brand at one place</title>
+    <title>BranZar – بران زار | 
+    أكبر سوق إلكتروني لأشهر البراندات المحلية والعالمية
+    </title>
 
     <!-- ============ Open Graph (يتم استبدالها ديناميكياً لكل متجر) ============ -->
     <!-- OG_START -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="BranZar - بران زار">
-    <meta property="og:title" content="BranZar | بران زار - All Brand at one place">
+    <meta property="og:title" content="BranZar | بران زار- أكبر سوق إلكتروني لأشهر البراندات المحلية والعالمية">
     <meta property="og:description" content="اكتشف أفضل المتاجر والبراندات السودانية في مكان واحد. تسوّق الآن.">
     <meta property="og:image" content="https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png">
     <meta property="og:image:secure_url" content="https://i.ibb.co/gL5sNf9C/file-00000000b5e881f6a653c6d272e68de7.png">
@@ -2200,7 +2202,7 @@
                         <span class="text-primary">BranZar</span>
                     </span>
                 </a>
-                <p class="text-gray-400 text-sm">All Brand at one place</p>
+                <p class="text-gray-400 text-sm">أكبر سوق إلكتروني لأشهر البراندات المحلية والعالمية</p>
             </div>
             <div>
                 <h5 class="font-bold mb-4">روابط سريعة</h5>
@@ -2236,7 +2238,9 @@
             </div>
         </div>
         <div class="text-center text-gray-500 text-sm pt-8 border-t border-gray-800">
-            © 2026 BranZar – بران زار. All Brand at one place. جميع الحقوق محفوظة.
+            © 2026 BranZar – بران زار
+            أكبر سوق إلكتروني لأشهر البراندات المحلية والعالمية
+            . جميع الحقوق محفوظة.
         </div>
     </div>
 </footer>
@@ -3177,7 +3181,7 @@
             resolveStoresPromise(stores);
 
             if (stores.length === 0) {
-                storesErrorMessage.textContent = 'لا توجد متاجر متاحة حالياً';
+                storesErrorMessage.textContent = '⚠️ تنبيه: يبدو أن هناك مشكلة في الاتصال بالشبكة. يُرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.';
                 storesEmpty.classList.remove('hidden');
                 renderFollowedStores();
             } else {
