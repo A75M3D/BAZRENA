@@ -1426,9 +1426,6 @@
             .desktop-btn-primary, .desktop-btn-secondary { height: 44px; font-size: 0.82rem; }
         }
 
-        /* ============================================================
-           🔗 أزرار مشاركة المتجر
-           ============================================================ */
         .store-share-btn {
             position: absolute;
             top: 14px;
@@ -2414,7 +2411,7 @@
     const PRODUCTS_PER_PAGE = 9;
 
     /* ============================================================
-       🔗 نظام انتظار تحميل المتاجر (جديد - لحل مشكلة الـ Deep Link)
+       🔗 نظام انتظار تحميل المتاجر (لحل مشكلة الـ Deep Link)
        ============================================================ */
     let storesLoadPromise = null;
     let storesResolve = null;
@@ -2530,7 +2527,7 @@
     const viewNotificationStore = document.getElementById('viewNotificationStore');
 
     /* ============================================================
-       🔗 نظام مشاركة المتاجر - رابط فريد لكل متجر
+       🔗 نظام مشاركة المتاجر - الرابط فقط بدون وصف
        ============================================================ */
 
     function getStoreShareUrl(store) {
@@ -2540,17 +2537,24 @@
         return `${baseUrl}?store=${encodeURIComponent(storeId)}`;
     }
 
+    // ✅ الدالة المحدثة: تنسخ الرابط فقط بدون أي وصف
     async function shareStore(store, btnEl = null) {
         if (!store) { showToast('⚠️ لم يتم العثور على المتجر'); return; }
 
         const shareUrl = getStoreShareUrl(store);
-        const shareTitle = store.name ? `${store.name} - BranZar` : 'متجر على BranZar';
-        // نص المشاركة: الرابط في سطر منفصل لضمان قابلية النقر في واتساب/فيسبوك
-        const shareText = `🛍️ ${store.name || 'متجرنا'}\n\nتسوّق الآن مباشرة من BranZar:\n${shareUrl}`;
 
+        // ✅ الخطوة 1: نسخ الرابط مباشرة إلى الحافظة
+        const copied = await copyToClipboard(shareUrl);
+        if (copied) {
+            if (btnEl) markShareButtonSuccess(btnEl);
+            showToast('✅ تم نسخ رابط المتجر');
+            return;
+        }
+
+        // ✅ الخطوة 2: إذا فشل النسخ المباشر، نستخدم navigator.share (بالرابط فقط)
         if (navigator.share && typeof navigator.share === 'function') {
             try {
-                await navigator.share({ title: shareTitle, text: shareText, url: shareUrl });
+                await navigator.share({ url: shareUrl });
                 if (btnEl) markShareButtonSuccess(btnEl);
                 return;
             } catch (err) {
@@ -2559,13 +2563,8 @@
             }
         }
 
-        const copied = await copyToClipboard(shareUrl);
-        if (copied) {
-            if (btnEl) markShareButtonSuccess(btnEl);
-            showToast('✅ تم نسخ رابط المتجر بنجاح');
-        } else {
-            showShareFallbackModal(shareUrl, store);
-        }
+        // ✅ الخطوة 3: آخر حل — عرض مودال النسخ اليدوي
+        showShareFallbackModal(shareUrl, store);
     }
 
     async function copyToClipboard(text) {
@@ -2647,7 +2646,7 @@
     if (storeShareBtn) storeShareBtn.addEventListener('click', () => { if (currentStore) shareStore(currentStore, storeShareBtn); });
 
     /* ============================================================
-       🔗 Deep Link محسّن — مع انتظار Promise ومحاولات متعددة
+       🔗 Deep Link محسّن
        ============================================================ */
     async function handleStoreDeepLink() {
         try {
@@ -2655,7 +2654,6 @@
             const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
             let storeId = urlParams.get('store') || hashParams.get('store');
 
-            // استرجاع من التخزين إن وُجد (عند إعادة التحميل قبل اكتمال الفتح)
             if (!storeId) {
                 storeId = localStorage.getItem('branzarPendingStoreId');
                 if (storeId) console.log('🔗 استرجاع متجر معلق:', storeId);
@@ -2666,7 +2664,6 @@
             localStorage.setItem('branzarPendingStoreId', storeId);
             console.log('%c🔗 محاولة فتح متجر من رابط فريد: ' + storeId, 'color:#FF7A00;font-weight:bold;');
 
-            // انتظار تحميل المتاجر مع مهلة قصوى 12 ثانية
             const storesList = await Promise.race([
                 getStoresLoadPromise(),
                 new Promise(r => setTimeout(() => r(stores), 12000))
@@ -2674,13 +2671,11 @@
 
             let store = storesList.find(s => String(getStoreId(s)) === String(storeId));
 
-            // محاولة ثانية بعد ثانيتين
             if (!store) {
                 await new Promise(r => setTimeout(r, 2000));
                 store = stores.find(s => String(getStoreId(s)) === String(storeId));
             }
 
-            // محاولة ثالثة: البحث في products (لو الاسم مطابق)
             if (!store && allProducts.length > 0) {
                 const prod = allProducts.find(p => String(p.store_name) === String(storeId));
                 if (prod) store = stores.find(s => s.name === prod.store_name);
@@ -3167,7 +3162,6 @@
             }, forceRefresh);
 
             stores = result;
-            // ✅ حل Promise انتظار المتاجر (مهم للـ Deep Link)
             resolveStoresPromise(stores);
 
             if (stores.length === 0) {
@@ -3195,7 +3189,7 @@
         } catch (err) {
             storesErrorMessage.textContent = `تعذر تحميل المتاجر: ${err.message}`;
             storesEmpty.classList.remove('hidden');
-            resolveStoresPromise(stores); // حل حتى عند الفشل لمنع التعليق
+            resolveStoresPromise(stores);
         } finally { storesLoader.classList.add('hidden'); }
     }
     retryStoresBtn.addEventListener('click', () => loadStores(true));
@@ -3818,10 +3812,9 @@
         setupRealtimeProductsListener();
         setupRealtimeStoresListener();
 
-        // 🔗 فتح المتجر تلقائياً من الرابط الفريد (بعد تحميل المتاجر)
         handleStoreDeepLink();
 
-        console.log('%c🟢 BranZar جاهز - All Brand at one place | Deep Link مفعّل', 'color:#25D366;font-weight:900;font-size:14px;');
+        console.log('%c🟢 BranZar جاهز | مشاركة الرابط فقط مفعّلة', 'color:#25D366;font-weight:900;font-size:14px;');
     }
 
     if (document.readyState === 'loading') {
