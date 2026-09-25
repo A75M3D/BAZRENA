@@ -467,7 +467,103 @@ Object.defineProperty(window,'__BZR_SIG__',{value:BRAND+'-'+btoa(currentHost+'|'
 Object.defineProperty(window,'__BZR_OWNER__',{value:_K.o,writable:false,configurable:false,enumerable:false});
 Object.defineProperty(window,'__BZR_META__',{value:Object.freeze({brand:BRAND,brandAr:BRAND_AR,domain:DOMAIN,owner:_K.o,sig:_K.s,sealed:true,ts:'BZR-SEAL-V3'}),writable:false,configurable:false,enumerable:false});
 }catch(e){}
+/* ═══ L16: Brand Identity Self-Defense ═══ */
+const _BZR_IDENTITY = Object.freeze({
+    brand: 'BranZar',
+    brandAr: 'بران زار',
+    owner: 'BRANZAR-OWNER-2026',
+    domain: 'branzar.vercel.app',
+    sig: 'BRANZAR-CORE-2026-SIG-v3'
+});
 
+try {
+    window.__BZR_ID1__ = _BZR_IDENTITY;
+    Object.defineProperty(window, '__BZR_ID2__', {
+        value: JSON.stringify(_BZR_IDENTITY),
+        writable: false, configurable: false, enumerable: false
+    });
+    sessionStorage.setItem('_b7_' + btoa('id'), JSON.stringify(_BZR_IDENTITY));
+} catch(e) {}
+
+const _verifyBrandIdentity = () => {
+    try {
+        if (!window.__BZR_META__ || window.__BZR_META__.brand !== 'BranZar') return false;
+        if (window.__BZR_META__.sig !== 'BRANZAR-CORE-2026-SIG-v3') return false;
+        if (window.__BZR_META__.owner !== 'BRANZAR-OWNER-2026') return false;
+        if (!window.__BZR_OWNER__ || window.__BZR_OWNER__ !== 'BRANZAR-OWNER-2026') return false;
+        if (!window.__BZR_SIG__ || typeof window.__BZR_SIG__ !== 'string' || !window.__BZR_SIG__.startsWith('BranZar')) return false;
+        if (window.__BZR_ID2__) {
+            try {
+                const parsed = JSON.parse(window.__BZR_ID2__);
+                if (parsed.brand !== 'BranZar' || parsed.sig !== 'BRANZAR-CORE-2026-SIG-v3') return false;
+            } catch(e) { return false; }
+        }
+        try {
+            const stored = sessionStorage.getItem('_b7_' + btoa('id'));
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (parsed.brand !== 'BranZar') return false;
+            }
+        } catch(e) {}
+        const pageTitle = (document.title || '').trim();
+        if (pageTitle && pageTitle.length > 2) {
+            if (!/BranZar|بران\s*زار/i.test(pageTitle)) return false;
+        }
+        const ogSiteName = document.querySelector('meta[property="og:site_name"]');
+        if (ogSiteName) {
+            const content = ogSiteName.getAttribute('content') || '';
+            if (content && !/BranZar|بران\s*زار/i.test(content)) return false;
+        }
+        return true;
+    } catch(e) {
+        return false;
+    }
+};
+
+const _tripwire = () => {
+    try {
+        document.documentElement.innerHTML = 
+            '<head><meta charset="UTF-8"><title>⛔ BranZar Protected</title></head>' +
+            '<body style="margin:0;padding:0;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);color:#FF7A00;font-family:Cairo,sans-serif;direction:rtl;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;"><div style="max-width:520px;"><div style="font-size:6rem;margin-bottom:1.5rem;">🛡️</div><h1 style="font-size:2rem;font-weight:900;color:#FF7A00;margin:0 0 1rem;">تم إيقاف الموقع</h1><div style="width:60px;height:3px;background:#FF7A00;margin:0 auto 1.5rem;border-radius:2px;"></div><p style="color:#ccc;line-height:2;font-size:1.05rem;margin:0 0 1rem;">تم اكتشاف محاولة تعديل غير مصرح بها على هوية المنصة.</p><p style="color:#888;line-height:1.8;font-size:0.9rem;margin:0 0 2rem;">هذا الكود محمي بحقوق النشر ومسجل قانونياً.<br>أي محاولة لتغيير اسم <strong style="color:#FF7A00;">BranZar</strong> أو <strong style="color:#FF7A00;">بران زار</strong> غير قانونية.</p><a href="https://branzar.vercel.app" style="display:inline-block;padding:1rem 2.5rem;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;border-radius:9999px;text-decoration:none;font-weight:800;font-size:1rem;box-shadow:0 10px 30px rgba(255,122,0,0.4);">← زيارة الموقع الرسمي</a><div style="margin-top:2rem;color:#555;font-size:0.75rem;font-family:monospace;">BZR-SHIELD-V3 | TAMPER-DETECTED</div></div></body>';
+    } catch(e) {}
+    throw new Error('BZR_BRAND_TAMPERED_CRITICAL');
+};
+
+setInterval(() => {
+    if (!_verifyBrandIdentity()) _tripwire();
+}, 1500);
+
+/* ═══ L17: Anti-Rebrand Sentinel ═══ */
+try {
+    const _origBrandStr = String.fromCharCode(66,114,97,110,90,97,114);
+    const _origSigStr = 'BRANZAR-CORE-2026-SIG-v3';
+    setInterval(() => {
+        if (BRAND !== _origBrandStr || _K.s !== _origSigStr) _tripwire();
+    }, 2000);
+} catch(e) {}
+
+/* ═══ L18: MutationObserver على Brand Text ═══ */
+try {
+    const _brandObserver = new MutationObserver((mutations) => {
+        mutations.forEach(m => {
+            if (m.target && m.target.dataset && m.target.dataset.bzrBrand === 'true') {
+                const t = (m.target.textContent || '').trim();
+                if (!/BranZar|بران\s*زار/i.test(t)) {
+                    m.target.textContent = 'بران زار-BranZar';
+                }
+            }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('header span').forEach(span => {
+            const t = (span.textContent || '').trim();
+            if (t === 'بران زار-BranZar') {
+                span.dataset.bzrBrand = 'true';
+                _brandObserver.observe(span, { childList: true, characterData: true, subtree: true });
+            }
+        });
+    });
+} cat
 /* ═══ L15: Self-Defense Integrity Check ═══ */
 setTimeout(()=>{
 const ok=!!(window.__BZR_META__&&window.__BZR_META__.sealed===true&&typeof window.__BZR_SIG__==='string');
