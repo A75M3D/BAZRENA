@@ -341,6 +341,93 @@ body{background:#F8F9FA;direction:rtl;overflow-x:hidden}
 .card-share-btn:hover{background:#FF7A00;color:#FFF;border-color:#FF7A00;transform:scale(1.08)}
 @keyframes shareCopyPulse{0%{box-shadow:0 0 0 0 rgba(255,122,0,0.6)}100%{box-shadow:0 0 0 20px rgba(255,122,0,0)}}
 .store-share-btn.copied,.card-share-btn.copied{background:#10B981!important;color:#FFF!important;border-color:#10B981!important;animation:shareCopyPulse 0.6s ease-out}
+
+/* ═══════════════ Update Available Button ═══════════════ */
+#updateAvailableBtn {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translate(-50%, calc(-100% - 40px));
+    z-index: 10002;
+    background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+    color: #FFF;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-radius: 9999px;
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+    direction: rtl;
+    font-family: 'Cairo', sans-serif;
+    max-width: calc(100% - 24px);
+    pointer-events: none;
+}
+#updateAvailableBtn.show {
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+    animation: updatePulse 2.5s ease-in-out infinite;
+}
+#updateAvailableBtn:hover {
+    box-shadow: 0 25px 55px -12px rgba(255,122,0,1), 0 10px 25px -8px rgba(0,0,0,0.35);
+}
+#updateAvailableBtn:disabled {
+    cursor: wait;
+    opacity: 0.9;
+}
+.update-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.update-icon-wrap i {
+    color: #FFF;
+    font-size: 1.05rem;
+    animation: spinUpdate 2s linear infinite;
+}
+.update-text-wrap {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    text-align: right;
+}
+.update-text-wrap strong {
+    font-size: 0.9rem;
+    font-weight: 900;
+}
+.update-text-wrap span {
+    font-size: 0.72rem;
+    opacity: 0.9;
+    font-weight: 600;
+    margin-top: 2px;
+}
+.update-arrow {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+@keyframes spinUpdate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+@keyframes updatePulse {
+    0%, 100% { box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3); }
+    50% { box-shadow: 0 20px 50px -10px rgba(255,122,0,1), 0 8px 35px -4px rgba(255,122,0,0.7); }
+}
+@media (max-width: 480px) {
+    #updateAvailableBtn { top: 12px; padding: 0.4rem 0.85rem 0.4rem 0.4rem; gap: 9px; }
+    .update-icon-wrap { width: 36px; height: 36px; }
+    .update-icon-wrap i { font-size: 0.95rem; }
+    .update-text-wrap strong { font-size: 0.82rem; }
+    .update-text-wrap span { font-size: 0.66rem; }
+}
 </style>
 </head>
 <body class="font-cairo text-text-main">
@@ -644,6 +731,16 @@ document.documentElement.innerHTML='<div style="position:fixed;inset:0;display:f
 </div>
 
 <button id="installButtonFloating" class="hidden" title="تثبيت التطبيق"><i class="fas fa-download"></i><span>تثبيت التطبيق</span></button>
+
+<!-- ═══ Update Available Button ═══ -->
+<button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث التطبيق">
+    <div class="update-icon-wrap"><i class="fas fa-sync-alt"></i></div>
+    <div class="update-text-wrap">
+        <strong>تحديث جديد متوفر</strong>
+        <span>اضغط للتحديث الآن</span>
+    </div>
+    <i class="fas fa-chevron-left update-arrow"></i>
+</button>
 
 <div id="notifPermissionBanner" class="hidden">
 <div class="flex items-start gap-3 relative">
@@ -1335,7 +1432,84 @@ async function handleInstallClick() { if (!deferredPrompt) return; deferredPromp
 if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
 if (isAppInstalled()) hideInstallButtons();
 
-if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('service-worker.js').catch(err => console.error('SW:', err)); }); }
+/* ═══════════════ Service Worker + Update Detection System ═══════════════ */
+let swRegistration = null;
+let isReloading = false;
+
+function showUpdateButton() {
+    const btn = document.getElementById('updateAvailableBtn');
+    if (!btn || btn.classList.contains('show')) return;
+    btn.classList.remove('hidden');
+    requestAnimationFrame(() => {
+        setTimeout(() => btn.classList.add('show'), 50);
+    });
+}
+
+function triggerUpdate() {
+    const btn = document.getElementById('updateAvailableBtn');
+    if (!btn || btn.disabled) return;
+    btn.disabled = true;
+    btn.innerHTML = '<div class="update-icon-wrap"><i class="fas fa-sync-alt"></i></div><div class="update-text-wrap"><strong>جاري التحديث...</strong><span>لحظة من فضلك</span></div>';
+
+    const reg = swRegistration;
+    if (reg && reg.waiting) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        setTimeout(() => {
+            if (!isReloading) {
+                isReloading = true;
+                window.location.reload(true);
+            }
+        }, 3000);
+    } else {
+        window.location.reload(true);
+    }
+}
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').then((reg) => {
+            swRegistration = reg;
+
+            if (reg.waiting && navigator.serviceWorker.controller) {
+                showUpdateButton();
+            }
+
+            reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                if (!newWorker) return;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showUpdateButton();
+                    }
+                });
+            });
+        }).catch(err => console.error('SW:', err));
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (isReloading) return;
+            isReloading = true;
+            window.location.reload();
+        });
+
+        const checkForUpdate = () => {
+            if (swRegistration) {
+                swRegistration.update().catch(() => {});
+            }
+        };
+        setInterval(checkForUpdate, 5 * 60 * 1000);
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) checkForUpdate();
+        });
+        window.addEventListener('focus', checkForUpdate);
+        window.addEventListener('online', checkForUpdate);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const updateBtn = document.getElementById('updateAvailableBtn');
+    if (updateBtn) updateBtn.addEventListener('click', triggerUpdate);
+});
 
 function sanitizeHTML(str) { if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
 function showToast(message) { toast.textContent = message; toast.classList.remove('opacity-0'); toast.classList.add('opacity-100'); if (window.toastTimeout) clearTimeout(window.toastTimeout); window.toastTimeout = setTimeout(() => { toast.classList.add('opacity-0'); toast.classList.remove('opacity-100'); }, 2500); }
