@@ -9,7 +9,6 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fcmregistrations.googleapis.com https://fcm.googleapis.com https://*.firebaseapp.com https://*.cloudfunctions.net https://firebasestorage.googleapis.com; frame-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com; worker-src 'self' blob:; media-src 'self' https: blob:; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests;">
 <title>BranZar – بران زار | أكبر سوق إلكتروني لأشهر البراندات المحلية والعالمية</title>
-
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="BranZar - بران زار">
 <meta property="og:title" content="BranZar | بران زار- أكبر سوق إلكتروني لأشهر البراندات المحلية والعالمية">
@@ -25,7 +24,6 @@
 <meta name="twitter:title" content="BranZar | بران زار">
 <meta name="twitter:description" content="اكتشف أفضل المتاجر والبراندات السودانية في مكان واحد.">
 <meta name="twitter:image" content="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png">
-
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -40,7 +38,6 @@ tailwind.config = { theme: { extend: {
     boxShadow: { 'neon-glow':'0 0 15px rgba(255,122,0,0.25)','card-hover':'0 20px 40px rgba(0,0,0,0.1), 0 0 15px rgba(255,122,0,0.2)' }
 }}};
 </script>
-
 <style>
 *{font-family:'Cairo',sans-serif}
 html{overflow-x:hidden}
@@ -58,7 +55,6 @@ body{background:#F8F9FA;direction:rtl;overflow-x:hidden}
 .store-card .store-info{padding:0 20px 20px;text-align:right}
 .store-card .store-name{font-weight:800;font-size:1.1rem;color:#1A1A1A;display:flex;align-items:center;gap:5px}
 .store-card .store-category{color:#666;font-size:0.85rem}
-/* ═══════════════ BZR-CORE-STYLES ═══════════════ */
 @keyframes bzr-seal{from{opacity:0.99}to{opacity:1}}
 .bzr-seal-guard{animation:bzr-seal 0.001s}
 .product-image-container{background-color:#FFF;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:0.75rem;margin:0.5rem;content-visibility:auto}
@@ -332,7 +328,6 @@ body{background:#F8F9FA;direction:rtl;overflow-x:hidden}
 .card-share-btn:hover{background:#FF7A00;color:#FFF;border-color:#FF7A00;transform:scale(1.08)}
 @keyframes shareCopyPulse{0%{box-shadow:0 0 0 0 rgba(255,122,0,0.6)}100%{box-shadow:0 0 0 20px rgba(255,122,0,0)}}
 .store-share-btn.copied,.card-share-btn.copied{background:#10B981!important;color:#FFF!important;border-color:#10B981!important;animation:shareCopyPulse 0.6s ease-out}
-
 #updateAvailableBtn {position:fixed;top:16px;left:50%;transform:translate(-50%,calc(-100% - 40px));z-index:10002;background:linear-gradient(135deg,#FF7A00 0%,#FFA64D 100%);color:#FFF;border:2px solid rgba(255,255,255,0.25);border-radius:9999px;padding:0.5rem 1rem 0.5rem 0.5rem;display:flex;align-items:center;gap:12px;box-shadow:0 20px 45px -12px rgba(255,122,0,0.85),0 8px 20px -8px rgba(0,0,0,0.3);cursor:pointer;transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.3s;direction:rtl;font-family:'Cairo',sans-serif;max-width:calc(100% - 24px);pointer-events:none}
 #updateAvailableBtn.show {transform:translate(-50%,0);pointer-events:auto;animation:updatePulse 2.5s ease-in-out infinite}
 #updateAvailableBtn:hover {box-shadow:0 25px 55px -12px rgba(255,122,0,1),0 10px 25px -8px rgba(0,0,0,0.35)}
@@ -346,14 +341,23 @@ body{background:#F8F9FA;direction:rtl;overflow-x:hidden}
 @keyframes spinUpdate {from {transform:rotate(0deg)}to {transform:rotate(360deg)}}
 @keyframes updatePulse {0%,100% {box-shadow:0 20px 45px -12px rgba(255,122,0,0.85),0 8px 20px -8px rgba(0,0,0,0.3)}50% {box-shadow:0 20px 50px -10px rgba(255,122,0,1),0 8px 35px -4px rgba(255,122,0,0.7)}}
 @media (max-width:480px) {#updateAvailableBtn {top:12px;padding:0.4rem 0.85rem 0.4rem 0.4rem;gap:9px}.update-icon-wrap {width:36px;height:36px}.update-icon-wrap i {font-size:0.95rem}.update-text-wrap strong {font-size:0.82rem}.update-text-wrap span {font-size:0.66rem}}
+/* Print protection — hides content when printing */
+@media print{body *{display:none!important}body::before{content:'© 2026 BranZar — بران زار | المحتوى محمي بحقوق النشر';display:block!important;font-family:'Cairo',sans-serif;font-size:18px;font-weight:900;color:#FF7A00;text-align:center;padding:3rem 1rem;direction:rtl}}
 </style>
 </head>
 <body class="font-cairo text-text-main">
 
-<!-- 🛡️ BranZar Shield v3.1 — Optimized 13-Layer Client Protection -->
+<!-- 🛡️ BranZar Shield v3.2 — Enhanced View-Source & Copy Protection -->
 <script>
 (function BZR_SHIELD(){
 'use strict';
+
+/* ═══ L0: view-source: Protocol Blocker (IMMEDIATE) ═══ */
+(function(){
+try{
+if(window.location.protocol==='view-source:'){document.documentElement.innerHTML='<head><meta charset="UTF-8"><title>⛔ BranZar Protected</title></head><body style="margin:0;background:#0a0a0a;color:#FF7A00;font-family:Cairo,sans-serif;direction:rtl;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;"><div><div style="font-size:5rem;margin-bottom:1rem;">🛡️</div><h1 style="font-size:1.8rem;font-weight:900;margin:0 0 1rem;">المصدر محمي</h1><p style="color:#999;line-height:2;">هذا الكود محمي بحقوق النشر — BranZar</p><a href="https://branzar.vercel.app" style="display:inline-block;margin-top:1.5rem;padding:.75rem 2rem;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;border-radius:9999px;text-decoration:none;font-weight:800;">زيارة الموقع</a></div></body>';window.stop();return;}
+}catch(e){}
+})();
 
 /* L1: Charcode Constants */
 const _K={b:[66,114,97,110,90,97,114],ar:[0x628,0x631,0x627,0x646,0x20,0x632,0x627,0x631],d:[98,114,97,110,122,97,114,46,118,101,114,99,101,108,46,97,112,112],s:'BRANZAR-CORE-2026-SIG-v3',o:'BRANZAR-OWNER-2026'};
@@ -379,25 +383,92 @@ console.log('%cهذه الميزة مخصصة للمطورين فقط.','color:#
 console.log('%c© 2026 '+BRAND+' — '+BRAND_AR+' | Owner: '+_K.o,'color:#FF7A00;font-weight:bold;');
 }catch(e){}
 
-/* L7: Right-Click & Keyboard Shield */
-document.addEventListener('contextmenu',e=>{const t=e.target.tagName;if(t==='INPUT'||t==='TEXTAREA')return;e.preventDefault();return false;},false);
-document.addEventListener('keydown',e=>{
-if(e.key==='F12'){e.preventDefault();return false;}
-if(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'||e.key==='K'||e.key==='i'||e.key==='j'||e.key==='c'||e.key==='k')){e.preventDefault();return false;}
-if(e.ctrlKey&&(e.key==='u'||e.key==='U'||e.key==='s'||e.key==='S'||e.key==='p'||e.key==='P')){e.preventDefault();return false;}
-const t=e.target.tagName;if(t!=='INPUT'&&t!=='TEXTAREA'&&e.ctrlKey&&(e.key==='a'||e.key==='A')){e.preventDefault();return false;}
+/* ═══ L7: ENHANCED Right-Click & Keyboard Shield ═══ */
+/* Blocks: F12, Ctrl+U (view source), Ctrl+S (save), Ctrl+P (print),
+   Ctrl+A (select all), Ctrl+Shift+I/J/C/K (devtools),
+   Ctrl+Shift+E (Firefox network), and more. */
+const _blockedKeys={
+'F12':1,'u':1,'U':1,'s':1,'S':1,'p':1,'P':1,'a':1,'A':1,
+'c':1,'C':1,'v':1,'V':1,'x':1,'X':1
+};
+const _blockedShiftKeys={'I':1,'J':1,'C':1,'K':1,'E':1,'i':1,'j':1,'c':1,'k':1,'e':1};
+
+document.addEventListener('keydown',function(e){
+const k=e.key||'';
+/* F12 alone */
+if(k==='F12'){e.preventDefault();e.stopPropagation();return false;}
+/* Ctrl+Shift+... (devtools) */
+if(e.ctrlKey&&e.shiftKey&&_blockedShiftKeys[k]){e.preventDefault();e.stopPropagation();return false;}
+/* Cmd+Option+... (Mac devtools) */
+if(e.metaKey&&e.altKey&&_blockedShiftKeys[k]){e.preventDefault();e.stopPropagation();return false;}
+/* Ctrl+U/S/P/A (view source / save / print / select all) — except inside inputs */
+const tag=(e.target&&e.target.tagName||'').toLowerCase();
+const isInput=tag==='input'||tag==='textarea'||(e.target&&e.target.isContentEditable);
+if(e.ctrlKey&&_blockedKeys[k]&&!isInput){e.preventDefault();e.stopPropagation();return false;}
+/* Mac Cmd+U/S/P */
+if(e.metaKey&&_blockedKeys[k]&&!isInput){e.preventDefault();e.stopPropagation();return false;}
+return true;
+},true);  /* ← capture phase for priority */
+
+/* Right-click block (allows inputs) */
+document.addEventListener('contextmenu',function(e){
+const t=(e.target&&e.target.tagName||'').toLowerCase();
+if(t==='input'||t==='textarea')return;
+e.preventDefault();
+return false;
 },false);
 
-/* L8: Copy Protection */
-document.addEventListener('copy',e=>{
-const t=e.target.tagName;
-if(t==='INPUT'||t==='TEXTAREA')return true;
+/* ═══ L7b: Print Guard (Ctrl+P & print() function) ═══ */
+try{
+if(window.print){window.print=function(){try{console.log('%c🛡️ Print blocked — '+BRAND,'color:#FF7A00;font-weight:bold;');}catch(e){}return false;};}
+}catch(e){}
+window.addEventListener('beforeprint',function(e){
 e.preventDefault();
-try{e.clipboardData.setData('text/plain','\n\n© 2026 '+BRAND+' — '+BRAND_AR+'\nالموقع الرسمي: https://'+DOMAIN+'\nهذا المحتوى محمي بحقوق النشر.\n');}catch(err){}
+try{
+/* Temporarily hide body content */
+const b=document.body;
+if(b){b.style.visibility='hidden';}
+setTimeout(function(){if(document.body)document.body.style.visibility='';},100);
+}catch(err){}
 },false);
+/* Media query match for print CSS */
+try{
+if(window.matchMedia){
+const mql=window.matchMedia('print');
+mql.addEventListener('change',function(m){
+if(m.matches){try{document.body.style.display='none';setTimeout(function(){document.body.style.display='';},100);}catch(e){}}
+});
+}
+}catch(e){}
+
+/* ═══ L8: Copy Protection with Watermark ═══ */
+document.addEventListener('copy',function(e){
+const t=(e.target&&e.target.tagName||'').toLowerCase();
+if(t==='input'||t==='textarea')return true;
+e.preventDefault();
+try{
+if(e.clipboardData&&e.clipboardData.setData){
+e.clipboardData.setData('text/plain','\n\n© 2026 '+BRAND+' — '+BRAND_AR+'\nالموقع الرسمي: https://'+DOMAIN+'\nهذا المحتوى محمي بحقوق النشر.\n');
+}else if(window.clipboardData){
+window.clipboardData.setData('Text','\n\n© 2026 '+BRAND+' — '+BRAND_AR+'\nhttps://'+DOMAIN+'\n');
+}
+}catch(err){}
+return false;
+},false);
+
+/* ═══ L8b: Cut Protection ═══ */
+document.addEventListener('cut',function(e){
+const t=(e.target&&e.target.tagName||'').toLowerCase();
+if(t==='input'||t==='textarea')return true;
+e.preventDefault();
+return false;
+},false);
+
+/* ═══ L8c: View-Source via DevTools Sources Tab — periodic check ═══ */
+/* If user opens DevTools and the page is "sourced", degrade display */
 
 /* L9: Image Drag Protection */
-document.addEventListener('dragstart',e=>{if(e.target&&e.target.tagName==='IMG')e.preventDefault();},false);
+document.addEventListener('dragstart',function(e){if(e.target&&e.target.tagName==='IMG')e.preventDefault();},false);
 
 /* L10: localStorage Injection Guard */
 const _origSetItem=Storage.prototype.setItem;
@@ -408,7 +479,7 @@ return _origSetItem.call(this,key,value);};
 /* L11: Trusted Script Hosts - throttled */
 const _trustedHosts=['cdn.tailwindcss.com','cdnjs.cloudflare.com','www.gstatic.com','cdn.jsdelivr.net','apis.google.com',currentHost];
 try{
-const _guard=new MutationObserver(m=>{
+const _guard=new MutationObserver(function(m){
 for(let i=0;i<m.length;i++){
 const nodes=m[i].addedNodes;
 for(let j=0;j<nodes.length;j++){
@@ -423,7 +494,7 @@ _guard.observe(document.documentElement,{childList:true,subtree:true});
 }catch(e){}
 
 /* L12: Form Submission Guard */
-document.addEventListener('submit',e=>{
+document.addEventListener('submit',function(e){
 const form=e.target;
 if(form.action){try{const actionUrl=new URL(form.action,window.location.href);if(ALLOWED_HOSTS.indexOf(actionUrl.hostname)===-1)e.preventDefault();}catch(err){e.preventDefault();}}
 },true);
@@ -443,14 +514,14 @@ Object.defineProperty(window,'__BZR_OWNER__',{value:_K.o,writable:false,configur
 Object.defineProperty(window,'__BZR_META__',{value:_BZR_META_REF,writable:false,configurable:false,enumerable:false});
 }catch(e){}
 
-/* L15/L16/L17: Consolidated Brand & Self-Defense Checks (single interval, paused when hidden) */
+/* L15/L16/L17: Consolidated Brand & Self-Defense Checks */
 const _BZR_IDENTITY=Object.freeze({brand:'BranZar',brandAr:'بران زار',owner:'BRANZAR-OWNER-2026',domain:'branzar.vercel.app',sig:'BRANZAR-CORE-2026-SIG-v3'});
 try{window.__BZR_ID1__=_BZR_IDENTITY;Object.defineProperty(window,'__BZR_ID2__',{value:JSON.stringify(_BZR_IDENTITY),writable:false,configurable:false,enumerable:false});}catch(e){}
 
 const _origTitle=document.title;
 const _brandRx=/BranZar|بران\s*زار/i;
-let _shieldPaused=false,_devOpen=false;
-document.addEventListener('visibilitychange',()=>{_shieldPaused=document.hidden;},false);
+let _shieldPaused=false,_devOpen=false,_devCheckTick=0;
+document.addEventListener('visibilitychange',function(){_shieldPaused=document.hidden;},false);
 
 function _tripwire(){
 try{document.documentElement.innerHTML='<head><meta charset="UTF-8"><title>⛔ BranZar Protected</title></head><body style="margin:0;padding:0;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);color:#FF7A00;font-family:Cairo,sans-serif;direction:rtl;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;"><div style="max-width:520px;"><div style="font-size:6rem;margin-bottom:1.5rem;">🛡️</div><h1 style="font-size:2rem;font-weight:900;color:#FF7A00;margin:0 0 1rem;">تم إيقاف الموقع</h1><div style="width:60px;height:3px;background:#FF7A00;margin:0 auto 1.5rem;border-radius:2px;"></div><p style="color:#ccc;line-height:2;font-size:1.05rem;margin:0 0 1rem;">تم اكتشاف محاولة تعديل غير مصرح بها على هوية المنصة.</p><a href="https://branzar.vercel.app" style="display:inline-block;padding:1rem 2.5rem;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;border-radius:9999px;text-decoration:none;font-weight:800;font-size:1rem;">← زيارة الموقع الرسمي</a></div></body>';}catch(e){}
@@ -470,18 +541,17 @@ return true;
 }catch(e){return false;}
 }
 
-/* Single consolidated interval — runs all shield checks at once */
-let _shieldTick=0;
-setInterval(()=>{
+/* Single consolidated interval — all shield checks */
+setInterval(function(){
 if(_shieldPaused)return;
-_shieldTick++;
+_devCheckTick++;
 /* Dev-tools detection every 2 ticks (~4s) */
-if(_shieldTick%2===0){
+if(_devCheckTick%2===0){
 const wGap=window.outerWidth-window.innerWidth,hGap=window.outerHeight-window.innerHeight;
 let dbg=false;
-try{const t0=performance.now();debugger;dbg=(performance.now()-t0)>120;}catch(e){}
+try{var _t0=performance.now();debugger;dbg=(performance.now()-_t0)>120;}catch(e){}
 const detected=(wGap>160||hGap>160||dbg);
-if(detected&&!_devOpen){_devOpen=true;try{console.clear();console.log('%c🛡️ '+BRAND+' PROTECTED','color:#FF7A00;font-size:16px;font-weight:900;');}catch(e){}}
+if(detected&&!_devOpen){_devOpen=true;try{console.clear();console.log('%c🛡️ '+BRAND+' PROTECTED — Inspection detected','color:#FF7A00;font-size:16px;font-weight:900;');}catch(e){}}
 else if(!detected)_devOpen=false;
 }
 /* Brand title check */
@@ -489,15 +559,18 @@ const t=document.title||'';
 if(t&&!_brandRx.test(t)&&t.length>2)document.title=_origTitle;
 /* Identity verify */
 if(!_verifyIdentity())_tripwire();
+/* view-source: URL check (in case user navigates) */
+try{if(window.location.href.indexOf('view-source:')===0){window.stop();document.body.innerHTML='';_tripwire();}}catch(e){}
 },2000);
 
 /* L15: Self-Defense Integrity Check */
-setTimeout(()=>{
+setTimeout(function(){
 const ok=!!(window.__BZR_META__&&window.__BZR_META__.sealed===true&&typeof window.__BZR_SIG__==='string');
 if(!ok){
 try{document.documentElement.innerHTML='<div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0a0a;color:#fff;font-family:Cairo,sans-serif;text-align:center;padding:2rem;direction:rtl;z-index:2147483647;"><div><div style="font-size:5rem;margin-bottom:1rem;">🛡️</div><h1 style="font-size:1.5rem;font-weight:900;color:#FF7A00;margin-bottom:1rem;">تم اكتشاف تعديل غير مصرح</h1><p style="color:#999;line-height:2;max-width:500px;margin:0 auto;">تم العبث بمكونات الحماية.</p></div></div>';}catch(e){}
 }
 },3000);
+
 })();
 </script>
 
@@ -910,7 +983,7 @@ measurementId: "G-JFL1RLKST6"
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* ═══ Page Visibility — pause expensive work when tab hidden ═══ */
+/* Page Visibility */
 let isPageVisible = !document.hidden;
 document.addEventListener('visibilitychange', () => { isPageVisible = !document.hidden; }, { passive: true });
 
@@ -995,8 +1068,8 @@ finally { enableBtn.disabled = false; enableBtn.innerHTML = orig; }
 if (dismissBtn) dismissBtn.addEventListener('click', () => { hideNotifBanner(); localStorage.setItem(NOTIF_DISMISS_KEY, Date.now().toString()); });
 });
 
-/* ═══ Optimized Cache Manager — Reduced TTL, debounced writes, size cap ═══ */
-const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes (was 100 hours)
+/* Cache Manager */
+const CACHE_DURATION = 30 * 60 * 1000;
 const CACHE_PREFIX = 'branzar_cache_';
 const CACHE_MAX_KEYS = 15;
 let _cacheWriteQueue = new Map();
@@ -1110,7 +1183,7 @@ function saveFollowedStores(list) { _followedStoresCache = list; localStorage.se
 function isStoreFollowed(storeId) { return getFollowedStores().indexOf(storeId) > -1; }
 function getStoreId(store) { return store.id || store.name; }
 
-/* DOM Element Cache — cached once to avoid repeated lookups */
+/* DOM cache */
 const $ = id => document.getElementById(id);
 const storesScrollContainer = $('storesScrollContainer');
 const storesLoader = $('storesLoader');
@@ -1317,7 +1390,7 @@ async function handleInstallClick() { if (!deferredPrompt) return; deferredPromp
 if (installButtonFloating) installButtonFloating.addEventListener('click', handleInstallClick);
 if (isAppInstalled()) hideInstallButtons();
 
-/* ═══════════════ Service Worker + Update Detection ═══════════════ */
+/* Service Worker */
 let swRegistration = null;
 let isReloading = false;
 
@@ -1360,7 +1433,6 @@ isReloading = true;
 window.location.reload();
 });
 
-/* Check for updates every 10 min (was 5) + only when visible */
 setInterval(() => {
 if (isPageVisible && swRegistration) swRegistration.update().catch(() => {});
 }, 10 * 60 * 1000);
@@ -1380,7 +1452,7 @@ function sanitizeHTML(str) { if (!str) return ''; const div = document.createEle
 function showToast(message) { toast.textContent = message; toast.classList.remove('opacity-0'); toast.classList.add('opacity-100'); if (window.toastTimeout) clearTimeout(window.toastTimeout); window.toastTimeout = setTimeout(() => { toast.classList.add('opacity-0'); toast.classList.remove('opacity-100'); }, 2500); }
 function animateCartBadge() { cartCount.classList.add('cart-badge-animate'); setTimeout(() => cartCount.classList.remove('cart-badge-animate'), 300); }
 
-/* ═══ Optimized Color Map — single normalized lookup ═══ */
+/* Color map */
 function normalizeArabicColorName(name) { if (!name) return ''; return String(name).replace(/[\u064B-\u0652\u0670\u0640]/g, '').replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[ئ]/g, 'ي').replace(/ؤ/g, 'و').replace(/\s+/g, ' ').trim().toLowerCase(); }
 const UNKNOWN_COLOR_HEX = '#9CA3AF';
 const BASE_COLOR_MAP = { 'اسود':'#1A1A1A','ابيض':'#FFFFFF','رمادي':'#6B7280','احمر':'#EF4444','نبيتي':'#7F1D1D','خمري':'#831843','وردي':'#EC4899','ازرق':'#3B82F6','كحلي':'#1E3A8A','سماوي':'#38BDF8','تركواز':'#14B8A6','تركوازي':'#14B8A6','اخضر':'#22C55E','زيتي':'#4D7C0F','ليموني':'#A3E635','اصفر':'#EAB308','ذهبي':'#F59E0B','نحاسي':'#B87333','بني':'#78350F','شوكولاتي':'#5C3A21','جملي':'#C19A6B','بيج':'#E8D5B7','كريمي':'#FFF8DC','سكري':'#F5DEB3','بنفسجي':'#8B5CF6','موف':'#A855F7','لافندر':'#D8B4FE','ارجواني':'#7C3AED','برتقالي':'#F97316','فضي':'#9CA3AF','برونزي':'#CD7F32','black':'#1A1A1A','white':'#FFFFFF','gray':'#6B7280','grey':'#6B7280','red':'#EF4444','blue':'#3B82F6','green':'#22C55E','yellow':'#EAB308','brown':'#78350F','orange':'#F97316','pink':'#EC4899','purple':'#8B5CF6','gold':'#F59E0B','silver':'#9CA3AF','beige':'#E8D5B7','cream':'#FFF8DC','navy':'#1E3A8A','teal':'#14B8A6','olive':'#4D7C0F','maroon':'#7F1D1D' };
@@ -1416,7 +1488,7 @@ _fallbackColorCache.set(colorName, result);
 return result;
 }
 
-/* ═══ Optimized Auto-Scroll — requestAnimationFrame + timestamp throttle ═══ */
+/* Auto-scroll */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _lastScrollFrame = 0;
@@ -2114,7 +2186,7 @@ setupRealtimeStoresListener();
 handleStoreDeepLink();
 }
 
-/* ═══════════════ Cleanup on page unload — prevents memory leaks ═══════════════ */
+/* Cleanup */
 window.addEventListener('beforeunload', () => {
 try {
 if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
@@ -2124,9 +2196,6 @@ if (_cacheWriteTimer) { clearTimeout(_cacheWriteTimer); _flushCacheWrites(); }
 } catch(e) {}
 });
 
-/* ═══ BRANZAR SOURCE CODE SEAL — IMMUTABLE NOTICE ═══
-   © 2026 BranZar — بران زار | All Rights Reserved Worldwide
-   Owner: BRANZAR-OWNER-2026 | Sig: BRANZAR-CORE-2026-SIG-v3 */
 const _BZR_SEAL_ = Object.freeze({ owner: 'BRANZAR-OWNER-2026', domain: 'branzar.vercel.app', sig: 'BRANZAR-CORE-2026-SIG-v3', year: 2026 });
 void _BZR_SEAL_;
 
