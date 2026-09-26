@@ -1,4 +1,4 @@
-const CACHE_NAME = 'BAZRENA-بازارنا-v1.0.0';
+const CACHE_NAME = 'BAZRENA-بازارنا-v1.0.1';
 const urlsToCache = [
   '/script.js',
   '/index.html',
