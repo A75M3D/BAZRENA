@@ -1,4 +1,4 @@
-const CACHE_NAME = 'BAZRENA-بازارنا';
+const CACHE_NAME = 'BAZRENA-بازارنا-v1.0.0';
 const urlsToCache = [
   '/script.js',
   '/index.html',
@@ -44,7 +44,7 @@ self.addEventListener('fetch', (event) => {
     '',
     '/index.html',
     '/about.html',
-    '/D.html',
+    '/a.html',
     
   ];
   
