@@ -1,7 +1,6 @@
-const CACHE_NAME = 'BAZRENA-بازارنا-v1.0.2';
+const CACHE_NAME = 'BAZRENA-بازارنا-v1.0.01';
 const urlsToCache = [
   '/script.js',
-  '/index.html',
   '/manifest.json',
   '/register.html',
   // الملفات الثابتة اللي مش بتتغير
