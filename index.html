@@ -32,7 +32,7 @@
 
 <style>
 /* ═══════════════════════════════════════════
-   BranZar v6.1 — Native App Design System
+   BranZar v7.0 — Native App + Performance
    ═══════════════════════════════════════════ */
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
@@ -106,13 +106,7 @@ body.modal-open { overflow: hidden; }
 ::-webkit-scrollbar-thumb:hover { background: #FF7A00; }
 .bzr-container { max-width: 1400px; margin: 0 auto; padding: 0 16px; }
 
-/* ═══ SPLASH ═══ */
-#bzrSplash {
-  position: fixed; inset: 0; z-index: 2147483647;
-  background: linear-gradient(160deg, #FFFFFF 0%, #FFF7ED 55%, #FFEDD5 100%);
-  display: flex; align-items: center; justify-content: center; flex-direction: column;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
-}
+#bzrSplash { position: fixed; inset: 0; z-index: 2147483647; background: linear-gradient(160deg, #FFFFFF 0%, #FFF7ED 55%, #FFEDD5 100%); display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease, visibility 0.5s ease; }
 #bzrSplash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
 .bzr-splash-logo { width: 120px; height: 120px; border-radius: 50%; background: #fff; padding: 8px; box-shadow: 0 20px 60px rgba(255,122,0,0.35), 0 0 0 8px rgba(255,122,0,0.08); animation: bzrLogoPulse 2s ease-in-out infinite; }
 @keyframes bzrLogoPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
@@ -123,15 +117,7 @@ body.modal-open { overflow: hidden; }
 .bzr-splash-loader::after { content: ''; position: absolute; top: 0; right: 0; height: 100%; width: 40%; background: linear-gradient(90deg, #FF7A00, #FFA64D); border-radius: 4px; animation: bzrLoad 1.2s ease-in-out infinite; }
 @keyframes bzrLoad { 0% { right: 100%; width: 40%; } 50% { right: 30%; width: 40%; } 100% { right: -40%; width: 40%; } }
 
-/* ═══ APP BAR ═══ */
-.bzr-app-bar {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255,255,255,0.88);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--c-border);
-  padding-top: var(--safe-top);
-}
+.bzr-app-bar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.88); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--c-border); padding-top: var(--safe-top); }
 .bzr-app-bar-inner { height: var(--app-bar-h); max-width: 1400px; margin: 0 auto; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .bzr-logo-btn { background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 10px; cursor: pointer; flex-shrink: 0; }
 .bzr-logo-circle { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(255,122,0,0.25); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
@@ -158,7 +144,6 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 @keyframes cartBounce { 0% { transform: scale(1) rotate(0); } 25% { transform: scale(1.15) rotate(-8deg); } 50% { transform: scale(1.2) rotate(8deg); } 75% { transform: scale(1.15) rotate(-4deg); } 100% { transform: scale(1) rotate(0); } }
 .bzr-cart-btn.bounce { animation: cartBounce 0.6s ease; }
 
-/* ═══ SEARCH BAR ═══ */
 .bzr-search-bar-wrap { position: sticky; top: calc(var(--safe-top) + var(--app-bar-h)); z-index: 95; background: rgba(255,255,255,0.92); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--c-border); padding: 8px 0; }
 .bzr-search-inner { max-width: 1400px; margin: 0 auto; padding: 0 12px; }
 .bzr-search-input { display: flex; align-items: center; gap: 10px; background: var(--c-surface-2); border: 1.5px solid transparent; border-radius: 9999px; padding: 0 16px; height: 42px; transition: all 0.25s ease; }
@@ -172,7 +157,6 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 @keyframes dropdownIn { from { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.98); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
 .bzr-search-results.show { display: block; }
 
-/* ═══ BOTTOM NAV ═══ */
 #bzrBottomNav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 900; background: rgba(255,255,255,0.95); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid var(--c-border); padding-bottom: var(--safe-bottom); box-shadow: 0 -2px 14px rgba(15,23,42,0.06); }
 .bzr-nav-list { display: grid; grid-template-columns: repeat(4, 1fr); height: var(--bottom-nav-h); max-width: 640px; margin: 0 auto; }
 .bzr-nav-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; background: transparent; border: none; cursor: pointer; color: #94A3B8; font-weight: 700; font-size: 0.68rem; transition: color 0.25s; padding: 0; overflow: hidden; }
@@ -184,7 +168,6 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .bzr-nav-item:active > i { transform: scale(0.85); }
 .bzr-nav-item .bzr-nav-badge { position: absolute; top: 6px; right: calc(50% - 18px); min-width: 18px; height: 18px; padding: 0 5px; background: #EF4444; color: #fff; border-radius: 999px; font-size: 0.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
 
-/* ═══ BUTTONS ═══ */
 .btn-primary { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; font-weight: 800; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.25s; box-shadow: 0 6px 20px -6px rgba(255,122,0,0.6); position: relative; overflow: hidden; }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px -6px rgba(255,122,0,0.75); }
 .btn-primary:active { transform: translateY(0) scale(0.97); }
@@ -193,7 +176,6 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .ripple.animate::after { animation: rippleAnim 0.6s ease; }
 @keyframes rippleAnim { from { transform: scale(0); opacity: 0.7; } to { transform: scale(2); opacity: 0; } }
 
-/* ═══ CARDS ═══ */
 .store-card { width: 260px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(15,23,42,0.06); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; flex-shrink: 0; }
 @media (max-width: 380px) { .store-card { width: 220px; } }
 body.view-desktop .store-card { width: 220px; }
@@ -219,13 +201,11 @@ body.view-desktop .store-card .store-category { font-size: 0.75rem; }
 .verified-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: linear-gradient(135deg, #3B82F6, #1E40AF); border-radius: 50%; color: #fff; font-size: 10px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(30,64,175,0.4); }
 .all-products-total-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border-radius: 9999px; padding: 0.4rem 0.9rem; font-size: 0.78rem; font-weight: 800; white-space: nowrap; box-shadow: 0 6px 16px -6px rgba(255,122,0,0.65); }
 
-/* ═══ PRODUCTS GRID ═══ */
 #allProductsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
 body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
 @media (min-width: 640px) { #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap: 1rem; } body.view-desktop #allProductsGrid { grid-template-columns: repeat(4, 1fr); } }
 @media (min-width: 1024px) { #allProductsGrid { grid-template-columns: repeat(4, 1fr); } body.view-desktop #allProductsGrid { grid-template-columns: repeat(5, 1fr); } }
 
-/* ═══ SCROLL ═══ */
 .stores-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 1rem; padding-bottom: 1rem; scrollbar-width: thin; direction: ltr; -webkit-overflow-scrolling: touch; scroll-behavior: auto; }
 .stores-scroll-container > * { direction: rtl; }
 .stores-scroll-container::-webkit-scrollbar { height: 6px; }
@@ -240,7 +220,6 @@ body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap:
 .chip:active { transform: scale(0.95); }
 .chip.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border-color: #FF7A00; box-shadow: 0 6px 16px -6px rgba(255,122,0,0.6); }
 
-/* ═══ MODALS ═══ */
 .fullscreen-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.25s ease; }
 .fullscreen-modal.hidden { display: none; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -260,7 +239,6 @@ body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap:
 .color-swatch.active.light-color::after { color: #0F172A; text-shadow: none; }
 .card-color-dot { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid #fff; box-shadow: 0 1px 3px rgba(15,23,42,0.2); }
 
-/* ═══ CART ═══ */
 #cartSidebar { position: fixed; top: 0; left: 0; height: 100%; width: 100%; max-width: 420px; background: var(--c-surface); z-index: 1500; transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); display: flex; flex-direction: column; box-shadow: -4px 0 30px rgba(15,23,42,0.15); }
 #cartSidebar.open { transform: translateX(0); }
 #cartSidebar .cart-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); backdrop-filter: blur(4px); z-index: -1; }
@@ -268,7 +246,6 @@ body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap:
 @media (max-width: 640px) { #cartSidebar { max-width: 92%; } }
 .cart-item-image { width: 60px; height: 60px; object-fit: contain; background: var(--c-surface-2); border-radius: 12px; flex-shrink: 0; padding: 4px; }
 
-/* ═══ STORE DETAIL ═══ */
 .store-cover-wrap { position: relative; width: 100%; height: 200px; flex-shrink: 0; overflow: hidden; background: var(--c-surface-2); }
 @media (min-width: 480px) { .store-cover-wrap { height: 240px; } }
 @media (min-width: 768px) { .store-cover-wrap { height: 300px; } }
@@ -314,7 +291,6 @@ body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap:
 .store-product-fav { position: absolute; top: 10px; left: 10px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.95); border: none; display: flex; align-items: center; justify-content: center; color: #FF7A00; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 8px rgba(15,23,42,0.1); transition: all 0.25s ease; z-index: 3; }
 .store-product-fav.active { background: #FF7A00; color: #fff; }
 
-/* ═══ ACCOUNT MODAL ═══ */
 #accountModal { position: fixed; inset: 0; z-index: 3000; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.25s ease; }
 #accountModal.hidden { display: none; }
 #accountModal .account-overlay { position: absolute; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); }
@@ -354,7 +330,6 @@ body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap:
 .switch.on { background: linear-gradient(135deg, #FF7A00, #FFA64D); }
 .switch.on::after { transform: translateX(-20px); }
 
-/* ═══ CREATE STORE MODAL ═══ */
 #createStoreModal { position: fixed; inset: 0; z-index: 3100; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(15,23,42,0.7); backdrop-filter: blur(10px); animation: fadeIn 0.25s ease; }
 #createStoreModal.hidden { display: none; }
 .create-store-box { background: var(--c-surface); border-radius: 28px; width: 100%; max-width: 460px; padding: 2rem 1.5rem; text-align: center; animation: zoomIn 0.35s cubic-bezier(0.34,1.56,0.64,1); position: relative; }
@@ -370,13 +345,11 @@ body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap:
 .create-store-cancel { width: 100%; height: 46px; background: var(--c-surface-2); color: var(--c-text-soft); border: none; border-radius: 14px; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: 'Cairo', sans-serif; transition: all 0.2s; }
 .create-store-cancel:hover { background: var(--c-border); color: var(--c-text); }
 
-/* ═══ HERO ═══ */
 .hero-section { position: relative; padding: 2rem 1rem 2.5rem; background: linear-gradient(180deg, #FFF7ED 0%, var(--c-bg) 100%); overflow: hidden; }
 body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, var(--c-bg) 100%); }
 .hero-section::before { content: ''; position: absolute; top: -100px; right: -100px; width: 320px; height: 320px; background: radial-gradient(circle, rgba(255,122,0,0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
 .hero-section::after { content: ''; position: absolute; bottom: -120px; left: -120px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(30,64,175,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
 
-/* ═══ MISC ═══ */
 .load-more-btn { background: var(--c-surface); color: #FF7A00; border: 2px solid #FF7A00; padding: 0.85rem 2.2rem; border-radius: 9999px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1); display: inline-flex; align-items: center; gap: 10px; }
 .load-more-btn:hover { background: #FF7A00; color: #fff; transform: translateY(-3px); }
 .load-more-btn:active { transform: scale(0.95); }
@@ -386,9 +359,6 @@ body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, 
 #installButtonFloating { position: fixed; bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px); right: 16px; z-index: 9999; background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #fff; border: none; border-radius: 9999px; padding: 0.8rem 1.4rem; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px -6px rgba(30,64,175,0.6); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(20px); }
 #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-/* ═══════════════════════════════════════════
-   UPDATE BUTTON — نسخة أنيقة v2
-   ═══════════════════════════════════════════ */
 #updateAvailableBtn {
   position: fixed;
   top: calc(var(--safe-top) + 12px);
@@ -418,58 +388,17 @@ body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, 
   opacity: 1;
   animation: updatePulse 2.5s ease-in-out infinite;
 }
-#updateAvailableBtn:hover {
-  box-shadow: 0 25px 55px -12px rgba(255,122,0,1), 0 10px 25px -8px rgba(0,0,0,0.35);
-}
+#updateAvailableBtn:hover { box-shadow: 0 25px 55px -12px rgba(255,122,0,1), 0 10px 25px -8px rgba(0,0,0,0.35); }
 #updateAvailableBtn:active { transform: translate(-50%, 0) scale(0.97); }
 #updateAvailableBtn:disabled { cursor: wait; opacity: 0.9; }
-.update-icon-wrap {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-}
-.update-icon-wrap i {
-  color: #fff;
-  font-size: 1.15rem;
-  animation: bounceUpdate 2s ease-in-out infinite;
-}
-@keyframes bounceUpdate {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-.update-text-wrap {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-  text-align: right;
-}
-.update-text-wrap strong {
-  font-size: 0.92rem;
-  font-weight: 900;
-  letter-spacing: 0.2px;
-}
-.update-text-wrap span {
-  font-size: 0.72rem;
-  opacity: 0.92;
-  font-weight: 600;
-  margin-top: 2px;
-}
-.update-arrow {
-  color: rgba(255,255,255,0.85);
-  font-size: 0.75rem;
-  flex-shrink: 0;
-  animation: slideArrow 1.5s ease-in-out infinite;
-}
-@keyframes slideArrow {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(-4px); }
-}
+.update-icon-wrap { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
+.update-icon-wrap i { color: #fff; font-size: 1.15rem; animation: bounceUpdate 2s ease-in-out infinite; }
+@keyframes bounceUpdate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.update-text-wrap { display: flex; flex-direction: column; line-height: 1.2; text-align: right; }
+.update-text-wrap strong { font-size: 0.92rem; font-weight: 900; letter-spacing: 0.2px; }
+.update-text-wrap span { font-size: 0.72rem; opacity: 0.92; font-weight: 600; margin-top: 2px; }
+.update-arrow { color: rgba(255,255,255,0.85); font-size: 0.75rem; flex-shrink: 0; animation: slideArrow 1.5s ease-in-out infinite; }
+@keyframes slideArrow { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
 @keyframes updatePulse {
   0%, 100% { box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3); }
   50% { box-shadow: 0 20px 50px -10px rgba(255,122,0,1), 0 8px 35px -4px rgba(255,122,0,0.7); }
@@ -674,10 +603,10 @@ setTimeout(function(){
     </button>
     <div class="bzr-app-actions">
       <div class="view-toggle-pill" role="tablist" aria-label="وضع العرض">
-        <button id="viewMobileBtn" data-view="mobile" role="tab" aria-label="وضع الهاتف" title="وضع الهاتف"><i class="fas fa-mobile-alt"></i></button>
-        <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب" title="وضع سطح المكتب"><i class="fas fa-desktop"></i></button>
+        <button id="viewMobileBtn" data-view="mobile" role="tab" aria-label="وضع الهاتف"><i class="fas fa-mobile-alt"></i></button>
+        <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب"><i class="fas fa-desktop"></i></button>
       </div>
-      <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><i class="fas fa-moon"></i></button>
+      <button id="themeToggleBtn" class="icon-btn" aria-label="الوضع الداكن"><i class="fas fa-moon"></i></button>
       <button id="cartButton" class="bzr-cart-btn" aria-label="السلة">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M6 8V7a6 6 0 1 1 12 0v1h1.5a1.5 1.5 0 0 1 1.49 1.67l-1.2 10A2 2 0 0 1 17.8 21.5H6.2a2 2 0 0 1-1.99-1.83l-1.2-10A1.5 1.5 0 0 1 4.5 8H6Zm2 0h8V7a4 4 0 1 0-8 0v1Z" fill="currentColor"/>
@@ -703,7 +632,6 @@ setTimeout(function(){
 <!-- MAIN -->
 <main class="bzr-page-fade" id="mainContent">
 
-  <!-- HERO -->
   <section class="hero-section">
     <div style="max-width:960px;margin:0 auto;text-align:center;position:relative;z-index:2;">
       <h1 style="font-size:clamp(1.75rem, 5vw, 3rem);font-weight:900;line-height:1.25;margin:0 0 0.75rem;color:var(--c-text);">
@@ -720,7 +648,6 @@ setTimeout(function(){
     </div>
   </section>
 
-  <!-- FOLLOWED STORES -->
   <section id="followedStoresSection" class="hidden" style="padding:1rem 0 0.5rem;">
     <div class="bzr-container">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
@@ -737,7 +664,6 @@ setTimeout(function(){
     </div>
   </section>
 
-  <!-- STORES -->
   <section id="stores" style="padding:1.5rem 0 2rem;">
     <div class="bzr-container">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap;">
@@ -763,7 +689,6 @@ setTimeout(function(){
     </div>
   </section>
 
-  <!-- CATEGORIES -->
   <section id="categories" style="padding:1.5rem 0 1rem;background:var(--c-surface);border-top:1px solid var(--c-border);border-bottom:1px solid var(--c-border);">
     <div class="bzr-container">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:1rem;flex-wrap:wrap;">
@@ -780,7 +705,6 @@ setTimeout(function(){
     </div>
   </section>
 
-  <!-- ALL PRODUCTS -->
   <section id="all-products" style="padding:2rem 0 3rem;background:var(--c-surface);">
     <div class="bzr-container">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
@@ -803,7 +727,6 @@ setTimeout(function(){
 
 </main>
 
-<!-- STORE MODAL -->
 <div id="storeModal" class="fullscreen-modal hidden">
   <div class="modal-content">
     <div class="store-cover-wrap">
@@ -844,7 +767,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- PRODUCT MODAL -->
 <div id="productModal" class="product-modal hidden">
   <div class="product-modal-content" style="position:relative;">
     <button id="closeProductModal" class="icon-btn" style="position:absolute;top:14px;left:14px;z-index:10;" aria-label="إغلاق"><i class="fas fa-times"></i></button>
@@ -880,7 +802,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- CART SIDEBAR -->
 <div id="cartSidebar">
   <div class="cart-overlay" id="cartOverlay"></div>
   <div style="padding:1.25rem;border-bottom:1px solid var(--c-border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
@@ -898,7 +819,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- ACCOUNT MODAL -->
 <div id="accountModal" class="hidden">
   <div class="account-overlay" id="accountOverlay"></div>
   <div class="account-sheet">
@@ -938,7 +858,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- CREATE STORE MODAL -->
 <div id="createStoreModal" class="hidden">
   <div class="create-store-box">
     <div class="create-store-icon"><i class="fas fa-crown"></i></div>
@@ -958,7 +877,6 @@ setTimeout(function(){
 
 <div id="toast"></div>
 
-<!-- BOTTOM NAV -->
 <nav id="bzrBottomNav" aria-label="التنقل الرئيسي">
   <div class="bzr-nav-list">
     <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية"><i class="fas fa-home"></i><span>الرئيسية</span></button>
@@ -968,9 +886,6 @@ setTimeout(function(){
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════
-     UPDATE BUTTON — نسخة أنيقة v2
-     ═══════════════════════════════════════════ -->
 <button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث التطبيق">
   <div class="update-icon-wrap"><i class="fas fa-cloud-download-alt"></i></div>
   <div class="update-text-wrap">
@@ -980,10 +895,8 @@ setTimeout(function(){
   <i class="fas fa-chevron-left update-arrow"></i>
 </button>
 
-<!-- INSTALL BUTTON -->
 <button id="installButtonFloating" class="hidden" title="تثبيت التطبيق"><i class="fas fa-download"></i><span>تثبيت التطبيق</span></button>
 
-<!-- NOTIFICATION BANNER -->
 <div id="notifPermissionBanner" class="hidden">
   <div style="display:flex;align-items:flex-start;gap:12px;">
     <div class="notif-bell-icon"><i class="fas fa-bell"></i></div>
@@ -998,7 +911,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- PUSH TOAST -->
 <div id="pushToast">
   <div class="push-icon"><i class="fas fa-bell"></i></div>
   <div style="flex:1;min-width:0;text-align:right;">
@@ -1007,7 +919,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- NEW STORE NOTIFICATION -->
 <div id="newStoreNotification" class="hidden">
   <div class="notif-pulse"></div>
   <img id="notificationStoreLogo" src="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #FFE0BD;flex-shrink:0;" alt="">
@@ -1022,7 +933,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -1030,7 +940,7 @@ setTimeout(function(){
 
 <script>
 /* ═══════════════════════════════════════════
-   BranZar App Core v6.1
+   BranZar App Core v7.0 — Performance + Fixed Update Button
    ═══════════════════════════════════════════ */
 
 /* Splash */
@@ -1046,7 +956,7 @@ setTimeout(function(){
   }
   window.__bzrHideSplash = hideSplash;
   window.addEventListener('load', () => setTimeout(hideSplash, 700));
-  setTimeout(hideSplash, 3000);
+  setTimeout(hideSplash, 2500);
 })();
 
 const VAPID_PUBLIC_KEY = "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw";
@@ -1102,7 +1012,6 @@ document.addEventListener('pointerdown', (e) => {
 /* ═══ Theme ═══ */
 const THEME_KEY = 'branzar_theme';
 const VIEW_KEY = 'branzar_view_mode';
-
 function applyTheme(theme){
   document.body.classList.toggle('theme-dark', theme === 'dark');
   const mainIcon = document.querySelector('#themeToggleBtn i');
@@ -1127,18 +1036,14 @@ function toggleTheme(){
 }
 document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
 document.getElementById('accountThemeSwitch')?.addEventListener('click', toggleTheme);
-document.getElementById('accountThemeSwitch')?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
-});
+document.getElementById('accountThemeSwitch')?.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); } });
 initTheme();
 
 /* ═══ View Mode ═══ */
 function applyViewMode(mode){
   document.body.classList.remove('view-mobile','view-desktop');
   document.body.classList.add('view-' + mode);
-  document.querySelectorAll('.view-toggle-pill button').forEach(b => {
-    b.classList.toggle('active', b.dataset.view === mode);
-  });
+  document.querySelectorAll('.view-toggle-pill button').forEach(b => { b.classList.toggle('active', b.dataset.view === mode); });
   localStorage.setItem(VIEW_KEY, mode);
 }
 function initViewMode(){
@@ -1159,7 +1064,7 @@ let cart = [];
 try { cart = JSON.parse(localStorage.getItem('myStoresCart')) || []; } catch(e){ cart = []; }
 let stores = [], categories = [], allProducts = [], filteredProducts = [];
 let displayedProductsCount = 0, currentCategory = null;
-const PRODUCTS_PER_PAGE = 10;
+const PRODUCTS_PER_PAGE = 30;  // ✅ زيادة لتحميل أسرع
 let currentStore = null, currentStoreId = null, currentFollowersCount = 0, isFollowing = false, isUpdatingFollow = false;
 let productsUnsubscribe = null, storesUnsubscribe = null;
 let isFirstProductsSnapshot = true, isFirstStoresSnapshot = true;
@@ -1174,8 +1079,8 @@ let authReady = false;
 let authPromise = firebase.auth().signInAnonymously().then(uc => { authReady = true; return uc.user; }).catch(err => { console.error('Auth:', err); throw err; });
 async function ensureAuth(){ if (authReady) return true; try { await authPromise; return true; } catch(e){ return false; } }
 
-/* ═══ Cache ═══ */
-const CACHE_DURATION = 60 * 60 * 1000, CACHE_PREFIX = 'branzar_cache_', CACHE_MAX_KEYS = 15;
+/* ═══ Cache — 60 دقيقة ═══ */
+const CACHE_DURATION = 60 * 60 * 1000, CACHE_PREFIX = 'branzar_cache_', CACHE_MAX_KEYS = 25;
 let _cacheWriteQueue = new Map(), _cacheWriteTimer = null;
 function _flushCacheWrites(){
   _cacheWriteQueue.forEach((value, key) => {
@@ -1197,12 +1102,30 @@ async function fetchWithCache(key, fn, force){
   return data;
 }
 function getProductFingerprint(products){
-  let h = 0;
-  for (let i = 0; i < products.length; i++) {
-    const id = products[i].id || '';
+  if (!products || !products.length) return '0:0';
+  let h = products.length;
+  const checkIds = [products[0].id, products[Math.floor(products.length/2)].id, products[products.length-1].id];
+  for (let i = 0; i < checkIds.length; i++) {
+    const id = checkIds[i] || '';
     for (let j = 0; j < id.length; j++) h = ((h << 5) - h + id.charCodeAt(j)) | 0;
   }
   return products.length + ':' + h;
+}
+
+/* ✅ عدّادات محلية بدون طلب Firebase */
+function recalculateStoreCounts(){
+  if (!stores.length || !allProducts.length) return false;
+  const counts = {};
+  for (let i = 0; i < allProducts.length; i++) {
+    const sn = allProducts[i].store_name;
+    if (sn) counts[sn] = (counts[sn] || 0) + 1;
+  }
+  let changed = false;
+  for (let i = 0; i < stores.length; i++) {
+    const newCount = counts[stores[i].name] || 0;
+    if (stores[i].products_count !== newCount) { stores[i].products_count = newCount; changed = true; }
+  }
+  return changed;
 }
 
 /* ═══ Followed / Favs ═══ */
@@ -1255,11 +1178,7 @@ function getFallbackHex(colorName){
   return result;
 }
 
-/* ═══════════════════════════════════════════
-   AUTO-SCROLL STORES
-   يبدأ من أول متجر → آخر متجر → يعود للأول
-   يتوقف عند اللمس → يستأنف بعد 5 ثواني
-   ═══════════════════════════════════════════ */
+/* ═══ Auto-Scroll ═══ */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
@@ -1268,44 +1187,27 @@ const AUTO_SCROLL_RESUME = 5000;
 const AUTO_SCROLL_INTERVAL = 32;
 const SCROLL_STEP = 0.9;
 
-function getStoresMaxScroll(){
-  const c = document.getElementById('storesScrollContainer');
-  return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
-}
+function getStoresMaxScroll(){ const c = document.getElementById('storesScrollContainer'); return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0; }
 function _autoScrollLoop(ts){
   const c = document.getElementById('storesScrollContainer');
   if (!c) { _scrollRAFId = null; return; }
   if (!isPageVisible) { _scrollRAFId = requestAnimationFrame(_autoScrollLoop); return; }
-  if (isHoveringStores || (Date.now() - lastStoresInteraction < AUTO_SCROLL_RESUME)) {
-    _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
-    return;
-  }
-  if (ts - _lastScrollFrame < AUTO_SCROLL_INTERVAL) {
-    _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
-    return;
-  }
+  if (isHoveringStores || (Date.now() - lastStoresInteraction < AUTO_SCROLL_RESUME)) { _scrollRAFId = requestAnimationFrame(_autoScrollLoop); return; }
+  if (ts - _lastScrollFrame < AUTO_SCROLL_INTERVAL) { _scrollRAFId = requestAnimationFrame(_autoScrollLoop); return; }
   _lastScrollFrame = ts;
   const max = getStoresMaxScroll();
   if (max <= 0) { _scrollRAFId = null; return; }
-  if (c.scrollLeft >= max - 1) {
-    c.scrollLeft = 0;
-  } else {
-    c.scrollLeft += SCROLL_STEP;
-  }
+  if (c.scrollLeft >= max - 1) c.scrollLeft = 0;
+  else c.scrollLeft += SCROLL_STEP;
   _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
 }
 function startAutoScroll(){
   stopAutoScroll();
   const c = document.getElementById('storesScrollContainer');
   if (!c) return;
-  requestAnimationFrame(() => {
-    c.scrollLeft = 0;
-    _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
-  });
+  requestAnimationFrame(() => { c.scrollLeft = 0; _scrollRAFId = requestAnimationFrame(_autoScrollLoop); });
 }
-function stopAutoScroll(){
-  if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; }
-}
+function stopAutoScroll(){ if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; } }
 
 /* ═══ Notifications ═══ */
 let messaging = null;
@@ -1316,35 +1218,18 @@ async function initFCM(){
   try {
     if (!isNotificationSupported()) return;
     messaging = firebase.messaging();
-
-    // ✅ استخدام الـ SW الرئيسي — لا تسجيل SW جديد
     const reg = await navigator.serviceWorker.ready;
-
     messaging.onMessage((payload) => {
       const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
       const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
       showPushToast(title, body);
-
-      // إظهار إشعار في المقدمة أيضاً
       if (Notification.permission === 'granted') {
         try {
-          const n = new Notification(title, {
-            body,
-            icon: (payload.notification && payload.notification.icon) || 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
-            badge: 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
-            dir: 'rtl',
-            lang: 'ar',
-            tag: (payload.data && payload.data.tag) || 'branzar-fg'
-          });
-          n.onclick = () => {
-            window.focus();
-            window.location.href = (payload.data && payload.data.url) || 'https://branzar.vercel.app';
-            n.close();
-          };
+          const n = new Notification(title, { body, icon: (payload.notification && payload.notification.icon) || 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png', badge: 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png', dir: 'rtl', lang: 'ar', tag: (payload.data && payload.data.tag) || 'branzar-fg' });
+          n.onclick = () => { window.focus(); window.location.href = (payload.data && payload.data.url) || 'https://branzar.vercel.app'; n.close(); };
         } catch (e) {}
       }
     });
-
     if (Notification.permission === 'granted') await registerFCMToken(reg);
     else if (shouldShowNotifBanner()) setTimeout(showNotifBanner, 10000);
   } catch(err){ console.warn('FCM:', err); }
@@ -1461,21 +1346,14 @@ function updateBodyScroll(){
 /* ═══ Bottom Nav ═══ */
 const bottomNav = document.getElementById('bzrBottomNav');
 const bottomNavBadge = document.getElementById('bottomNavCartBadge');
-function setActiveNav(nav){
-  if (!bottomNav) return;
-  bottomNav.querySelectorAll('.bzr-nav-item').forEach(b => b.classList.toggle('active', b.dataset.nav === nav));
-}
+function setActiveNav(nav){ if (!bottomNav) return; bottomNav.querySelectorAll('.bzr-nav-item').forEach(b => b.classList.toggle('active', b.dataset.nav === nav)); }
 bottomNav?.addEventListener('click', (e) => {
   const btn = e.target.closest('.bzr-nav-item');
   if (!btn) return;
   haptic('light');
   const nav = btn.dataset.nav;
   if (nav === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveNav('home'); }
-  else if (nav === 'followed') {
-    const sec = document.getElementById('followedStoresSection');
-    if (sec && !sec.classList.contains('hidden')) { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); setActiveNav('followed'); }
-    else { showToast('💡 لم تتابع أي متجر بعد'); setActiveNav('home'); }
-  }
+  else if (nav === 'followed') { const sec = document.getElementById('followedStoresSection'); if (sec && !sec.classList.contains('hidden')) { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); setActiveNav('followed'); } else { showToast('💡 لم تتابع أي متجر بعد'); setActiveNav('home'); } }
   else if (nav === 'cart') { openCart(); setActiveNav('cart'); }
   else if (nav === 'account') { openAccountModal(); }
 });
@@ -1496,8 +1374,6 @@ document.getElementById('accountOverlay')?.addEventListener('click', closeAccoun
 document.getElementById('openCreateStoreBtn')?.addEventListener('click', () => { haptic('medium'); createStoreModal.classList.remove('hidden'); updateBodyScroll(); });
 document.getElementById('cancelCreateStore')?.addEventListener('click', () => { createStoreModal.classList.add('hidden'); updateBodyScroll(); });
 createStoreModal?.addEventListener('click', (e) => { if (e.target === createStoreModal) { createStoreModal.classList.add('hidden'); updateBodyScroll(); } });
-
-/* ═══ Logo Menu ═══ */
 document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
 /* ═══ PWA Install ═══ */
@@ -1516,16 +1392,51 @@ installBtn?.addEventListener('click', async () => {
 });
 if (isAppInstalled()) installBtn.classList.remove('show');
 
-/* ═══════════════════════════════════════════
-   Service Worker — Auto Update System v2
-   ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   Service Worker — Auto Update System v3 (Fixed: NO duplicates)
+   ═══════════════════════════════════════════════════════════ */
 let swRegistration = null;
 let isReloading = false;
 let updateCheckInterval = null;
+let updateButtonShown = false;  // ✅ Guard synchronous
+const PROMPTED_SW_KEY = 'branzar_prompted_sw_version';
 
-function showUpdateButton() {
+/* اسأل SW المنتظر عن رقم إصداره */
+function askWaitingSWVersion(waitingWorker) {
+  return new Promise((resolve) => {
+    if (!waitingWorker) return resolve('unknown');
+    const channel = new MessageChannel();
+    const timer = setTimeout(() => resolve('unknown'), 600);
+    channel.port1.onmessage = (e) => {
+      clearTimeout(timer);
+      resolve((e.data && e.data.version) ? e.data.version : 'unknown');
+    };
+    try { waitingWorker.postMessage({ type: 'GET_VERSION' }, [channel.port2]); }
+    catch(e) { clearTimeout(timer); resolve('unknown'); }
+  });
+}
+
+async function showUpdateButton() {
+  if (updateButtonShown) return;
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn || btn.classList.contains('show')) return;
+  updateButtonShown = true;
+  
+  try {
+    if (swRegistration && swRegistration.waiting) {
+      const waitingVersion = await askWaitingSWVersion(swRegistration.waiting);
+      if (waitingVersion !== 'unknown') {
+        const prompted = localStorage.getItem(PROMPTED_SW_KEY);
+        if (prompted === waitingVersion) {
+          console.log('[App] Already prompted for version', waitingVersion, '— skipping');
+          updateButtonShown = false;
+          return;
+        }
+        localStorage.setItem(PROMPTED_SW_KEY, waitingVersion);
+      }
+    }
+  } catch(e) {}
+  
   btn.classList.remove('hidden');
   requestAnimationFrame(() => {
     setTimeout(() => {
@@ -1533,13 +1444,6 @@ function showUpdateButton() {
       try { haptic('medium'); } catch(e){}
     }, 50);
   });
-}
-
-function hideUpdateButton() {
-  const btn = document.getElementById('updateAvailableBtn');
-  if (!btn) return;
-  btn.classList.remove('show');
-  setTimeout(() => btn.classList.add('hidden'), 400);
 }
 
 function triggerUpdate() {
@@ -1559,19 +1463,15 @@ function triggerUpdate() {
     setTimeout(() => {
       if (!isReloading) { isReloading = true; window.location.reload(); }
     }, 3000);
-  } else {
-    window.location.reload();
-  }
+  } else { window.location.reload(); }
 }
 
 async function checkForUpdate() {
   if (!swRegistration) return;
   try {
     await swRegistration.update();
-    if (swRegistration.waiting && navigator.serviceWorker.controller) {
-      showUpdateButton();
-    }
-  } catch(err) { /* silent */ }
+    if (swRegistration.waiting && navigator.serviceWorker.controller) showUpdateButton();
+  } catch(err) {}
 }
 
 if ('serviceWorker' in navigator) {
@@ -1581,19 +1481,14 @@ if ('serviceWorker' in navigator) {
         swRegistration = reg;
         console.log('[App] SW registered. Scope:', reg.scope);
 
-        if (reg.waiting && navigator.serviceWorker.controller) {
-          showUpdateButton();
-        }
+        if (reg.waiting && navigator.serviceWorker.controller) showUpdateButton();
 
         reg.addEventListener('updatefound', () => {
-          console.log('[App] Update found — installing new SW');
           const newWorker = reg.installing;
           if (!newWorker) return;
           newWorker.addEventListener('statechange', () => {
-            console.log('[App] New SW state:', newWorker.state);
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               showUpdateButton();
-              try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){}
             }
           });
         });
@@ -1605,56 +1500,48 @@ if ('serviceWorker' in navigator) {
       })
       .catch((err) => console.warn('[App] SW registration failed:', err));
 
-  /* ✅ حماية من reload عند أول تثبيت */
-let hadControllerAtLoad = !!navigator.serviceWorker.controller;
-
-navigator.serviceWorker.addEventListener('controllerchange', () => {
-  // عند أول تثبيت للتطبيق → لا نُعيد التحميل
-  if (!hadControllerAtLoad) {
-    hadControllerAtLoad = true;
-    return;
-  }
-  if (isReloading) return;
-  isReloading = true;
-  console.log('[App] Controller changed — reloading for new version');
-  window.location.reload();
-});
+    let hadControllerAtLoad = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadControllerAtLoad) { hadControllerAtLoad = true; return; }
+      if (isReloading) return;
+      isReloading = true;
+      window.location.reload();
+    });
 
     navigator.serviceWorker.addEventListener('message', (event) => {
       const data = event.data || {};
       if (data.type === 'SW_ACTIVATED') {
         console.log('[App] SW activated version:', data.version);
+        localStorage.removeItem(PROMPTED_SW_KEY);
+        updateButtonShown = false;
       }
     });
 
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) checkForUpdate();
-    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(); });
     window.addEventListener('focus', () => checkForUpdate());
     window.addEventListener('online', () => checkForUpdate());
-
     document.getElementById('bzrBottomNav')?.addEventListener('click', () => checkForUpdate(), { passive: true });
   });
 }
-
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
+setInterval(() => { if (isPageVisible && swRegistration) checkForUpdate(); }, 5 * 60 * 1000);
 
-setInterval(() => {
-  if (isPageVisible && swRegistration) checkForUpdate();
-}, 5 * 60 * 1000);
+/* ═══════════════════════════════════════════
+   Data Loading — v7.0 Performance Optimized
+   ═══════════════════════════════════════════ */
 
-/* ═══ Data Loading ═══ */
+/* ✅ loadStores — بدون طلب مكرر للمنتجات */
 async function loadStores(force){
   const loader = document.getElementById('storesLoader'), empty = document.getElementById('storesEmpty'), container = document.getElementById('storesScrollContainer');
   loader.classList.remove('hidden'); empty.classList.add('hidden'); container.innerHTML = '';
   try {
     const result = await fetchWithCache('stores_list', async () => {
       let snap; try { snap = await db.collection('stores').orderBy('created_at', 'desc').get(); } catch(e){ snap = await db.collection('stores').get(); }
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      if (data.length > 0) { const pSnap = await db.collection('products').get(); const counts = {}; pSnap.docs.forEach(d => { const sn = d.data().store_name; if (sn) counts[sn] = (counts[sn] || 0) + 1; }); return data.map(s => ({ ...s, products_count: counts[s.name] || 0 })); }
-      return data;
+      // ✅ لا نجلب المنتجات هنا — نستخدم recalculateStoreCounts
+      return snap.docs.map(d => ({ id: d.id, ...d.data(), products_count: 0 }));
     }, force);
     stores = result;
+    recalculateStoreCounts();
     if (stores.length === 0) { document.getElementById('storesErrorMessage').textContent = '⚠️ لا توجد متاجر متاحة'; empty.classList.remove('hidden'); renderFollowedStores(); }
     else {
       displayStores();
@@ -1668,24 +1555,55 @@ async function loadStores(force){
 }
 document.getElementById('retryStoresBtn')?.addEventListener('click', () => loadStores(true));
 
+/* ✅ loadAllProducts — Cache-First */
 async function loadAllProducts(force){
   const loader = document.getElementById('allProductsLoader'), empty = document.getElementById('allProductsEmpty'), grid = document.getElementById('allProductsGrid');
-  loader.classList.remove('hidden'); empty.classList.add('hidden'); grid.innerHTML = '';
-  document.getElementById('loadMoreProductsBtn').classList.add('hidden');
-  try {
-    const data = await fetchWithCache('all_products', async () => {
-      let snap; try { snap = await db.collection('products').orderBy('created_at', 'desc').get(); } catch(e){ snap = await db.collection('products').get(); }
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    }, force);
-    allProducts = data;
+  const cached = cacheManager.get('all_products');
+  
+  if (cached && cached.length && !force) {
+    allProducts = cached;
+    recalculateStoreCounts();
     applyProductsFilter(currentCategory);
-  } catch(err){ grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--c-text-soft);">تعذر تحميل المنتجات</p>'; }
-  finally { loader.classList.add('hidden'); }
+    displayStores();
+    console.log('[Cache] Loaded ' + cached.length + ' products instantly');
+  } else {
+    loader.classList.remove('hidden'); empty.classList.add('hidden'); grid.innerHTML = '';
+    document.getElementById('loadMoreProductsBtn').classList.add('hidden');
+  }
+  
+  try {
+    let snap; try { snap = await db.collection('products').orderBy('created_at', 'desc').get(); } catch(e){ snap = await db.collection('products').get(); }
+    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const newFingerprint = getProductFingerprint(data);
+    const oldFingerprint = allProducts.length ? getProductFingerprint(allProducts) : '';
+    
+    if (newFingerprint !== oldFingerprint) {
+      allProducts = data;
+      cacheManager.set('all_products', data);
+      recalculateStoreCounts();
+      applyProductsFilter(currentCategory);
+      displayStores();
+      console.log('[Network] Refreshed ' + data.length + ' products');
+    } else {
+      cacheManager.set('all_products', data);
+      console.log('[Cache] Data unchanged');
+    }
+  } catch(err) {
+    console.warn('Products fetch failed:', err);
+    if (!cached || !cached.length) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--c-text-soft);">تعذر تحميل المنتجات</p>';
+  } finally { loader.classList.add('hidden'); }
 }
 
+/* ✅ loadCategories — من stores الموجودة */
 async function loadCategories(force){
   try {
-    const storesData = await fetchWithCache('stores_list', async () => { const snap = await db.collection('stores').get(); return snap.docs.map(d => ({ id: d.id, ...d.data() })); }, force);
+    let storesData = stores;
+    if (!storesData.length) {
+      storesData = await fetchWithCache('stores_list', async () => {
+        const snap = await db.collection('stores').get();
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      }, force);
+    }
     const cats = [];
     storesData.forEach(s => { const c = s.category; if (c && String(c).trim() !== '' && cats.indexOf(c) === -1) cats.push(c); });
     categories = cats;
@@ -1897,7 +1815,14 @@ function openStoreModal(store){
   const callBtn = document.getElementById('storeCallButton'), waBtn = document.getElementById('storeWhatsAppButton');
   if (phone) { callBtn.href = 'tel:' + phone; callBtn.style.display = ''; } else callBtn.style.display = 'none';
   if (wa) { waBtn.href = 'https://wa.me/' + wa.replace(/[^0-9]/g, ''); waBtn.style.display = ''; } else waBtn.style.display = 'none';
-  loadStoreProducts(store.name);
+  // ✅ عرض فوري من allProducts
+  const localProducts = allProducts.filter(p => p.store_name === store.name);
+  if (localProducts.length) {
+    document.getElementById('storeProductsCount').textContent = localProducts.length;
+    renderStoreProducts(localProducts);
+  } else {
+    loadStoreProducts(store.name);
+  }
   document.getElementById('storeModal').classList.remove('hidden');
   updateBodyScroll();
   document.getElementById('storeModal').querySelector('.modal-content').scrollTop = 0;
@@ -1935,7 +1860,6 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
 });
 document.getElementById('closeStoreModal')?.addEventListener('click', () => { document.getElementById('storeModal').classList.add('hidden'); updateBodyScroll(); });
 
-/* ═══ Store Products ═══ */
 async function loadStoreProducts(storeName, force){
   const grid = document.getElementById('storeProductsGrid');
   grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#FF7A00;"></i></div>';
@@ -2137,18 +2061,25 @@ async function shareStore(store){
   try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); showToast('✅ تم نسخ الرابط'); } } catch(err){ showToast('تعذر النسخ'); }
 }
 
-/* ═══ Realtime ═══ */
+/* ═══ Realtime Listeners ═══ */
 function setupRealtimeProducts(){
   if (productsUnsubscribe) return;
   productsUnsubscribe = db.collection('products').onSnapshot((snap) => {
     const fresh = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     fresh.sort((a,b) => { const ta = a.created_at?.seconds || 0; const tb = b.created_at?.seconds || 0; return tb - ta; });
     const fp = getProductFingerprint(fresh);
-    if (isFirstProductsSnapshot) { isFirstProductsSnapshot = false; lastProductsFingerprint = fp; cacheManager.set('all_products', fresh); allProducts = fresh; applyProductsFilter(currentCategory); return; }
+    if (isFirstProductsSnapshot) { isFirstProductsSnapshot = false; lastProductsFingerprint = fp; return; }
     if (fp === lastProductsFingerprint) return;
-    lastProductsFingerprint = fp; allProducts = fresh; cacheManager.set('all_products', fresh); applyProductsFilter(currentCategory);
-    if (currentStore && !document.getElementById('storeModal').classList.contains('hidden')) { loadStoreProductsFromLocal(fresh, currentStore.name); }
-  }, err => console.warn('Products:', err));
+    lastProductsFingerprint = fp;
+    allProducts = fresh;
+    cacheManager.set('all_products', fresh);
+    recalculateStoreCounts();
+    applyProductsFilter(currentCategory);
+    displayStores();
+    if (currentStore && !document.getElementById('storeModal').classList.contains('hidden')) {
+      loadStoreProductsFromLocal(fresh, currentStore.name);
+    }
+  }, err => console.warn('Products listener:', err));
 }
 function loadStoreProductsFromLocal(arr, name){
   const list = arr.filter(p => p.store_name === name);
@@ -2164,12 +2095,23 @@ function setupRealtimeStores(){
     if (isFirstStoresSnapshot) { isFirstStoresSnapshot = false; return; }
     cacheManager.remove('stores_list');
     setTimeout(() => loadStores(true), 200);
-  }, err => console.warn('Stores:', err));
+  }, err => console.warn('Stores listener:', err));
 }
 
 /* ═══ Deep Link ═══ */
 async function handleDeepLink(){
-  try { const params = new URLSearchParams(window.location.search); let storeId = params.get('store'); if (!storeId) return; storeId = decodeURIComponent(storeId).trim(); await new Promise(r => setTimeout(r, 1500)); const store = stores.find(s => String(getStoreId(s)) === String(storeId)); if (store) { try { window.history.replaceState({}, document.title, window.location.origin + window.location.pathname); } catch(e){} setTimeout(() => openStoreModal(store), 300); } } catch(err){}
+  try {
+    const params = new URLSearchParams(window.location.search);
+    let storeId = params.get('store');
+    if (!storeId) return;
+    storeId = decodeURIComponent(storeId).trim();
+    await new Promise(r => setTimeout(r, 800));
+    const store = stores.find(s => String(getStoreId(s)) === String(storeId));
+    if (store) {
+      try { window.history.replaceState({}, document.title, window.location.origin + window.location.pathname); } catch(e){}
+      setTimeout(() => openStoreModal(store), 200);
+    }
+  } catch(err){}
 }
 
 /* ═══ Escape ═══ */
@@ -2184,16 +2126,13 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ═══ Category Wheel ═══ */
-document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) => { if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; } }, { passive: false });
-
 /* ═══ Nav Buttons ═══ */
+document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) => { if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; } }, { passive: false });
 document.getElementById('prevStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: 300, behavior: 'smooth' }); });
 document.getElementById('nextStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: -300, behavior: 'smooth' }); });
 document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: -200, behavior: 'smooth' }));
 document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: 200, behavior: 'smooth' }));
 
-/* ═══ Auto-scroll interaction events ═══ */
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
   ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
@@ -2203,18 +2142,30 @@ if (storesContainer) {
   storesContainer.addEventListener('mouseleave', () => { isHoveringStores = false; lastStoresInteraction = Date.now(); }, { passive: true });
 }
 
-/* ═══ Init ═══ */
+/* ═══════════════════════════════════════════
+   Init App v7.0 — Performance Optimized
+   ═══════════════════════════════════════════ */
 async function initApp(){
   const ok = await ensureAuth();
   if (!ok) { window.__bzrHideSplash(); return; }
   updateCartUI();
+  
+  const initTasks = Promise.all([loadStores(), loadAllProducts()]);
+  
+  initTasks.then(() => {
+    window.__bzrHideSplash();
+    setTimeout(() => loadCategories(), 100);
+    setTimeout(() => {
+      setupRealtimeProducts();
+      setupRealtimeStores();
+      console.log('[App] Real-time listeners active');
+    }, 3000);
+  });
+  
   initFCM().catch(() => {});
-  await Promise.all([loadStores(), loadCategories(), loadAllProducts()]);
-  setupRealtimeProducts();
-  setupRealtimeStores();
   handleDeepLink();
   setActiveNav('home');
-  setTimeout(() => window.__bzrHideSplash(), 400);
+  setTimeout(() => window.__bzrHideSplash(), 2500);
 }
 
 window.addEventListener('beforeunload', () => {
@@ -2235,7 +2186,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (open === 'cart') setTimeout(openCart, 800);
 });
 
-window.BranZar = { version: '6.1.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode };
+window.BranZar = { version: '7.0.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode };
 </script>
 </body>
 </html>
