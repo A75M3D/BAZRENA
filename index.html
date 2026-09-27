@@ -32,7 +32,7 @@
 
 <style>
 /* ═══════════════════════════════════════════
-   BranZar v6.0 — Native App Design System
+   BranZar v6.1 — Native App Design System
    ═══════════════════════════════════════════ */
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
@@ -82,6 +82,9 @@ body.theme-dark .scroll-btn { background: #1E293B; border-color: #334155; color:
 body.theme-dark #toast { background: #F1F5F9; color: #0F172A; }
 body.theme-dark .notif-btn-dismiss { background: #334155; color: #CBD5E1; }
 body.theme-dark .followed-store-name { color: #F1F5F9; }
+body.theme-dark #bzrSplash { background: linear-gradient(160deg, #0F172A 0%, #1E293B 55%, #3B2410 100%); }
+body.theme-dark .bzr-splash-logo { background: #1E293B; }
+body.theme-dark .account-avatar { background: #1E293B; }
 
 * { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: hidden; }
@@ -110,10 +113,8 @@ body.modal-open { overflow: hidden; }
   display: flex; align-items: center; justify-content: center; flex-direction: column;
   transition: opacity 0.5s ease, visibility 0.5s ease;
 }
-body.theme-dark #bzrSplash { background: linear-gradient(160deg, #0F172A 0%, #1E293B 55%, #3B2410 100%); }
 #bzrSplash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
 .bzr-splash-logo { width: 120px; height: 120px; border-radius: 50%; background: #fff; padding: 8px; box-shadow: 0 20px 60px rgba(255,122,0,0.35), 0 0 0 8px rgba(255,122,0,0.08); animation: bzrLogoPulse 2s ease-in-out infinite; }
-body.theme-dark .bzr-splash-logo { background: #1E293B; }
 @keyframes bzrLogoPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
 .bzr-splash-title { margin-top: 1.5rem; font-size: 1.5rem; font-weight: 900; color: var(--c-text); }
 .bzr-splash-title span { color: #FF7A00; }
@@ -218,13 +219,13 @@ body.view-desktop .store-card .store-category { font-size: 0.75rem; }
 .verified-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: linear-gradient(135deg, #3B82F6, #1E40AF); border-radius: 50%; color: #fff; font-size: 10px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(30,64,175,0.4); }
 .all-products-total-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border-radius: 9999px; padding: 0.4rem 0.9rem; font-size: 0.78rem; font-weight: 800; white-space: nowrap; box-shadow: 0 6px 16px -6px rgba(255,122,0,0.65); }
 
-/* ═══ PRODUCTS GRID — view mode aware ═══ */
+/* ═══ PRODUCTS GRID ═══ */
 #allProductsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
 body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
 @media (min-width: 640px) { #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap: 1rem; } body.view-desktop #allProductsGrid { grid-template-columns: repeat(4, 1fr); } }
 @media (min-width: 1024px) { #allProductsGrid { grid-template-columns: repeat(4, 1fr); } body.view-desktop #allProductsGrid { grid-template-columns: repeat(5, 1fr); } }
 
-/* ═══ SCROLL CONTAINERS ═══ */
+/* ═══ SCROLL ═══ */
 .stores-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 1rem; padding-bottom: 1rem; scrollbar-width: thin; direction: ltr; -webkit-overflow-scrolling: touch; scroll-behavior: auto; }
 .stores-scroll-container > * { direction: rtl; }
 .stores-scroll-container::-webkit-scrollbar { height: 6px; }
@@ -313,7 +314,7 @@ body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap:
 .store-product-fav { position: absolute; top: 10px; left: 10px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.95); border: none; display: flex; align-items: center; justify-content: center; color: #FF7A00; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 8px rgba(15,23,42,0.1); transition: all 0.25s ease; z-index: 3; }
 .store-product-fav.active { background: #FF7A00; color: #fff; }
 
-/* ═══ ACCOUNT MODAL (bottom sheet) ═══ */
+/* ═══ ACCOUNT MODAL ═══ */
 #accountModal { position: fixed; inset: 0; z-index: 3000; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.25s ease; }
 #accountModal.hidden { display: none; }
 #accountModal .account-overlay { position: absolute; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); }
@@ -324,7 +325,6 @@ body.view-desktop #allProductsGrid { grid-template-columns: repeat(3, 1fr); gap:
 .account-close-btn:hover { background: var(--c-border); }
 .account-header { text-align: center; margin-bottom: 1.75rem; }
 .account-avatar { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; background: #fff; margin: 0 auto 1rem; padding: 6px; box-shadow: 0 12px 32px -8px rgba(255,122,0,0.5), 0 0 0 6px rgba(255,122,0,0.08); }
-body.theme-dark .account-avatar { background: #1E293B; }
 .account-avatar img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 .account-welcome { font-size: 0.85rem; color: var(--c-text-soft); font-weight: 700; margin-bottom: 0.3rem; }
 .account-brand { font-size: 1.4rem; font-weight: 900; color: var(--c-text); }
@@ -367,7 +367,6 @@ body.theme-dark .account-avatar { background: #1E293B; }
 .create-store-features i { color: #FF7A00; font-size: 0.72rem; }
 .create-store-wa-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 54px; background: linear-gradient(135deg,#25D366,#128C7E); color: #fff; border: none; border-radius: 16px; font-weight: 800; font-size: 0.98rem; text-decoration: none; box-shadow: 0 12px 28px -10px rgba(37,211,102,0.7); transition: all 0.25s; margin-bottom: 0.6rem; font-family: 'Cairo', sans-serif; }
 .create-store-wa-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(37,211,102,0.9); }
-.create-store-wa-btn:active { transform: scale(0.97); }
 .create-store-cancel { width: 100%; height: 46px; background: var(--c-surface-2); color: var(--c-text-soft); border: none; border-radius: 14px; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: 'Cairo', sans-serif; transition: all 0.2s; }
 .create-store-cancel:hover { background: var(--c-border); color: var(--c-text); }
 
@@ -386,14 +385,103 @@ body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, 
 .hidden { display: none !important; }
 #installButtonFloating { position: fixed; bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px); right: 16px; z-index: 9999; background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #fff; border: none; border-radius: 9999px; padding: 0.8rem 1.4rem; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px -6px rgba(30,64,175,0.6); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(20px); }
 #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-#updateAvailableBtn { position: fixed; top: calc(var(--safe-top) + 12px); left: 50%; transform: translate(-50%, calc(-100% - 40px)); z-index: 10002; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: 2px solid rgba(255,255,255,0.25); border-radius: 9999px; padding: 0.5rem 1rem 0.5rem 0.5rem; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85); cursor: pointer; transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1); direction: rtl; max-width: calc(100% - 24px); pointer-events: none; }
-#updateAvailableBtn.show { transform: translate(-50%, 0); pointer-events: auto; }
-.update-icon-wrap { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.update-icon-wrap i { color: #fff; font-size: 1.05rem; animation: spinUpdate 2s linear infinite; }
-.update-text-wrap { display: flex; flex-direction: column; line-height: 1.2; text-align: right; }
-.update-text-wrap strong { font-size: 0.9rem; font-weight: 900; }
-.update-text-wrap span { font-size: 0.72rem; opacity: 0.9; font-weight: 600; }
-@keyframes spinUpdate { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════
+   UPDATE BUTTON — نسخة أنيقة v2
+   ═══════════════════════════════════════════ */
+#updateAvailableBtn {
+  position: fixed;
+  top: calc(var(--safe-top) + 12px);
+  left: 50%;
+  transform: translate(-50%, calc(-100% - 40px));
+  z-index: 10002;
+  background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 9999px;
+  padding: 0.55rem 1.15rem 0.55rem 0.55rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, opacity 0.3s;
+  direction: rtl;
+  font-family: 'Cairo', sans-serif;
+  max-width: calc(100% - 24px);
+  pointer-events: none;
+  opacity: 0;
+}
+#updateAvailableBtn.show {
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+  opacity: 1;
+  animation: updatePulse 2.5s ease-in-out infinite;
+}
+#updateAvailableBtn:hover {
+  box-shadow: 0 25px 55px -12px rgba(255,122,0,1), 0 10px 25px -8px rgba(0,0,0,0.35);
+}
+#updateAvailableBtn:active { transform: translate(-50%, 0) scale(0.97); }
+#updateAvailableBtn:disabled { cursor: wait; opacity: 0.9; }
+.update-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.update-icon-wrap i {
+  color: #fff;
+  font-size: 1.15rem;
+  animation: bounceUpdate 2s ease-in-out infinite;
+}
+@keyframes bounceUpdate {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.update-text-wrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  text-align: right;
+}
+.update-text-wrap strong {
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+.update-text-wrap span {
+  font-size: 0.72rem;
+  opacity: 0.92;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.update-arrow {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  animation: slideArrow 1.5s ease-in-out infinite;
+}
+@keyframes slideArrow {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-4px); }
+}
+@keyframes updatePulse {
+  0%, 100% { box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3); }
+  50% { box-shadow: 0 20px 50px -10px rgba(255,122,0,1), 0 8px 35px -4px rgba(255,122,0,0.7); }
+}
+@media (max-width: 480px) {
+  #updateAvailableBtn { padding: 0.5rem 0.9rem 0.5rem 0.5rem; gap: 9px; }
+  .update-icon-wrap { width: 38px; height: 38px; }
+  .update-icon-wrap i { font-size: 1rem; }
+  .update-text-wrap strong { font-size: 0.82rem; }
+  .update-text-wrap span { font-size: 0.66rem; }
+}
+
 #notifPermissionBanner { position: fixed; bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px); left: 50%; transform: translate(-50%, 200%); z-index: 9998; background: var(--c-surface); border: 2px solid #FFE0BD; border-radius: 24px; padding: 18px; box-shadow: 0 25px 70px rgba(255,122,0,0.25); max-width: 440px; width: calc(100% - 32px); transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s; direction: rtl; opacity: 0; pointer-events: none; }
 #notifPermissionBanner.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
 .notif-bell-icon { width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, #FF7A00, #FFA64D); display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: bellRing 3s ease-in-out infinite; box-shadow: 0 10px 24px -6px rgba(255,122,0,0.6); }
@@ -615,7 +703,7 @@ setTimeout(function(){
 <!-- MAIN -->
 <main class="bzr-page-fade" id="mainContent">
 
-  <!-- HERO (بدون الشارة) -->
+  <!-- HERO -->
   <section class="hero-section">
     <div style="max-width:960px;margin:0 auto;text-align:center;position:relative;z-index:2;">
       <h1 style="font-size:clamp(1.75rem, 5vw, 3rem);font-weight:900;line-height:1.25;margin:0 0 0.75rem;color:var(--c-text);">
@@ -810,38 +898,29 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- ═══ ACCOUNT MODAL ═══ -->
+<!-- ACCOUNT MODAL -->
 <div id="accountModal" class="hidden">
   <div class="account-overlay" id="accountOverlay"></div>
   <div class="account-sheet">
     <div class="account-handle"></div>
     <button id="closeAccountModal" class="account-close-btn" aria-label="إغلاق"><i class="fas fa-times"></i></button>
-    
     <div class="account-header">
       <div class="account-avatar"><img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="BranZar"></div>
       <div class="account-welcome">مرحباً بك في</div>
       <div class="account-brand">بران زار <span>- BranZar</span></div>
     </div>
-    
     <div class="account-actions">
       <a href="a.html" class="account-action-btn primary ripple">
         <div class="action-icon"><i class="fas fa-sign-in-alt"></i></div>
-        <div class="action-info">
-          <strong>تسجيل الدخول</strong>
-          <span>ادخل لإدارة منتجاتك ومتجرك</span>
-        </div>
+        <div class="action-info"><strong>تسجيل الدخول</strong><span>ادخل لإدارة منتجاتك ومتجرك</span></div>
         <i class="fas fa-chevron-left action-arrow"></i>
       </a>
       <button id="openCreateStoreBtn" class="account-action-btn ripple">
         <div class="action-icon secondary"><i class="fas fa-store"></i></div>
-        <div class="action-info">
-          <strong>إنشاء متجر خاص</strong>
-          <span>انضم كتاجر أو صاحب براند</span>
-        </div>
+        <div class="action-info"><strong>إنشاء متجر خاص</strong><span>انضم كتاجر أو صاحب براند</span></div>
         <i class="fas fa-chevron-left action-arrow"></i>
       </button>
     </div>
-    
     <div class="account-section">
       <div class="account-section-title">الإعدادات والتفضيلات</div>
       <div class="setting-row">
@@ -859,7 +938,7 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- ═══ CREATE STORE MODAL ═══ -->
+<!-- CREATE STORE MODAL -->
 <div id="createStoreModal" class="hidden">
   <div class="create-store-box">
     <div class="create-store-icon"><i class="fas fa-crown"></i></div>
@@ -889,11 +968,16 @@ setTimeout(function(){
   </div>
 </nav>
 
-<!-- UPDATE BUTTON -->
-<button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث">
-  <div class="update-icon-wrap"><i class="fas fa-sync-alt"></i></div>
-  <div class="update-text-wrap"><strong>تحديث جديد متوفر</strong><span>اضغط للتحديث</span></div>
-  <i class="fas fa-chevron-left" style="color:rgba(255,255,255,0.85);font-size:0.75rem;"></i>
+<!-- ═══════════════════════════════════════════
+     UPDATE BUTTON — نسخة أنيقة v2
+     ═══════════════════════════════════════════ -->
+<button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث التطبيق">
+  <div class="update-icon-wrap"><i class="fas fa-cloud-download-alt"></i></div>
+  <div class="update-text-wrap">
+    <strong>🎉 تحديث جديد متوفر</strong>
+    <span>اضغط للتحديث الآن</span>
+  </div>
+  <i class="fas fa-chevron-left update-arrow"></i>
 </button>
 
 <!-- INSTALL BUTTON -->
@@ -946,7 +1030,7 @@ setTimeout(function(){
 
 <script>
 /* ═══════════════════════════════════════════
-   BranZar App Core v6.0
+   BranZar App Core v6.1
    ═══════════════════════════════════════════ */
 
 /* Splash */
@@ -1028,14 +1112,12 @@ function applyTheme(theme){
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', theme === 'dark' ? '#0F172A' : '#FF7A00');
 }
-
 function initTheme(){
   const saved = localStorage.getItem(THEME_KEY);
   if (saved) { applyTheme(saved); return; }
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   applyTheme(prefersDark ? 'dark' : 'light');
 }
-
 function toggleTheme(){
   const current = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
   const next = current === 'dark' ? 'light' : 'dark';
@@ -1043,7 +1125,6 @@ function toggleTheme(){
   localStorage.setItem(THEME_KEY, next);
   haptic('light');
 }
-
 document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
 document.getElementById('accountThemeSwitch')?.addEventListener('click', toggleTheme);
 document.getElementById('accountThemeSwitch')?.addEventListener('keydown', (e) => {
@@ -1060,18 +1141,13 @@ function applyViewMode(mode){
   });
   localStorage.setItem(VIEW_KEY, mode);
 }
-
 function initViewMode(){
   const saved = localStorage.getItem(VIEW_KEY);
   if (saved) { applyViewMode(saved); return; }
   const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent) || window.matchMedia('(max-width: 767px)').matches;
   applyViewMode(isMobile ? 'mobile' : 'desktop');
 }
-
-function setView(mode){
-  applyViewMode(mode);
-  haptic('light');
-}
+function setView(mode){ applyViewMode(mode); haptic('light'); }
 document.getElementById('viewMobileBtn')?.addEventListener('click', () => setView('mobile'));
 document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
 document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
@@ -1092,7 +1168,6 @@ let knownStoreIds = [];
 try { knownStoreIds = JSON.parse(localStorage.getItem('branzarKnownStoreIds') || '[]'); } catch(e){ knownStoreIds = []; }
 let isFirstVisit = !localStorage.getItem('branzarVisitedBefore');
 let storeNotifTimeout = null;
-let storesLoadPromise = null, storesResolve = null;
 
 /* ═══ Auth ═══ */
 let authReady = false;
@@ -1181,63 +1256,53 @@ function getFallbackHex(colorName){
 }
 
 /* ═══════════════════════════════════════════
-   AUTO-SCROLL STORES — النسخة المُصلَّحة
-   يبدأ من أول متجر → آخر متجر → يرجع للأول
+   AUTO-SCROLL STORES
+   يبدأ من أول متجر → آخر متجر → يعود للأول
    يتوقف عند اللمس → يستأنف بعد 5 ثواني
    ═══════════════════════════════════════════ */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
 let _lastScrollFrame = 0;
-const AUTO_SCROLL_RESUME = 5000;   // ⏱️ 5 ثواني كما طلبت
-const AUTO_SCROLL_INTERVAL = 32;   // ~30fps
-const SCROLL_STEP = 0.9;           // سرعة الحركة (px لكل إطار)
+const AUTO_SCROLL_RESUME = 5000;
+const AUTO_SCROLL_INTERVAL = 32;
+const SCROLL_STEP = 0.9;
 
 function getStoresMaxScroll(){
   const c = document.getElementById('storesScrollContainer');
   return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
 }
-
 function _autoScrollLoop(ts){
   const c = document.getElementById('storesScrollContainer');
   if (!c) { _scrollRAFId = null; return; }
   if (!isPageVisible) { _scrollRAFId = requestAnimationFrame(_autoScrollLoop); return; }
-  
-  // إيقاف عند اللمس/التمرير اليدوي — يستأنف بعد 5 ثواني
   if (isHoveringStores || (Date.now() - lastStoresInteraction < AUTO_SCROLL_RESUME)) {
     _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
     return;
   }
-  
   if (ts - _lastScrollFrame < AUTO_SCROLL_INTERVAL) {
     _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
     return;
   }
   _lastScrollFrame = ts;
-  
   const max = getStoresMaxScroll();
   if (max <= 0) { _scrollRAFId = null; return; }
-  
-  // ✅ الحركة من الأول (scrollLeft=0) → الأخير (scrollLeft=max) → ثم loop
   if (c.scrollLeft >= max - 1) {
-    c.scrollLeft = 0;                     // رجوع سلس لأول متجر
+    c.scrollLeft = 0;
   } else {
-    c.scrollLeft += SCROLL_STEP;          // تقدم للأمام
+    c.scrollLeft += SCROLL_STEP;
   }
   _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
 }
-
 function startAutoScroll(){
   stopAutoScroll();
   const c = document.getElementById('storesScrollContainer');
   if (!c) return;
-  // ✅ يبدأ من أول متجر
   requestAnimationFrame(() => {
     c.scrollLeft = 0;
     _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
   });
 }
-
 function stopAutoScroll(){
   if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; }
 }
@@ -1246,7 +1311,6 @@ function stopAutoScroll(){
 let messaging = null;
 const FCM_TOKEN_KEY = 'branzarFcmToken', NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
 function isNotificationSupported(){ return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window; }
-
 async function initFCM(){
   try {
     if (!isNotificationSupported()) return;
@@ -1281,7 +1345,6 @@ const searchWrapper = document.getElementById('bzrSearchWrapper');
 const searchResults = document.getElementById('searchResults');
 const searchClearBtn = document.getElementById('searchClearBtn');
 let searchDebounce = null;
-
 searchInput?.addEventListener('input', (e) => {
   if (searchInput.value.trim()) searchWrapper.classList.add('has-value');
   else searchWrapper.classList.remove('has-value');
@@ -1320,7 +1383,6 @@ function performSearch(query){
   }
   searchResults.classList.add('show');
 }
-
 function createSearchStoreRow(store){
   const row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;transition:background 0.2s;';
   row.onmouseover = () => row.style.background = 'var(--c-surface-2)'; row.onmouseout = () => row.style.background = '';
@@ -1335,7 +1397,6 @@ function createSearchStoreRow(store){
   row.addEventListener('click', () => { searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value'); openStoreModal(store); });
   return row;
 }
-
 function createSearchProductRow(product){
   const row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;';
   row.onmouseover = () => row.style.background = 'var(--c-surface-2)'; row.onmouseout = () => row.style.background = '';
@@ -1351,7 +1412,6 @@ function createSearchProductRow(product){
   });
   return row;
 }
-
 function goToCategory(cat){
   currentCategory = cat;
   filterStoresByCategory(cat);
@@ -1377,12 +1437,10 @@ function updateBodyScroll(){
 /* ═══ Bottom Nav ═══ */
 const bottomNav = document.getElementById('bzrBottomNav');
 const bottomNavBadge = document.getElementById('bottomNavCartBadge');
-
 function setActiveNav(nav){
   if (!bottomNav) return;
   bottomNav.querySelectorAll('.bzr-nav-item').forEach(b => b.classList.toggle('active', b.dataset.nav === nav));
 }
-
 bottomNav?.addEventListener('click', (e) => {
   const btn = e.target.closest('.bzr-nav-item');
   if (!btn) return;
@@ -1397,7 +1455,6 @@ bottomNav?.addEventListener('click', (e) => {
   else if (nav === 'cart') { openCart(); setActiveNav('cart'); }
   else if (nav === 'account') { openAccountModal(); }
 });
-
 function updateBottomNavBadge(){
   if (!bottomNavBadge) return;
   const total = cart.reduce((s, i) => s + i.quantity, 0);
@@ -1405,39 +1462,19 @@ function updateBottomNavBadge(){
   else bottomNavBadge.style.display = 'none';
 }
 
-/* ═══ ACCOUNT MODAL ═══ */
+/* ═══ Account Modal ═══ */
 const accountModal = document.getElementById('accountModal');
 const createStoreModal = document.getElementById('createStoreModal');
-
-function openAccountModal(){
-  accountModal.classList.remove('hidden');
-  updateBodyScroll();
-  haptic('light');
-}
-function closeAccountModal(){
-  accountModal.classList.add('hidden');
-  updateBodyScroll();
-}
+function openAccountModal(){ accountModal.classList.remove('hidden'); updateBodyScroll(); haptic('light'); }
+function closeAccountModal(){ accountModal.classList.add('hidden'); updateBodyScroll(); }
 document.getElementById('closeAccountModal')?.addEventListener('click', closeAccountModal);
 document.getElementById('accountOverlay')?.addEventListener('click', closeAccountModal);
-document.getElementById('openCreateStoreBtn')?.addEventListener('click', () => {
-  haptic('medium');
-  createStoreModal.classList.remove('hidden');
-  updateBodyScroll();
-});
-document.getElementById('cancelCreateStore')?.addEventListener('click', () => {
-  createStoreModal.classList.add('hidden');
-  updateBodyScroll();
-});
-createStoreModal?.addEventListener('click', (e) => {
-  if (e.target === createStoreModal) { createStoreModal.classList.add('hidden'); updateBodyScroll(); }
-});
+document.getElementById('openCreateStoreBtn')?.addEventListener('click', () => { haptic('medium'); createStoreModal.classList.remove('hidden'); updateBodyScroll(); });
+document.getElementById('cancelCreateStore')?.addEventListener('click', () => { createStoreModal.classList.add('hidden'); updateBodyScroll(); });
+createStoreModal?.addEventListener('click', (e) => { if (e.target === createStoreModal) { createStoreModal.classList.add('hidden'); updateBodyScroll(); } });
 
-/* ═══ Logo Menu (scroll to top) ═══ */
-document.getElementById('logoMenuBtn')?.addEventListener('click', () => {
-  haptic('light');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+/* ═══ Logo Menu ═══ */
+document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
 /* ═══ PWA Install ═══ */
 let deferredPrompt = null;
@@ -1455,25 +1492,124 @@ installBtn?.addEventListener('click', async () => {
 });
 if (isAppInstalled()) installBtn.classList.remove('show');
 
-/* ═══ Service Worker ═══ */
-let swRegistration = null, isReloading = false;
-function showUpdateButton(){ const btn = document.getElementById('updateAvailableBtn'); if (!btn || btn.classList.contains('show')) return; btn.classList.remove('hidden'); requestAnimationFrame(() => setTimeout(() => btn.classList.add('show'), 50)); }
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').then((reg) => {
-      swRegistration = reg;
-      if (reg.waiting && navigator.serviceWorker.controller) showUpdateButton();
-      reg.addEventListener('updatefound', () => { const nw = reg.installing; if (!nw) return; nw.addEventListener('statechange', () => { if (nw.state === 'installed' && navigator.serviceWorker.controller) showUpdateButton(); }); });
-    }).catch(err => console.warn('SW:', err));
-    navigator.serviceWorker.addEventListener('controllerchange', () => { if (isReloading) return; isReloading = true; window.location.reload(); });
-    setInterval(() => { if (isPageVisible && swRegistration) swRegistration.update().catch(() => {}); }, 10 * 60 * 1000);
+/* ═══════════════════════════════════════════
+   Service Worker — Auto Update System v2
+   ═══════════════════════════════════════════ */
+let swRegistration = null;
+let isReloading = false;
+let updateCheckInterval = null;
+
+function showUpdateButton() {
+  const btn = document.getElementById('updateAvailableBtn');
+  if (!btn || btn.classList.contains('show')) return;
+  btn.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      btn.classList.add('show');
+      try { haptic('medium'); } catch(e){}
+    }, 50);
   });
 }
-document.getElementById('updateAvailableBtn')?.addEventListener('click', () => {
-  const btn = document.getElementById('updateAvailableBtn'); if (!btn || btn.disabled) return; btn.disabled = true;
-  if (swRegistration && swRegistration.waiting) { swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' }); setTimeout(() => { if (!isReloading) { isReloading = true; window.location.reload(); } }, 2000); }
-  else window.location.reload();
-});
+
+function hideUpdateButton() {
+  const btn = document.getElementById('updateAvailableBtn');
+  if (!btn) return;
+  btn.classList.remove('show');
+  setTimeout(() => btn.classList.add('hidden'), 400);
+}
+
+function triggerUpdate() {
+  const btn = document.getElementById('updateAvailableBtn');
+  if (!btn || btn.disabled) return;
+  btn.disabled = true;
+  const iconEl = btn.querySelector('.update-icon-wrap i');
+  if (iconEl) { iconEl.className = 'fas fa-spinner fa-spin'; iconEl.style.animation = 'none'; }
+  const strongEl = btn.querySelector('.update-text-wrap strong');
+  const spanEl = btn.querySelector('.update-text-wrap span');
+  if (strongEl) strongEl.textContent = '⏳ جاري التحديث...';
+  if (spanEl) spanEl.textContent = 'لحظة من فضلك';
+
+  const reg = swRegistration;
+  if (reg && reg.waiting) {
+    reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+    setTimeout(() => {
+      if (!isReloading) { isReloading = true; window.location.reload(); }
+    }, 3000);
+  } else {
+    window.location.reload();
+  }
+}
+
+async function checkForUpdate() {
+  if (!swRegistration) return;
+  try {
+    await swRegistration.update();
+    if (swRegistration.waiting && navigator.serviceWorker.controller) {
+      showUpdateButton();
+    }
+  } catch(err) { /* silent */ }
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js', { scope: '/' })
+      .then((reg) => {
+        swRegistration = reg;
+        console.log('[App] SW registered. Scope:', reg.scope);
+
+        if (reg.waiting && navigator.serviceWorker.controller) {
+          showUpdateButton();
+        }
+
+        reg.addEventListener('updatefound', () => {
+          console.log('[App] Update found — installing new SW');
+          const newWorker = reg.installing;
+          if (!newWorker) return;
+          newWorker.addEventListener('statechange', () => {
+            console.log('[App] New SW state:', newWorker.state);
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateButton();
+              try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){}
+            }
+          });
+        });
+
+        if (updateCheckInterval) clearInterval(updateCheckInterval);
+        updateCheckInterval = setInterval(() => {
+          if (isPageVisible) checkForUpdate();
+        }, 30 * 1000);
+      })
+      .catch((err) => console.warn('[App] SW registration failed:', err));
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (isReloading) return;
+      isReloading = true;
+      console.log('[App] Controller changed — reloading');
+      window.location.reload();
+    });
+
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      const data = event.data || {};
+      if (data.type === 'SW_ACTIVATED') {
+        console.log('[App] SW activated version:', data.version);
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) checkForUpdate();
+    });
+    window.addEventListener('focus', () => checkForUpdate());
+    window.addEventListener('online', () => checkForUpdate());
+
+    document.getElementById('bzrBottomNav')?.addEventListener('click', () => checkForUpdate(), { passive: true });
+  });
+}
+
+document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
+
+setInterval(() => {
+  if (isPageVisible && swRegistration) checkForUpdate();
+}, 5 * 60 * 1000);
 
 /* ═══ Data Loading ═══ */
 async function loadStores(force){
@@ -1487,11 +1623,10 @@ async function loadStores(force){
       return data;
     }, force);
     stores = result;
-    resolveStoresPromise(stores);
     if (stores.length === 0) { document.getElementById('storesErrorMessage').textContent = '⚠️ لا توجد متاجر متاحة'; empty.classList.remove('hidden'); renderFollowedStores(); }
     else {
       displayStores();
-      startAutoScroll(); // ✅ يبدأ تلقائياً من أول متجر
+      startAutoScroll();
       renderFollowedStores();
       if (isFirstVisit) { localStorage.setItem('branzarVisitedBefore', 'true'); localStorage.setItem('branzarKnownStoreIds', JSON.stringify(stores.map(s => s.id))); isFirstVisit = false; }
     }
@@ -1500,7 +1635,6 @@ async function loadStores(force){
   } finally { loader.classList.add('hidden'); }
 }
 document.getElementById('retryStoresBtn')?.addEventListener('click', () => loadStores(true));
-function resolveStoresPromise(list){ if (storesResolve) { try { storesResolve(list); } catch(e){} storesResolve = null; } }
 
 async function loadAllProducts(force){
   const loader = document.getElementById('allProductsLoader'), empty = document.getElementById('allProductsEmpty'), grid = document.getElementById('allProductsGrid');
@@ -1535,18 +1669,14 @@ function displayStores(){
   stores.forEach(s => frag.appendChild(createStoreCard(s)));
   c.appendChild(frag);
 }
-
 function createStoreCard(store){
   const storeId = getStoreId(store);
   const followed = isStoreFollowed(storeId);
-  const card = document.createElement('div');
-  card.className = 'store-card';
-  const cover = document.createElement('img');
-  cover.className = 'cover-image'; cover.loading = 'lazy'; cover.alt = store.name || '';
+  const card = document.createElement('div'); card.className = 'store-card';
+  const cover = document.createElement('img'); cover.className = 'cover-image'; cover.loading = 'lazy'; cover.alt = store.name || '';
   cover.src = store.cover_url || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
   cover.onerror = function(){ this.src = 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; };
-  const logo = document.createElement('img');
-  logo.className = 'store-logo'; logo.loading = 'lazy'; logo.alt = store.name || '';
+  const logo = document.createElement('img'); logo.className = 'store-logo'; logo.loading = 'lazy'; logo.alt = store.name || '';
   logo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   logo.onerror = function(){ this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
   const info = document.createElement('div'); info.className = 'store-info';
@@ -1569,14 +1699,12 @@ function createStoreCard(store){
   card.addEventListener('click', () => { haptic('light'); openStoreModal(store); });
   return card;
 }
-
 function setCardFollowState(btn, following){
   btn.classList.toggle('following', following);
   btn.innerHTML = following ? '<i class="fas fa-check"></i><span>متابَع</span>' : '<i class="fas fa-plus"></i><span>متابعة</span>';
   if (following) { btn.style.background = 'transparent'; btn.style.color = '#FF7A00'; }
   else { btn.style.background = '#FF7A00'; btn.style.color = '#fff'; }
 }
-
 async function toggleFollowFromCard(store, btn){
   const storeId = getStoreId(store);
   if (btn.disabled) return;
@@ -1601,12 +1729,10 @@ async function toggleFollowFromCard(store, btn){
   } catch(err){ showToast('حدث خطأ'); }
   finally { btn.disabled = false; }
 }
-
 function updateCardFollowButtons(storeId){
   const following = isStoreFollowed(storeId);
   document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => { if (btn.dataset.storeId === storeId) setCardFollowState(btn, following); });
 }
-
 function renderFollowedStores(){
   const section = document.getElementById('followedStoresSection'), container = document.getElementById('followedStoresContainer'), badge = document.getElementById('followedCountBadge');
   const ids = getFollowedStores();
@@ -1631,7 +1757,6 @@ function renderFollowedStores(){
   });
   container.appendChild(frag);
 }
-
 function filterStoresByCategory(cat){
   currentCategory = cat;
   const filtered = stores.filter(s => s.category === cat);
@@ -1658,7 +1783,6 @@ function displayCategories(){
   });
   c.appendChild(frag);
 }
-
 function highlightCategory(active){
   document.getElementById('categoriesContainer').querySelectorAll('button').forEach(b => b.classList.remove('active'));
   active.classList.add('active');
@@ -1674,7 +1798,6 @@ function applyProductsFilter(cat){
   document.getElementById('allProductsGrid').innerHTML = '';
   renderNextProductsPage();
 }
-
 function renderNextProductsPage(){
   const grid = document.getElementById('allProductsGrid');
   const start = displayedProductsCount, end = start + PRODUCTS_PER_PAGE;
@@ -1687,13 +1810,11 @@ function renderNextProductsPage(){
   if (displayedProductsCount < filteredProducts.length) { loadBtn.classList.remove('hidden'); loadBtn.innerHTML = '<span>عرض المزيد (' + (filteredProducts.length - displayedProductsCount) + ')</span><i class="fas fa-chevron-down"></i>'; }
   else loadBtn.classList.add('hidden');
 }
-
 document.getElementById('loadMoreProductsBtn')?.addEventListener('click', () => {
   const btn = document.getElementById('loadMoreProductsBtn'); btn.disabled = true;
   haptic('light');
   setTimeout(() => { renderNextProductsPage(); btn.disabled = false; }, 150);
 });
-
 function displayProductsGrid(container, products, addStoreName){
   const frag = document.createDocumentFragment();
   products.forEach(product => {
@@ -1799,7 +1920,6 @@ async function loadStoreProducts(storeName, force){
     else renderStoreProducts(data);
   } catch(err){ grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">تعذر التحميل</div>'; }
 }
-
 function renderStoreProducts(products){
   const grid = document.getElementById('storeProductsGrid');
   grid.innerHTML = '';
@@ -1985,7 +2105,7 @@ async function shareStore(store){
   try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); showToast('✅ تم نسخ الرابط'); } } catch(err){ showToast('تعذر النسخ'); }
 }
 
-/* ═══ Realtime Listeners ═══ */
+/* ═══ Realtime ═══ */
 function setupRealtimeProducts(){
   if (productsUnsubscribe) return;
   productsUnsubscribe = db.collection('products').onSnapshot((snap) => {
@@ -2020,7 +2140,7 @@ async function handleDeepLink(){
   try { const params = new URLSearchParams(window.location.search); let storeId = params.get('store'); if (!storeId) return; storeId = decodeURIComponent(storeId).trim(); await new Promise(r => setTimeout(r, 1500)); const store = stores.find(s => String(getStoreId(s)) === String(storeId)); if (store) { try { window.history.replaceState({}, document.title, window.location.origin + window.location.pathname); } catch(e){} setTimeout(() => openStoreModal(store), 300); } } catch(err){}
 }
 
-/* ═══ Escape Key ═══ */
+/* ═══ Escape ═══ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (searchResults.classList.contains('show')) { searchResults.classList.remove('show'); return; }
@@ -2041,7 +2161,7 @@ document.getElementById('nextStoresBtn')?.addEventListener('click', () => { cons
 document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: -200, behavior: 'smooth' }));
 document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: 200, behavior: 'smooth' }));
 
-/* ═══ Auto-scroll interaction events (يوقف الحركة عند أي لمس) ═══ */
+/* ═══ Auto-scroll interaction events ═══ */
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
   ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
@@ -2083,7 +2203,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (open === 'cart') setTimeout(openCart, 800);
 });
 
-window.BranZar = { version: '6.0.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode };
+window.BranZar = { version: '6.1.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode };
 </script>
 </body>
 </html>
