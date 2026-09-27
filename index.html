@@ -32,7 +32,7 @@
 
 <style>
 /* ═══════════════════════════════════════════
-   BranZar v6.1 — Native App Design System
+   BranZar v7.0 — Native App + Performance
    ═══════════════════════════════════════════ */
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
@@ -387,7 +387,7 @@ body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, 
 #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
 /* ═══════════════════════════════════════════
-   UPDATE BUTTON — نسخة أنيقة v2
+   UPDATE BUTTON
    ═══════════════════════════════════════════ */
 #updateAvailableBtn {
   position: fixed;
@@ -968,9 +968,6 @@ setTimeout(function(){
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════════
-     UPDATE BUTTON — نسخة أنيقة v2
-     ═══════════════════════════════════════════ -->
 <button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث التطبيق">
   <div class="update-icon-wrap"><i class="fas fa-cloud-download-alt"></i></div>
   <div class="update-text-wrap">
@@ -980,10 +977,8 @@ setTimeout(function(){
   <i class="fas fa-chevron-left update-arrow"></i>
 </button>
 
-<!-- INSTALL BUTTON -->
 <button id="installButtonFloating" class="hidden" title="تثبيت التطبيق"><i class="fas fa-download"></i><span>تثبيت التطبيق</span></button>
 
-<!-- NOTIFICATION BANNER -->
 <div id="notifPermissionBanner" class="hidden">
   <div style="display:flex;align-items:flex-start;gap:12px;">
     <div class="notif-bell-icon"><i class="fas fa-bell"></i></div>
@@ -998,7 +993,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- PUSH TOAST -->
 <div id="pushToast">
   <div class="push-icon"><i class="fas fa-bell"></i></div>
   <div style="flex:1;min-width:0;text-align:right;">
@@ -1007,7 +1001,6 @@ setTimeout(function(){
   </div>
 </div>
 
-<!-- NEW STORE NOTIFICATION -->
 <div id="newStoreNotification" class="hidden">
   <div class="notif-pulse"></div>
   <img id="notificationStoreLogo" src="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #FFE0BD;flex-shrink:0;" alt="">
@@ -1030,7 +1023,7 @@ setTimeout(function(){
 
 <script>
 /* ═══════════════════════════════════════════
-   BranZar App Core v6.1
+   BranZar App Core v7.0 — Performance Optimized
    ═══════════════════════════════════════════ */
 
 /* Splash */
@@ -1046,7 +1039,7 @@ setTimeout(function(){
   }
   window.__bzrHideSplash = hideSplash;
   window.addEventListener('load', () => setTimeout(hideSplash, 700));
-  setTimeout(hideSplash, 3000);
+  setTimeout(hideSplash, 2500);
 })();
 
 const VAPID_PUBLIC_KEY = "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw";
@@ -1159,7 +1152,7 @@ let cart = [];
 try { cart = JSON.parse(localStorage.getItem('myStoresCart')) || []; } catch(e){ cart = []; }
 let stores = [], categories = [], allProducts = [], filteredProducts = [];
 let displayedProductsCount = 0, currentCategory = null;
-const PRODUCTS_PER_PAGE = 10;
+const PRODUCTS_PER_PAGE = 20; // ✅ محسّن: 20 بدلاً من 10
 let currentStore = null, currentStoreId = null, currentFollowersCount = 0, isFollowing = false, isUpdatingFollow = false;
 let productsUnsubscribe = null, storesUnsubscribe = null;
 let isFirstProductsSnapshot = true, isFirstStoresSnapshot = true;
@@ -1174,8 +1167,8 @@ let authReady = false;
 let authPromise = firebase.auth().signInAnonymously().then(uc => { authReady = true; return uc.user; }).catch(err => { console.error('Auth:', err); throw err; });
 async function ensureAuth(){ if (authReady) return true; try { await authPromise; return true; } catch(e){ return false; } }
 
-/* ═══ Cache ═══ */
-const CACHE_DURATION = 30 * 60 * 1000, CACHE_PREFIX = 'branzar_cache_', CACHE_MAX_KEYS = 15;
+/* ═══ Cache — 60 دقيقة ═══ */
+const CACHE_DURATION = 60 * 60 * 1000, CACHE_PREFIX = 'branzar_cache_', CACHE_MAX_KEYS = 20;
 let _cacheWriteQueue = new Map(), _cacheWriteTimer = null;
 function _flushCacheWrites(){
   _cacheWriteQueue.forEach((value, key) => {
@@ -1197,12 +1190,38 @@ async function fetchWithCache(key, fn, force){
   return data;
 }
 function getProductFingerprint(products){
-  let h = 0;
-  for (let i = 0; i < products.length; i++) {
-    const id = products[i].id || '';
+  if (!products || !products.length) return '0:0';
+  let h = products.length;
+  // ✅ أسرع: افحص أول ومنتصف وآخر 3 معرّفات فقط (بدلاً من كل الحروف)
+  const checkIds = [
+    products[0].id,
+    products[Math.floor(products.length/2)].id,
+    products[products.length-1].id
+  ];
+  for (let i = 0; i < checkIds.length; i++) {
+    const id = checkIds[i] || '';
     for (let j = 0; j < id.length; j++) h = ((h << 5) - h + id.charCodeAt(j)) | 0;
   }
   return products.length + ':' + h;
+}
+
+/* ✅ عدّادات المتاجر من allProducts — لا حاجة لطلب Firebase */
+function recalculateStoreCounts(){
+  if (!stores.length || !allProducts.length) return false;
+  const counts = {};
+  for (let i = 0; i < allProducts.length; i++) {
+    const sn = allProducts[i].store_name;
+    if (sn) counts[sn] = (counts[sn] || 0) + 1;
+  }
+  let changed = false;
+  for (let i = 0; i < stores.length; i++) {
+    const newCount = counts[stores[i].name] || 0;
+    if (stores[i].products_count !== newCount) {
+      stores[i].products_count = newCount;
+      changed = true;
+    }
+  }
+  return changed;
 }
 
 /* ═══ Followed / Favs ═══ */
@@ -1255,11 +1274,7 @@ function getFallbackHex(colorName){
   return result;
 }
 
-/* ═══════════════════════════════════════════
-   AUTO-SCROLL STORES
-   يبدأ من أول متجر → آخر متجر → يعود للأول
-   يتوقف عند اللمس → يستأنف بعد 5 ثواني
-   ═══════════════════════════════════════════ */
+/* ═══ Auto-Scroll Stores ═══ */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
@@ -1316,24 +1331,18 @@ async function initFCM(){
   try {
     if (!isNotificationSupported()) return;
     messaging = firebase.messaging();
-
-    // ✅ استخدام الـ SW الرئيسي — لا تسجيل SW جديد
     const reg = await navigator.serviceWorker.ready;
-
     messaging.onMessage((payload) => {
       const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
       const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
       showPushToast(title, body);
-
-      // إظهار إشعار في المقدمة أيضاً
       if (Notification.permission === 'granted') {
         try {
           const n = new Notification(title, {
             body,
             icon: (payload.notification && payload.notification.icon) || 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
             badge: 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
-            dir: 'rtl',
-            lang: 'ar',
+            dir: 'rtl', lang: 'ar',
             tag: (payload.data && payload.data.tag) || 'branzar-fg'
           });
           n.onclick = () => {
@@ -1344,7 +1353,6 @@ async function initFCM(){
         } catch (e) {}
       }
     });
-
     if (Notification.permission === 'granted') await registerFCMToken(reg);
     else if (shouldShowNotifBanner()) setTimeout(showNotifBanner, 10000);
   } catch(err){ console.warn('FCM:', err); }
@@ -1516,9 +1524,7 @@ installBtn?.addEventListener('click', async () => {
 });
 if (isAppInstalled()) installBtn.classList.remove('show');
 
-/* ═══════════════════════════════════════════
-   Service Worker — Auto Update System v2
-   ═══════════════════════════════════════════ */
+/* ═══ Service Worker ═══ */
 let swRegistration = null;
 let isReloading = false;
 let updateCheckInterval = null;
@@ -1534,14 +1540,6 @@ function showUpdateButton() {
     }, 50);
   });
 }
-
-function hideUpdateButton() {
-  const btn = document.getElementById('updateAvailableBtn');
-  if (!btn) return;
-  btn.classList.remove('show');
-  setTimeout(() => btn.classList.add('hidden'), 400);
-}
-
 function triggerUpdate() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn || btn.disabled) return;
@@ -1552,26 +1550,18 @@ function triggerUpdate() {
   const spanEl = btn.querySelector('.update-text-wrap span');
   if (strongEl) strongEl.textContent = '⏳ جاري التحديث...';
   if (spanEl) spanEl.textContent = 'لحظة من فضلك';
-
   const reg = swRegistration;
   if (reg && reg.waiting) {
     reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-    setTimeout(() => {
-      if (!isReloading) { isReloading = true; window.location.reload(); }
-    }, 3000);
-  } else {
-    window.location.reload();
-  }
+    setTimeout(() => { if (!isReloading) { isReloading = true; window.location.reload(); } }, 3000);
+  } else { window.location.reload(); }
 }
-
 async function checkForUpdate() {
   if (!swRegistration) return;
   try {
     await swRegistration.update();
-    if (swRegistration.waiting && navigator.serviceWorker.controller) {
-      showUpdateButton();
-    }
-  } catch(err) { /* silent */ }
+    if (swRegistration.waiting && navigator.serviceWorker.controller) showUpdateButton();
+  } catch(err) {}
 }
 
 if ('serviceWorker' in navigator) {
@@ -1580,114 +1570,144 @@ if ('serviceWorker' in navigator) {
       .then((reg) => {
         swRegistration = reg;
         console.log('[App] SW registered. Scope:', reg.scope);
-
-        if (reg.waiting && navigator.serviceWorker.controller) {
-          showUpdateButton();
-        }
-
+        if (reg.waiting && navigator.serviceWorker.controller) showUpdateButton();
         reg.addEventListener('updatefound', () => {
-          console.log('[App] Update found — installing new SW');
           const newWorker = reg.installing;
           if (!newWorker) return;
           newWorker.addEventListener('statechange', () => {
-            console.log('[App] New SW state:', newWorker.state);
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               showUpdateButton();
               try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){}
             }
           });
         });
-
         if (updateCheckInterval) clearInterval(updateCheckInterval);
-        updateCheckInterval = setInterval(() => {
-          if (isPageVisible) checkForUpdate();
-        }, 30 * 1000);
+        updateCheckInterval = setInterval(() => { if (isPageVisible) checkForUpdate(); }, 30 * 1000);
       })
       .catch((err) => console.warn('[App] SW registration failed:', err));
 
-  /* ✅ حماية من reload عند أول تثبيت */
-let hadControllerAtLoad = !!navigator.serviceWorker.controller;
-
-navigator.serviceWorker.addEventListener('controllerchange', () => {
-  // عند أول تثبيت للتطبيق → لا نُعيد التحميل
-  if (!hadControllerAtLoad) {
-    hadControllerAtLoad = true;
-    return;
-  }
-  if (isReloading) return;
-  isReloading = true;
-  console.log('[App] Controller changed — reloading for new version');
-  window.location.reload();
-});
-
+    let hadControllerAtLoad = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadControllerAtLoad) { hadControllerAtLoad = true; return; }
+      if (isReloading) return;
+      isReloading = true;
+      window.location.reload();
+    });
     navigator.serviceWorker.addEventListener('message', (event) => {
       const data = event.data || {};
-      if (data.type === 'SW_ACTIVATED') {
-        console.log('[App] SW activated version:', data.version);
-      }
+      if (data.type === 'SW_ACTIVATED') console.log('[App] SW activated version:', data.version);
     });
-
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) checkForUpdate();
-    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(); });
     window.addEventListener('focus', () => checkForUpdate());
     window.addEventListener('online', () => checkForUpdate());
-
     document.getElementById('bzrBottomNav')?.addEventListener('click', () => checkForUpdate(), { passive: true });
   });
 }
-
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
+setInterval(() => { if (isPageVisible && swRegistration) checkForUpdate(); }, 5 * 60 * 1000);
 
-setInterval(() => {
-  if (isPageVisible && swRegistration) checkForUpdate();
-}, 5 * 60 * 1000);
+/* ═══════════════════════════════════════════
+   Data Loading — v7.0 Performance
+   ═══════════════════════════════════════════ */
 
-/* ═══ Data Loading ═══ */
+/* ✅ loadStores — لا مزيد من طلب المنتجات لحساب العدد */
 async function loadStores(force){
   const loader = document.getElementById('storesLoader'), empty = document.getElementById('storesEmpty'), container = document.getElementById('storesScrollContainer');
   loader.classList.remove('hidden'); empty.classList.add('hidden'); container.innerHTML = '';
   try {
     const result = await fetchWithCache('stores_list', async () => {
-      let snap; try { snap = await db.collection('stores').orderBy('created_at', 'desc').get(); } catch(e){ snap = await db.collection('stores').get(); }
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      if (data.length > 0) { const pSnap = await db.collection('products').get(); const counts = {}; pSnap.docs.forEach(d => { const sn = d.data().store_name; if (sn) counts[sn] = (counts[sn] || 0) + 1; }); return data.map(s => ({ ...s, products_count: counts[s.name] || 0 })); }
-      return data;
+      let snap;
+      try { snap = await db.collection('stores').orderBy('created_at', 'desc').get(); }
+      catch(e){ snap = await db.collection('stores').get(); }
+      // ✅ لا نحتاج لعدّ المنتجات هنا — سنحسبها محلياً
+      return snap.docs.map(d => ({ id: d.id, ...d.data(), products_count: 0 }));
     }, force);
     stores = result;
-    if (stores.length === 0) { document.getElementById('storesErrorMessage').textContent = '⚠️ لا توجد متاجر متاحة'; empty.classList.remove('hidden'); renderFollowedStores(); }
-    else {
+    recalculateStoreCounts();
+    if (stores.length === 0) {
+      document.getElementById('storesErrorMessage').textContent = '⚠️ لا توجد متاجر متاحة';
+      empty.classList.remove('hidden');
+      renderFollowedStores();
+    } else {
       displayStores();
       startAutoScroll();
       renderFollowedStores();
-      if (isFirstVisit) { localStorage.setItem('branzarVisitedBefore', 'true'); localStorage.setItem('branzarKnownStoreIds', JSON.stringify(stores.map(s => s.id))); isFirstVisit = false; }
+      if (isFirstVisit) {
+        localStorage.setItem('branzarVisitedBefore', 'true');
+        localStorage.setItem('branzarKnownStoreIds', JSON.stringify(stores.map(s => s.id)));
+        isFirstVisit = false;
+      }
     }
   } catch(err){
-    document.getElementById('storesErrorMessage').textContent = 'تعذر تحميل المتاجر'; empty.classList.remove('hidden');
+    document.getElementById('storesErrorMessage').textContent = 'تعذر تحميل المتاجر';
+    empty.classList.remove('hidden');
   } finally { loader.classList.add('hidden'); }
 }
 document.getElementById('retryStoresBtn')?.addEventListener('click', () => loadStores(true));
 
+/* ✅ loadAllProducts — عرض فوري من الكاش */
 async function loadAllProducts(force){
   const loader = document.getElementById('allProductsLoader'), empty = document.getElementById('allProductsEmpty'), grid = document.getElementById('allProductsGrid');
-  loader.classList.remove('hidden'); empty.classList.add('hidden'); grid.innerHTML = '';
-  document.getElementById('loadMoreProductsBtn').classList.add('hidden');
-  try {
-    const data = await fetchWithCache('all_products', async () => {
-      let snap; try { snap = await db.collection('products').orderBy('created_at', 'desc').get(); } catch(e){ snap = await db.collection('products').get(); }
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    }, force);
-    allProducts = data;
+  
+  const cached = cacheManager.get('all_products');
+  if (cached && cached.length && !force) {
+    allProducts = cached;
+    recalculateStoreCounts();
     applyProductsFilter(currentCategory);
-  } catch(err){ grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--c-text-soft);">تعذر تحميل المنتجات</p>'; }
-  finally { loader.classList.add('hidden'); }
+    displayStores();
+    console.log('[Cache] Loaded ' + cached.length + ' products instantly');
+  } else {
+    loader.classList.remove('hidden');
+    empty.classList.add('hidden');
+    grid.innerHTML = '';
+    document.getElementById('loadMoreProductsBtn').classList.add('hidden');
+  }
+  
+  try {
+    let snap;
+    try { snap = await db.collection('products').orderBy('created_at', 'desc').get(); }
+    catch(e){ snap = await db.collection('products').get(); }
+    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    
+    const newFingerprint = getProductFingerprint(data);
+    const oldFingerprint = allProducts.length ? getProductFingerprint(allProducts) : '';
+    
+    if (newFingerprint !== oldFingerprint) {
+      allProducts = data;
+      cacheManager.set('all_products', data);
+      recalculateStoreCounts();
+      applyProductsFilter(currentCategory);
+      displayStores();
+      console.log('[Network] Refreshed ' + data.length + ' products');
+    } else {
+      cacheManager.set('all_products', data);
+      console.log('[Cache] Data unchanged');
+    }
+  } catch(err) {
+    console.warn('Products fetch failed:', err);
+    if (!cached || !cached.length) {
+      grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--c-text-soft);">تعذر تحميل المنتجات</p>';
+    }
+  } finally {
+    loader.classList.add('hidden');
+  }
 }
 
+/* ✅ loadCategories — استخدام stores الموجودة */
 async function loadCategories(force){
   try {
-    const storesData = await fetchWithCache('stores_list', async () => { const snap = await db.collection('stores').get(); return snap.docs.map(d => ({ id: d.id, ...d.data() })); }, force);
+    let storesData = stores;
+    if (!storesData.length) {
+      storesData = await fetchWithCache('stores_list', async () => {
+        const snap = await db.collection('stores').get();
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      }, force);
+    }
     const cats = [];
-    storesData.forEach(s => { const c = s.category; if (c && String(c).trim() !== '' && cats.indexOf(c) === -1) cats.push(c); });
+    storesData.forEach(s => {
+      const c = s.category;
+      if (c && String(c).trim() !== '' && cats.indexOf(c) === -1) cats.push(c);
+    });
     categories = cats;
     displayCategories();
   } catch(err){ console.error(err); }
@@ -1897,7 +1917,14 @@ function openStoreModal(store){
   const callBtn = document.getElementById('storeCallButton'), waBtn = document.getElementById('storeWhatsAppButton');
   if (phone) { callBtn.href = 'tel:' + phone; callBtn.style.display = ''; } else callBtn.style.display = 'none';
   if (wa) { waBtn.href = 'https://wa.me/' + wa.replace(/[^0-9]/g, ''); waBtn.style.display = ''; } else waBtn.style.display = 'none';
-  loadStoreProducts(store.name);
+  // ✅ عرض فوري من allProducts — بدون طلب Firebase
+  const localProducts = allProducts.filter(p => p.store_name === store.name);
+  if (localProducts.length) {
+    document.getElementById('storeProductsCount').textContent = localProducts.length;
+    renderStoreProducts(localProducts);
+  } else {
+    loadStoreProducts(store.name);
+  }
   document.getElementById('storeModal').classList.remove('hidden');
   updateBodyScroll();
   document.getElementById('storeModal').querySelector('.modal-content').scrollTop = 0;
@@ -2137,18 +2164,29 @@ async function shareStore(store){
   try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); showToast('✅ تم نسخ الرابط'); } } catch(err){ showToast('تعذر النسخ'); }
 }
 
-/* ═══ Realtime ═══ */
+/* ═══ Realtime Listeners ═══ */
 function setupRealtimeProducts(){
   if (productsUnsubscribe) return;
   productsUnsubscribe = db.collection('products').onSnapshot((snap) => {
     const fresh = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     fresh.sort((a,b) => { const ta = a.created_at?.seconds || 0; const tb = b.created_at?.seconds || 0; return tb - ta; });
     const fp = getProductFingerprint(fresh);
-    if (isFirstProductsSnapshot) { isFirstProductsSnapshot = false; lastProductsFingerprint = fp; cacheManager.set('all_products', fresh); allProducts = fresh; applyProductsFilter(currentCategory); return; }
+    if (isFirstProductsSnapshot) {
+      isFirstProductsSnapshot = false;
+      lastProductsFingerprint = fp;
+      return;
+    }
     if (fp === lastProductsFingerprint) return;
-    lastProductsFingerprint = fp; allProducts = fresh; cacheManager.set('all_products', fresh); applyProductsFilter(currentCategory);
-    if (currentStore && !document.getElementById('storeModal').classList.contains('hidden')) { loadStoreProductsFromLocal(fresh, currentStore.name); }
-  }, err => console.warn('Products:', err));
+    lastProductsFingerprint = fp;
+    allProducts = fresh;
+    cacheManager.set('all_products', fresh);
+    recalculateStoreCounts();
+    applyProductsFilter(currentCategory);
+    displayStores();
+    if (currentStore && !document.getElementById('storeModal').classList.contains('hidden')) {
+      loadStoreProductsFromLocal(fresh, currentStore.name);
+    }
+  }, err => console.warn('Products listener:', err));
 }
 function loadStoreProductsFromLocal(arr, name){
   const list = arr.filter(p => p.store_name === name);
@@ -2164,12 +2202,23 @@ function setupRealtimeStores(){
     if (isFirstStoresSnapshot) { isFirstStoresSnapshot = false; return; }
     cacheManager.remove('stores_list');
     setTimeout(() => loadStores(true), 200);
-  }, err => console.warn('Stores:', err));
+  }, err => console.warn('Stores listener:', err));
 }
 
 /* ═══ Deep Link ═══ */
 async function handleDeepLink(){
-  try { const params = new URLSearchParams(window.location.search); let storeId = params.get('store'); if (!storeId) return; storeId = decodeURIComponent(storeId).trim(); await new Promise(r => setTimeout(r, 1500)); const store = stores.find(s => String(getStoreId(s)) === String(storeId)); if (store) { try { window.history.replaceState({}, document.title, window.location.origin + window.location.pathname); } catch(e){} setTimeout(() => openStoreModal(store), 300); } } catch(err){}
+  try {
+    const params = new URLSearchParams(window.location.search);
+    let storeId = params.get('store');
+    if (!storeId) return;
+    storeId = decodeURIComponent(storeId).trim();
+    await new Promise(r => setTimeout(r, 800));
+    const store = stores.find(s => String(getStoreId(s)) === String(storeId));
+    if (store) {
+      try { window.history.replaceState({}, document.title, window.location.origin + window.location.pathname); } catch(e){}
+      setTimeout(() => openStoreModal(store), 200);
+    }
+  } catch(err){}
 }
 
 /* ═══ Escape ═══ */
@@ -2203,18 +2252,39 @@ if (storesContainer) {
   storesContainer.addEventListener('mouseleave', () => { isHoveringStores = false; lastStoresInteraction = Date.now(); }, { passive: true });
 }
 
-/* ═══ Init ═══ */
+/* ═══════════════════════════════════════════
+   Init App — v7.0 Performance
+   ═══════════════════════════════════════════ */
 async function initApp(){
   const ok = await ensureAuth();
   if (!ok) { window.__bzrHideSplash(); return; }
   updateCartUI();
+  
+  // ✅ شغّل التحميل الأساسي (المتاجر + المنتجات) بالتوازي
+  const initTasks = Promise.all([
+    loadStores(),
+    loadAllProducts()
+  ]);
+  
+  initTasks.then(() => {
+    // ✅ أخفِ splash فور توفر البيانات
+    window.__bzrHideSplash();
+    // ✅ حمّل التصنيفات بعد الرسم الأول (لا يعيق العرض)
+    setTimeout(() => loadCategories(), 100);
+    // ✅ ابدأ المراقبة الحيّة بعد 3 ثوان (بعد استقرار الأداء)
+    setTimeout(() => {
+      setupRealtimeProducts();
+      setupRealtimeStores();
+      console.log('[App] Real-time listeners active');
+    }, 3000);
+  });
+  
   initFCM().catch(() => {});
-  await Promise.all([loadStores(), loadCategories(), loadAllProducts()]);
-  setupRealtimeProducts();
-  setupRealtimeStores();
   handleDeepLink();
   setActiveNav('home');
-  setTimeout(() => window.__bzrHideSplash(), 400);
+  
+  // fallback مطلق
+  setTimeout(() => window.__bzrHideSplash(), 2500);
 }
 
 window.addEventListener('beforeunload', () => {
@@ -2235,7 +2305,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (open === 'cart') setTimeout(openCart, 800);
 });
 
-window.BranZar = { version: '6.1.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode };
+window.BranZar = { version: '7.0.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode };
 </script>
 </body>
 </html>
