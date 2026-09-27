@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════
-   BranZar Service Worker v1.0.04
-   🔥 يدعم: Cache + Auto Update + Firebase Messaging
+   BranZar Service Worker v1.0.05
+   🔥 Cache + Auto Update + Firebase Messaging
    ⚠️ غيّر SW_VERSION فقط عند كل تحديث
    ═══════════════════════════════════════════ */
 
-/* ─── Firebase (يجب أن يكون في الأعلى) ─── */
+/* ─── Firebase ─── */
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
@@ -20,7 +20,11 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-/* ─── Background Messages Handler ─── */
+/* ─── Background Messages Handler ───
+   ✅ هذا هو المُعالج الوحيد للإشعارات
+   ✅ لا حاجة لمستمع push منفصل (FCM يدير الأمر داخلياً)
+   ✅ نُرجع الـ Promise لضمان الانتظار
+─── */
 messaging.onBackgroundMessage((payload) => {
   const title = (payload.notification && payload.notification.title) || 'BranZar';
   const options = {
@@ -32,11 +36,12 @@ messaging.onBackgroundMessage((payload) => {
     data: payload.data || {},
     tag: (payload.data && payload.data.tag) || 'branzar-bg'
   };
-  self.registration.showNotification(title, options);
+  // ✅ إرجاع الـ Promise ضروري
+  return self.registration.showNotification(title, options);
 });
 
 /* ─── Cache & Version ─── */
-const SW_VERSION = '1.0.04';
+const SW_VERSION = '1.0.05';
 const CACHE_NAME = `branzar-${SW_VERSION}`;
 const STATIC_CACHE = `${CACHE_NAME}-static`;
 const RUNTIME_CACHE = `${CACHE_NAME}-runtime`;
@@ -54,7 +59,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => cache.addAll(STATIC_ASSETS).catch(() => {}))
-    // ✅ لا skipWaiting() هنا — ننتظر أمر المستخدم
+    // ✅ NO skipWaiting — ينتظر أمر المستخدم
   );
 });
 
@@ -80,14 +85,17 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
+
   if (request.method !== 'GET') return;
   if (url.protocol === 'chrome-extension:' || url.protocol === 'view-source:') return;
-  // Firebase scripts دائماً من الشبكة
+
+  // Firebase scripts — دائماً من الشبكة
   if (url.hostname === 'www.gstatic.com') return;
 
   const isDynamic = DYNAMIC_FILES.some((f) => url.pathname.endsWith(f) || url.pathname === f);
 
   if (isDynamic) {
+    // Network First للملفات الديناميكية
     event.respondWith(
       fetch(request, { cache: 'no-store' })
         .then((networkResponse) => {
@@ -100,6 +108,7 @@ self.addEventListener('fetch', (event) => {
         .catch(() => caches.match(request).then((cached) => cached || new Response('Offline', { status: 503 })))
     );
   } else {
+    // Cache First للثوابت
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached;
@@ -117,30 +126,19 @@ self.addEventListener('fetch', (event) => {
 /* ─── Messages ─── */
 self.addEventListener('message', (event) => {
   const data = event.data || {};
+
   if (data.type === 'SKIP_WAITING') {
     console.log('[SW] SKIP_WAITING — activating now');
     self.skipWaiting();
   }
+
   if (data.type === 'GET_VERSION') {
     event.source?.postMessage({ type: 'SW_VERSION', version: SW_VERSION });
   }
+
   if (data.type === 'CHECK_UPDATE') {
     self.registration.update().catch(() => {});
   }
-});
-
-/* ─── Push (للتوافق مع FCM مباشر) ─── */
-self.addEventListener('push', (event) => {
-  let data = {};
-  try { data = event.data ? event.data.json() : {}; } catch(e){}
-  const title = (data.notification && data.notification.title) || 'BranZar';
-  const options = {
-    body: (data.notification && data.notification.body) || 'لديك إشعار جديد',
-    icon: 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
-    badge: 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
-    dir: 'rtl', lang: 'ar', data: data.data || {}
-  };
-  event.waitUntil(self.registration.showNotification(title, options));
 });
 
 /* ─── Notification Click ─── */
@@ -148,11 +146,11 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const url = (event.notification.data && event.notification.data.url) || '/';
   event.waitUntil(
-    clients.matchAll({ type: 'window' }).then((clientList) => {
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
         if (client.url === url && 'focus' in client) return client.focus();
       }
-      if (clients.openWindow) return clients.openWindow(url);
+      if (self.clients.openWindow) return self.clients.openWindow(url);
     })
   );
 });
