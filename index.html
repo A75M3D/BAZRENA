@@ -35,8 +35,8 @@
 
 <style>
 /* ═══════════════════════════════════════════
-   BranZar v8.0 — High Performance + Anti-Loop
-   No Tailwind | IndexedDB | Pagination | SWR
+   BranZar v9.0 — Firestore Complete
+   No Tailwind | IndexedDB | documentId Pagination
    ═══════════════════════════════════════════ */
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
@@ -386,7 +386,7 @@ body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, 
 .load-more-btn.hidden { display: none; }
 .hidden { display: none !important; }
 
-/* ═══ SKELETON LOADERS ═══ */
+/* ═══ SKELETON ═══ */
 .skeleton { background: linear-gradient(90deg, var(--c-surface-2) 25%, var(--c-border) 50%, var(--c-surface-2) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 12px; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 .skeleton-card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 20px; overflow: hidden; }
@@ -402,55 +402,19 @@ body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, 
 #installButtonFloating { position: fixed; bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px); right: 16px; z-index: 9999; background: linear-gradient(135deg, #1E40AF, #3B82F6); color: #fff; border: none; border-radius: 9999px; padding: 0.8rem 1.4rem; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px -6px rgba(30,64,175,0.6); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: pointer; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(20px); }
 #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-/* ═══ UPDATE BUTTON — v3 Anti-Loop ═══ */
-#updateAvailableBtn {
-  position: fixed;
-  top: calc(var(--safe-top) + 12px);
-  left: 50%;
-  transform: translate(-50%, calc(-100% - 40px));
-  z-index: 10002;
-  background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-  color: #fff;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-radius: 9999px;
-  padding: 0.55rem 1.15rem 0.55rem 0.55rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, opacity 0.3s;
-  direction: rtl;
-  font-family: 'Cairo', sans-serif;
-  max-width: calc(100% - 24px);
-  pointer-events: none;
-  opacity: 0;
-}
-#updateAvailableBtn.show {
-  transform: translate(-50%, 0);
-  pointer-events: auto;
-  opacity: 1;
-  animation: updatePulse 2.5s ease-in-out infinite;
-}
-#updateAvailableBtn:hover { box-shadow: 0 25px 55px -12px rgba(255,122,0,1), 0 10px 25px -8px rgba(0,0,0,0.35); }
+#updateAvailableBtn { position: fixed; top: calc(var(--safe-top) + 12px); left: 50%; transform: translate(-50%, calc(-100% - 40px)); z-index: 10002; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: 2px solid rgba(255,255,255,0.3); border-radius: 9999px; padding: 0.55rem 1.15rem 0.55rem 0.55rem; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, opacity 0.3s; direction: rtl; font-family: 'Cairo', sans-serif; max-width: calc(100% - 24px); pointer-events: none; opacity: 0; }
+#updateAvailableBtn.show { transform: translate(-50%, 0); pointer-events: auto; opacity: 1; animation: updatePulse 2.5s ease-in-out infinite; }
 #updateAvailableBtn:active { transform: translate(-50%, 0) scale(0.97); }
 #updateAvailableBtn:disabled { cursor: wait; opacity: 0.9; }
-.update-icon-wrap { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
+.update-icon-wrap { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .update-icon-wrap i { color: #fff; font-size: 1.15rem; animation: bounceUpdate 2s ease-in-out infinite; }
 @keyframes bounceUpdate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 .update-text-wrap { display: flex; flex-direction: column; line-height: 1.2; text-align: right; }
-.update-text-wrap strong { font-size: 0.92rem; font-weight: 900; letter-spacing: 0.2px; }
+.update-text-wrap strong { font-size: 0.92rem; font-weight: 900; }
 .update-text-wrap span { font-size: 0.72rem; opacity: 0.92; font-weight: 600; margin-top: 2px; }
-.update-arrow { color: rgba(255,255,255,0.85); font-size: 0.75rem; flex-shrink: 0; animation: slideArrow 1.5s ease-in-out infinite; }
+.update-arrow { color: rgba(255,255,255,0.85); font-size: 0.75rem; animation: slideArrow 1.5s ease-in-out infinite; }
 @keyframes slideArrow { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
 @keyframes updatePulse { 0%, 100% { box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3); } 50% { box-shadow: 0 20px 50px -10px rgba(255,122,0,1), 0 8px 35px -4px rgba(255,122,0,0.7); } }
-@media (max-width: 480px) {
-  #updateAvailableBtn { padding: 0.5rem 0.9rem 0.5rem 0.5rem; gap: 9px; }
-  .update-icon-wrap { width: 38px; height: 38px; }
-  .update-icon-wrap i { font-size: 1rem; }
-  .update-text-wrap strong { font-size: 0.82rem; }
-  .update-text-wrap span { font-size: 0.66rem; }
-}
 
 #notifPermissionBanner { position: fixed; bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px); left: 50%; transform: translate(-50%, 200%); z-index: 9998; background: var(--c-surface); border: 2px solid #FFE0BD; border-radius: 24px; padding: 18px; box-shadow: 0 25px 70px rgba(255,122,0,0.25); max-width: 440px; width: calc(100% - 32px); transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s; direction: rtl; opacity: 0; pointer-events: none; }
 #notifPermissionBanner.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
@@ -476,7 +440,6 @@ body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, 
 .bzr-page-fade { animation: pageFade 0.4s ease; }
 @keyframes pageFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Modal responsive (بدون Tailwind) */
 .pm-row { display: flex; flex-direction: column; gap: 1.5rem; }
 .pm-col { width: 100%; display: flex; flex-direction: column; }
 @media (min-width: 768px) {
@@ -577,7 +540,7 @@ const _IK = '__bzr_t0', _now = Date.now(), _prev = parseInt(localStorage.getItem
 if (!_prev) localStorage.setItem(_IK, _now.toString());
 else if (_now < _prev - 86400000) { try { console.warn('🛡️ clock anomaly'); } catch(e){} }
 try {
-  const _meta = Object.freeze({ brand: BRAND, brandAr: BRAND_AR, domain: DOMAIN, owner: OWNER, sig: _FULL_SIG, nonce: _BZR_NONCE, sealed: true, ts: 'BZR-SEAL-V8' });
+  const _meta = Object.freeze({ brand: BRAND, brandAr: BRAND_AR, domain: DOMAIN, owner: OWNER, sig: _FULL_SIG, nonce: _BZR_NONCE, sealed: true, ts: 'BZR-SEAL-V9' });
   Object.defineProperty(window, '__BZR_META__', { value: _meta, writable: false, configurable: false, enumerable: false });
   Object.defineProperty(window, '__BZR_OWNER__', { value: OWNER, writable: false, configurable: false, enumerable: false });
   Object.defineProperty(window, '__BZR_SIG__', { value: _FULL_SIG, writable: false, configurable: false, enumerable: false });
@@ -677,7 +640,6 @@ setTimeout(function(){
 <!-- MAIN -->
 <main class="bzr-page-fade" id="mainContent">
 
-  <!-- HERO -->
   <section class="hero-section">
     <div style="max-width:960px;margin:0 auto;text-align:center;position:relative;z-index:2;">
       <h1 style="font-size:clamp(1.75rem, 5vw, 3rem);font-weight:900;line-height:1.25;margin:0 0 0.75rem;color:var(--c-text);">
@@ -694,7 +656,6 @@ setTimeout(function(){
     </div>
   </section>
 
-  <!-- FOLLOWED STORES -->
   <section id="followedStoresSection" class="hidden" style="padding:1rem 0 0.5rem;">
     <div class="bzr-container">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
@@ -711,7 +672,6 @@ setTimeout(function(){
     </div>
   </section>
 
-  <!-- STORES -->
   <section id="stores" style="padding:1.5rem 0 2rem;">
     <div class="bzr-container">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap;">
@@ -740,7 +700,6 @@ setTimeout(function(){
     </div>
   </section>
 
-  <!-- CATEGORIES -->
   <section id="categories" style="padding:1.5rem 0 1rem;background:var(--c-surface);border-top:1px solid var(--c-border);border-bottom:1px solid var(--c-border);">
     <div class="bzr-container">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:1rem;flex-wrap:wrap;">
@@ -757,11 +716,11 @@ setTimeout(function(){
     </div>
   </section>
 
-  <!-- ALL PRODUCTS -->
   <section id="all-products" style="padding:2rem 0 3rem;background:var(--c-surface);">
     <div class="bzr-container">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
         <h2 style="font-size:clamp(1.25rem,3vw,1.75rem);font-weight:900;color:var(--c-text);margin:0;">جميع المنتجات</h2>
+        <span id="productsLoadedBadge" class="all-products-total-badge" style="display:none;"><i class="fas fa-check-circle"></i><span id="productsLoadedCount">0</span><span>منتج معروض</span></span>
       </div>
       <div id="allProductsGrid"></div>
       <div id="allProductsLoader" class="hidden" style="padding:2rem 0;">
@@ -994,7 +953,8 @@ setTimeout(function(){
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v8.0 — Anti-Loop + Performance
+   BranZar App Core v9.0 — Firestore Complete Edition
+   ✅ documentId Pagination | IndexedDB | SWR | Anti-Loop
    ═══════════════════════════════════════════════════════════ */
 
 /* ═══ Splash ═══ */
@@ -1121,7 +1081,7 @@ const cacheManager = {
   }
 };
 
-/* ═══ SWR Pattern ═══ */
+/* ═══ SWR ═══ */
 async function swr(key, fetchFn, renderFn, force){
   if (!force) {
     const cached = await cacheManager.get(key);
@@ -1270,13 +1230,14 @@ initViewMode();
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem('myStoresCart')) || []; } catch(e){ cart = []; }
 let stores = [], categories = [];
-let allProducts = [];              // كل المنتجات المحملة (تراكمية)
-let filteredProducts = [];         // المنتجات بعد فلترة الفئة
-let lastProductsCursor = null;
+let allProducts = [];
+let filteredProducts = [];
+let lastProductsDocSnapshot = null;   // ✅ Snapshot حقيقي (ليس ID فقط)
 let productsExhausted = false;
 let productsLoading = false;
-const PRODUCTS_PAGE_SIZE = 24;
+let productsTotalInDb = null;         // ✅ العدد الكلي (count)
 let currentCategory = null;
+const PRODUCTS_PAGE_SIZE = 24;
 let currentStore = null, currentStoreId = null, currentFollowersCount = 0, isFollowing = false, isUpdatingFollow = false;
 let isFirstVisit = !localStorage.getItem('branzarVisitedBefore');
 
@@ -1375,7 +1336,7 @@ function stopAutoScroll(){
   if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; }
 }
 
-/* ═══ FCM Notifications ═══ */
+/* ═══ FCM ═══ */
 let fcmTokenRegistered = false;
 const FCM_TOKEN_KEY = 'branzarFcmToken', NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
 const VAPID_PUBLIC_KEY = "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw";
@@ -1622,13 +1583,12 @@ installBtn?.addEventListener('click', async () => {
 if (isAppInstalled()) installBtn.classList.remove('show');
 
 /* ═══════════════════════════════════════════════════════════
-   Service Worker — Auto Update System v3 (Anti-Loop) ✅
+   Service Worker — Auto Update System v3 (Anti-Loop)
    ═══════════════════════════════════════════════════════════ */
 let swRegistration = null;
 let isReloading = false;
 let updateCheckInterval = null;
 
-// 🛡️ حالة موحدة لمنع التكرار
 const updateState = {
   buttonShown: false,
   updateInProgress: false,
@@ -1636,7 +1596,6 @@ const updateState = {
   checkThrottleMs: 10000
 };
 
-// 🎯 عرض زر التحديث — guard فوري بدون async
 function showUpdateButton() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn) return;
@@ -1648,15 +1607,6 @@ function showUpdateButton() {
   try { haptic('medium'); } catch(e){}
 }
 
-function hideUpdateButton() {
-  const btn = document.getElementById('updateAvailableBtn');
-  if (!btn) return;
-  updateState.buttonShown = false;
-  btn.classList.remove('show');
-  setTimeout(() => btn.classList.add('hidden'), 400);
-}
-
-// 🎯 تنفيذ التحديث — مع controllerchange كإشارة موثوقة
 function triggerUpdate() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn || btn.disabled || updateState.updateInProgress) return;
@@ -1670,7 +1620,6 @@ function triggerUpdate() {
   if (strongEl) strongEl.textContent = '⏳ جاري التحديث...';
   if (spanEl) spanEl.textContent = 'لحظة من فضلك';
 
-  // علامة "التحديث جارٍ" تُقرأ بعد reload
   try { sessionStorage.setItem('bzr_just_updated', Date.now().toString()); } catch(e){}
 
   const reg = swRegistration;
@@ -1684,13 +1633,12 @@ function triggerUpdate() {
     };
     navigator.serviceWorker.addEventListener('controllerchange', doReload, { once: true });
     try { reg.waiting.postMessage({ type: 'SKIP_WAITING' }); } catch(e) { console.warn('[Update] postMessage failed:', e); }
-    setTimeout(doReload, 2500);  // Fallback فقط
+    setTimeout(doReload, 2500);
   } else {
     checkForUpdate(true).finally(() => setTimeout(() => window.location.reload(), 300));
   }
 }
 
-// 🎯 فحص التحديث — throttled
 async function checkForUpdate(force = false) {
   if (!swRegistration) return;
   if (updateState.updateInProgress) return;
@@ -1702,7 +1650,7 @@ async function checkForUpdate(force = false) {
     if (swRegistration.waiting && navigator.serviceWorker.controller && !updateState.updateInProgress && !updateState.buttonShown) {
       showUpdateButton();
     }
-  } catch(err) { /* silent */ }
+  } catch(err) {}
 }
 
 if ('serviceWorker' in navigator) {
@@ -1712,7 +1660,6 @@ if ('serviceWorker' in navigator) {
         swRegistration = reg;
         console.log('[App] SW registered. Scope:', reg.scope);
 
-        // تجاهل الزر إذا كنا للتو حدّثنا
         const justUpdated = sessionStorage.getItem('bzr_just_updated');
         const isFreshUpdate = justUpdated && (Date.now() - parseInt(justUpdated)) < 15000;
 
@@ -1739,7 +1686,6 @@ if ('serviceWorker' in navigator) {
       })
       .catch((err) => console.warn('[App] SW registration failed:', err));
 
-    // حماية أول تثبيت PWA
     let hadControllerAtLoad = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (!hadControllerAtLoad) { hadControllerAtLoad = true; return; }
@@ -1750,7 +1696,6 @@ if ('serviceWorker' in navigator) {
       window.location.reload();
     });
 
-    // تنظيف علامة just_updated بعد 15 ثانية
     setTimeout(() => { try { sessionStorage.removeItem('bzr_just_updated'); } catch(e){} }, 15000);
 
     document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(); });
@@ -1762,7 +1707,7 @@ if ('serviceWorker' in navigator) {
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
 
 /* ═══════════════════════════════════════════════════════════
-   DATA LOADING — Optimized (Stores SWR + Products Pagination)
+   DATA LOADING — Firestore v9 (documentId Pagination)
    ═══════════════════════════════════════════════════════════ */
 
 /* ─── Stores ─── */
@@ -1771,14 +1716,14 @@ async function loadStores(force){
   const empty = document.getElementById('storesEmpty');
   const container = document.getElementById('storesScrollContainer');
 
-  const cachedCheck = await cacheManager.get('stores_list_v3');
+  const cachedCheck = await cacheManager.get('stores_list_v9');
   if ((!cachedCheck || force) && !container.children.length) {
     loader.classList.remove('hidden');
   }
   empty.classList.add('hidden');
 
   try {
-    await swr('stores_list_v3',
+    await swr('stores_list_v9',
       async () => {
         let snap;
         try { snap = await db.collection('stores').orderBy('created_at', 'desc').limit(200).get(); }
@@ -1812,10 +1757,10 @@ async function loadStores(force){
 }
 document.getElementById('retryStoresBtn')?.addEventListener('click', () => loadStores(true));
 
-/* ─── Categories (from cached stores) ─── */
+/* ─── Categories ─── */
 async function loadCategories(){
   try {
-    const storesData = await cacheManager.get('stores_list_v3');
+    const storesData = await cacheManager.get('stores_list_v9');
     if (!storesData) return;
     const cats = [];
     storesData.forEach(s => {
@@ -1827,43 +1772,92 @@ async function loadCategories(){
   } catch(err){ console.error(err); }
 }
 
-/* ─── Products: Pagination ─── */
+/* ═══════════════════════════════════════════════════════════
+   ✅ PRODUCTS — Firestore documentId Pagination
+   الحل الجذري: orderBy(documentId) يجلب كل المستندات 100%
+   ═══════════════════════════════════════════════════════════ */
+
+/**
+ * يجلب العدد الكلي للمنتجات (للعرض + للتشخيص)
+ * count() لا يُحمّل المستندات، فقط العد — رخيص جداً
+ */
+async function fetchProductsTotalCount(){
+  try {
+    const countSnap = await db.collection('products').count().get();
+    return countSnap.data().count;
+  } catch(err){
+    console.warn('Count query failed, using estimate:', err);
+    return null;
+  }
+}
+
+/**
+ * تحميل الصفحة الأولى من المنتجات
+ * ✅ يستخدم documentId — يجلب كل المنتجات حتى بدون created_at
+ */
 async function loadFirstProductsPage(force){
   const grid = document.getElementById('allProductsGrid');
   const loader = document.getElementById('allProductsLoader');
   const empty = document.getElementById('allProductsEmpty');
+  const badge = document.getElementById('productsLoadedBadge');
 
+  // Reset State
   allProducts = [];
-  lastProductsCursor = null;
+  lastProductsDocSnapshot = null;
   productsExhausted = false;
 
-  const cachedFirst = await cacheManager.get('products_page_1_v3');
-  if ((!cachedFirst || force) && !grid.children.length) {
+  // Cache hit → عرض فوري
+  if (!force) {
+    const cachedFirst = await cacheManager.get('products_v9_page1');
+    if (cachedFirst && cachedFirst.items && cachedFirst.items.length) {
+      allProducts = cachedFirst.items;
+      productsExhausted = !!cachedFirst.exhausted;
+      applyProductsFilter(currentCategory);
+    } else if (!grid.children.length) {
+      loader.classList.remove('hidden');
+      grid.innerHTML = '';
+    }
+  } else if (!grid.children.length) {
     loader.classList.remove('hidden');
     grid.innerHTML = '';
   }
 
   try {
-    const firstPage = await swr('products_page_1_v3',
-      async () => {
-        const snap = await db.collection('products').orderBy('created_at', 'desc').limit(PRODUCTS_PAGE_SIZE).get();
-        const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        return { items, lastDocId: snap.docs.length ? snap.docs[snap.docs.length - 1].id : null };
-      },
-      (data, isFromCache) => {
-        if (!data || !data.items) return;
-        allProducts = data.items.slice();
-        productsExhausted = data.items.length < PRODUCTS_PAGE_SIZE;
-        applyProductsFilter(currentCategory);
-      },
-      force
-    );
+    // ✅ الاستعلام المضمون: documentId يضمن كل المستندات
+    const snap = await db.collection('products')
+      .orderBy(firebase.firestore.FieldPath.documentId(), 'desc')
+      .limit(PRODUCTS_PAGE_SIZE)
+      .get();
 
-    if (firstPage && firstPage.items && firstPage.items.length) {
-      const lastId = firstPage.items[firstPage.items.length - 1].id;
-      lastProductsCursor = { id: lastId };
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // ترتيب داخلي للصفحة الأولى حسب التاريخ إن وُجد
+    items.sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
+
+    allProducts = items;
+    productsExhausted = snap.size < PRODUCTS_PAGE_SIZE;
+    lastProductsDocSnapshot = snap.docs.length ? snap.docs[snap.docs.length - 1] : null;
+
+    // تخزين في الكاش
+    await cacheManager.set('products_v9_page1', {
+      items: items,
+      exhausted: productsExhausted,
+      lastDocId: lastProductsDocSnapshot ? lastProductsDocSnapshot.id : null
+    }, 15 * 60 * 1000);
+
+    applyProductsFilter(currentCategory);
+
+    // ✅ جلب العدد الكلي بشكل غير متزامن (بعد العرض)
+    if (productsTotalInDb === null) {
+      fetchProductsTotalCount().then(count => {
+        productsTotalInDb = count;
+        const totalBadge = document.getElementById('categoriesTotalCount');
+        if (totalBadge && currentCategory === null && count !== null) {
+          totalBadge.textContent = count.toLocaleString();
+        }
+      }).catch(() => {});
     }
-  } catch(err){
+  } catch(err) {
     console.error('Products load error:', err);
     if (!grid.children.length) {
       grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--c-text-soft);padding:2rem;">تعذر تحميل المنتجات</p>';
@@ -1873,9 +1867,14 @@ async function loadFirstProductsPage(force){
   }
 }
 
+/**
+ * ✅ تحميل المزيد باستخدام documentId (يلتقط كل المستندات)
+ * لا يعتمد على created_at نهائياً — كل المنتجات قابلة للعرض
+ */
 async function loadMoreProducts(){
   if (productsLoading || productsExhausted) return;
   productsLoading = true;
+
   const btn = document.getElementById('loadMoreProductsBtn');
   const originalHtml = btn.innerHTML;
   btn.disabled = true;
@@ -1883,26 +1882,31 @@ async function loadMoreProducts(){
   haptic('light');
 
   try {
-    let query = db.collection('products').orderBy('created_at', 'desc');
-    if (lastProductsCursor && lastProductsCursor.id) {
-      try {
-        const lastDocSnap = await db.collection('products').doc(lastProductsCursor.id).get();
-        if (lastDocSnap.exists) query = query.startAfter(lastDocSnap);
-      } catch(e){}
+    let query = db.collection('products')
+      .orderBy(firebase.firestore.FieldPath.documentId(), 'desc');
+
+    if (lastProductsDocSnapshot) {
+      query = query.startAfter(lastProductsDocSnapshot);
     }
+
     query = query.limit(PRODUCTS_PAGE_SIZE);
     const snap = await query.get();
-    const newItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    if (newItems.length === 0) {
+    if (snap.size === 0) {
       productsExhausted = true;
     } else {
+      const newItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // ترتيب داخلي للصفحة
+      newItems.sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
+
+      // Deduplication مع ما هو محمّل مسبقاً
       const existingIds = new Set(allProducts.map(p => p.id));
       const uniqueNew = newItems.filter(p => !existingIds.has(p.id));
+
       allProducts = allProducts.concat(uniqueNew);
-      if (newItems.length < PRODUCTS_PAGE_SIZE) productsExhausted = true;
-      const lastId = newItems[newItems.length - 1].id;
-      lastProductsCursor = { id: lastId };
+      lastProductsDocSnapshot = snap.docs[snap.docs.length - 1];
+
+      if (snap.size < PRODUCTS_PAGE_SIZE) productsExhausted = true;
     }
 
     renderNextProductsPage();
@@ -1918,6 +1922,9 @@ async function loadMoreProducts(){
 }
 document.getElementById('loadMoreProductsBtn')?.addEventListener('click', loadMoreProducts);
 
+/**
+ * تطبيق فلتر الفئة على المنتجات المحملة
+ */
 function applyProductsFilter(cat){
   currentCategory = cat;
   if (!cat) filteredProducts = allProducts.slice();
@@ -1926,10 +1933,17 @@ function applyProductsFilter(cat){
     filteredProducts = allProducts.filter(p => names.indexOf(p.store_name) > -1);
   }
   const el = document.getElementById('categoriesTotalCount');
-  if (el) el.textContent = (cat ? filteredProducts.length : allProducts.length).toLocaleString();
+  if (el) {
+    // إذا كان فلتر "الكل" والعدد الكلي معروف → أظهر العدد الكلي
+    if (!cat && productsTotalInDb !== null) el.textContent = productsTotalInDb.toLocaleString();
+    else el.textContent = (cat ? filteredProducts.length : allProducts.length).toLocaleString();
+  }
   renderProductsGrid();
 }
 
+/**
+ * إعادة رسم الشبكة بالكامل من filteredProducts
+ */
 function renderProductsGrid(){
   const grid = document.getElementById('allProductsGrid');
   const empty = document.getElementById('allProductsEmpty');
@@ -1941,8 +1955,12 @@ function renderProductsGrid(){
     displayProductsGrid(grid, filteredProducts, true);
   }
   updateLoadMoreButton();
+  updateProductsBadge();
 }
 
+/**
+ * عرض المنتجات الجديدة المضافة فقط (لا يعيد رسم ما هو موجود)
+ */
 function renderNextProductsPage(){
   const grid = document.getElementById('allProductsGrid');
   const empty = document.getElementById('allProductsEmpty');
@@ -1955,22 +1973,53 @@ function renderNextProductsPage(){
     if (toAdd.length) displayProductsGrid(grid, toAdd, true);
   }
   updateLoadMoreButton();
+  updateProductsBadge();
 }
 
+/**
+ * ✅ زر "عرض المزيد" يظهر فقط عندما:
+ * - كل المنتجات المحمّلة معروضة
+ * - السيرفر لم يُستنفد بعد (توجد صفحات أخرى)
+ */
 function updateLoadMoreButton(){
   const btn = document.getElementById('loadMoreProductsBtn');
   if (!btn) return;
-  const allRendered = filteredProducts.length <= allProducts.length;
+
+  // هل تم عرض كل ما حمّلناه؟
+  const allRendered = filteredProducts.length >= allProducts.length;
+
   if (productsExhausted && allRendered) {
+    // لا مزيد في السيرفر → أخفِ الزر
     btn.classList.add('hidden');
-  } else if (!productsExhausted) {
+  } else if (!productsExhausted && allRendered) {
+    // توجد صفحات أخرى → أظهر الزر
     btn.classList.remove('hidden');
-    btn.innerHTML = '<span>عرض المزيد...</span><i class="fas fa-chevron-down"></i>';
+    btn.innerHTML = '<span>عرض المزيد</span><i class="fas fa-chevron-down"></i>';
   } else {
+    // لم تُعرض كل المنتجات المحمّلة بعد (بسبب فلتر)
     btn.classList.add('hidden');
   }
 }
 
+/**
+ * شارة صغيرة تعرض عدد المنتجات المعروضة فعلياً
+ */
+function updateProductsBadge(){
+  const badge = document.getElementById('productsLoadedBadge');
+  const countEl = document.getElementById('productsLoadedCount');
+  if (!badge || !countEl) return;
+  const rendered = document.getElementById('allProductsGrid').querySelectorAll('.product-card').length;
+  if (rendered > 0) {
+    badge.style.display = 'inline-flex';
+    countEl.textContent = rendered.toLocaleString();
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+/**
+ * رسم بطاقات المنتجات في الشبكة
+ */
 function displayProductsGrid(container, products, addStoreName){
   const frag = document.createDocumentFragment();
   products.forEach(product => {
@@ -2458,8 +2507,8 @@ async function initApp(){
   initFirebase();
 
   if (!db) {
-    const cachedStores = await cacheManager.get('stores_list_v3');
-    const cachedProducts = await cacheManager.get('products_page_1_v3');
+    const cachedStores = await cacheManager.get('stores_list_v9');
+    const cachedProducts = await cacheManager.get('products_v9_page1');
     if (cachedStores) { stores = cachedStores; displayStores(); startAutoScroll(); renderFollowedStores(); }
     if (cachedProducts && cachedProducts.items) { allProducts = cachedProducts.items; applyProductsFilter(null); }
     loadCategories();
@@ -2469,6 +2518,7 @@ async function initApp(){
 
   await ensureAuth();
 
+  // تحميل متوازي
   const storesPromise = loadStores();
   const productsPromise = loadFirstProductsPage();
   storesPromise.then(() => loadCategories());
@@ -2481,6 +2531,7 @@ async function initApp(){
   setActiveNav('home');
   setTimeout(() => window.__bzrHideSplash(), 300);
 
+  // تحديث عند العودة
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && db) {
       const lastUpdate = parseInt(sessionStorage.getItem('bzr_last_refresh') || '0');
@@ -2505,7 +2556,25 @@ document.addEventListener('DOMContentLoaded', () => {
   if (open === 'cart') setTimeout(openCart, 800);
 });
 
-window.BranZar = { version: '8.0.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode, clearCache: () => idbCache.clear() };
+window.BranZar = {
+  version: '9.0.0',
+  openStore: openStoreModal,
+  openProduct: openProductModal,
+  openCart,
+  showToast,
+  haptic,
+  setTheme: applyTheme,
+  setView: applyViewMode,
+  clearCache: () => idbCache.clear(),
+  // أدوات تشخيصية جديدة
+  stats: () => ({
+    allProducts: allProducts.length,
+    filteredProducts: filteredProducts.length,
+    exhausted: productsExhausted,
+    totalInDb: productsTotalInDb,
+    hasCursor: !!lastProductsDocSnapshot
+  })
+};
 </script>
 </body>
 </html>
