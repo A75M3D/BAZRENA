@@ -32,12 +32,12 @@
 
 <style>
 /* ═══════════════════════════════════════════
-   BranZar v6.2 — Native App Design System
+   BranZar v6.1 — Native App Design System
    ═══════════════════════════════════════════ */
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --app-bar-h: 72px;
+  --app-bar-h: 58px;
   --search-bar-h: 56px;
   --bottom-nav-h: 66px;
   --c-bg: #F8FAFC;
@@ -79,17 +79,12 @@ body.theme-dark .store-info-card { background: var(--c-surface); }
 body.theme-dark .store-meta-category { background: var(--c-secondary-soft); color: #93C5FD; }
 body.theme-dark .btn-ghost { background: #334155; color: #93C5FD; border-color: #475569; }
 body.theme-dark .scroll-btn { background: #1E293B; border-color: #334155; color: #CBD5E1; }
-body.theme-dark #toast { background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%); color: #0F172A; }
+body.theme-dark #toast { background: #F1F5F9; color: #0F172A; }
 body.theme-dark .notif-btn-dismiss { background: #334155; color: #CBD5E1; }
 body.theme-dark .followed-store-name { color: #F1F5F9; }
 body.theme-dark #bzrSplash { background: linear-gradient(160deg, #0F172A 0%, #1E293B 55%, #3B2410 100%); }
 body.theme-dark .bzr-splash-logo { background: #1E293B; }
 body.theme-dark .account-avatar { background: #1E293B; }
-body.theme-dark #pushToast { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border-color: #334155; }
-body.theme-dark .toast-text { color: #F1F5F9; }
-body.theme-dark .skeleton-card { background: var(--c-surface); border-color: var(--c-border); }
-body.theme-dark .skeleton-img { background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%); background-size: 200% 100%; }
-body.theme-dark .skeleton-line { background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%); background-size: 200% 100%; }
 
 * { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: hidden; }
@@ -128,68 +123,24 @@ body.modal-open { overflow: hidden; }
 .bzr-splash-loader::after { content: ''; position: absolute; top: 0; right: 0; height: 100%; width: 40%; background: linear-gradient(90deg, #FF7A00, #FFA64D); border-radius: 4px; animation: bzrLoad 1.2s ease-in-out infinite; }
 @keyframes bzrLoad { 0% { right: 100%; width: 40%; } 50% { right: 30%; width: 40%; } 100% { right: -40%; width: 40%; } }
 
-/* ═══ APP BAR — LOGO ANLARGED & ENHANCED ═══ */
+/* ═══ APP BAR ═══ */
 .bzr-app-bar {
   position: sticky; top: 0; z-index: 100;
   background: rgba(255,255,255,0.88);
-  backdrop-filter: saturate(180%) blur(22px);
-  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--c-border);
   padding-top: var(--safe-top);
-  box-shadow: 0 1px 0 rgba(15,23,42,0.02), 0 4px 20px -8px rgba(15,23,42,0.08);
 }
-.bzr-app-bar-inner { height: var(--app-bar-h); max-width: 1400px; margin: 0 auto; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-
-/* === LOGO === */
-.bzr-logo-btn { background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 12px; cursor: pointer; flex-shrink: 0; }
-.bzr-logo-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
-.bzr-logo-wrap::before {
-  content: ''; position: absolute; inset: -6px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, rgba(255,122,0,0) 70%);
-  opacity: 0; transition: opacity 0.35s ease;
-  pointer-events: none;
-}
-.bzr-logo-btn:hover .bzr-logo-wrap::before { opacity: 1; }
-.bzr-logo-circle {
-  width: 56px; height: 56px; border-radius: 50%; overflow: hidden;
-  background: #fff;
-  box-shadow: 0 6px 18px rgba(255,122,0,0.32), 0 0 0 3px rgba(255,122,0,0.12), 0 0 0 1px rgba(255,122,0,0.08);
-  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
-  position: relative;
-}
-.bzr-logo-circle::after {
-  content: ''; position: absolute; inset: 0; border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%);
-  pointer-events: none;
-}
+.bzr-app-bar-inner { height: var(--app-bar-h); max-width: 1400px; margin: 0 auto; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.bzr-logo-btn { background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 10px; cursor: pointer; flex-shrink: 0; }
+.bzr-logo-circle { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(255,122,0,0.25); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
 .bzr-logo-btn:active .bzr-logo-circle { transform: scale(0.92); }
-.bzr-logo-circle img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.bzr-brand-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.05; gap: 2px; }
-.bzr-brand-text strong {
-  font-size: 1.18rem; font-weight: 900;
-  background: linear-gradient(135deg, #0F172A 0%, #334155 100%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.3px;
-}
-body.theme-dark .bzr-brand-text strong { background: linear-gradient(135deg, #F1F5F9 0%, #CBD5E1 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.bzr-brand-text small {
-  font-size: 0.68rem; font-weight: 800;
-  color: #FF7A00;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  position: relative;
-  padding-right: 14px;
-}
-.bzr-brand-text small::before {
-  content: ''; position: absolute;
-  right: 0; top: 50%; transform: translateY(-50%);
-  width: 8px; height: 2px; border-radius: 2px;
-  background: #FF7A00;
-}
+.bzr-logo-circle img { width: 100%; height: 100%; object-fit: contain; }
+.bzr-brand-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
+.bzr-brand-text strong { font-size: 1rem; font-weight: 900; color: var(--c-text); }
+.bzr-brand-text small { font-size: 0.65rem; font-weight: 700; color: #FF7A00; letter-spacing: 0.6px; }
 @media (max-width: 400px) { .bzr-brand-text { display: none; } }
-
 .bzr-app-actions { display: flex; align-items: center; gap: 6px; }
 .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--c-surface-2); border: none; display: inline-flex; align-items: center; justify-content: center; color: var(--c-text-soft); font-size: 1rem; cursor: pointer; position: relative; transition: background 0.2s, color 0.2s, transform 0.15s; overflow: hidden; }
 .icon-btn:active { transform: scale(0.9); }
@@ -258,8 +209,7 @@ body.view-desktop .store-card .store-category { font-size: 0.75rem; }
 .store-card .store-info { padding: 0 18px 18px; text-align: right; }
 .store-card .store-name { font-weight: 800; font-size: 1.02rem; color: var(--c-text); display: flex; align-items: center; gap: 5px; margin-top: 6px; }
 .store-card .store-category { color: var(--c-text-soft); font-size: 0.82rem; margin-top: 2px; }
-.product-card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 18px; overflow: hidden; box-shadow: 0 3px 12px rgba(15,23,42,0.05); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; display: flex; flex-direction: column; animation: productFadeIn 0.35s ease both; }
-@keyframes productFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.product-card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 18px; overflow: hidden; box-shadow: 0 3px 12px rgba(15,23,42,0.05); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; display: flex; flex-direction: column; }
 .product-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(255,122,0,0.14); border-color: #FFE0BD; }
 .product-card:active { transform: translateY(-1px) scale(0.98); }
 .product-image-container { background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; height: 140px; }
@@ -268,63 +218,6 @@ body.view-desktop .store-card .store-category { font-size: 0.75rem; }
 .product-card:hover .product-image-container img { transform: scale(1.06); }
 .verified-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: linear-gradient(135deg, #3B82F6, #1E40AF); border-radius: 50%; color: #fff; font-size: 10px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(30,64,175,0.4); }
 .all-products-total-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border-radius: 9999px; padding: 0.4rem 0.9rem; font-size: 0.78rem; font-weight: 800; white-space: nowrap; box-shadow: 0 6px 16px -6px rgba(255,122,0,0.65); }
-
-/* ═══ SKELETON LOADERS ═══ */
-.skeleton-card {
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-radius: 18px;
-  overflow: hidden;
-  display: flex; flex-direction: column;
-}
-.skeleton-img {
-  width: 100%; height: 140px;
-  background: linear-gradient(90deg, var(--c-surface-2) 25%, var(--c-border) 50%, var(--c-surface-2) 75%);
-  background-size: 200% 100%;
-  animation: skeletonShimmer 1.4s ease-in-out infinite;
-}
-@media (min-width: 640px) { .skeleton-img { height: 170px; } }
-.skeleton-body { padding: 0.75rem; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-.skeleton-line {
-  height: 12px; border-radius: 6px;
-  background: linear-gradient(90deg, var(--c-surface-2) 25%, var(--c-border) 50%, var(--c-surface-2) 75%);
-  background-size: 200% 100%;
-  animation: skeletonShimmer 1.4s ease-in-out infinite;
-}
-.skeleton-line.w-80 { width: 80%; }
-.skeleton-line.w-60 { width: 60%; }
-.skeleton-line.w-40 { width: 40%; }
-.skeleton-line.h-14 { height: 14px; }
-.skeleton-line.h-32 { height: 32px; margin-top: 4px; }
-@keyframes skeletonShimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* Store skeleton */
-.skeleton-store-card {
-  width: 260px; flex-shrink: 0;
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-radius: 20px;
-  overflow: hidden;
-}
-.skeleton-store-cover {
-  height: 140px; width: 100%;
-  background: linear-gradient(90deg, var(--c-surface-2) 25%, var(--c-border) 50%, var(--c-surface-2) 75%);
-  background-size: 200% 100%;
-  animation: skeletonShimmer 1.4s ease-in-out infinite;
-}
-.skeleton-store-body { padding: 0 18px 18px; }
-.skeleton-store-logo {
-  width: 68px; height: 68px; border-radius: 50%;
-  margin-top: -34px; margin-right: 18px;
-  background: linear-gradient(90deg, var(--c-surface-2) 25%, var(--c-border) 50%, var(--c-surface-2) 75%);
-  background-size: 200% 100%;
-  animation: skeletonShimmer 1.4s ease-in-out infinite;
-  border: 4px solid var(--c-surface);
-  position: relative; z-index: 2;
-}
 
 /* ═══ PRODUCTS GRID ═══ */
 #allProductsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
@@ -494,159 +387,118 @@ body.theme-dark .hero-section { background: linear-gradient(180deg, #1E293B 0%, 
 #installButtonFloating.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
 /* ═══════════════════════════════════════════
-   UPDATE BUTTON v2
+   UPDATE BUTTON — نسخة أنيقة v2
    ═══════════════════════════════════════════ */
-#updateAvailableBtn { position: fixed; top: calc(var(--safe-top) + 12px); left: 50%; transform: translate(-50%, calc(-100% - 40px)); z-index: 10002; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: 2px solid rgba(255,255,255,0.3); border-radius: 9999px; padding: 0.55rem 1.15rem 0.55rem 0.55rem; display: flex; align-items: center; gap: 12px; box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, opacity 0.3s; direction: rtl; font-family: 'Cairo', sans-serif; max-width: calc(100% - 24px); pointer-events: none; opacity: 0; }
-#updateAvailableBtn.show { transform: translate(-50%, 0); pointer-events: auto; opacity: 1; animation: updatePulse 2.5s ease-in-out infinite; }
-#updateAvailableBtn:hover { box-shadow: 0 25px 55px -12px rgba(255,122,0,1), 0 10px 25px -8px rgba(0,0,0,0.35); }
+#updateAvailableBtn {
+  position: fixed;
+  top: calc(var(--safe-top) + 12px);
+  left: 50%;
+  transform: translate(-50%, calc(-100% - 40px));
+  z-index: 10002;
+  background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 9999px;
+  padding: 0.55rem 1.15rem 0.55rem 0.55rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, opacity 0.3s;
+  direction: rtl;
+  font-family: 'Cairo', sans-serif;
+  max-width: calc(100% - 24px);
+  pointer-events: none;
+  opacity: 0;
+}
+#updateAvailableBtn.show {
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+  opacity: 1;
+  animation: updatePulse 2.5s ease-in-out infinite;
+}
+#updateAvailableBtn:hover {
+  box-shadow: 0 25px 55px -12px rgba(255,122,0,1), 0 10px 25px -8px rgba(0,0,0,0.35);
+}
 #updateAvailableBtn:active { transform: translate(-50%, 0) scale(0.97); }
 #updateAvailableBtn:disabled { cursor: wait; opacity: 0.9; }
-.update-icon-wrap { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
-.update-icon-wrap i { color: #fff; font-size: 1.15rem; animation: bounceUpdate 2s ease-in-out infinite; }
-@keyframes bounceUpdate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-.update-text-wrap { display: flex; flex-direction: column; line-height: 1.2; text-align: right; }
-.update-text-wrap strong { font-size: 0.92rem; font-weight: 900; letter-spacing: 0.2px; }
-.update-text-wrap span { font-size: 0.72rem; opacity: 0.92; font-weight: 600; margin-top: 2px; }
-.update-arrow { color: rgba(255,255,255,0.85); font-size: 0.75rem; flex-shrink: 0; animation: slideArrow 1.5s ease-in-out infinite; }
-@keyframes slideArrow { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
-@keyframes updatePulse { 0%, 100% { box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3); } 50% { box-shadow: 0 20px 50px -10px rgba(255,122,0,1), 0 8px 35px -4px rgba(255,122,0,0.7); } }
-@media (max-width: 480px) { #updateAvailableBtn { padding: 0.5rem 0.9rem 0.5rem 0.5rem; gap: 9px; } .update-icon-wrap { width: 38px; height: 38px; } .update-icon-wrap i { font-size: 1rem; } .update-text-wrap strong { font-size: 0.82rem; } .update-text-wrap span { font-size: 0.66rem; } }
-
-/* ═══════════════════════════════════════════
-   BEAUTIFUL TOAST v6.2
-   ═══════════════════════════════════════════ */
-#toast {
-  position: fixed; top: 24px; left: 50%;
-  transform: translateX(-50%) translateY(-140%);
-  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-  color: #fff;
-  padding: 0.7rem 1.2rem 0.7rem 0.7rem;
-  border-radius: 18px; z-index: 3000;
-  opacity: 0; pointer-events: none;
-  transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
-  font-weight: 700; font-size: 0.9rem;
-  box-shadow: 0 22px 55px rgba(15,23,42,0.4), 0 0 0 1px rgba(255,255,255,0.06);
-  max-width: calc(100vw - 32px);
-  display: flex; align-items: center; gap: 12px;
-  direction: rtl;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-#toast::before {
-  content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px;
-  background: linear-gradient(90deg, #FF7A00, #FFA64D, #FF7A00);
-  background-size: 200% 100%;
-  animation: shimmerLine 2s linear infinite;
-}
-@keyframes shimmerLine { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-#toast .toast-icon {
-  width: 38px; height: 38px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 1rem; flex-shrink: 0;
-  background: linear-gradient(135deg, #FF7A00, #FFA64D);
-  box-shadow: 0 6px 16px -4px rgba(255,122,0,0.6);
-}
-#toast.toast-success .toast-icon { background: linear-gradient(135deg, #10B981, #059669); box-shadow: 0 6px 16px -4px rgba(16,185,129,0.6); }
-#toast.toast-error   .toast-icon { background: linear-gradient(135deg, #EF4444, #DC2626); box-shadow: 0 6px 16px -4px rgba(239,68,68,0.6); }
-#toast.toast-warning .toast-icon { background: linear-gradient(135deg, #F59E0B, #D97706); box-shadow: 0 6px 16px -4px rgba(245,158,11,0.6); }
-#toast.toast-info    .toast-icon { background: linear-gradient(135deg, #3B82F6, #1E40AF); box-shadow: 0 6px 16px -4px rgba(59,130,246,0.6); }
-#toast .toast-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 78vw; }
-#toast .toast-progress {
-  position: absolute; bottom: 0; right: 0; height: 3px;
-  border-radius: 0 0 18px 0;
-  background: linear-gradient(90deg, #FF7A00, #FFA64D);
-  animation: toastProgress 2.8s linear forwards;
-}
-#toast.toast-success .toast-progress { background: linear-gradient(90deg, #10B981, #34D399); }
-#toast.toast-error   .toast-progress { background: linear-gradient(90deg, #EF4444, #F87171); }
-#toast.toast-warning .toast-progress { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
-#toast.toast-info    .toast-progress { background: linear-gradient(90deg, #3B82F6, #60A5FA); }
-@keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
-
-/* ═══════════════════════════════════════════
-   BEAUTIFUL PUSH TOAST
-   ═══════════════════════════════════════════ */
-#pushToast {
-  position: fixed; top: 20px; left: 50%;
-  transform: translate(-50%, -220%);
-  z-index: 10000;
-  background: linear-gradient(135deg, #FFFFFF 0%, #FFF7ED 100%);
-  border: 1.5px solid #FFE0BD;
-  border-radius: 22px;
-  padding: 14px 18px;
-  box-shadow: 0 24px 60px -18px rgba(255,122,0,0.45), 0 0 0 4px rgba(255,122,0,0.06);
-  max-width: 400px; width: calc(100% - 32px);
-  display: flex; align-items: center; gap: 14px;
-  transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
-  direction: rtl;
-  overflow: hidden;
-}
-#pushToast::before {
-  content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px;
-  background: linear-gradient(90deg, #FF7A00, #FFA64D, #FF7A00);
-  background-size: 200% 100%;
-  animation: shimmerLine 2s linear infinite;
-}
-#pushToast.show { transform: translate(-50%, 0); }
-#pushToast .push-icon {
-  width: 48px; height: 48px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
+.update-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  background: linear-gradient(135deg, #FF7A00, #FFA64D);
-  box-shadow: 0 10px 22px -6px rgba(255,122,0,0.65);
   position: relative;
 }
-#pushToast .push-icon::after {
-  content: ''; position: absolute; inset: -3px;
-  border-radius: 50%; border: 2px solid rgba(255,122,0,0.35);
-  animation: bellPulse 2s ease-out infinite;
+.update-icon-wrap i {
+  color: #fff;
+  font-size: 1.15rem;
+  animation: bounceUpdate 2s ease-in-out infinite;
 }
-@keyframes bellPulse { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.4); opacity: 0; } }
-#pushToast .push-icon i { color: #fff; font-size: 1.25rem; }
-#pushToast .push-body { flex: 1; min-width: 0; text-align: right; }
-#pushToast #pushToastTitle { font-weight: 900; font-size: 0.95rem; color: var(--c-text); margin-bottom: 3px; }
-#pushToast #pushToastBody { font-size: 0.8rem; color: var(--c-text-soft); font-weight: 600; line-height: 1.5; }
+@keyframes bounceUpdate {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.update-text-wrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  text-align: right;
+}
+.update-text-wrap strong {
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+.update-text-wrap span {
+  font-size: 0.72rem;
+  opacity: 0.92;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.update-arrow {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  animation: slideArrow 1.5s ease-in-out infinite;
+}
+@keyframes slideArrow {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-4px); }
+}
+@keyframes updatePulse {
+  0%, 100% { box-shadow: 0 20px 45px -12px rgba(255,122,0,0.85), 0 8px 20px -8px rgba(0,0,0,0.3); }
+  50% { box-shadow: 0 20px 50px -10px rgba(255,122,0,1), 0 8px 35px -4px rgba(255,122,0,0.7); }
+}
+@media (max-width: 480px) {
+  #updateAvailableBtn { padding: 0.5rem 0.9rem 0.5rem 0.5rem; gap: 9px; }
+  .update-icon-wrap { width: 38px; height: 38px; }
+  .update-icon-wrap i { font-size: 1rem; }
+  .update-text-wrap strong { font-size: 0.82rem; }
+  .update-text-wrap span { font-size: 0.66rem; }
+}
 
-/* ═══════════════════════════════════════════
-   BEAUTIFUL NEW STORE NOTIFICATION
-   ═══════════════════════════════════════════ */
-#newStoreNotification {
-  position: fixed; bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px); left: 16px;
-  z-index: 9998;
-  background: linear-gradient(135deg, #FFFFFF 0%, #FFF7ED 100%);
-  border-radius: 22px;
-  padding: 14px 18px;
-  box-shadow: 0 18px 50px -12px rgba(255,122,0,0.35), 0 0 0 1.5px #FFE0BD;
-  border: none;
-  display: flex; align-items: center; gap: 12px;
-  max-width: 380px; width: calc(100% - 32px);
-  transform: translateX(-130%);
-  transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
-  direction: rtl; cursor: pointer; overflow: hidden;
-}
-body.theme-dark #newStoreNotification { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); box-shadow: 0 18px 50px -12px rgba(0,0,0,0.6), 0 0 0 1.5px #334155; }
+#notifPermissionBanner { position: fixed; bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px); left: 50%; transform: translate(-50%, 200%); z-index: 9998; background: var(--c-surface); border: 2px solid #FFE0BD; border-radius: 24px; padding: 18px; box-shadow: 0 25px 70px rgba(255,122,0,0.25); max-width: 440px; width: calc(100% - 32px); transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s; direction: rtl; opacity: 0; pointer-events: none; }
+#notifPermissionBanner.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.notif-bell-icon { width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, #FF7A00, #FFA64D); display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: bellRing 3s ease-in-out infinite; box-shadow: 0 10px 24px -6px rgba(255,122,0,0.6); }
+@keyframes bellRing { 0%,100% { transform: rotate(0); } 5%,15%,25% { transform: rotate(-14deg); } 10%,20%,30% { transform: rotate(14deg); } 35% { transform: rotate(0); } }
+.notif-bell-icon i { color: #fff; font-size: 1.5rem; }
+.notif-btn-enable { display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1; height: 46px; background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border: none; border-radius: 9999px; font-weight: 800; font-size: 0.9rem; cursor: pointer; }
+.notif-btn-dismiss { display: flex; align-items: center; justify-content: center; height: 46px; padding: 0 20px; background: var(--c-surface-2); color: var(--c-text-soft); border: none; border-radius: 9999px; font-weight: 700; font-size: 0.88rem; cursor: pointer; }
+#pushToast { position: fixed; top: 20px; left: 50%; transform: translate(-50%, -200%); z-index: 10000; background: var(--c-surface); border: 2px solid #FF7A00; border-radius: 18px; padding: 14px 18px; box-shadow: 0 20px 50px rgba(255,122,0,0.35); max-width: 380px; width: calc(100% - 32px); display: flex; align-items: center; gap: 12px; transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1); direction: rtl; }
+#pushToast.show { transform: translate(-50%, 0); }
+#pushToast .push-icon { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #FF7A00, #FFA64D); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+#pushToast .push-icon i { color: #fff; font-size: 1.1rem; }
+#toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #0F172A; color: #fff; padding: 0.75rem 1.5rem; border-radius: 9999px; z-index: 3000; opacity: 0; pointer-events: none; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); font-weight: 700; font-size: 0.9rem; box-shadow: 0 15px 40px rgba(15,23,42,0.35); max-width: 90vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#newStoreNotification { position: fixed; bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px); left: 16px; z-index: 9998; background: var(--c-surface); border-radius: 18px; padding: 12px 16px; box-shadow: 0 10px 40px rgba(255,122,0,0.18); border: 1.5px solid #FFE0BD; display: flex; align-items: center; gap: 12px; max-width: 360px; width: calc(100% - 32px); transform: translateX(-120%); transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1); direction: rtl; cursor: pointer; overflow: hidden; }
 #newStoreNotification.show { transform: translateX(0); }
-#newStoreNotification::before {
-  content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px;
-  background: linear-gradient(90deg, #FF7A00, #FFA64D, #FF7A00);
-  background-size: 200% 100%;
-  animation: shimmerLine 2s linear infinite;
-}
-.notif-pulse {
-  position: absolute; top: 14px; left: 14px;
-  width: 9px; height: 9px;
-  background: #FF7A00; border-radius: 50%;
-  box-shadow: 0 0 0 0 rgba(255,122,0,0.7);
-  animation: pulseNotif 2s infinite;
-}
-@keyframes pulseNotif {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,122,0,0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(255,122,0,0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,122,0,0); }
-}
-
-/* ═══ FOLLOWED STORES ═══ */
+.notif-pulse { position: absolute; top: 14px; left: 14px; width: 8px; height: 8px; background: #FF7A00; border-radius: 50%; box-shadow: 0 0 0 0 rgba(255,122,0,0.7); animation: pulseNotif 2s infinite; }
+@keyframes pulseNotif { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,122,0,0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255,122,0,0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,122,0,0); } }
 .followed-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 0.8rem; padding: 0.75rem 0 1rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .followed-scroll-container::-webkit-scrollbar { display: none; }
 .followed-store-item { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; width: 80px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
@@ -654,84 +506,6 @@ body.theme-dark #newStoreNotification { background: linear-gradient(135deg, #1E2
 .followed-store-avatar { width: 62px; height: 62px; border-radius: 50%; border: 3px solid #FF7A00; background: var(--c-surface); padding: 3px; box-shadow: 0 4px 12px rgba(255,122,0,0.25); overflow: hidden; }
 .followed-store-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; pointer-events: none; }
 .followed-store-name { font-size: 0.72rem; font-weight: 700; color: var(--c-text); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
-
-/* ═══════════════════════════════════════════
-   NOTIFICATION PERMISSION BANNER
-   ═══════════════════════════════════════════ */
-#notifPermissionBanner {
-  position: fixed;
-  bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 16px);
-  left: 50%; transform: translate(-50%, 200%);
-  z-index: 9998;
-  background: linear-gradient(135deg, #FFFFFF 0%, #FFF7ED 100%);
-  border: 1.5px solid #FFE0BD;
-  border-radius: 24px;
-  padding: 18px;
-  box-shadow: 0 25px 70px -10px rgba(255,122,0,0.35);
-  max-width: 440px; width: calc(100% - 32px);
-  transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s;
-  direction: rtl; opacity: 0; pointer-events: none;
-  overflow: hidden;
-}
-body.theme-dark #notifPermissionBanner { background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); box-shadow: 0 25px 70px -10px rgba(0,0,0,0.6), 0 0 0 1.5px #334155; }
-#notifPermissionBanner::before {
-  content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px;
-  background: linear-gradient(90deg, #FF7A00, #FFA64D, #FF7A00);
-  background-size: 200% 100%;
-  animation: shimmerLine 2s linear infinite;
-}
-#notifPermissionBanner.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
-.notif-bell-icon { width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, #FF7A00, #FFA64D); display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: bellRing 3s ease-in-out infinite; box-shadow: 0 10px 24px -6px rgba(255,122,0,0.6); }
-@keyframes bellRing { 0%,100% { transform: rotate(0); } 5%,15%,25% { transform: rotate(-14deg); } 10%,20%,30% { transform: rotate(14deg); } 35% { transform: rotate(0); } }
-.notif-bell-icon i { color: #fff; font-size: 1.5rem; }
-.notif-btn-enable { display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1; height: 46px; background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border: none; border-radius: 9999px; font-weight: 800; font-size: 0.9rem; cursor: pointer; box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6); }
-.notif-btn-dismiss { display: flex; align-items: center; justify-content: center; height: 46px; padding: 0 20px; background: var(--c-surface-2); color: var(--c-text-soft); border: none; border-radius: 9999px; font-weight: 700; font-size: 0.88rem; cursor: pointer; }
-
-/* ═══════════════════════════════════════════
-   NETWORK STATUS BANNER — NEW v6.2
-   ═══════════════════════════════════════════ */
-#networkBanner {
-  position: fixed;
-  top: calc(var(--safe-top) + var(--app-bar-h) + var(--search-bar-h) + 8px);
-  left: 50%;
-  transform: translate(-50%, -160%);
-  z-index: 10001;
-  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-  color: #fff;
-  padding: 0.6rem 1.25rem;
-  border-radius: 9999px;
-  font-weight: 800;
-  font-size: 0.82rem;
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 12px 30px -6px rgba(239,68,68,0.55), 0 0 0 4px rgba(239,68,68,0.1);
-  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
-  pointer-events: none;
-  direction: rtl;
-  max-width: calc(100vw - 24px);
-  white-space: nowrap;
-}
-#networkBanner.show { transform: translate(-50%, 0); pointer-events: auto; }
-#networkBanner.online { background: linear-gradient(135deg, #10B981 0%, #059669 100%); box-shadow: 0 12px 30px -6px rgba(16,185,129,0.55), 0 0 0 4px rgba(16,185,129,0.1); }
-#networkBanner .net-dot {
-  width: 8px; height: 8px; border-radius: 50%; background: #fff;
-  animation: netPulse 1.5s ease-in-out infinite;
-}
-@keyframes netPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-/* ═══ EMPTY STATE ═══ */
-.empty-state {
-  text-align: center; padding: 3rem 1rem;
-  animation: emptyFade 0.5s ease;
-}
-@keyframes emptyFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.empty-state .empty-icon {
-  width: 90px; height: 90px; border-radius: 50%;
-  background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
-  display: inline-flex; align-items: center; justify-content: center;
-  color: #FF7A00; font-size: 2.2rem; margin-bottom: 1rem;
-  box-shadow: 0 12px 30px -8px rgba(255,122,0,0.35);
-}
-
 @media print { body * { display: none !important; } body::before { content: '© 2026 BranZar | المحتوى محمي'; display: block !important; font-family: 'Cairo', sans-serif; color: #FF7A00; text-align: center; padding: 3rem; direction: rtl; font-weight: 900; } }
 .bzr-page-fade { animation: pageFade 0.4s ease; }
 @keyframes pageFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -891,13 +665,11 @@ setTimeout(function(){
 })();
 </script>
 
-<!-- APP BAR — LOGO ANLARGED -->
+<!-- APP BAR -->
 <header class="bzr-app-bar">
   <div class="bzr-app-bar-inner">
     <button class="bzr-logo-btn" id="logoMenuBtn" aria-label="الرئيسية">
-      <div class="bzr-logo-wrap">
-        <div class="bzr-logo-circle"><img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="BranZar" fetchpriority="high"></div>
-      </div>
+      <div class="bzr-logo-circle"><img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="BranZar" fetchpriority="high"></div>
       <div class="bzr-brand-text"><strong>بران زار</strong><small>BRANZAR</small></div>
     </button>
     <div class="bzr-app-actions">
@@ -915,12 +687,6 @@ setTimeout(function(){
     </div>
   </div>
 </header>
-
-<!-- NETWORK BANNER -->
-<div id="networkBanner" role="status" aria-live="polite">
-  <span class="net-dot"></span>
-  <span id="networkBannerText">لا يوجد اتصال بالإنترنت</span>
-</div>
 
 <!-- SEARCH BAR -->
 <div class="bzr-search-bar-wrap">
@@ -985,9 +751,13 @@ setTimeout(function(){
         </div>
       </div>
       <div id="storesScrollContainer" class="stores-scroll-container"></div>
-      <div id="storesEmpty" class="hidden empty-state">
-        <div class="empty-icon"><i class="fas fa-store-slash"></i></div>
-        <p id="storesErrorMessage" style="color:var(--c-text-soft);margin-bottom:1rem;font-weight:700;">لا توجد متاجر</p>
+      <div id="storesLoader" class="hidden" style="text-align:center;padding:3rem 0;">
+        <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#FF7A00;margin-bottom:0.75rem;display:block;"></i>
+        <p style="color:var(--c-text-soft);font-weight:600;">جاري تحميل المتاجر...</p>
+      </div>
+      <div id="storesEmpty" class="hidden" style="text-align:center;padding:3rem 0;">
+        <i class="fas fa-store-slash" style="font-size:3rem;color:#CBD5E1;margin-bottom:0.75rem;display:block;"></i>
+        <p id="storesErrorMessage" style="color:var(--c-text-soft);margin-bottom:1rem;">لا توجد متاجر</p>
         <button id="retryStoresBtn" class="btn-primary ripple" style="padding:0.7rem 1.75rem;border-radius:9999px;">إعادة المحاولة</button>
       </div>
     </div>
@@ -1017,9 +787,13 @@ setTimeout(function(){
         <h2 style="font-size:clamp(1.25rem,3vw,1.75rem);font-weight:900;color:var(--c-text);margin:0;">جميع المنتجات</h2>
       </div>
       <div id="allProductsGrid"></div>
-      <div id="allProductsEmpty" class="hidden empty-state">
-        <div class="empty-icon"><i class="fas fa-box-open"></i></div>
-        <p style="color:var(--c-text-soft);font-weight:700;">لا توجد منتجات في هذه الفئة</p>
+      <div id="allProductsLoader" class="hidden" style="text-align:center;padding:3rem 0;">
+        <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#FF7A00;margin-bottom:0.75rem;display:block;"></i>
+        <p style="color:var(--c-text-soft);font-weight:600;">جاري تحميل المنتجات...</p>
+      </div>
+      <div id="allProductsEmpty" class="hidden" style="text-align:center;padding:3rem 0;">
+        <i class="fas fa-box-open" style="font-size:3rem;color:#CBD5E1;margin-bottom:0.75rem;display:block;"></i>
+        <p style="color:var(--c-text-soft);font-weight:600;">لا توجد منتجات في هذه الفئة</p>
       </div>
       <div style="text-align:center;margin-top:2rem;">
         <button id="loadMoreProductsBtn" class="load-more-btn ripple hidden"><span>عرض المزيد</span><i class="fas fa-chevron-down"></i></button>
@@ -1194,7 +968,9 @@ setTimeout(function(){
   </div>
 </nav>
 
-<!-- UPDATE BUTTON -->
+<!-- ═══════════════════════════════════════════
+     UPDATE BUTTON — نسخة أنيقة v2
+     ═══════════════════════════════════════════ -->
 <button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث التطبيق">
   <div class="update-icon-wrap"><i class="fas fa-cloud-download-alt"></i></div>
   <div class="update-text-wrap">
@@ -1225,9 +1001,9 @@ setTimeout(function(){
 <!-- PUSH TOAST -->
 <div id="pushToast">
   <div class="push-icon"><i class="fas fa-bell"></i></div>
-  <div class="push-body">
-    <div id="pushToastTitle">إشعار جديد</div>
-    <div id="pushToastBody">لديك جديد في BranZar</div>
+  <div style="flex:1;min-width:0;text-align:right;">
+    <div id="pushToastTitle" style="font-weight:800;font-size:0.9rem;color:var(--c-text);">إشعار جديد</div>
+    <div id="pushToastBody" style="font-size:0.78rem;color:var(--c-text-soft);margin-top:2px;">لديك جديد</div>
   </div>
 </div>
 
@@ -1254,7 +1030,7 @@ setTimeout(function(){
 
 <script>
 /* ═══════════════════════════════════════════
-   BranZar App Core v6.2
+   BranZar App Core v6.1
    ═══════════════════════════════════════════ */
 
 /* Splash */
@@ -1299,30 +1075,13 @@ function haptic(type){
   } catch(e){}
 }
 function sanitizeHTML(str){ if (!str) return ''; const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
-
-/* ═══════════════════════════════════════════
-   BEAUTIFUL TOAST v6.2
-   ═══════════════════════════════════════════ */
-function showToast(msg, type){
-  type = type || 'info';
+function showToast(msg){
   const t = document.getElementById('toast');
   if (!t) return;
-  const icons = {
-    success: 'fa-check',
-    error: 'fa-times',
-    warning: 'fa-exclamation',
-    info: 'fa-info'
-  };
-  t.className = '';
-  void t.offsetWidth;
-  t.className = 'toast-' + type;
-  t.innerHTML =
-    '<div class="toast-icon"><i class="fas ' + (icons[type] || icons.info) + '"></i></div>' +
-    '<span class="toast-text">' + sanitizeHTML(msg) + '</span>' +
-    '<div class="toast-progress"></div>';
+  t.textContent = msg;
   t.classList.add('show');
   clearTimeout(window.__toastTO);
-  window.__toastTO = setTimeout(() => t.classList.remove('show'), 2900);
+  window.__toastTO = setTimeout(() => t.classList.remove('show'), 2500);
 }
 function animateCartBounce(){
   const btn = document.getElementById('cartButton');
@@ -1339,76 +1098,6 @@ document.addEventListener('pointerdown', (e) => {
   void el.offsetWidth;
   el.classList.add('animate');
 }, { passive: true });
-
-/* ═══════════════════════════════════════════
-   NETWORK STATUS DETECTION — NEW v6.2
-   ═══════════════════════════════════════════ */
-const networkBanner = document.getElementById('networkBanner');
-const networkBannerText = document.getElementById('networkBannerText');
-let _lastOnlineState = navigator.onLine;
-let _netBannerHideTO = null;
-
-function _showNetworkBanner(online, customText){
-  if (!networkBanner) return;
-  if (_netBannerHideTO) { clearTimeout(_netBannerHideTO); _netBannerHideTO = null; }
-  networkBanner.classList.toggle('online', !!online);
-  networkBannerText.textContent = customText || (online ? 'متصل بالإنترنت' : 'لا يوجد اتصال بالإنترنت');
-  networkBanner.classList.add('show');
-}
-function _hideNetworkBanner(delay){
-  if (!networkBanner) return;
-  if (_netBannerHideTO) clearTimeout(_netBannerHideTO);
-  _netBannerHideTO = setTimeout(() => {
-    networkBanner.classList.remove('show');
-  }, delay || 2500);
-}
-
-window.addEventListener('offline', () => {
-  _lastOnlineState = false;
-  _showNetworkBanner(false, 'لا يوجد اتصال بالإنترنت');
-  try { haptic('heavy'); } catch(e){}
-});
-
-window.addEventListener('online', () => {
-  _lastOnlineState = true;
-  _showNetworkBanner(true, 'تم استعادة الاتصال');
-  _hideNetworkBanner(2600);
-  try { haptic('medium'); } catch(e){}
-  // Reload data if we were offline
-  setTimeout(() => {
-    if (typeof loadStores === 'function') loadStores(true).catch(() => {});
-    if (typeof loadAllProducts === 'function') loadAllProducts(true).catch(() => {});
-  }, 400);
-});
-
-/* Effective connection type check */
-let _slowNetNotified = false;
-function _checkEffectiveConnection(){
-  try {
-    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (!conn) return;
-    const eff = conn.effectiveType;
-    const isSlow = (eff === 'slow-2g' || eff === '2g');
-    if (isSlow && !_slowNetNotified && isPageVisible) {
-      _slowNetNotified = true;
-      _showNetworkBanner(false, '⚠️ اتصالك بطيء - التحميل قد يستغرق وقتاً');
-      _hideNetworkBanner(4500);
-      showToast('⚠️ اتصالك بطيء قليلاً', 'warning');
-    } else if (!isSlow) {
-      _slowNetNotified = false;
-    }
-  } catch(e){}
-}
-_checkEffectiveConnection();
-try {
-  const _conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  if (_conn && _conn.addEventListener) _conn.addEventListener('change', _checkEffectiveConnection);
-} catch(e){}
-
-/* Initial state check */
-if (!navigator.onLine) {
-  _showNetworkBanner(false, 'لا يوجد اتصال بالإنترنت');
-}
 
 /* ═══ Theme ═══ */
 const THEME_KEY = 'branzar_theme';
@@ -1470,8 +1159,7 @@ let cart = [];
 try { cart = JSON.parse(localStorage.getItem('myStoresCart')) || []; } catch(e){ cart = []; }
 let stores = [], categories = [], allProducts = [], filteredProducts = [];
 let displayedProductsCount = 0, currentCategory = null;
-/* ✅ 20 منتج بالمرة الواحدة */
-const PRODUCTS_PER_PAGE = 20;
+const PRODUCTS_PER_PAGE = 10;
 let currentStore = null, currentStoreId = null, currentFollowersCount = 0, isFollowing = false, isUpdatingFollow = false;
 let productsUnsubscribe = null, storesUnsubscribe = null;
 let isFirstProductsSnapshot = true, isFirstStoresSnapshot = true;
@@ -1567,7 +1255,11 @@ function getFallbackHex(colorName){
   return result;
 }
 
-/* ═══ Auto-scroll Stores ═══ */
+/* ═══════════════════════════════════════════
+   AUTO-SCROLL STORES
+   يبدأ من أول متجر → آخر متجر → يعود للأول
+   يتوقف عند اللمس → يستأنف بعد 5 ثواني
+   ═══════════════════════════════════════════ */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
@@ -1624,6 +1316,8 @@ async function initFCM(){
   try {
     if (!isNotificationSupported()) return;
     messaging = firebase.messaging();
+
+    // ✅ استخدام الـ SW الرئيسي — لا تسجيل SW جديد
     const reg = await navigator.serviceWorker.ready;
 
     messaging.onMessage((payload) => {
@@ -1631,6 +1325,7 @@ async function initFCM(){
       const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
       showPushToast(title, body);
 
+      // إظهار إشعار في المقدمة أيضاً
       if (Notification.permission === 'granted') {
         try {
           const n = new Notification(title, {
@@ -1660,10 +1355,10 @@ function hideNotifBanner(){ const b = document.getElementById('notifPermissionBa
 async function registerFCMToken(reg){
   try { const token = await messaging.getToken({ vapidKey: VAPID_PUBLIC_KEY, serviceWorkerRegistration: reg }); if (!token) return null; localStorage.setItem(FCM_TOKEN_KEY, token); const prev = localStorage.getItem(FCM_TOKEN_KEY + '_saved'); if (prev !== token) { await db.collection('fcm_tokens').doc(token).set({ token, userAgent: navigator.userAgent, platform: navigator.platform || 'unknown', language: navigator.language || 'ar', createdAt: firebase.firestore.FieldValue.serverTimestamp(), lastSeen: firebase.firestore.FieldValue.serverTimestamp(), active: true }, { merge: true }); localStorage.setItem(FCM_TOKEN_KEY + '_saved', token); } return token; } catch(err){ return null; }
 }
-function showPushToast(title, body){ const t = document.getElementById('pushToast'); if (!t) return; document.getElementById('pushToastTitle').textContent = title; document.getElementById('pushToastBody').textContent = body; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 5500); }
+function showPushToast(title, body){ const t = document.getElementById('pushToast'); if (!t) return; document.getElementById('pushToastTitle').textContent = title; document.getElementById('pushToastBody').textContent = body; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 5000); }
 document.getElementById('enableNotifBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('enableNotifBtn'); btn.disabled = true;
-  try { const perm = await Notification.requestPermission(); if (perm === 'granted') { const reg = await navigator.serviceWorker.ready; await registerFCMToken(reg); hideNotifBanner(); showToast('تم تفعيل الإشعارات بنجاح', 'success'); haptic('medium'); } else { hideNotifBanner(); localStorage.setItem(NOTIF_DISMISS_KEY, Date.now().toString()); } } catch(err){}
+  try { const perm = await Notification.requestPermission(); if (perm === 'granted') { const reg = await navigator.serviceWorker.ready; await registerFCMToken(reg); hideNotifBanner(); showToast('✅ تم تفعيل الإشعارات'); haptic('medium'); } else { hideNotifBanner(); localStorage.setItem(NOTIF_DISMISS_KEY, Date.now().toString()); } } catch(err){}
   btn.disabled = false;
 });
 document.getElementById('dismissNotifBtn')?.addEventListener('click', () => { hideNotifBanner(); localStorage.setItem(NOTIF_DISMISS_KEY, Date.now().toString()); });
@@ -1779,7 +1474,7 @@ bottomNav?.addEventListener('click', (e) => {
   else if (nav === 'followed') {
     const sec = document.getElementById('followedStoresSection');
     if (sec && !sec.classList.contains('hidden')) { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); setActiveNav('followed'); }
-    else { showToast('لم تتابع أي متجر بعد', 'info'); setActiveNav('home'); }
+    else { showToast('💡 لم تتابع أي متجر بعد'); setActiveNav('home'); }
   }
   else if (nav === 'cart') { openCart(); setActiveNav('cart'); }
   else if (nav === 'account') { openAccountModal(); }
@@ -1810,9 +1505,9 @@ let deferredPrompt = null;
 function isAppInstalled(){ return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true || localStorage.getItem('branzarInstalled') === 'true'; }
 const installBtn = document.getElementById('installButtonFloating');
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if (!isAppInstalled()) installBtn.classList.add('show'); });
-window.addEventListener('appinstalled', () => { localStorage.setItem('branzarInstalled', 'true'); installBtn.classList.remove('show'); deferredPrompt = null; showToast('تم تثبيت التطبيق بنجاح!', 'success'); haptic('heavy'); });
+window.addEventListener('appinstalled', () => { localStorage.setItem('branzarInstalled', 'true'); installBtn.classList.remove('show'); deferredPrompt = null; showToast('تم تثبيت التطبيق بنجاح!'); haptic('heavy'); });
 installBtn?.addEventListener('click', async () => {
-  if (!deferredPrompt) { showToast('التطبيق مثبت بالفعل', 'info'); return; }
+  if (!deferredPrompt) { showToast('التطبيق مثبت بالفعل'); return; }
   haptic('medium');
   deferredPrompt.prompt();
   const { outcome } = await deferredPrompt.userChoice;
@@ -1821,7 +1516,9 @@ installBtn?.addEventListener('click', async () => {
 });
 if (isAppInstalled()) installBtn.classList.remove('show');
 
-/* ═══ Service Worker — Auto Update ═══ */
+/* ═══════════════════════════════════════════
+   Service Worker — Auto Update System v2
+   ═══════════════════════════════════════════ */
 let swRegistration = null;
 let isReloading = false;
 let updateCheckInterval = null;
@@ -1837,12 +1534,14 @@ function showUpdateButton() {
     }, 50);
   });
 }
+
 function hideUpdateButton() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn) return;
   btn.classList.remove('show');
   setTimeout(() => btn.classList.add('hidden'), 400);
 }
+
 function triggerUpdate() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn || btn.disabled) return;
@@ -1864,6 +1563,7 @@ function triggerUpdate() {
     window.location.reload();
   }
 }
+
 async function checkForUpdate() {
   if (!swRegistration) return;
   try {
@@ -1871,7 +1571,7 @@ async function checkForUpdate() {
     if (swRegistration.waiting && navigator.serviceWorker.controller) {
       showUpdateButton();
     }
-  } catch(err) {}
+  } catch(err) { /* silent */ }
 }
 
 if ('serviceWorker' in navigator) {
@@ -1884,6 +1584,7 @@ if ('serviceWorker' in navigator) {
         if (reg.waiting && navigator.serviceWorker.controller) {
           showUpdateButton();
         }
+
         reg.addEventListener('updatefound', () => {
           console.log('[App] Update found — installing new SW');
           const newWorker = reg.installing;
@@ -1892,10 +1593,11 @@ if ('serviceWorker' in navigator) {
             console.log('[App] New SW state:', newWorker.state);
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               showUpdateButton();
-              try { showToast('🎉 تحديث جديد متوفر!', 'info'); } catch(e){}
+              try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){}
             }
           });
         });
+
         if (updateCheckInterval) clearInterval(updateCheckInterval);
         updateCheckInterval = setInterval(() => {
           if (isPageVisible) checkForUpdate();
@@ -1903,18 +1605,20 @@ if ('serviceWorker' in navigator) {
       })
       .catch((err) => console.warn('[App] SW registration failed:', err));
 
-    let hadControllerAtLoad = !!navigator.serviceWorker.controller;
+  /* ✅ حماية من reload عند أول تثبيت */
+let hadControllerAtLoad = !!navigator.serviceWorker.controller;
 
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!hadControllerAtLoad) {
-        hadControllerAtLoad = true;
-        return;
-      }
-      if (isReloading) return;
-      isReloading = true;
-      console.log('[App] Controller changed — reloading for new version');
-      window.location.reload();
-    });
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+  // عند أول تثبيت للتطبيق → لا نُعيد التحميل
+  if (!hadControllerAtLoad) {
+    hadControllerAtLoad = true;
+    return;
+  }
+  if (isReloading) return;
+  isReloading = true;
+  console.log('[App] Controller changed — reloading for new version');
+  window.location.reload();
+});
 
     navigator.serviceWorker.addEventListener('message', (event) => {
       const data = event.data || {};
@@ -1932,85 +1636,17 @@ if ('serviceWorker' in navigator) {
     document.getElementById('bzrBottomNav')?.addEventListener('click', () => checkForUpdate(), { passive: true });
   });
 }
+
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
+
 setInterval(() => {
   if (isPageVisible && swRegistration) checkForUpdate();
 }, 5 * 60 * 1000);
 
-/* ═══════════════════════════════════════════
-   SKELETON LOADERS — NEW v6.2
-   ═══════════════════════════════════════════ */
-function showStoresSkeleton(count){
-  count = count || 5;
-  const c = document.getElementById('storesScrollContainer');
-  if (!c) return;
-  c.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  for (let i = 0; i < count; i++) {
-    const card = document.createElement('div');
-    card.className = 'skeleton-store-card';
-    card.innerHTML =
-      '<div class="skeleton-store-cover"></div>' +
-      '<div class="skeleton-store-body">' +
-        '<div class="skeleton-store-logo"></div>' +
-        '<div class="skeleton-line w-60" style="margin-top:12px; height:14px;"></div>' +
-        '<div class="skeleton-line w-40" style="margin-top:8px;"></div>' +
-        '<div class="skeleton-line w-80" style="margin-top:14px; height:32px;"></div>' +
-      '</div>';
-    frag.appendChild(card);
-  }
-  c.appendChild(frag);
-}
-
-function showProductsSkeleton(count){
-  count = count || 6;
-  const grid = document.getElementById('allProductsGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  for (let i = 0; i < count; i++) {
-    const card = document.createElement('div');
-    card.className = 'skeleton-card';
-    card.innerHTML =
-      '<div class="skeleton-img"></div>' +
-      '<div class="skeleton-body">' +
-        '<div class="skeleton-line w-80"></div>' +
-        '<div class="skeleton-line w-60"></div>' +
-        '<div class="skeleton-line w-40 h-14"></div>' +
-        '<div class="skeleton-line h-32"></div>' +
-      '</div>';
-    frag.appendChild(card);
-  }
-  grid.appendChild(frag);
-}
-
-function showStoreProductsSkeleton(count){
-  count = count || 4;
-  const grid = document.getElementById('storeProductsGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  for (let i = 0; i < count; i++) {
-    const card = document.createElement('div');
-    card.className = 'skeleton-card';
-    card.innerHTML =
-      '<div class="skeleton-img"></div>' +
-      '<div class="skeleton-body">' +
-        '<div class="skeleton-line w-80"></div>' +
-        '<div class="skeleton-line w-60"></div>' +
-        '<div class="skeleton-line w-40 h-14"></div>' +
-        '<div class="skeleton-line h-32"></div>' +
-      '</div>';
-    frag.appendChild(card);
-  }
-  grid.appendChild(frag);
-}
-
 /* ═══ Data Loading ═══ */
 async function loadStores(force){
-  const empty = document.getElementById('storesEmpty'), container = document.getElementById('storesScrollContainer');
-  empty.classList.add('hidden');
-  showStoresSkeleton(5);
+  const loader = document.getElementById('storesLoader'), empty = document.getElementById('storesEmpty'), container = document.getElementById('storesScrollContainer');
+  loader.classList.remove('hidden'); empty.classList.add('hidden'); container.innerHTML = '';
   try {
     const result = await fetchWithCache('stores_list', async () => {
       let snap; try { snap = await db.collection('stores').orderBy('created_at', 'desc').get(); } catch(e){ snap = await db.collection('stores').get(); }
@@ -2019,12 +1655,7 @@ async function loadStores(force){
       return data;
     }, force);
     stores = result;
-    if (stores.length === 0) {
-      container.innerHTML = '';
-      document.getElementById('storesErrorMessage').textContent = 'لا توجد متاجر متاحة حالياً';
-      empty.classList.remove('hidden');
-      renderFollowedStores();
-    }
+    if (stores.length === 0) { document.getElementById('storesErrorMessage').textContent = '⚠️ لا توجد متاجر متاحة'; empty.classList.remove('hidden'); renderFollowedStores(); }
     else {
       displayStores();
       startAutoScroll();
@@ -2032,17 +1663,14 @@ async function loadStores(force){
       if (isFirstVisit) { localStorage.setItem('branzarVisitedBefore', 'true'); localStorage.setItem('branzarKnownStoreIds', JSON.stringify(stores.map(s => s.id))); isFirstVisit = false; }
     }
   } catch(err){
-    container.innerHTML = '';
-    document.getElementById('storesErrorMessage').textContent = 'تعذر تحميل المتاجر. تحقق من اتصالك بالإنترنت';
-    empty.classList.remove('hidden');
-  }
+    document.getElementById('storesErrorMessage').textContent = 'تعذر تحميل المتاجر'; empty.classList.remove('hidden');
+  } finally { loader.classList.add('hidden'); }
 }
-document.getElementById('retryStoresBtn')?.addEventListener('click', () => { haptic('light'); loadStores(true); });
+document.getElementById('retryStoresBtn')?.addEventListener('click', () => loadStores(true));
 
 async function loadAllProducts(force){
-  const empty = document.getElementById('allProductsEmpty'), grid = document.getElementById('allProductsGrid');
-  empty.classList.add('hidden');
-  showProductsSkeleton(6);
+  const loader = document.getElementById('allProductsLoader'), empty = document.getElementById('allProductsEmpty'), grid = document.getElementById('allProductsGrid');
+  loader.classList.remove('hidden'); empty.classList.add('hidden'); grid.innerHTML = '';
   document.getElementById('loadMoreProductsBtn').classList.add('hidden');
   try {
     const data = await fetchWithCache('all_products', async () => {
@@ -2051,9 +1679,8 @@ async function loadAllProducts(force){
     }, force);
     allProducts = data;
     applyProductsFilter(currentCategory);
-  } catch(err){
-    grid.innerHTML = '<div style="grid-column:1/-1;" class="empty-state"><div class="empty-icon"><i class="fas fa-wifi"></i></div><p style="color:var(--c-text-soft);font-weight:700;">تعذر تحميل المنتجات. تحقق من الاتصال</p></div>';
-  }
+  } catch(err){ grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--c-text-soft);">تعذر تحميل المنتجات</p>'; }
+  finally { loader.classList.add('hidden'); }
 }
 
 async function loadCategories(force){
@@ -2129,9 +1756,9 @@ async function toggleFollowFromCard(store, btn){
     updateCardFollowButtons(storeId);
     renderFollowedStores();
     if (currentStoreId === storeId) { isFollowing = !wasFollowing; currentFollowersCount = newCount; updateFollowersDisplay(); updateFollowButtonUI(); }
-    showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!', wasFollowing ? 'info' : 'success');
+    showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
     haptic('medium');
-  } catch(err){ showToast('حدث خطأ، حاول مرة أخرى', 'error'); }
+  } catch(err){ showToast('حدث خطأ'); }
   finally { btn.disabled = false; }
 }
 function updateCardFollowButtons(storeId){
@@ -2193,9 +1820,7 @@ function highlightCategory(active){
   active.classList.add('active');
 }
 
-/* ═══════════════════════════════════════════
-   PRODUCTS — Pagination 20 per page
-   ═══════════════════════════════════════════ */
+/* ═══ Products ═══ */
 function applyProductsFilter(cat){
   if (!cat) filteredProducts = allProducts;
   else { const names = stores.filter(s => s.category === cat).map(s => s.name); filteredProducts = allProducts.filter(p => names.indexOf(p.store_name) > -1); }
@@ -2214,26 +1839,21 @@ function renderNextProductsPage(){
   const empty = document.getElementById('allProductsEmpty'), loadBtn = document.getElementById('loadMoreProductsBtn');
   if (filteredProducts.length === 0) { empty.classList.remove('hidden'); loadBtn.classList.add('hidden'); }
   else empty.classList.add('hidden');
-  if (displayedProductsCount < filteredProducts.length) {
-    loadBtn.classList.remove('hidden');
-    const remaining = filteredProducts.length - displayedProductsCount;
-    loadBtn.innerHTML = '<span>عرض المزيد (' + remaining + ')</span><i class="fas fa-chevron-down"></i>';
-  } else loadBtn.classList.add('hidden');
+  if (displayedProductsCount < filteredProducts.length) { loadBtn.classList.remove('hidden'); loadBtn.innerHTML = '<span>عرض المزيد (' + (filteredProducts.length - displayedProductsCount) + ')</span><i class="fas fa-chevron-down"></i>'; }
+  else loadBtn.classList.add('hidden');
 }
 document.getElementById('loadMoreProductsBtn')?.addEventListener('click', () => {
   const btn = document.getElementById('loadMoreProductsBtn'); btn.disabled = true;
   haptic('light');
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>جاري التحميل...</span>';
-  setTimeout(() => { renderNextProductsPage(); btn.disabled = false; }, 180);
+  setTimeout(() => { renderNextProductsPage(); btn.disabled = false; }, 150);
 });
 function displayProductsGrid(container, products, addStoreName){
   const frag = document.createDocumentFragment();
-  products.forEach((product, idx) => {
+  products.forEach(product => {
     const price = parseFloat(product.price) || 0;
     const originalPrice = product.original_price ? parseFloat(product.original_price) : null;
     const rating = parseFloat(product.ratting) || 0;
     const card = document.createElement('div'); card.className = 'product-card';
-    card.style.animationDelay = (idx * 25) + 'ms';
     const pm = { id: product.id, name: product.name, img_url: product.img_url, price, original_price: originalPrice, ratting: rating, store_name: product.store_name, description: product.description || '', colors: product.colors || null };
     let colorDots = '';
     if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
@@ -2308,16 +1928,17 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
     currentFollowersCount = newCount;
     updateFollowersDisplay(); updateFollowButtonUI();
     updateCardFollowButtons(currentStoreId); renderFollowedStores();
-    showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة', isFollowing ? 'success' : 'info');
+    showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
     if (currentStore) currentStore.followers = newCount;
-  } catch(err){ showToast('حدث خطأ، حاول مرة أخرى', 'error'); isFollowing = wasFollowing; updateFollowButtonUI(); updateFollowersDisplay(); }
+  } catch(err){ showToast('حدث خطأ'); isFollowing = wasFollowing; updateFollowButtonUI(); updateFollowersDisplay(); }
   finally { isUpdatingFollow = false; btn.disabled = false; }
 });
 document.getElementById('closeStoreModal')?.addEventListener('click', () => { document.getElementById('storeModal').classList.add('hidden'); updateBodyScroll(); });
 
 /* ═══ Store Products ═══ */
 async function loadStoreProducts(storeName, force){
-  showStoreProductsSkeleton(4);
+  const grid = document.getElementById('storeProductsGrid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#FF7A00;"></i></div>';
   try {
     const data = await fetchWithCache('store_products_' + storeName, async () => {
       const snap = await db.collection('products').where('store_name', '==', storeName).get();
@@ -2327,14 +1948,9 @@ async function loadStoreProducts(storeName, force){
     }, force);
     document.getElementById('storeProductsCount').textContent = data.length;
     if (currentStore) currentStore.products_count = data.length;
-    if (!data || !data.length) {
-      document.getElementById('storeProductsGrid').innerHTML = '<div style="grid-column:1/-1;" class="empty-state"><div class="empty-icon"><i class="fas fa-box-open"></i></div><p style="color:var(--c-text-soft);font-weight:700;">لا توجد منتجات</p></div>';
-    } else {
-      renderStoreProducts(data);
-    }
-  } catch(err){
-    document.getElementById('storeProductsGrid').innerHTML = '<div style="grid-column:1/-1;" class="empty-state"><div class="empty-icon"><i class="fas fa-wifi"></i></div><p style="color:var(--c-text-soft);font-weight:700;">تعذر التحميل</p></div>';
-  }
+    if (!data || !data.length) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات</div>';
+    else renderStoreProducts(data);
+  } catch(err){ grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">تعذر التحميل</div>'; }
 }
 function renderStoreProducts(products){
   const grid = document.getElementById('storeProductsGrid');
@@ -2349,7 +1965,7 @@ function renderStoreProducts(products){
     const favBtn = document.createElement('button');
     favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
     favBtn.innerHTML = '<i class="' + (fav ? 'fas' : 'far') + ' fa-heart"></i>';
-    favBtn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); const now = toggleProductFav(product.id); favBtn.classList.toggle('active', now); favBtn.innerHTML = '<i class="' + (now ? 'fas' : 'far') + ' fa-heart"></i>'; showToast(now ? 'أُضيف للمفضلة' : 'أُزيل من المفضلة', now ? 'success' : 'info'); });
+    favBtn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); const now = toggleProductFav(product.id); favBtn.classList.toggle('active', now); favBtn.innerHTML = '<i class="' + (now ? 'fas' : 'far') + ' fa-heart"></i>'; showToast(now ? 'أُضيف للمفضلة' : 'أُزيل'); });
     const imgWrap = document.createElement('div'); imgWrap.className = 'store-product-img-wrap';
     const img = document.createElement('img'); img.loading = 'lazy'; img.alt = product.name || ''; img.src = product.img_url || 'https://via.placeholder.com/300';
     img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
@@ -2437,7 +2053,7 @@ document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
   const p = JSON.parse(e.currentTarget.dataset.product);
   const store = stores.find(s => s.name === p.store_name);
   let wa = store && store.whatsapp_number ? store.whatsapp_number : '';
-  if (!wa) { showToast('رقم الواتساب غير متوفر', 'warning'); return; }
+  if (!wa) { showToast('رقم الواتساب غير متوفر'); return; }
   haptic('medium');
   const msg = 'مرحباً، أريد شراء:\n\n' + p.name + '\n' + (p.selectedColor ? 'اللون: ' + p.selectedColor + '\n' : '') + 'السعر: ' + (p.price || 0).toLocaleString() + ' ج.س\n' + (p.store_name ? 'من متجر: ' + p.store_name : '');
   window.open('https://wa.me/' + wa.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
@@ -2453,7 +2069,7 @@ function addToCart(product){
   updateCartUI();
   localStorage.setItem('myStoresCart', JSON.stringify(cart));
   animateCartBounce();
-  showToast('تمت الإضافة إلى السلة', 'success');
+  showToast('تمت الإضافة إلى السلة');
 }
 function updateCartUI(){
   const totalItems = cart.reduce((s,i) => s + i.quantity, 0);
@@ -2461,7 +2077,7 @@ function updateCartUI(){
   if (cc) { if (totalItems > 0) { cc.textContent = totalItems > 99 ? '99+' : totalItems; cc.style.display = 'flex'; } else cc.style.display = 'none'; }
   const items = document.getElementById('cartItems');
   items.innerHTML = '';
-  if (cart.length === 0) items.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fas fa-shopping-bag"></i></div><p style="font-weight:700;color:var(--c-text-soft);">السلة فارغة</p></div>';
+  if (cart.length === 0) items.innerHTML = '<div style="text-align:center;color:var(--c-text-soft);padding:2.5rem 0;"><i class="fas fa-shopping-bag" style="font-size:3rem;margin-bottom:1rem;display:block;color:#CBD5E1;"></i><p style="font-weight:700;">السلة فارغة</p></div>';
   else {
     const frag = document.createDocumentFragment();
     cart.forEach(item => {
@@ -2487,7 +2103,7 @@ function updateCartUI(){
   updateBottomNavBadge();
 }
 function changeQuantity(id, delta){ const item = cart.find(i => (i.cartItemId || i.id) === id); if (!item) return; item.quantity = Math.max(1, item.quantity + delta); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); }
-function removeFromCart(id){ cart = cart.filter(i => (i.cartItemId || i.id) !== id); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); showToast('تمت الإزالة من السلة', 'info'); }
+function removeFromCart(id){ cart = cart.filter(i => (i.cartItemId || i.id) !== id); updateCartUI(); localStorage.setItem('myStoresCart', JSON.stringify(cart)); showToast('تمت الإزالة'); }
 function openCart(){ document.getElementById('cartSidebar').classList.add('open'); updateBodyScroll(); setActiveNav('cart'); }
 function closeCart(){ document.getElementById('cartSidebar').classList.remove('open'); updateBodyScroll(); setActiveNav('home'); }
 document.getElementById('cartButton')?.addEventListener('click', () => { haptic('light'); openCart(); });
@@ -2495,7 +2111,7 @@ document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
-  if (cart.length === 0) { showToast('السلة فارغة', 'warning'); return; }
+  if (cart.length === 0) { showToast('السلة فارغة'); return; }
   haptic('medium');
   const grouped = {};
   cart.forEach(item => { const wa = item.store_whatsapp || 'default'; if (!grouped[wa]) grouped[wa] = []; grouped[wa].push(item); });
@@ -2507,7 +2123,7 @@ document.getElementById('whatsappOrder')?.addEventListener('click', () => {
     const finalWa = wa === 'default' ? '0924299798' : wa;
     window.open('https://wa.me/' + finalWa.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
   } else {
-    showToast('إرسال لكل متجر على حدة...', 'info');
+    showToast('إرسال لكل متجر على حدة...');
     numbers.forEach((wa, i) => { setTimeout(() => { let msg = 'مرحباً، أريد طلب:\n\n'; grouped[wa].forEach(item => { msg += item.name + ' (x' + item.quantity + ') - ' + (item.price * item.quantity).toLocaleString() + ' ج.س\n'; if (item.selectedColor) msg += 'اللون: ' + item.selectedColor + '\n'; }); const finalWa = wa === 'default' ? '0924299798' : wa; window.open('https://wa.me/' + finalWa.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer'); }, i * 500); });
   }
 });
@@ -2518,7 +2134,7 @@ async function shareStore(store){
   const storeId = String(getStoreId(store));
   const url = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(storeId);
   if (navigator.share) { try { await navigator.share({ title: store.name, text: 'اكتشف متجر ' + store.name, url }); haptic('medium'); return; } catch(err){ if (err && err.name === 'AbortError') return; } }
-  try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); showToast('تم نسخ الرابط', 'success'); } } catch(err){ showToast('تعذر النسخ', 'error'); }
+  try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); showToast('✅ تم نسخ الرابط'); } } catch(err){ showToast('تعذر النسخ'); }
 }
 
 /* ═══ Realtime ═══ */
@@ -2538,7 +2154,7 @@ function loadStoreProductsFromLocal(arr, name){
   const list = arr.filter(p => p.store_name === name);
   document.getElementById('storeProductsCount').textContent = list.length;
   if (currentStore) currentStore.products_count = list.length;
-  if (!list.length) document.getElementById('storeProductsGrid').innerHTML = '<div style="grid-column:1/-1;" class="empty-state"><div class="empty-icon"><i class="fas fa-box-open"></i></div><p style="color:var(--c-text-soft);font-weight:700;">لا توجد منتجات</p></div>';
+  if (!list.length) document.getElementById('storeProductsGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات</div>';
   else renderStoreProducts(list);
 }
 function setupRealtimeStores(){
@@ -2577,7 +2193,7 @@ document.getElementById('nextStoresBtn')?.addEventListener('click', () => { cons
 document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: -200, behavior: 'smooth' }));
 document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: 200, behavior: 'smooth' }));
 
-/* ═══ Auto-scroll events ═══ */
+/* ═══ Auto-scroll interaction events ═══ */
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
   ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
@@ -2590,11 +2206,7 @@ if (storesContainer) {
 /* ═══ Init ═══ */
 async function initApp(){
   const ok = await ensureAuth();
-  if (!ok) {
-    window.__bzrHideSplash();
-    showToast('تعذر الاتصال بالخادم. تحقق من الإنترنت', 'error');
-    return;
-  }
+  if (!ok) { window.__bzrHideSplash(); return; }
   updateCartUI();
   initFCM().catch(() => {});
   await Promise.all([loadStores(), loadCategories(), loadAllProducts()]);
@@ -2623,7 +2235,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (open === 'cart') setTimeout(openCart, 800);
 });
 
-window.BranZar = { version: '6.2.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode };
+window.BranZar = { version: '6.1.0', openStore: openStoreModal, openProduct: openProductModal, openCart, showToast, haptic, setTheme: applyTheme, setView: applyViewMode };
 </script>
 </body>
 </html>
