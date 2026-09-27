@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════
-   BranZar Service Worker v1.0.05
-   🔥 Cache + Auto Update + Firebase Messaging
+   BranZar Service Worker v1.0.08
+   🔥 Cache Icons + Fonts + Auto Update + FCM
    ⚠️ غيّر SW_VERSION فقط عند كل تحديث
    ═══════════════════════════════════════════ */
 
@@ -20,11 +20,7 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-/* ─── Background Messages Handler ───
-   ✅ هذا هو المُعالج الوحيد للإشعارات
-   ✅ لا حاجة لمستمع push منفصل (FCM يدير الأمر داخلياً)
-   ✅ نُرجع الـ Promise لضمان الانتظار
-─── */
+/* ─── Background Messages Handler ─── */
 messaging.onBackgroundMessage((payload) => {
   const title = (payload.notification && payload.notification.title) || 'BranZar';
   const options = {
@@ -36,94 +32,237 @@ messaging.onBackgroundMessage((payload) => {
     data: payload.data || {},
     tag: (payload.data && payload.data.tag) || 'branzar-bg'
   };
-  // ✅ إرجاع الـ Promise ضروري
   return self.registration.showNotification(title, options);
 });
 
-/* ─── Cache & Version ─── */
-const SW_VERSION = '1.0.07';
+/* ═══════════════════════════════════════════
+   Cache & Version
+   ═══════════════════════════════════════════ */
+const SW_VERSION = '1.0.09';
 const CACHE_NAME = `branzar-${SW_VERSION}`;
 const STATIC_CACHE = `${CACHE_NAME}-static`;
+const FONTS_CACHE = `${CACHE_NAME}-fonts`;
+const IMAGES_CACHE = `${CACHE_NAME}-images`;
 const RUNTIME_CACHE = `${CACHE_NAME}-runtime`;
 
+/* الملفات الثابتة المحلية (تثبيت فوري عند تثبيت SW) */
 const STATIC_ASSETS = [
   '/manifest.json',
   'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png'
 ];
 
-const DYNAMIC_FILES = ['', '/', '/index.html', '/about.html', '/a.html', '/script.js'];
+/* الخطوط التي نريد تسخين الكاش بها فوراً (Pre-cache) */
+const FONT_ASSETS = [
+  'https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+];
 
-/* ─── Install ─── */
+/* نطاقات الخطوط والأيقونات — Cache First دائم */
+const FONT_HOSTS = [
+  'fonts.googleapis.com',
+  'fonts.gstatic.com',
+  'cdnjs.cloudflare.com'
+];
+
+/* نطاقات الصور — Cache First مع TTL طويل */
+const IMAGE_HOSTS = [
+  'i.ibb.co',
+  'via.placeholder.com',
+  'firebasestorage.googleapis.com'
+];
+
+/* نطاقات Firebase — Network Only (لا نُخزّن بيانات حيّة) */
+const FIREBASE_HOSTS = [
+  'firestore.googleapis.com',
+  'identitytoolkit.googleapis.com',
+  'securetoken.googleapis.com',
+  'fcmregistrations.googleapis.com',
+  'fcm.googleapis.com',
+  'www.gstatic.com',
+  'apis.google.com'
+];
+
+/* ═══════════════════════════════════════════
+   Install — Pre-cache الأصول الحرجة
+   ═══════════════════════════════════════════ */
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing version:', SW_VERSION);
   event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then((cache) => cache.addAll(STATIC_ASSETS).catch(() => {}))
-    // ✅ NO skipWaiting — ينتظر أمر المستخدم
+    Promise.all([
+      // 1. Static assets (لا يفشل كل التثبيت لو فشل رابط)
+      caches.open(STATIC_CACHE).then((cache) =>
+        Promise.allSettled(
+          STATIC_ASSETS.map((url) =>
+            cache.add(new Request(url, { mode: 'no-cors' })).catch(() => null)
+          )
+        )
+      ),
+      // 2. الخطوط والأيقونات (pre-warm)
+      caches.open(FONTS_CACHE).then((cache) =>
+        Promise.allSettled(
+          FONT_ASSETS.map((url) =>
+            fetch(url, { mode: 'cors', credentials: 'omit' })
+              .then((res) => { if (res && (res.ok || res.type === 'opaque')) return cache.put(url, res); })
+              .catch(() => null)
+          )
+        )
+      )
+    ])
+    // ✅ NO skipWaiting — ينتظر أمر المستخدم من الصفحة
   );
 });
 
-/* ─── Activate ─── */
+/* ═══════════════════════════════════════════
+   Activate — تنظيف الكاشات القديمة
+   ═══════════════════════════════════════════ */
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activating version:', SW_VERSION);
+  const validCaches = [STATIC_CACHE, FONTS_CACHE, IMAGES_CACHE, RUNTIME_CACHE];
+
   event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(
-        keys.filter((k) => k !== STATIC_CACHE && k !== RUNTIME_CACHE)
-            .map((k) => caches.delete(k))
-      ))
-      .then(() => self.clients.claim())
-      .then(() => self.clients.matchAll({ type: 'window' }).then((clients) => {
-        clients.forEach((client) => {
-          client.postMessage({ type: 'SW_ACTIVATED', version: SW_VERSION });
-        });
-      }))
+    (async () => {
+      // 1. احذف الكاشات القديمة
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter((k) => k.startsWith('branzar-') && !validCaches.includes(k))
+          .map((k) => caches.delete(k))
+      );
+
+      // 2. تحكم فوري بالصفحات المفتوحة
+      await self.clients.claim();
+
+      // 3. أخبر الصفحات المفتوحة بالإصدار الجديد
+      const clients = await self.clients.matchAll({ type: 'window' });
+      clients.forEach((client) => {
+        client.postMessage({ type: 'SW_ACTIVATED', version: SW_VERSION });
+      });
+    })()
   );
 });
 
-/* ─── Fetch ─── */
+/* ═══════════════════════════════════════════
+   Helper — هل الطلب من ملفات التطبيق؟
+   ═══════════════════════════════════════════ */
+function isAppDocument(url, request) {
+  // الصفحة الرئيسية / HTML
+  if (request.mode === 'navigate') return true;
+  if (request.destination === 'document') return true;
+  const path = url.pathname;
+  if (path === '/' || path === '' || path.endsWith('/index.html')) return true;
+  if (path.endsWith('.html')) return true;
+  return false;
+}
+
+function isAppScript(url) {
+  return url.origin === self.location.origin &&
+         (url.pathname.endsWith('.js') || url.pathname.endsWith('.css'));
+}
+
+/* ═══════════════════════════════════════════
+   Helper — Cache-First مع تخزين اختياري
+   ═══════════════════════════════════════════ */
+async function cacheFirst(request, cacheName, allowOpaque) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+
+  try {
+    const response = await fetch(request);
+    // اسمح للـ CDN (cors / opaque) بالدخول للكاش
+    const cacheable =
+      response &&
+      (response.ok || response.type === 'opaque') &&
+      (allowOpaque ? true : response.type === 'basic' || response.type === 'cors');
+
+    if (cacheable) {
+      // clone لكي لا يُستهلك الـ body
+      cache.put(request, response.clone()).catch(() => {});
+    }
+    return response;
+  } catch (err) {
+    // Offline fallback
+    const fallback = await cache.match(request);
+    if (fallback) return fallback;
+    return new Response('', { status: 503, statusText: 'Offline' });
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Helper — Network-First مع cache خلفي
+   ═══════════════════════════════════════════ */
+async function networkFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response && response.ok && response.type === 'basic') {
+      cache.put(request, response.clone()).catch(() => {});
+    }
+    return response;
+  } catch (err) {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    return new Response('Offline', { status: 503 });
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Fetch Handler
+   ═══════════════════════════════════════════ */
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  const url = new URL(request.url);
-
   if (request.method !== 'GET') return;
+
+  let url;
+  try { url = new URL(request.url); } catch (e) { return; }
+
+  // تجاهل البروتوكولات غير المدعومة
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
   if (url.protocol === 'chrome-extension:' || url.protocol === 'view-source:') return;
 
-  // Firebase scripts — دائماً من الشبكة
-  if (url.hostname === 'www.gstatic.com') return;
+  const host = url.hostname;
 
-  const isDynamic = DYNAMIC_FILES.some((f) => url.pathname.endsWith(f) || url.pathname === f);
-
-  if (isDynamic) {
-    // Network First للملفات الديناميكية
-    event.respondWith(
-      fetch(request, { cache: 'no-store' })
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const clone = networkResponse.clone();
-            caches.open(RUNTIME_CACHE).then((c) => c.put(request, clone));
-          }
-          return networkResponse;
-        })
-        .catch(() => caches.match(request).then((cached) => cached || new Response('Offline', { status: 503 })))
-    );
-  } else {
-    // Cache First للثوابت
-    event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request).then((response) => {
-          if (!response || response.status !== 200 || response.type !== 'basic') return response;
-          const clone = response.clone();
-          caches.open(RUNTIME_CACHE).then((c) => c.put(request, clone));
-          return response;
-        }).catch(() => new Response('Offline', { status: 503 }));
-      })
-    );
+  // ─── 1. Firebase — Network Only (بيانات حيّة، لا cache) ───
+  if (FIREBASE_HOSTS.includes(host) || host.endsWith('.googleapis.com')) {
+    return; // اسمح للمتصفح بالتعامل مباشرة
   }
+
+  // ─── 2. الخطوط والأيقونات CDN — Cache First (طويلة الأجل) ───
+  if (FONT_HOSTS.includes(host)) {
+    event.respondWith(cacheFirst(request, FONTS_CACHE, true));
+    return;
+  }
+
+  // ─── 3. الصور — Cache First ───
+  if (IMAGE_HOSTS.includes(host) || request.destination === 'image') {
+    event.respondWith(cacheFirst(request, IMAGES_CACHE, true));
+    return;
+  }
+
+  // ─── 4. ملفات التطبيق (HTML) — Network First ───
+  if (isAppDocument(url, request)) {
+    event.respondWith(networkFirst(request, RUNTIME_CACHE));
+    return;
+  }
+
+  // ─── 5. JS/CSS محلية — Network First (لتحديث سريع) ───
+  if (isAppScript(url)) {
+    event.respondWith(networkFirst(request, RUNTIME_CACHE));
+    return;
+  }
+
+  // ─── 6. أي شيء آخر من نفس الأصل — Cache First ───
+  if (url.origin === self.location.origin) {
+    event.respondWith(cacheFirst(request, RUNTIME_CACHE, false));
+    return;
+  }
+
+  // ─── 7. مصادر خارجية أخرى — اتركها للمتصفح ───
 });
 
-/* ─── Messages ─── */
+/* ═══════════════════════════════════════════
+   Messages
+   ═══════════════════════════════════════════ */
 self.addEventListener('message', (event) => {
   const data = event.data || {};
 
@@ -139,18 +278,48 @@ self.addEventListener('message', (event) => {
   if (data.type === 'CHECK_UPDATE') {
     self.registration.update().catch(() => {});
   }
+
+  // مسح الكاش يدوياً من الصفحة
+  if (data.type === 'CLEAR_CACHE') {
+    event.waitUntil(
+      caches.keys().then((keys) =>
+        Promise.all(keys.filter((k) => k.startsWith('branzar-')).map((k) => caches.delete(k)))
+      )
+    );
+  }
 });
 
-/* ─── Notification Click ─── */
+/* ═══════════════════════════════════════════
+   Notification Click
+   ═══════════════════════════════════════════ */
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || '/';
+  const data = event.notification.data || {};
+  const targetUrl = data.url || '/';
+  const absoluteUrl = new URL(targetUrl, self.location.origin).href;
+
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+    (async () => {
+      const clientList = await self.clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true
+      });
+
+      // إن كانت هناك نافذة مفتوحة على نفس الموقع — ركّز عليها وانتقل
       for (const client of clientList) {
-        if (client.url === url && 'focus' in client) return client.focus();
+        if (new URL(client.url).origin === self.location.origin) {
+          try {
+            await client.focus();
+            if ('navigate' in client) await client.navigate(absoluteUrl);
+            return;
+          } catch (e) {}
+        }
       }
-      if (self.clients.openWindow) return self.clients.openWindow(url);
-    })
+
+      // وإلا افتح نافذة جديدة
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(absoluteUrl);
+      }
+    })()
   );
 });
