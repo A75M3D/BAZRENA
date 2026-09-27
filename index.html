@@ -1311,16 +1311,40 @@ function stopAutoScroll(){
 let messaging = null;
 const FCM_TOKEN_KEY = 'branzarFcmToken', NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
 function isNotificationSupported(){ return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window; }
+
 async function initFCM(){
   try {
     if (!isNotificationSupported()) return;
     messaging = firebase.messaging();
-    const reg = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
+
+    // ✅ استخدام الـ SW الرئيسي — لا تسجيل SW جديد
+    const reg = await navigator.serviceWorker.ready;
+
     messaging.onMessage((payload) => {
       const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
       const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
       showPushToast(title, body);
+
+      // إظهار إشعار في المقدمة أيضاً
+      if (Notification.permission === 'granted') {
+        try {
+          const n = new Notification(title, {
+            body,
+            icon: (payload.notification && payload.notification.icon) || 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
+            badge: 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
+            dir: 'rtl',
+            lang: 'ar',
+            tag: (payload.data && payload.data.tag) || 'branzar-fg'
+          });
+          n.onclick = () => {
+            window.focus();
+            window.location.href = (payload.data && payload.data.url) || 'https://branzar.vercel.app';
+            n.close();
+          };
+        } catch (e) {}
+      }
     });
+
     if (Notification.permission === 'granted') await registerFCMToken(reg);
     else if (shouldShowNotifBanner()) setTimeout(showNotifBanner, 10000);
   } catch(err){ console.warn('FCM:', err); }
@@ -1581,12 +1605,20 @@ if ('serviceWorker' in navigator) {
       })
       .catch((err) => console.warn('[App] SW registration failed:', err));
 
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (isReloading) return;
-      isReloading = true;
-      console.log('[App] Controller changed — reloading');
-      window.location.reload();
-    });
+  /* ✅ حماية من reload عند أول تثبيت */
+let hadControllerAtLoad = !!navigator.serviceWorker.controller;
+
+navigator.serviceWorker.addEventListener('controllerchange', () => {
+  // عند أول تثبيت للتطبيق → لا نُعيد التحميل
+  if (!hadControllerAtLoad) {
+    hadControllerAtLoad = true;
+    return;
+  }
+  if (isReloading) return;
+  isReloading = true;
+  console.log('[App] Controller changed — reloading for new version');
+  window.location.reload();
+});
 
     navigator.serviceWorker.addEventListener('message', (event) => {
       const data = event.data || {};
