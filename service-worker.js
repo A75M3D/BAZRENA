@@ -41,7 +41,7 @@ messaging.onBackgroundMessage((payload) => {
 });
 
 /* ─── Cache & Version ─── */
-const SW_VERSION = '1.0.013';
+const SW_VERSION = '1.0.04';
 const CACHE_NAME = `branzar-${SW_VERSION}`;
 const STATIC_CACHE = `${CACHE_NAME}-static`;
 const RUNTIME_CACHE = `${CACHE_NAME}-runtime`;
