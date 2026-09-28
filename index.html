@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FF7A00">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="BranZar">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="description" content="اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد.">
+<meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fcmregistrations.googleapis.com https://fcm.googleapis.com https://*.firebaseapp.com https://firebasestorage.googleapis.com; frame-src 'self' https://*.firebaseapp.com https://apis.google.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests;">
+<title>BranZar – بران زار | أكبر سوق إلكتروني لأشهر البراندات</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="BranZar | بران زار">
+<meta property="og:image" content="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png">
+<meta property="og:url" content="https://branzar.vercel.app/">
+<meta property="og:locale" content="ar_AR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-cairo">
+
+<div id="bzrSplash" role="status" aria-label="جاري التحميل">
+  <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="bzr-splash-logo" alt="BranZar" fetchpriority="high">
+  <div class="bzr-splash-title">بران زار <span>- BranZar</span></div>
+  <div class="bzr-splash-subtitle">أكبر سوق إلكتروني للبراندات</div>
+  <div class="bzr-splash-loader"></div>
+</div>
+
+<header class="bzr-app-bar">
+  <div class="bzr-app-bar-inner">
+    <button class="bzr-logo-btn" id="logoMenuBtn" aria-label="الصفحة الرئيسية">
+      <div class="bzr-logo-circle"><img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="" fetchpriority="high"></div>
+      <div class="bzr-brand-text"><strong>بران زار</strong><small>BRANZAR</small></div>
+    </button>
+    <div class="bzr-app-actions">
+      <div class="view-toggle-pill" role="tablist" aria-label="وضع العرض">
+        <button id="viewMobileBtn" data-view="mobile" role="tab" aria-label="وضع الهاتف" title="وضع الهاتف"><i class="fas fa-mobile-alt" aria-hidden="true"></i></button>
+        <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب" title="وضع سطح المكتب"><i class="fas fa-desktop" aria-hidden="true"></i></button>
+      </div>
+      <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><i class="fas fa-moon" aria-hidden="true"></i></button>
+      <button id="cartButton" class="bzr-cart-btn" aria-label="عرض سلة التسوق">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="22" height="22">
+          <path d="M6 8V7a6 6 0 1 1 12 0v1h1.5a1.5 1.5 0 0 1 1.49 1.67l-1.2 10A2 2 0 0 1 17.8 21.5H6.2a2 2 0 0 1-1.99-1.83l-1.2-10A1.5 1.5 0 0 1 4.5 8H6Zm2 0h8V7a4 4 0 1 0-8 0v1Z" fill="currentColor"/>
+        </svg>
+        <span id="cartCount" class="bzr-cart-badge" style="display:none;" aria-live="polite">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="bzr-search-bar-wrap">
+  <div class="bzr-search-inner">
+    <div class="bzr-search-input" id="bzrSearchWrapper">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <input id="searchInput" type="search" placeholder="ابحث عن متجر، منتج أو فئة..." autocomplete="off" aria-label="البحث" maxlength="100">
+      <button class="search-clear" id="searchClearBtn" aria-label="مسح البحث"><i class="fas fa-times-circle" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+<div id="searchResults" class="bzr-search-results" role="region" aria-label="نتائج البحث"></div>
+
+<main class="bzr-page-fade" id="mainContent">
+
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        اكتشف أفضل<br>
+        <span class="hero-gradient">المتاجر والبراندات</span>
+      </h1>
+      <p class="hero-subtitle">أفضل البراندات والمتاجر السودانية والعالمية في مكان واحد.</p>
+      <div class="hero-actions">
+        <a href="#stores" class="btn-primary ripple" aria-label="تصفح المتاجر"><i class="fas fa-store" aria-hidden="true"></i><span>تصفح المتاجر</span></a>
+        <a href="#all-products" class="hero-secondary ripple" aria-label="عرض المنتجات"><i class="fas fa-boxes-stacked" aria-hidden="true"></i><span>المنتجات</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="followedStoresSection" class="hidden followed-section">
+    <div class="bzr-container">
+      <div class="section-header">
+        <div class="section-title-group">
+          <div class="section-icon-circle"><i class="fas fa-heart" aria-hidden="true"></i></div>
+          <div>
+            <h2 class="section-title">المتاجر التي تتابعها</h2>
+            <p class="section-subtitle">وصولك السريع للمتاجر المفضلة</p>
+          </div>
+        </div>
+        <span id="followedCountBadge" class="badge-soft"></span>
+      </div>
+      <div id="followedStoresContainer" class="followed-scroll-container"></div>
+    </div>
+  </section>
+
+  <section id="stores" class="stores-section">
+    <div class="bzr-container">
+      <div class="section-header-flex">
+        <div>
+          <h2 class="section-title-lg">المتاجر المميزة</h2>
+          <p class="section-subtitle-lg">تصفح أفضل المتاجر الموثوقة</p>
+        </div>
+        <div class="nav-buttons">
+          <button id="prevStoresBtn" class="scroll-btn" aria-label="السابق"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+          <button id="nextStoresBtn" class="scroll-btn" aria-label="التالي"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div id="storesScrollContainer" class="stores-scroll-container"></div>
+      <div id="storesLoader" class="loader hidden">
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+        <p>جاري تحميل المتاجر...</p>
+      </div>
+      <div id="storesEmpty" class="empty-state hidden">
+        <i class="fas fa-store-slash" aria-hidden="true"></i>
+        <p id="storesErrorMessage">لا توجد متاجر</p>
+        <button id="retryStoresBtn" class="btn-primary ripple">إعادة المحاولة</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="categories" class="categories-section">
+    <div class="bzr-container">
+      <div class="section-header-flex">
+        <h2 class="section-title-md">التصنيفات</h2>
+        <div class="nav-buttons">
+          <button id="prevCategoriesBtn" class="scroll-btn" aria-label="السابق"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+          <button id="nextCategoriesBtn" class="scroll-btn" aria-label="التالي"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div id="categoriesContainer" class="categories-scroll-container"></div>
+    </div>
+  </section>
+
+  <section id="all-products" class="products-section">
+    <div class="bzr-container">
+      <h2 class="section-title-lg">جميع المنتجات</h2>
+      <div id="allProductsGrid"></div>
+      <div id="allProductsLoader" class="loader hidden">
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+        <p>جاري تحميل المنتجات...</p>
+      </div>
+      <div id="allProductsEmpty" class="empty-state hidden">
+        <i class="fas fa-box-open" aria-hidden="true"></i>
+        <p>لا توجد منتجات في هذه الفئة</p>
+      </div>
+      <div class="load-more-wrap">
+        <button id="loadMoreProductsBtn" class="load-more-btn ripple hidden"><span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- STORE MODAL -->
+<div id="storeModal" class="fullscreen-modal hidden" role="dialog" aria-modal="true" aria-labelledby="storeName">
+  <div class="modal-content">
+    <div class="store-cover-wrap">
+      <img id="storeCoverImage" src="" alt="غلاف المتجر">
+      <button id="closeStoreModal" class="store-close-btn" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+      <button id="storeShareBtn" class="store-share-btn" type="button" aria-label="مشاركة"><i class="fas fa-share-alt" aria-hidden="true"></i></button>
+    </div>
+    <div class="store-info-card">
+      <div class="store-header-row">
+        <img id="storeLogo" class="store-header-logo" src="" alt="">
+        <div class="store-header-info">
+          <h3 id="storeName" class="store-header-name"></h3>
+          <div class="store-header-meta">
+            <span class="store-meta-rating"><span id="storeRating">0.0</span><i class="fas fa-star" aria-hidden="true"></i></span>
+            <span class="store-meta-category" id="storeCategory"><i class="fas fa-tag" aria-hidden="true"></i><span>عام</span></span>
+          </div>
+        </div>
+      </div>
+      <p id="storeDescription" class="store-desc"></p>
+      <div class="store-actions-grid">
+        <button id="storeFollowButton" class="store-action-btn primary ripple" type="button"><i class="fas fa-heart" aria-hidden="true"></i><span id="storeFollowText">متابعة</span></button>
+        <div class="store-action-btn static"><i class="fas fa-users" aria-hidden="true"></i><span id="storeFollowers">0</span><span>متابع</span></div>
+        <a id="storeWhatsAppButton" href="#" target="_blank" rel="noopener noreferrer" class="store-action-btn ripple"><span class="icon-circle"><i class="fab fa-whatsapp" aria-hidden="true"></i></span><span>واتساب</span></a>
+        <a id="storeCallButton" href="#" class="store-action-btn ripple"><span class="icon-circle"><i class="fas fa-phone" aria-hidden="true"></i></span><span>اتصال</span></a>
+      </div>
+    </div>
+    <div class="divider-strip"></div>
+    <div class="store-products-section">
+      <div class="store-products-header">
+        <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+        <h4>منتجات المتجر</h4>
+      </div>
+      <div id="storeProductsGrid" class="store-products-grid"></div>
+      <div class="load-more-wrap">
+        <button id="loadMoreStoreProductsBtn" class="load-more-btn ripple hidden"><span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div id="productModal" class="product-modal hidden" role="dialog" aria-modal="true" aria-labelledby="productModalName">
+  <div class="product-modal-content">
+    <button id="closeProductModal" class="icon-btn modal-close" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <div class="product-modal-grid">
+      <div class="product-modal-left">
+        <div class="product-modal-image-wrapper"><img id="productModalImage" src="" alt="صورة المنتج"></div>
+        <div id="productColorsContainer" class="hidden colors-container">
+          <div class="colors-label">
+            <span>اللون:</span>
+            <span id="selectedColorName" class="color-name-badge"></span>
+          </div>
+          <div id="productColorSwatches" class="color-swatches"></div>
+        </div>
+      </div>
+      <div class="product-modal-right">
+        <h2 id="productModalName"></h2>
+        <div class="product-rating-row">
+          <span class="star-icon"><i class="fas fa-star" aria-hidden="true"></i></span>
+          <span id="productModalRating"></span>
+          <span class="separator">|</span>
+          <span id="productModalStore"></span>
+        </div>
+        <div class="product-price-row">
+          <span id="productModalPrice" class="price-current"></span>
+          <span id="productModalOriginalPrice" class="price-original"></span>
+        </div>
+        <div class="product-actions">
+          <button id="addToCartFromModal" class="btn-primary ripple"><i class="fas fa-shopping-bag" aria-hidden="true"></i><span>أضف إلى السلة</span></button>
+          <button id="buyNowFromModal" class="btn-whatsapp ripple"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>شراء مباشر عبر واتساب</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART SIDEBAR -->
+<div id="cartSidebar" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-header">
+    <div class="cart-header-title">
+      <div class="cart-icon-circle"><i class="fas fa-shopping-bag" aria-hidden="true"></i></div>
+      <h2 id="cartTitle">سلة التسوق</h2>
+    </div>
+    <button id="closeCart" class="icon-btn" aria-label="إغلاق السلة"><i class="fas fa-times" aria-hidden="true"></i></button>
+  </div>
+  <div id="cartItems" class="cart-items"></div>
+  <div class="cart-footer">
+    <div id="cartTotal" class="cart-total"><span>المجموع:</span><span>0 ج.س</span></div>
+    <button id="continueShopping" class="btn-ghost ripple">مواصلة التسوق</button>
+    <button id="whatsappOrder" class="btn-whatsapp ripple"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>طلب السلة عبر واتساب</span></button>
+  </div>
+</div>
+
+<!-- ACCOUNT MODAL -->
+<div id="accountModal" class="hidden" role="dialog" aria-modal="true">
+  <div class="account-overlay" id="accountOverlay"></div>
+  <div class="account-sheet">
+    <div class="account-handle"></div>
+    <button id="closeAccountModal" class="account-close-btn" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <div class="account-header">
+      <div class="account-avatar"><img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="BranZar"></div>
+      <div class="account-welcome">مرحباً بك في</div>
+      <div class="account-brand">بران زار <span>- BranZar</span></div>
+    </div>
+    <div class="account-actions">
+      <a href="a.html" class="account-action-btn primary ripple">
+        <div class="action-icon"><i class="fas fa-sign-in-alt" aria-hidden="true"></i></div>
+        <div class="action-info"><strong>تسجيل الدخول</strong><span>ادخل لإدارة منتجاتك ومتجرك</span></div>
+        <i class="fas fa-chevron-left action-arrow" aria-hidden="true"></i>
+      </a>
+      <button id="openCreateStoreBtn" class="account-action-btn ripple">
+        <div class="action-icon secondary"><i class="fas fa-store" aria-hidden="true"></i></div>
+        <div class="action-info"><strong>إنشاء متجر خاص</strong><span>انضم كتاجر أو صاحب براند</span></div>
+        <i class="fas fa-chevron-left action-arrow" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="account-section">
+      <div class="account-section-title">الإعدادات والتفضيلات</div>
+      <div class="setting-row">
+        <div class="setting-label"><i class="fas fa-moon" aria-hidden="true"></i><span>الوضع الداكن</span></div>
+        <div id="accountThemeSwitch" class="switch" role="switch" aria-label="الوضع الداكن" tabindex="0"></div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label"><i class="fas fa-mobile-alt" aria-hidden="true"></i><span>وضع العرض</span></div>
+        <div class="view-toggle-pill">
+          <button id="accountViewMobileBtn" data-view="mobile" aria-label="هاتف"><i class="fas fa-mobile-alt" aria-hidden="true"></i></button>
+          <button id="accountViewDesktopBtn" data-view="desktop" aria-label="سطح مكتب"><i class="fas fa-desktop" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE STORE MODAL -->
+<div id="createStoreModal" class="hidden" role="dialog" aria-modal="true">
+  <div class="create-store-box">
+    <div class="create-store-icon"><i class="fas fa-crown" aria-hidden="true"></i></div>
+    <h3 class="create-store-title">هل تملك <span>براند خاص بك؟</span></h3>
+    <p class="create-store-desc">للحصول على متجر احترافي بإسم البراند الخاص بك، تواصل مباشرة مع إدارة BranZar عبر واتساب وسنقوم بتفعيل متجرك في دقائق.</p>
+    <div class="create-store-features">
+      <span><i class="fas fa-check-circle" aria-hidden="true"></i> متجر احترافي</span>
+      <span><i class="fas fa-bolt" aria-hidden="true"></i> تفعيل فوري</span>
+      <span><i class="fas fa-headset" aria-hidden="true"></i> دعم متواصل</span>
+      <span><i class="fas fa-chart-line" aria-hidden="true"></i> آلاف العملاء</span>
+      <span><i class="fas fa-gift" aria-hidden="true"></i> مجاناً</span>
+    </div>
+    <a id="createStoreWaBtn" href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%B1%D8%A7%D9%86%D8%B2%D8%A7%D8%B1" target="_blank" rel="noopener noreferrer" class="create-store-wa-btn ripple"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>تواصل مع الإدارة عبر واتساب</span></a>
+    <button id="cancelCreateStore" class="create-store-cancel">إلغاء</button>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<nav id="bzrBottomNav" aria-label="التنقل الرئيسي">
+  <div class="bzr-nav-list">
+    <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية"><i class="fas fa-home" aria-hidden="true"></i><span>الرئيسية</span></button>
+    <button class="bzr-nav-item" data-nav="followed" aria-label="المتابَعة"><i class="fas fa-heart" aria-hidden="true"></i><span>المتابَعة</span></button>
+    <button class="bzr-nav-item" data-nav="cart" aria-label="السلة"><i class="fas fa-shopping-bag" aria-hidden="true"></i><span>السلة</span><span class="bzr-nav-badge" id="bottomNavCartBadge" style="display:none;" aria-live="polite">0</span></button>
+    <button class="bzr-nav-item" data-nav="account" aria-label="حسابي"><i class="fas fa-user-circle" aria-hidden="true"></i><span>حسابي</span></button>
+  </div>
+</nav>
+
+<button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث التطبيق">
+  <div class="update-icon-wrap"><i class="fas fa-cloud-download-alt" aria-hidden="true"></i></div>
+  <div class="update-text-wrap">
+    <strong>🎉 تحديث جديد متوفر</strong>
+    <span>اضغط للتحديث الآن</span>
+  </div>
+  <i class="fas fa-chevron-left update-arrow" aria-hidden="true"></i>
+</button>
+
+<button id="installButtonFloating" class="hidden" title="تثبيت التطبيق"><i class="fas fa-download" aria-hidden="true"></i><span>تثبيت التطبيق</span></button>
+
+<div id="notifPermissionBanner" class="hidden" role="dialog">
+  <div class="notif-banner-content">
+    <div class="notif-bell-icon"><i class="fas fa-bell" aria-hidden="true"></i></div>
+    <div class="notif-banner-text">
+      <div class="notif-banner-title">🔔 فعّل إشعارات BranZar</div>
+      <p>كن أول من يعرف عند نزول عروض حصرية</p>
+      <div class="notif-banner-actions">
+        <button id="enableNotifBtn" class="notif-btn-enable ripple"><i class="fas fa-bell" aria-hidden="true"></i><span>تفعيل</span></button>
+        <button id="dismissNotifBtn" class="notif-btn-dismiss">لاحقاً</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pushToast" role="alert">
+  <div class="push-icon"><i class="fas fa-bell" aria-hidden="true"></i></div>
+  <div class="push-toast-text">
+    <div id="pushToastTitle">إشعار جديد</div>
+    <div id="pushToastBody">لديك جديد</div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js" crossorigin="anonymous"></script>
+<script src="app.js" defer></script>
+
+</body>
+</html>
