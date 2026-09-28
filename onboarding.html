@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FF7A00">
+<title>BranZar — جولة تعريفية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
+
+:root {
+  --orange: #FF7A00;
+  --orange-light: #FFA64D;
+}
+
+html, body {
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* ═══════════════════════════════════════════
+   CAROUSEL CONTAINER
+   ═══════════════════════════════════════════ */
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 80px rgba(0,0,0,0.5);
+}
+
+/* ═══════════════════════════════════════════
+   SLIDES WRAPPER — Vertical
+   ═══════════════════════════════════════════ */
+.slides-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s cubic-bezier(0.86, 0, 0.07, 1);
+  will-change: transform;
+}
+
+.slide {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+/* ═══════════════════════════════════════════
+   IMAGE — Full screen
+   ═══════════════════════════════════════════ */
+.slide-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: imgZoom 12s ease-in-out infinite alternate;
+}
+
+@keyframes imgZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+/* Subtle gradient overlay at bottom for button contrast */
+.slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.55) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Subtle top gradient for skip button contrast */
+.slide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ═══════════════════════════════════════════
+   SKIP BUTTON (Top)
+   ═══════════════════════════════════════════ */
+.skip-btn {
+  position: absolute;
+  top: calc(20px + env(safe-area-inset-top, 0px));
+  left: 20px;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 9px 20px;
+  border-radius: 999px;
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 0.3px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.skip-btn:active {
+  transform: scale(0.94);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.skip-btn.hidden { opacity: 0; pointer-events: none; }
+
+/* ═══════════════════════════════════════════
+   BOTTOM NAVIGATION
+   ═══════════════════════════════════════════ */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 24px calc(28px + env(safe-area-inset-bottom, 0px));
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  pointer-events: none;
+}
+
+.bottom-nav > * { pointer-events: auto; }
+
+/* Progress Dots */
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.35);
+  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  backdrop-filter: blur(4px);
+}
+
+.dot.active {
+  width: 32px;
+  background: linear-gradient(90deg, #FFA64D, #FF7A00);
+  box-shadow: 0 0 12px rgba(255, 166, 77, 0.7);
+}
+
+.dot:active { transform: scale(0.85); }
+
+/* Navigation Buttons */
+.nav-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 28px;
+  border-radius: 999px;
+  border: none;
+  font-family: 'Cairo', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+
+.nav-btn:active { transform: scale(0.96); }
+
+.nav-btn-next {
+  background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+  color: #fff;
+  box-shadow: 0 12px 28px -8px rgba(255, 122, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  flex: 1;
+  max-width: 220px;
+}
+
+.nav-btn-next:hover {
+  box-shadow: 0 16px 36px -8px rgba(255, 122, 0, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.nav-btn-prev {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  width: 56px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.nav-btn-prev.hidden {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.nav-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.nav-btn-next svg { transform: scaleX(-1); }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Desktop
+   ═══════════════════════════════════════════ */
+@media (min-width: 481px) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a1a;
+    padding: 20px;
+  }
+  .carousel {
+    height: 90vh;
+    border-radius: 32px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05);
+  }
+  .slide { height: 90vh; min-height: 90vh; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.2s !important;
+  }
+  .slide-image { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="carousel" id="carousel">
+
+  <!-- Skip Button -->
+  <button class="skip-btn" id="skipBtn" aria-label="تخطي الجولة">تخطي</button>
+
+  <!-- Slides Wrapper -->
+  <div class="slides-wrapper" id="slidesWrapper">
+
+    <!-- SLIDE 1 -->
+    <div class="slide active" data-slide="0">
+      <img
+        class="slide-image"
+        src="https://i.ibb.co/1tjxT9P9/file-000000008cf88243b86cd3973720dd6c.png"
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+      >
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" data-slide="1">
+      <img
+        class="slide-image"
+        src="https://i.ibb.co/8L0PyjQ2/file-00000000e4f882109cdf80647d33233b.png"
+        alt=""
+        loading="lazy"
+      >
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" data-slide="2">
+      <img
+        class="slide-image"
+        src="https://i.ibb.co/6cJY4wZT/file-00000000bbc082439a4e734f6c0f6137-2.jpg"
+        alt=""
+        loading="lazy"
+      >
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" data-slide="3">
+      <img
+        class="slide-image"
+        src="https://i.ibb.co/MxqzJPXF/file-00000000e32481f494cbee7df5834a6a-2.jpg"
+        alt=""
+        loading="lazy"
+      >
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <!-- Progress Dots -->
+    <div class="progress-dots" id="dots" role="tablist" aria-label="التنقل بين الشاشات">
+      <button class="dot active" data-index="0" role="tab" aria-label="الشاشة 1"></button>
+      <button class="dot" data-index="1" role="tab" aria-label="الشاشة 2"></button>
+      <button class="dot" data-index="2" role="tab" aria-label="الشاشة 3"></button>
+      <button class="dot" data-index="3" role="tab" aria-label="الشاشة 4"></button>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+      <button class="nav-btn nav-btn-prev hidden" id="prevBtn" aria-label="السابق">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      </button>
+      <button class="nav-btn nav-btn-next" id="nextBtn" aria-label="التالي">
+        <span id="nextLabel">التالي</span>
+        <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const wrapper = document.getElementById('slidesWrapper');
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const nextLabel = document.getElementById('nextLabel');
+  const skipBtn = document.getElementById('skipBtn');
+  const carouselEl = document.getElementById('carousel');
+
+  let currentIndex = 0;
+  const totalSlides = slides.length;
+
+  function goTo(index) {
+    if (index < 0 || index >= totalSlides) return;
+    currentIndex = index;
+
+    wrapper.style.transform = `translateY(-${index * 100}vh)`;
+
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+
+    prevBtn.classList.toggle('hidden', index === 0);
+
+    if (index === totalSlides - 1) {
+      nextLabel.textContent = 'ابدأ الآن';
+      nextBtn.onclick = finish;
+    } else {
+      nextLabel.textContent = 'التالي';
+      nextBtn.onclick = next;
+    }
+
+    if (navigator.vibrate) {
+      try { navigator.vibrate(8); } catch(e){}
+    }
+  }
+
+  function next() { goTo(currentIndex + 1); }
+  function prev() { goTo(currentIndex - 1); }
+
+  function finish() {
+    // ✅ تخزين العلم — مرة واحدة فقط
+    try { localStorage.setItem('branzar_onboarding_seen', 'true'); } catch(e){}
+    
+    // أنيميشن الخروج
+    carouselEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    carouselEl.style.opacity = '0';
+    carouselEl.style.transform = 'scale(0.95)';
+    
+    // العودة للرئيسية
+    setTimeout(function() {
+      window.location.replace('/');
+    }, 500);
+  }
+
+  function skip() {
+    finish();
+  }
+
+  // Wire buttons
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+  nextBtn.onclick = next;
+  skipBtn.addEventListener('click', skip);
+
+  // Dot clicks
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const idx = parseInt(dot.dataset.index, 10);
+      goTo(idx);
+    });
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowRight') { e.preventDefault(); prev(); }
+    else if (e.key === 'Escape') { skip(); }
+  });
+
+  // Touch swipe (vertical)
+  let touchStartY = 0;
+  let touchStartTime = 0;
+  const SWIPE_THRESHOLD = 60;
+
+  carouselEl.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+  }, { passive: true });
+
+  carouselEl.addEventListener('touchend', (e) => {
+    const deltaY = touchStartY - e.changedTouches[0].clientY;
+    const deltaTime = Date.now() - touchStartTime;
+    if (Math.abs(deltaY) < SWIPE_THRESHOLD) return;
+    if (deltaTime > 600) return;
+    if (deltaY > 0) next();
+    else prev();
+  }, { passive: true });
+
+  // Init
+  goTo(0);
+
+  // Expose API
+  window.BranZarOnboarding = {
+    next, prev, goTo, skip, finish,
+    get current() { return currentIndex; },
+    get total() { return totalSlides; }
+  };
+})();
+</script>
+
+</body>
+</html>
