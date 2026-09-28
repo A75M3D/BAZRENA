@@ -1551,6 +1551,7 @@ function hideUpdateButton() {
   setTimeout(() => btn.classList.add('hidden'), 400);
 }
 
+
 /* ─── زر التحديث: إرسال SKIP_WAITING + reload ─── */
 function triggerUpdate() {
   const btn = document.getElementById('updateAvailableBtn');
@@ -1573,6 +1574,13 @@ function triggerUpdate() {
     window.location.reload();
   }
 }
+
+
+
+
+
+
+
 
 /* ─── الفحص الرئيسي: هل هناك نسخة جديدة حقيقية؟ ─── */
 async function maybeShowUpdate() {
@@ -1676,8 +1684,13 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate); ═══════════════════════════════════════════
+document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
+
+/* ═══════════════════════════════════════════
    Data Loading — Optimized
+   ═══════════════════════════════════════════ */
+
+// [BZR-PERF] loadStores — SINGLE read, no products count
    ═══════════════════════════════════════════ */
 
 // [BZR-PERF] loadStores — SINGLE read, no products count
