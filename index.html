@@ -1493,21 +1493,65 @@ installBtn?.addEventListener('click', async () => {
 });
 if (isAppInstalled()) installBtn.classList.remove('show');
 
-/* ═══════════════════════════════════════════
-   Service Worker — Auto Update
-   ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   SERVICE WORKER — Auto Update (FIXED v2)
+   ✅ يقارن النسخ الحقيقية (Controller vs Waiting)
+   ✅ يمنع الظهور المتكرر في نفس الجلسة
+   ✅ لا يشغّل الإشعار في الخلفية
+   ✅ أُزيلت مستمعات focus/online (كانت تسبب الإزعاج)
+   ═══════════════════════════════════════════════════════════ */
 let swRegistration = null;
 let isReloading = false;
 let updateCheckInterval = null;
 
-function showUpdateButton() {
-  const btn = document.getElementById('updateAvailableBtn');
-  if (!btn || btn.classList.contains('show')) return;
-  btn.classList.remove('hidden');
-  requestAnimationFrame(() => {
-    setTimeout(() => { btn.classList.add('show'); try { haptic('medium'); } catch(e){} }, 50);
+// 🔒 Flag: هل أُظهر الزر في هذه الجلسة؟
+let _updateButtonShownThisLoad = false;
+// Throttle لفحوصات events
+let _lastUpdateCheck = 0;
+const UPDATE_CHECK_THROTTLE_MS = 10 * 60 * 1000; // 10 دقائق
+
+/* ─── قراءة نسخة SW محدَّد عبر MessageChannel ─── */
+function getSWVersionFromWorker(worker) {
+  return new Promise((resolve) => {
+    if (!worker) return resolve(null);
+    const timeout = setTimeout(() => resolve(null), 1500);
+    try {
+      const channel = new MessageChannel();
+      channel.port1.onmessage = (e) => {
+        clearTimeout(timeout);
+        const v = e.data && e.data.version;
+        resolve(typeof v === 'string' ? v : null);
+      };
+      worker.postMessage({ type: 'GET_VERSION' }, [channel.port2]);
+    } catch (e) {
+      clearTimeout(timeout);
+      resolve(null);
+    }
   });
 }
+
+/* ─── إظهار/إخفاء الزر ─── */
+function showUpdateButton() {
+  const btn = document.getElementById('updateAvailableBtn');
+  if (!btn) return;
+  if (btn.classList.contains('show')) return;
+  btn.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      btn.classList.add('show');
+      try { haptic('medium'); } catch(e){}
+    }, 50);
+  });
+}
+
+function hideUpdateButton() {
+  const btn = document.getElementById('updateAvailableBtn');
+  if (!btn) return;
+  btn.classList.remove('show');
+  setTimeout(() => btn.classList.add('hidden'), 400);
+}
+
+/* ─── زر التحديث: إرسال SKIP_WAITING + reload ─── */
 function triggerUpdate() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn || btn.disabled) return;
@@ -1518,43 +1562,96 @@ function triggerUpdate() {
   const spanEl = btn.querySelector('.update-text-wrap span');
   if (strongEl) strongEl.textContent = '⏳ جاري التحديث...';
   if (spanEl) spanEl.textContent = 'لحظة من فضلك';
+
   const reg = swRegistration;
   if (reg && reg.waiting) {
     reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-    setTimeout(() => { if (!isReloading) { isReloading = true; window.location.reload(); } }, 3000);
-  } else { window.location.reload(); }
-}
-async function checkForUpdate() {
-  if (!swRegistration) return;
-  try {
-    await swRegistration.update();
-    if (swRegistration.waiting && navigator.serviceWorker.controller) showUpdateButton();
-  } catch(err) {}
+    setTimeout(() => {
+      if (!isReloading) { isReloading = true; window.location.reload(); }
+    }, 2000);
+  } else {
+    window.location.reload();
+  }
 }
 
+/* ─── الفحص الرئيسي: هل هناك نسخة جديدة حقيقية؟ ─── */
+async function maybeShowUpdate() {
+  // ✅ لو أظهرناه في هذه الجلسة — لا تكرر
+  if (_updateButtonShownThisLoad) return;
+  if (!swRegistration) return;
+
+  const waiting = swRegistration.waiting;
+  const active = navigator.serviceWorker.controller;
+  if (!waiting || !active) return;
+
+  try {
+    // قراءة النسختين من SW الموجود حالياً + SW المنتظر
+    const [newV, oldV] = await Promise.all([
+      getSWVersionFromWorker(waiting),
+      getSWVersionFromWorker(active)
+    ]);
+
+    // ✅ لو النسختان متساويتان → لا يوجد تحديث حقيقي
+    if (newV && oldV && newV === oldV) return;
+    // ✅ لو تعذّر قراءة نسخة الجديد → تجاهل (لا نزعج المستخدم بشكوك)
+    if (!newV) return;
+
+    // ✅ هذا تحديث حقيقي → اعرض الزر مرة واحدة فقط
+    _updateButtonShownThisLoad = true;
+    showUpdateButton();
+    try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){}
+  } catch(e) { /* silent */ }
+}
+
+/* ─── فحص مُقيَّد بالوقت ─── */
+async function checkForUpdate() {
+  if (!swRegistration || document.hidden) return;
+  try {
+    await swRegistration.update();
+    await maybeShowUpdate();
+  } catch(err) { /* silent */ }
+}
+
+function throttledCheckForUpdate() {
+  const now = Date.now();
+  if (now - _lastUpdateCheck < UPDATE_CHECK_THROTTLE_MS) return;
+  _lastUpdateCheck = now;
+  checkForUpdate();
+}
+
+/* ─── Registration ─── */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // [BZR-PERF] relative path + scope compatible with TWA
     navigator.serviceWorker.register('./service-worker.js', { scope: './' })
       .then((reg) => {
         swRegistration = reg;
         console.log('[App] SW registered. Scope:', reg.scope);
-        if (reg.waiting && navigator.serviceWorker.controller) showUpdateButton();
+
+        // لو كان هناك SW منتظر عند التحميل → افحصه
+        if (reg.waiting && navigator.serviceWorker.controller) {
+          maybeShowUpdate();
+        }
+
         reg.addEventListener('updatefound', () => {
           const newWorker = reg.installing;
           if (!newWorker) return;
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdateButton();
-              try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){}
+              // انتظر 500ms ثم افحص النسخة
+              setTimeout(() => maybeShowUpdate(), 500);
             }
           });
         });
+
+        // ✅ فحص دوري كل  50 ساعة فقط
         if (updateCheckInterval) clearInterval(updateCheckInterval);
-        updateCheckInterval = setInterval(() => { if (isPageVisible) checkForUpdate(); }, 30 * 1000);
+        updateCheckInterval = setInterval(() => {
+          if (!document.hidden) checkForUpdate();
+        }, 50*60* 60 * 1000);
       })
       .catch((err) => console.warn('[App] SW registration failed:', err));
 
+    // حماية من reload في أول تثبيت
     let hadControllerAtLoad = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (!hadControllerAtLoad) { hadControllerAtLoad = true; return; }
@@ -1562,19 +1659,24 @@ if ('serviceWorker' in navigator) {
       isReloading = true;
       window.location.reload();
     });
+
     navigator.serviceWorker.addEventListener('message', (event) => {
       const data = event.data || {};
-      if (data.type === 'SW_ACTIVATED') console.log('[App] SW activated version:', data.version);
+      if (data.type === 'SW_ACTIVATED') {
+        console.log('[App] SW activated version:', data.version);
+        // ✅ بعد تفعيل النسخة الجديدة، اسمح بالزر أن يظهر مرة أخرى عند أي تحديث مستقبلي
+        _updateButtonShownThisLoad = false;
+      }
     });
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) checkForUpdate(); });
-    window.addEventListener('focus', () => checkForUpdate());
-    window.addEventListener('online', () => checkForUpdate());
+
+    // ✅ throttled — لا يزعج المستخدم
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) throttledCheckForUpdate();
+    });
   });
 }
-document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
-setInterval(() => { if (isPageVisible && swRegistration) checkForUpdate(); }, 5 * 60 * 1000);
 
-/* ═══════════════════════════════════════════
+document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate); ═══════════════════════════════════════════
    Data Loading — Optimized
    ═══════════════════════════════════════════ */
 
