@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FF7A00">
+<title>BranZar — غير متصل</title>
+<style>
+  * { box-sizing: border-box; font-family: system-ui, 'Cairo', sans-serif; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         background: linear-gradient(160deg, #FFFFFF 0%, #FFF7ED 60%, #FFEDD5 100%); color: #0F172A; padding: 1.5rem; }
+  .card { max-width: 420px; text-align: center; background: #fff; border-radius: 24px; padding: 2.5rem 2rem;
+          box-shadow: 0 20px 60px rgba(255,122,0,0.15); }
+  .icon { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #FF7A00, #FFA64D);
+          display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;
+          box-shadow: 0 15px 40px -10px rgba(255,122,0,0.6); font-size: 2.6rem; color: #fff; }
+  h1 { font-size: 1.5rem; font-weight: 900; margin: 0 0 0.75rem; }
+  p { color: #64748B; line-height: 1.9; margin: 0 0 1.75rem; font-weight: 600; }
+  button { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border: none; padding: 0.9rem 2rem;
+           border-radius: 9999px; font-weight: 800; font-size: 0.95rem; cursor: pointer;
+           box-shadow: 0 10px 26px -8px rgba(255,122,0,0.7); }
+  button:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">📡</div>
+    <h1>لا يوجد اتصال بالإنترنت</h1>
+    <p>تحقق من اتصالك بالشبكة ثم أعد المحاولة. سيتم تحديث المحتوى تلقائياً عند عودة الاتصال.</p>
+    <button onclick="location.reload()">إعادة المحاولة</button>
+  </div>
+</body>
+</html>
