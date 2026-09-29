@@ -9,11 +9,11 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com https://widget.cloudinary.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
         font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.firebaseapp.com https://firebasestorage.googleapis.com https://catbox.moe;
+        connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.firebaseapp.com https://firebasestorage.googleapis.com https://api.cloudinary.com;
         frame-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com;
         worker-src 'self' blob:;
         media-src 'self' https: blob:;
@@ -115,749 +115,178 @@
             50% { box-shadow: 0 18px 50px -10px rgba(255,122,0,0.85), 0 0 0 12px rgba(255,122,0,0.04); }
         }
         .login-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
-        .login-title {
-            font-size: 1.5rem; font-weight: 900; color: #1A1A1A;
-            text-align: center; margin-bottom: 0.5rem;
-            letter-spacing: -0.3px;
-        }
+        .login-title { font-size: 1.5rem; font-weight: 900; color: #1A1A1A; text-align: center; margin-bottom: 0.5rem; letter-spacing: -0.3px; }
         @media (min-width: 640px) { .login-title { font-size: 1.75rem; } }
-        .login-subtitle {
-            text-align: center; color: #6B7280; font-size: 0.88rem;
-            margin-bottom: 1.75rem; line-height: 1.7;
-        }
+        .login-subtitle { text-align: center; color: #6B7280; font-size: 0.88rem; margin-bottom: 1.75rem; line-height: 1.7; }
         @media (min-width: 640px) { .login-subtitle { font-size: 0.93rem; } }
         .login-field { position: relative; margin-bottom: 1rem; }
-        .login-field-icon {
-            position: absolute;
-            right: 1.15rem; top: 50%; transform: translateY(-50%);
-            color: #FF7A00; font-size: 1rem; pointer-events: none;
-            transition: all 0.25s;
-        }
-        .login-input {
-            width: 100%;
-            padding: 1rem 3.1rem 1rem 1rem;
-            border: 2px solid #E5E7EB;
-            border-radius: 1.1rem;
-            font-size: 0.95rem;
-            background: #FAFAFA;
-            transition: all 0.25s;
-            color: #1A1A1A;
-            font-weight: 600;
-        }
-        .login-input:focus {
-            outline: none;
-            border-color: #FF7A00;
-            background: #FFF;
-            box-shadow: 0 0 0 5px rgba(255,122,0,0.1);
-            transform: translateY(-1px);
-        }
+        .login-field-icon { position: absolute; right: 1.15rem; top: 50%; transform: translateY(-50%); color: #FF7A00; font-size: 1rem; pointer-events: none; transition: all 0.25s; }
+        .login-input { width: 100%; padding: 1rem 3.1rem 1rem 1rem; border: 2px solid #E5E7EB; border-radius: 1.1rem; font-size: 0.95rem; background: #FAFAFA; transition: all 0.25s; color: #1A1A1A; font-weight: 600; }
+        .login-input:focus { outline: none; border-color: #FF7A00; background: #FFF; box-shadow: 0 0 0 5px rgba(255,122,0,0.1); transform: translateY(-1px); }
         .login-input::placeholder { color: #9ca3af; font-weight: 500; }
-
         .login-input.has-toggle { padding-left: 3.1rem; }
-        .password-toggle-btn {
-            position: absolute;
-            left: 0.85rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9CA3AF;
-            font-size: 0.95rem;
-            transition: all 0.22s;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .password-toggle-btn { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 0.95rem; transition: all 0.22s; -webkit-tap-highlight-color: transparent; }
         .password-toggle-btn:hover { background: #FFF7ED; color: #FF7A00; }
         .password-toggle-btn:active { transform: translateY(-50%) scale(0.92); }
         .password-toggle-btn.active { color: #FF7A00; }
 
-        .login-btn {
-            width: 100%;
-            padding: 1.05rem;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff; border: none; border-radius: 1.1rem;
-            font-weight: 800; font-size: 1.05rem;
-            cursor: pointer;
-            transition: all 0.25s;
-            box-shadow: 0 14px 32px -10px rgba(255,122,0,0.75);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-top: 1.5rem;
-        }
-        .login-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 42px -10px rgba(255,122,0,0.9);
-        }
+        .login-btn { width: 100%; padding: 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 1.1rem; font-weight: 800; font-size: 1.05rem; cursor: pointer; transition: all 0.25s; box-shadow: 0 14px 32px -10px rgba(255,122,0,0.75); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 1.5rem; }
+        .login-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 42px -10px rgba(255,122,0,0.9); }
         .login-btn:active:not(:disabled) { transform: translateY(0); }
         .login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-        .login-error {
-            background: #FEF2F2;
-            border: 1.5px solid #FECACA;
-            color: #DC2626;
-            padding: 0.9rem 1rem;
-            border-radius: 0.9rem;
-            font-size: 0.87rem;
-            font-weight: 700;
-            text-align: center;
-            margin-top: 1rem;
-            display: none;
-            animation: shake 0.4s;
-            line-height: 1.6;
-        }
+        .login-error { background: #FEF2F2; border: 1.5px solid #FECACA; color: #DC2626; padding: 0.9rem 1rem; border-radius: 0.9rem; font-size: 0.87rem; font-weight: 700; text-align: center; margin-top: 1rem; display: none; animation: shake 0.4s; line-height: 1.6; }
         .login-error.show { display: block; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-        .login-footer-hint {
-            text-align: center;
-            margin-top: 1.75rem;
-            padding-top: 1.5rem;
-            border-top: 1px dashed #FFE0BD;
-            color: #9ca3af;
-            font-size: 0.82rem;
-            line-height: 1.9;
-        }
-        .login-footer-hint a {
-            color: #FF7A00; text-decoration: none; font-weight: 700;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+        .login-footer-hint { text-align: center; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px dashed #FFE0BD; color: #9ca3af; font-size: 0.82rem; line-height: 1.9; }
+        .login-footer-hint a { color: #FF7A00; text-decoration: none; font-weight: 700; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .login-footer-hint a:hover { text-decoration: underline; }
 
-        .app-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 0 100px 0;
-            min-height: 100vh;
-        }
+        .app-container { max-width: 900px; margin: 0 auto; padding: 0 0 100px 0; min-height: 100vh; }
         @media (min-width: 1024px) { .app-container { padding-bottom: 2rem; } }
 
-        .app-header {
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            padding: 1.25rem 1.25rem 3rem;
-            border-radius: 0 0 2rem 2rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 12px 30px -12px rgba(255,122,0,0.5);
-        }
+        .app-header { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); padding: 1.25rem 1.25rem 3rem; border-radius: 0 0 2rem 2rem; position: relative; overflow: hidden; box-shadow: 0 12px 30px -12px rgba(255,122,0,0.5); }
         @media (min-width: 640px) { .app-header { padding: 1.75rem 2rem 3.5rem; border-radius: 0 0 2.5rem 2.5rem; } }
-        .app-header::before {
-            content: '';
-            position: absolute;
-            top: -60px; right: -60px;
-            width: 220px; height: 220px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .app-header::after {
-            content: '';
-            position: absolute;
-            bottom: -100px; left: -80px;
-            width: 260px; height: 260px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .header-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            z-index: 2;
-            gap: 10px;
-        }
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            min-width: 0;
-        }
-        .header-brand-logo {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: #FFFFFF;
-            padding: 2.5px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2.5px solid rgba(255,255,255,0.85);
-            box-shadow: 0 8px 22px -6px rgba(0,0,0,0.35);
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        @media (min-width: 640px) {
-            .header-brand-logo {
-                width: 58px;
-                height: 58px;
-                padding: 3px;
-                border-width: 3px;
-            }
-        }
-        .header-brand-logo:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 28px -6px rgba(0,0,0,0.45);
-        }
-        .header-brand-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            display: block;
-        }
-        .header-brand-logo.fallback {
-            background: linear-gradient(135deg, #FF7A00, #FFA64D);
-        }
-        .header-brand-logo.fallback img {
-            object-fit: contain;
-            padding: 6px;
-        }
-
+        .app-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%); pointer-events: none; }
+        .app-header::after { content: ''; position: absolute; bottom: -100px; left: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%); pointer-events: none; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; gap: 10px; }
+        .header-brand { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+        .header-brand-logo { width: 52px; height: 52px; border-radius: 50%; background: #FFFFFF; padding: 2.5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 2.5px solid rgba(255,255,255,0.85); box-shadow: 0 8px 22px -6px rgba(0,0,0,0.35); overflow: hidden; transition: all 0.3s; }
+        @media (min-width: 640px) { .header-brand-logo { width: 58px; height: 58px; padding: 3px; border-width: 3px; } }
+        .header-brand-logo:hover { transform: scale(1.05); box-shadow: 0 10px 28px -6px rgba(0,0,0,0.45); }
+        .header-brand-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+        .header-brand-logo.fallback { background: linear-gradient(135deg, #FF7A00, #FFA64D); }
+        .header-brand-logo.fallback img { object-fit: contain; padding: 6px; }
         .header-brand-text { min-width: 0; }
-        .header-brand-title {
-            color: #fff;
-            font-size: 0.72rem;
-            font-weight: 700;
-            opacity: 0.85;
-            letter-spacing: 0.3px;
-        }
-        .header-brand-subtitle {
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 900;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            line-height: 1.2;
-        }
+        .header-brand-title { color: #fff; font-size: 0.72rem; font-weight: 700; opacity: 0.85; letter-spacing: 0.3px; }
+        .header-brand-subtitle { color: #fff; font-size: 1rem; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.2; }
         @media (min-width: 640px) { .header-brand-subtitle { font-size: 1.15rem; } }
 
-        .logout-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.2);
-            border: 1.5px solid rgba(255,255,255,0.35);
-            color: #fff;
-            padding: 0.55rem 0.9rem;
-            border-radius: 9999px;
-            font-weight: 800;
-            font-size: 0.82rem;
-            cursor: pointer;
-            transition: all 0.22s;
-            backdrop-filter: blur(10px);
-            flex-shrink: 0;
-        }
+        .logout-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.35); color: #fff; padding: 0.55rem 0.9rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.22s; backdrop-filter: blur(10px); flex-shrink: 0; }
         .logout-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-1px); }
         .logout-btn:active { transform: translateY(0); }
         .logout-btn span { display: none; }
         @media (min-width: 400px) { .logout-btn span { display: inline; } }
 
-        .connection-pill {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: #fff;
-            padding: 0.45rem 0.9rem;
-            border-radius: 9999px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            margin-top: 1rem;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 2;
-        }
-        .connection-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            animation: pulse 2s infinite;
-            flex-shrink: 0;
-        }
+        .connection-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.45rem 0.9rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700; margin-top: 1rem; backdrop-filter: blur(10px); position: relative; z-index: 2; }
+        .connection-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
         .dot-green { background: #4ADE80; box-shadow: 0 0 8px rgba(74,222,128,0.8); }
         .dot-red { background: #F87171; box-shadow: 0 0 8px rgba(248,113,113,0.8); }
         .dot-yellow { background: #FBBF24; box-shadow: 0 0 8px rgba(251,191,36,0.8); }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .main-content {
-            margin-top: -2.25rem;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 3;
-        }
+        .main-content { margin-top: -2.25rem; padding: 0 1rem; position: relative; z-index: 3; }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
 
-        .tabs-wrap {
-            background: #fff;
-            border-radius: 1.25rem;
-            padding: 0.45rem;
-            display: flex;
-            gap: 0.35rem;
-            box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 1.25rem;
-            position: relative;
-        }
-        .tab-item {
-            flex: 1;
-            padding: 0.75rem 0.75rem;
-            border-radius: 0.95rem;
-            font-weight: 800;
-            font-size: 0.85rem;
-            border: none;
-            background: transparent;
-            color: #6B7280;
-            cursor: pointer;
-            transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            white-space: nowrap;
-        }
+        .tabs-wrap { background: #fff; border-radius: 1.25rem; padding: 0.45rem; display: flex; gap: 0.35rem; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 1.25rem; position: relative; }
+        .tab-item { flex: 1; padding: 0.75rem 0.75rem; border-radius: 0.95rem; font-weight: 800; font-size: 0.85rem; border: none; background: transparent; color: #6B7280; cursor: pointer; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
         @media (min-width: 640px) { .tab-item { font-size: 0.92rem; padding: 0.85rem 1rem; } }
         .tab-item:hover:not(.active) { background: #FFF7ED; color: #FF7A00; }
-        .tab-item.active {
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6);
-        }
-        .tab-item .count-badge {
-            background: rgba(255,255,255,0.35);
-            color: #fff;
-            padding: 0.1rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.7rem;
-            min-width: 22px;
-            text-align: center;
-        }
-        .tab-item:not(.active) .count-badge {
-            background: #FFEDD5;
-            color: #C2410C;
-        }
+        .tab-item.active { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; box-shadow: 0 8px 20px -6px rgba(255,122,0,0.6); }
+        .tab-item .count-badge { background: rgba(255,255,255,0.35); color: #fff; padding: 0.1rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; min-width: 22px; text-align: center; }
+        .tab-item:not(.active) .count-badge { background: #FFEDD5; color: #C2410C; }
 
-        .card {
-            background: #fff;
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.03);
-        }
+        .card { background: #fff; border-radius: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; border: 1px solid rgba(0,0,0,0.03); }
         .card + .card { margin-top: 1rem; }
         .card-body { padding: 1.25rem; }
         @media (min-width: 640px) { .card-body { padding: 1.75rem; } }
 
-        .card-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 900;
-            font-size: 1rem;
-            color: #1A1A1A;
-            margin-bottom: 1.25rem;
-        }
+        .card-title { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1rem; color: #1A1A1A; margin-bottom: 1.25rem; }
         @media (min-width: 640px) { .card-title { font-size: 1.1rem; } }
-        .card-title-icon {
-            width: 36px; height: 36px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            box-shadow: 0 6px 14px -4px rgba(255,122,0,0.5);
-        }
+        .card-title-icon { width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; box-shadow: 0 6px 14px -4px rgba(255,122,0,0.5); }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.65rem;
-            margin-bottom: 1.25rem;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.25rem; }
         @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 0.85rem; } }
-        .stat-box {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFF1E0 100%);
-            border: 1.5px solid #FFE0BD;
-            border-radius: 1rem;
-            padding: 0.85rem 0.75rem;
-            text-align: center;
-            transition: all 0.22s;
-        }
+        .stat-box { background: linear-gradient(135deg, #FFF7ED 0%, #FFF1E0 100%); border: 1.5px solid #FFE0BD; border-radius: 1rem; padding: 0.85rem 0.75rem; text-align: center; transition: all 0.22s; }
         @media (min-width: 640px) { .stat-box { padding: 1.1rem 1rem; } }
         .stat-box:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(255,122,0,0.35); }
-        .stat-box-icon {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: #fff;
-            color: #FF7A00;
-            display: inline-flex; align-items: center; justify-content: center;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            box-shadow: 0 3px 8px -2px rgba(255,122,0,0.3);
-        }
+        .stat-box-icon { width: 32px; height: 32px; border-radius: 50%; background: #fff; color: #FF7A00; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; margin-bottom: 0.5rem; box-shadow: 0 3px 8px -2px rgba(255,122,0,0.3); }
         @media (min-width: 640px) { .stat-box-icon { width: 38px; height: 38px; font-size: 1rem; } }
-        .stat-box-value {
-            font-size: 1.05rem;
-            font-weight: 900;
-            color: #1A1A1A;
-            line-height: 1.1;
-            margin-bottom: 0.2rem;
-        }
+        .stat-box-value { font-size: 1.05rem; font-weight: 900; color: #1A1A1A; line-height: 1.1; margin-bottom: 0.2rem; }
         @media (min-width: 640px) { .stat-box-value { font-size: 1.3rem; } }
-        .stat-box-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #92400E;
-            opacity: 0.8;
-        }
+        .stat-box-label { font-size: 0.7rem; font-weight: 700; color: #92400E; opacity: 0.8; }
         @media (min-width: 640px) { .stat-box-label { font-size: 0.78rem; } }
 
         .form-group { margin-bottom: 1.1rem; }
-        .form-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.83rem;
-            font-weight: 800;
-            color: #374151;
-            margin-bottom: 0.45rem;
-        }
+        .form-label { display: flex; align-items: center; gap: 6px; font-size: 0.83rem; font-weight: 800; color: #374151; margin-bottom: 0.45rem; }
         @media (min-width: 640px) { .form-label { font-size: 0.88rem; } }
         .form-label i { color: #FF7A00; font-size: 0.78rem; }
         .form-label .req { color: #EF4444; }
-        .form-input {
-            width: 100%;
-            padding: 0.85rem 1rem;
-            border: 1.5px solid #E5E7EB;
-            border-radius: 0.9rem;
-            font-size: 0.92rem;
-            font-weight: 600;
-            transition: all 0.22s;
-            background: #fff;
-            color: #1A1A1A;
-            font-family: 'Cairo', sans-serif;
-        }
+        .form-input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.92rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif; }
         @media (min-width: 640px) { .form-input { padding: 0.9rem 1.1rem; font-size: 0.95rem; } }
-        .form-input:focus {
-            outline: none;
-            border-color: #FF7A00;
-            box-shadow: 0 0 0 4px rgba(255,122,0,0.1);
-        }
-        .form-input:disabled {
-            background: #F9FAFB;
-            cursor: not-allowed;
-            color: #6B7280;
-        }
+        .form-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
+        .form-input:disabled { background: #F9FAFB; cursor: not-allowed; color: #6B7280; }
         .form-input::placeholder { color: #9CA3AF; font-weight: 500; }
         textarea.form-input { resize: vertical; min-height: 80px; line-height: 1.6; }
-        .form-hint {
-            font-size: 0.72rem;
-            color: #6B7280;
-            margin-top: 0.35rem;
-            line-height: 1.6;
-            font-weight: 600;
-        }
+        .form-hint { font-size: 0.72rem; color: #6B7280; margin-top: 0.35rem; line-height: 1.6; font-weight: 600; }
         @media (min-width: 640px) { .form-hint { font-size: 0.78rem; } }
 
-        .input-with-toggle {
-            position: relative;
-            width: 100%;
-        }
-        .input-with-toggle .form-input {
-            padding-left: 3rem;
-        }
-        .input-toggle-btn {
-            position: absolute;
-            left: 0.65rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9CA3AF;
-            font-size: 0.9rem;
-            transition: all 0.22s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .input-toggle-btn:hover {
-            background: #FFF7ED;
-            color: #FF7A00;
-        }
-        .input-toggle-btn:active {
-            transform: translateY(-50%) scale(0.92);
-        }
-        .input-toggle-btn.active {
-            color: #FF7A00;
-        }
+        .input-with-toggle { position: relative; width: 100%; }
+        .input-with-toggle .form-input { padding-left: 3rem; }
+        .input-toggle-btn { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 0.9rem; transition: all 0.22s; -webkit-tap-highlight-color: transparent; }
+        .input-toggle-btn:hover { background: #FFF7ED; color: #FF7A00; }
+        .input-toggle-btn:active { transform: translateY(-50%) scale(0.92); }
+        .input-toggle-btn.active { color: #FF7A00; }
 
-        .section-divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 1.5rem 0 1rem;
-            font-size: 0.85rem;
-            font-weight: 900;
-            color: #6B7280;
-        }
+        .section-divider { display: flex; align-items: center; gap: 10px; margin: 1.5rem 0 1rem; font-size: 0.85rem; font-weight: 900; color: #6B7280; }
         @media (min-width: 640px) { .section-divider { font-size: 0.92rem; } }
-        .section-divider::before, .section-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to left, transparent, #E5E7EB, transparent);
-        }
+        .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to left, transparent, #E5E7EB, transparent); }
 
-        .alert {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 0.85rem 1rem;
-            border-radius: 0.9rem;
-            font-size: 0.8rem;
-            font-weight: 700;
-            line-height: 1.7;
-            margin-bottom: 1rem;
-        }
+        .alert { display: flex; align-items: flex-start; gap: 10px; padding: 0.85rem 1rem; border-radius: 0.9rem; font-size: 0.8rem; font-weight: 700; line-height: 1.7; margin-bottom: 1rem; }
         @media (min-width: 640px) { .alert { font-size: 0.85rem; } }
         .alert i { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
-        .alert-info {
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            border: 1px solid #BFDBFE;
-            color: #1E40AF;
-        }
+        .alert-info { background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%); border: 1px solid #BFDBFE; color: #1E40AF; }
         .alert-info i { color: #3B82F6; }
-        .alert-warning {
-            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-            border: 1px solid #FCD34D;
-            color: #92400E;
-        }
+        .alert-warning { background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border: 1px solid #FCD34D; color: #92400E; }
         .alert-warning i { color: #D97706; }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 0.9rem 1.25rem;
-            border-radius: 0.95rem;
-            font-weight: 800;
-            font-size: 0.92rem;
-            cursor: pointer;
-            transition: all 0.22s;
-            border: none;
-            width: 100%;
-            font-family: 'Cairo', sans-serif;
-        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.9rem 1.25rem; border-radius: 0.95rem; font-weight: 800; font-size: 0.92rem; cursor: pointer; transition: all 0.22s; border: none; width: 100%; font-family: 'Cairo', sans-serif; }
         @media (min-width: 640px) { .btn { padding: 1rem 1.5rem; font-size: 1rem; } }
-        .btn-primary {
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-            box-shadow: 0 12px 28px -10px rgba(255,122,0,0.65);
-        }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 34px -10px rgba(255,122,0,0.85);
-        }
+        .btn-primary { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; box-shadow: 0 12px 28px -10px rgba(255,122,0,0.65); }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(255,122,0,0.85); }
         .btn-primary:active:not(:disabled) { transform: translateY(0); }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
-        .btn-danger {
-            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-            color: #fff;
-            box-shadow: 0 12px 28px -10px rgba(239,68,68,0.55);
-        }
+        .btn-danger { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #fff; box-shadow: 0 12px 28px -10px rgba(239,68,68,0.55); }
         .btn-danger:hover:not(:disabled) { transform: translateY(-2px); }
-        .btn-outline {
-            background: #fff;
-            color: #FF7A00;
-            border: 2px solid #FF7A00;
-        }
+        .btn-outline { background: #fff; color: #FF7A00; border: 2px solid #FF7A00; }
         .btn-outline:hover:not(:disabled) { background: #FFF7ED; }
         .btn-row { display: flex; gap: 0.6rem; }
         .btn-row .btn { flex: 1; width: auto; }
 
-        .readonly-field {
-            background: #F9FAFB;
-            border: 1.5px dashed #D1D5DB;
-            border-radius: 0.9rem;
-            padding: 0.85rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            font-weight: 800;
-            font-size: 0.88rem;
-            color: #4B5563;
-        }
-        .readonly-field i.lock-icon { color: #9CA3AF; font-size: 0.8rem; }
-
         .products-list { display: flex; flex-direction: column; gap: 0.75rem; }
-        .product-row {
-            background: #fff;
-            border: 1.5px solid #F3F4F6;
-            border-radius: 1rem;
-            padding: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            transition: all 0.22s;
-        }
-        .product-row:hover {
-            border-color: #FFE0BD;
-            box-shadow: 0 6px 18px -8px rgba(255,122,0,0.25);
-            transform: translateY(-1px);
-        }
-        .product-thumb {
-            width: 56px; height: 56px;
-            border-radius: 0.85rem;
-            object-fit: cover;
-            background: #F9FAFB;
-            flex-shrink: 0;
-            border: 1px solid #F0F0F0;
-        }
+        .product-row { background: #fff; border: 1.5px solid #F3F4F6; border-radius: 1rem; padding: 0.85rem; display: flex; align-items: center; gap: 0.85rem; transition: all 0.22s; }
+        .product-row:hover { border-color: #FFE0BD; box-shadow: 0 6px 18px -8px rgba(255,122,0,0.25); transform: translateY(-1px); }
+        .product-thumb { width: 56px; height: 56px; border-radius: 0.85rem; object-fit: cover; background: #F9FAFB; flex-shrink: 0; border: 1px solid #F0F0F0; }
         @media (min-width: 640px) { .product-thumb { width: 64px; height: 64px; } }
-        .product-thumb-placeholder {
-            display: flex; align-items: center; justify-content: center;
-            color: #D1D5DB; font-size: 1.3rem;
-        }
+        .product-thumb-placeholder { display: flex; align-items: center; justify-content: center; color: #D1D5DB; font-size: 1.3rem; }
         .product-info { flex: 1; min-width: 0; }
-        .product-name {
-            font-weight: 800;
-            font-size: 0.9rem;
-            color: #1A1A1A;
-            margin-bottom: 0.25rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        .product-name { font-weight: 800; font-size: 0.9rem; color: #1A1A1A; margin-bottom: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         @media (min-width: 640px) { .product-name { font-size: 1rem; } }
-        .product-meta {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 0.78rem;
-            flex-wrap: wrap;
-        }
-        .product-price {
-            font-weight: 900;
-            color: #FF7A00;
-            font-size: 0.88rem;
-        }
+        .product-meta { display: flex; align-items: center; gap: 0.75rem; font-size: 0.78rem; flex-wrap: wrap; }
+        .product-price { font-weight: 900; color: #FF7A00; font-size: 0.88rem; }
         @media (min-width: 640px) { .product-price { font-size: 0.95rem; } }
-        .product-rating {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            color: #F59E0B;
-            font-weight: 800;
-            font-size: 0.78rem;
-        }
-        .product-actions {
-            display: flex;
-            gap: 0.4rem;
-            flex-shrink: 0;
-        }
-        .icon-btn {
-            width: 36px; height: 36px;
-            border-radius: 0.7rem;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.22s;
-            font-size: 0.82rem;
-        }
+        .product-rating { display: inline-flex; align-items: center; gap: 3px; color: #F59E0B; font-weight: 800; font-size: 0.78rem; }
+        .product-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+        .icon-btn { width: 36px; height: 36px; border-radius: 0.7rem; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; font-size: 0.82rem; }
         @media (min-width: 640px) { .icon-btn { width: 40px; height: 40px; font-size: 0.9rem; } }
-        .icon-btn-edit {
-            background: #EFF6FF;
-            color: #3B82F6;
-        }
+        .icon-btn-edit { background: #EFF6FF; color: #3B82F6; }
         .icon-btn-edit:hover { background: #DBEAFE; transform: scale(1.05); }
-        .icon-btn-delete {
-            background: #FEF2F2;
-            color: #EF4444;
-        }
+        .icon-btn-delete { background: #FEF2F2; color: #EF4444; }
         .icon-btn-delete:hover { background: #FEE2E2; transform: scale(1.05); }
 
-        .empty-state {
-            text-align: center;
-            padding: 2.5rem 1rem;
-        }
-        .empty-state-icon {
-            width: 80px; height: 80px;
-            margin: 0 auto 1rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem;
-            color: #FFA64D;
-        }
-        .empty-state-title {
-            font-size: 1rem;
-            font-weight: 900;
-            color: #374151;
-            margin-bottom: 0.35rem;
-        }
-        .empty-state-text {
-            font-size: 0.82rem;
-            color: #9CA3AF;
-            font-weight: 600;
-        }
+        .empty-state { text-align: center; padding: 2.5rem 1rem; }
+        .empty-state-icon { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #FFF7ED, #FFF1E0); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #FFA64D; }
+        .empty-state-title { font-size: 1rem; font-weight: 900; color: #374151; margin-bottom: 0.35rem; }
+        .empty-state-text { font-size: 0.82rem; color: #9CA3AF; font-weight: 600; }
 
-        .image-preview {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 0.9rem;
-            margin-top: 0.65rem;
-            border: 1.5px solid #F0F0F0;
-            background: #F9FAFB;
-        }
+        .image-preview { width: 100%; height: 140px; object-fit: cover; border-radius: 0.9rem; margin-top: 0.65rem; border: 1.5px solid #F0F0F0; background: #F9FAFB; }
         @media (min-width: 640px) { .image-preview { height: 170px; } }
 
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: #1F2937;
-            color: #fff;
-            padding: 0.9rem 1.5rem;
-            border-radius: 0.9rem;
-            z-index: 99999;
-            opacity: 0;
-            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-            pointer-events: none;
-            font-weight: 800;
-            font-size: 0.88rem;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
-            max-width: calc(100% - 32px);
-            text-align: center;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #1F2937; color: #fff; padding: 0.9rem 1.5rem; border-radius: 0.9rem; z-index: 99999; opacity: 0; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); pointer-events: none; font-weight: 800; font-size: 0.88rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4); max-width: calc(100% - 32px); text-align: center; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .hidden { display: none !important; }
-
         .tab-content { animation: fadeSlideIn 0.35s ease; }
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .btn.loading { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
 
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
@@ -866,90 +295,24 @@
 
         @media (min-width: 1024px) {
             .app-container { max-width: 1200px; padding-bottom: 2rem; }
-            .products-layout {
-                display: grid;
-                grid-template-columns: 420px 1fr;
-                gap: 1.25rem;
-                align-items: start;
-            }
+            .products-layout { display: grid; grid-template-columns: 420px 1fr; gap: 1.25rem; align-items: start; }
             .card + .card { margin-top: 0; }
             .products-layout .card:first-child { position: sticky; top: 1rem; }
         }
 
-        button:focus-visible, input:focus-visible, textarea:focus-visible {
-            outline: 2px solid #FF7A00;
-            outline-offset: 2px;
-        }
+        button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid #FF7A00; outline-offset: 2px; }
 
-        .readonly-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-        }
-        @media (min-width: 640px) { .readonly-grid { gap: 0.85rem; } }
-        @media (min-width: 768px) { .readonly-grid { grid-template-columns: repeat(4, 1fr); } }
-
-        /* ============================================================
-           📤 أزرار رفع الصور
-           ============================================================ */
-        .url-upload-group {
-            display: flex;
-            gap: 8px;
-            align-items: stretch;
-        }
-        .url-upload-group .form-input {
-            flex: 1;
-            min-width: 0;
-        }
-        .upload-btn {
-            padding: 0 1.05rem;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-            border: none;
-            border-radius: 0.9rem;
-            font-weight: 800;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            transition: all 0.22s;
-            font-family: 'Cairo', sans-serif;
-            white-space: nowrap;
-            flex-shrink: 0;
-            box-shadow: 0 6px 16px -8px rgba(255,122,0,0.7);
-            -webkit-tap-highlight-color: transparent;
-        }
-        .upload-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px -8px rgba(255,122,0,0.9);
-        }
+        /* 📤 أزرار رفع الصور */
+        .url-upload-group { display: flex; gap: 8px; align-items: stretch; }
+        .url-upload-group .form-input { flex: 1; min-width: 0; }
+        .upload-btn { padding: 0 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.22s; font-family: 'Cairo', sans-serif; white-space: nowrap; flex-shrink: 0; box-shadow: 0 6px 16px -8px rgba(255,122,0,0.7); -webkit-tap-highlight-color: transparent; }
+        .upload-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 24px -8px rgba(255,122,0,0.9); }
         .upload-btn:active:not(:disabled) { transform: translateY(0); }
         .upload-btn:disabled { opacity: 0.75; cursor: not-allowed; }
         .upload-btn i { font-size: 0.9rem; }
 
-        .color-upload-btn {
-            width: 46px;
-            height: 46px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            font-size: 0.95rem;
-            transition: all 0.22s;
-            box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6);
-            -webkit-tap-highlight-color: transparent;
-        }
-        .color-upload-btn:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px -4px rgba(255,122,0,0.85);
-        }
+        .color-upload-btn { width: 46px; height: 46px; border-radius: 10px; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 0.95rem; transition: all 0.22s; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); -webkit-tap-highlight-color: transparent; }
+        .color-upload-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 18px -4px rgba(255,122,0,0.85); }
         .color-upload-btn:active:not(:disabled) { transform: translateY(0); }
         .color-upload-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
@@ -958,172 +321,29 @@
             .upload-btn { padding: 0 0.85rem; }
         }
 
-        /* ============================================================
-           🎨 حقول الألوان - متجاوبة
-           ============================================================ */
-        #productColorsContainer {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .color-row {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding: 10px;
-            background: #F9FAFB;
-            border-radius: 14px;
-            border: 1.5px solid #E5E7EB;
-            transition: all 0.25s;
-            animation: fadeSlideIn 0.3s ease;
-            position: relative;
-        }
-        .color-row:hover {
-            border-color: #FFE0BD;
-            background: #FFFBF5;
-        }
-
-        .color-row-top {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .color-dot-preview {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: 2.5px solid #fff;
-            box-shadow: 0 0 0 1.5px #D1D5DB, 0 2px 6px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-            transition: background-color 0.3s, transform 0.2s;
-        }
+        /* 🎨 حقول الألوان */
+        #productColorsContainer { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+        .color-row { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #F9FAFB; border-radius: 14px; border: 1.5px solid #E5E7EB; transition: all 0.25s; animation: fadeSlideIn 0.3s ease; position: relative; }
+        .color-row:hover { border-color: #FFE0BD; background: #FFFBF5; }
+        .color-row-top { display: flex; align-items: center; gap: 8px; }
+        .color-dot-preview { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid #fff; box-shadow: 0 0 0 1.5px #D1D5DB, 0 2px 6px rgba(0,0,0,0.1); flex-shrink: 0; transition: background-color 0.3s, transform 0.2s; }
         .color-dot-preview:hover { transform: scale(1.05); }
+        .color-name { flex: 1; min-width: 0; padding: 0.65rem 0.85rem !important; border-radius: 10px !important; border: 1.5px solid #D1D5DB !important; font-size: 0.9rem !important; font-weight: 700 !important; font-family: 'Cairo', sans-serif; color: #1A1A1A; background: #fff; transition: all 0.22s; }
+        .color-name:focus { outline: none; border-color: #FF7A00 !important; box-shadow: 0 0 0 3px rgba(255,122,0,0.12) !important; }
+        .color-name::placeholder { color: #9CA3AF; font-weight: 500; }
+        .remove-color-btn { width: 38px; height: 38px; border-radius: 10px; background: #FEF2F2; color: #EF4444; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; flex-shrink: 0; font-size: 0.9rem; -webkit-tap-highlight-color: transparent; }
+        .remove-color-btn:hover { background: #FEE2E2; transform: scale(1.05); }
+        .remove-color-btn:active { transform: scale(0.95); }
+        .color-row-bottom { display: flex; gap: 8px; align-items: center; }
+        .color-image { flex: 1; min-width: 0; padding: 0.65rem 0.85rem !important; border-radius: 10px !important; border: 1.5px solid #D1D5DB !important; font-size: 0.78rem !important; font-weight: 600 !important; font-family: 'Cairo', sans-serif; color: #1A1A1A; background: #fff; transition: all 0.22s; direction: ltr; text-align: left; }
+        .color-image:focus { outline: none; border-color: #FF7A00 !important; box-shadow: 0 0 0 3px rgba(255,122,0,0.12) !important; }
+        .color-image::placeholder { color: #9CA3AF; font-weight: 500; font-size: 0.74rem; }
+        .color-image-preview { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; border: 1.5px solid #E5E7EB; background: #fff; flex-shrink: 0; display: none; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: opacity 0.25s; }
+        .color-image-preview.visible { display: block; animation: fadeSlideIn 0.25s ease; }
 
-        .color-name {
-            flex: 1;
-            min-width: 0;
-            padding: 0.65rem 0.85rem !important;
-            border-radius: 10px !important;
-            border: 1.5px solid #D1D5DB !important;
-            font-size: 0.9rem !important;
-            font-weight: 700 !important;
-            font-family: 'Cairo', sans-serif;
-            color: #1A1A1A;
-            background: #fff;
-            transition: all 0.22s;
-        }
-        .color-name:focus {
-            outline: none;
-            border-color: #FF7A00 !important;
-            box-shadow: 0 0 0 3px rgba(255,122,0,0.12) !important;
-        }
-        .color-name::placeholder {
-            color: #9CA3AF;
-            font-weight: 500;
-        }
-
-        .remove-color-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: #FEF2F2;
-            color: #EF4444;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.22s;
-            flex-shrink: 0;
-            font-size: 0.9rem;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .remove-color-btn:hover {
-            background: #FEE2E2;
-            transform: scale(1.05);
-        }
-        .remove-color-btn:active {
-            transform: scale(0.95);
-        }
-
-        .color-row-bottom {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .color-image {
-            flex: 1;
-            min-width: 0;
-            padding: 0.65rem 0.85rem !important;
-            border-radius: 10px !important;
-            border: 1.5px solid #D1D5DB !important;
-            font-size: 0.78rem !important;
-            font-weight: 600 !important;
-            font-family: 'Cairo', sans-serif;
-            color: #1A1A1A;
-            background: #fff;
-            transition: all 0.22s;
-            direction: ltr;
-            text-align: left;
-        }
-        .color-image:focus {
-            outline: none;
-            border-color: #FF7A00 !important;
-            box-shadow: 0 0 0 3px rgba(255,122,0,0.12) !important;
-        }
-        .color-image::placeholder {
-            color: #9CA3AF;
-            font-weight: 500;
-            font-size: 0.74rem;
-        }
-
-        .color-image-preview {
-            width: 46px;
-            height: 46px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 1.5px solid #E5E7EB;
-            background: #fff;
-            flex-shrink: 0;
-            display: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            transition: opacity 0.25s;
-        }
-        .color-image-preview.visible {
-            display: block;
-            animation: fadeSlideIn 0.25s ease;
-        }
-
-        #addColorBtn {
-            background: #FFF7ED;
-            color: #FF7A00;
-            border: 1.5px dashed #FFA64D;
-            border-radius: 12px;
-            padding: 0.7rem 1rem;
-            font-weight: 800;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: all 0.25s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            font-family: 'Cairo', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        #addColorBtn:hover {
-            background: #FFE0BD;
-            border-color: #FF7A00;
-            transform: translateY(-1px);
-        }
-        #addColorBtn:active {
-            transform: translateY(0);
-        }
+        #addColorBtn { background: #FFF7ED; color: #FF7A00; border: 1.5px dashed #FFA64D; border-radius: 12px; padding: 0.7rem 1rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
+        #addColorBtn:hover { background: #FFE0BD; border-color: #FF7A00; transform: translateY(-1px); }
+        #addColorBtn:active { transform: translateY(0); }
 
         @media (max-width: 360px) {
             .color-dot-preview { width: 36px; height: 36px; }
@@ -1135,50 +355,15 @@
         }
 
         @media (min-width: 640px) {
-            .color-row {
-                display: grid;
-                grid-template-columns: auto 1fr auto auto;
-                grid-template-rows: auto auto;
-                gap: 8px 10px;
-                align-items: center;
-                padding: 12px;
-            }
+            .color-row { display: grid; grid-template-columns: auto 1fr auto auto; grid-template-rows: auto auto; gap: 8px 10px; align-items: center; padding: 12px; }
             .color-row-top { display: contents; }
-            .color-dot-preview {
-                grid-column: 1;
-                grid-row: 1;
-                width: 46px;
-                height: 46px;
-            }
-            .color-name {
-                grid-column: 2;
-                grid-row: 1;
-            }
-            .remove-color-btn {
-                grid-column: 4;
-                grid-row: 1 / 3;
-                width: 42px;
-                height: 100%;
-                min-height: 42px;
-                align-self: stretch;
-                border-radius: 12px;
-            }
+            .color-dot-preview { grid-column: 1; grid-row: 1; width: 46px; height: 46px; }
+            .color-name { grid-column: 2; grid-row: 1; }
+            .remove-color-btn { grid-column: 4; grid-row: 1 / 3; width: 42px; height: 100%; min-height: 42px; align-self: stretch; border-radius: 12px; }
             .color-row-bottom { display: contents; }
-            .color-image {
-                grid-column: 1 / 3;
-                grid-row: 2;
-            }
-            .color-upload-btn {
-                grid-column: 3;
-                grid-row: 2;
-                width: 100%;
-                height: 100%;
-                min-height: 42px;
-                border-radius: 10px;
-            }
-            .color-image-preview {
-                display: none !important;
-            }
+            .color-image { grid-column: 1 / 3; grid-row: 2; }
+            .color-upload-btn { grid-column: 3; grid-row: 2; width: 100%; height: 100%; min-height: 42px; border-radius: 10px; }
+            .color-image-preview { display: none !important; }
         }
     </style>
 </head>
@@ -1186,23 +371,19 @@
 
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
-
         <div class="login-logo">
             <img src="file_00000000b5e881f6a653c6d272e68de7.png" alt="BranZar">
         </div>
-
         <h1 class="login-title">لوحة تحكم المتجر</h1>
         <p class="login-subtitle">
             سجّل دخولك باسم المستخدم وكلمة المرور<br>
             التي استلمتها من إدارة برانزار
         </p>
-
         <form id="loginForm" autocomplete="off">
             <div class="login-field">
                 <input type="text" id="loginStoreName" class="login-input" placeholder="اسم المستخدم" required autocomplete="off" spellcheck="false">
                 <i class="fas fa-store login-field-icon"></i>
             </div>
-
             <div class="login-field">
                 <input type="password" id="loginPassword" class="login-input has-toggle" placeholder="كلمة المرور" required autocomplete="off">
                 <i class="fas fa-lock login-field-icon"></i>
@@ -1210,15 +391,12 @@
                     <i class="fas fa-eye" id="loginPasswordToggleIcon"></i>
                 </button>
             </div>
-
             <div id="loginError" class="login-error"></div>
-
             <button type="submit" id="loginSubmitBtn" class="login-btn">
                 <i class="fas fa-sign-in-alt"></i>
                 <span>تسجيل الدخول</span>
             </button>
         </form>
-
         <div class="login-footer-hint">
             نسيت كلمة المرور؟ تواصل مع الإدارة
             <br>
@@ -1230,15 +408,12 @@
                 <i class="fas fa-arrow-right"></i> العودة للصفحة الرئيسية
             </a>
         </div>
-
     </div>
 </div>
 
 <div id="dashboard" class="hidden">
     <div id="toast" class="toast"></div>
-
     <div class="app-container">
-
         <div class="app-header">
             <div class="header-top">
                 <div class="header-brand">
@@ -1255,7 +430,6 @@
                     <span>خروج</span>
                 </button>
             </div>
-
             <div class="connection-pill">
                 <span id="connectionStatusDot" class="connection-dot dot-yellow"></span>
                 <span id="connectionStatusText">جارٍ فحص الاتصال...</span>
@@ -1263,7 +437,6 @@
         </div>
 
         <div class="main-content">
-
             <div class="tabs-wrap">
                 <button id="tabStore" class="tab-item active">
                     <i class="fas fa-store"></i>
@@ -1277,7 +450,6 @@
             </div>
 
             <div id="storeSection" class="tab-content">
-
                 <div class="stats-grid">
                     <div class="stat-box">
                         <div class="stat-box-icon"><i class="fas fa-star"></i></div>
@@ -1307,10 +479,8 @@
                             <div class="card-title-icon"><i class="fas fa-store"></i></div>
                             <span>معلومات المتجر</span>
                         </div>
-
                         <form id="storeForm">
                             <input type="hidden" id="store_id">
-
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-store"></i>
@@ -1428,14 +598,12 @@
 
             <div id="productsSection" class="tab-content hidden">
                 <div class="products-layout">
-
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title">
                                 <div class="card-title-icon"><i class="fas fa-plus"></i></div>
                                 <span id="productFormTitle">إضافة منتج جديد</span>
                             </div>
-
                             <form id="productForm">
                                 <input type="hidden" id="product_id">
 
@@ -1528,76 +696,32 @@
                                     <div class="card-title-icon"><i class="fas fa-boxes"></i></div>
                                     <span>منتجاتي</span>
                                 </div>
-                                <span id="productsCount" style="
-                                    background: linear-gradient(135deg, #FF7A00, #FFA64D);
-                                    color: #fff;
-                                    padding: 0.35rem 0.85rem;
-                                    border-radius: 9999px;
-                                    font-size: 0.78rem;
-                                    font-weight: 900;
-                                    box-shadow: 0 6px 14px -6px rgba(255,122,0,0.6);
-                                ">0</span>
+                                <span id="productsCount" style="background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 900; box-shadow: 0 6px 14px -6px rgba(255,122,0,0.6);">0</span>
                             </div>
                             <div id="productsList" class="products-list"></div>
                         </div>
                     </div>
-
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
 <datalist id="colorList">
-    <option value="أسود"></option>
-    <option value="رمادي"></option>
-    <option value="رمادي فاتح"></option>
-    <option value="رمادي غامق"></option>
-    <option value="أبيض"></option>
-    <option value="بيج"></option>
-    <option value="كريمي"></option>
-    <option value="أحمر"></option>
-    <option value="أحمر فاتح"></option>
-    <option value="أحمر غامق"></option>
-    <option value="أحمر داكن"></option>
-    <option value="نبيتي"></option>
-    <option value="خمري"></option>
-    <option value="وردي"></option>
-    <option value="وردي فاتح"></option>
-    <option value="وردي غامق"></option>
-    <option value="أزرق"></option>
-    <option value="أزرق فاتح"></option>
-    <option value="أزرق غامق"></option>
-    <option value="أزرق داكن"></option>
-    <option value="كحلي"></option>
-    <option value="سماوي"></option>
-    <option value="تركواز"></option>
-    <option value="أخضر"></option>
-    <option value="أخضر فاتح"></option>
-    <option value="أخضر غامق"></option>
-    <option value="أخضر داكن"></option>
-    <option value="زيتي"></option>
-    <option value="ليموني"></option>
-    <option value="أصفر"></option>
-    <option value="أصفر فاتح"></option>
-    <option value="ذهبي"></option>
-    <option value="نحاسي"></option>
-    <option value="بني"></option>
-    <option value="بني فاتح"></option>
-    <option value="بني غامق"></option>
-    <option value="بني داكن"></option>
-    <option value="شوكولاتي"></option>
-    <option value="جملي"></option>
-    <option value="بنفسجي"></option>
-    <option value="موف"></option>
-    <option value="لافندر"></option>
-    <option value="أرجواني"></option>
-    <option value="برتقالي"></option>
-    <option value="برتقالي فاتح"></option>
-    <option value="برتقالي غامق"></option>
-    <option value="فضي"></option>
-    <option value="برونزي"></option>
+    <option value="أسود"></option><option value="رمادي"></option><option value="رمادي فاتح"></option><option value="رمادي غامق"></option>
+    <option value="أبيض"></option><option value="بيج"></option><option value="كريمي"></option>
+    <option value="أحمر"></option><option value="أحمر فاتح"></option><option value="أحمر غامق"></option><option value="أحمر داكن"></option>
+    <option value="نبيتي"></option><option value="خمري"></option><option value="وردي"></option><option value="وردي فاتح"></option><option value="وردي غامق"></option>
+    <option value="أزرق"></option><option value="أزرق فاتح"></option><option value="أزرق غامق"></option><option value="أزرق داكن"></option>
+    <option value="كحلي"></option><option value="سماوي"></option><option value="تركواز"></option>
+    <option value="أخضر"></option><option value="أخضر فاتح"></option><option value="أخضر غامق"></option><option value="أخضر داكن"></option>
+    <option value="زيتي"></option><option value="ليموني"></option>
+    <option value="أصفر"></option><option value="أصفر فاتح"></option><option value="ذهبي"></option><option value="نحاسي"></option>
+    <option value="بني"></option><option value="بني فاتح"></option><option value="بني غامق"></option><option value="بني داكن"></option>
+    <option value="شوكولاتي"></option><option value="جملي"></option>
+    <option value="بنفسجي"></option><option value="موف"></option><option value="لافندر"></option><option value="أرجواني"></option>
+    <option value="برتقالي"></option><option value="برتقالي فاتح"></option><option value="برتقالي غامق"></option>
+    <option value="فضي"></option><option value="برونزي"></option>
 </datalist>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1605,6 +729,19 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════
+   🔑 إعدادات Cloudinary
+   ═══════════════════════════════════════════════════════════════
+   📌 للحصول على المفاتيح (بدون بطاقة بنكية):
+   1. سجّل في https://cloudinary.com
+   2. من الـ Dashboard، انسخ "Cloud name"
+   3. اذهب إلى Settings > Upload > Upload presets
+   4. أضف Upload preset جديد واختر Signing Mode = Unsigned
+   5. انسخ اسم الـ Preset والصقه بالأسفل
+   ═══════════════════════════════════════════════════════════════ */
+const CLOUDINARY_CLOUD_NAME = 'nq4ltxfh'; 
+const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
+
 const firebaseConfig = {
     apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
     authDomain: "bazarena-725e4.firebaseapp.com",
@@ -1629,10 +766,7 @@ const CACHE_PREFIX = 'bazrena_cache_';
 const cacheManager = {
     set(key, value) {
         try {
-            localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({
-                timestamp: Date.now(),
-                value: value
-            }));
+            localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ timestamp: Date.now(), value }));
         } catch (e) { console.warn('⚠️ فشل حفظ الكاش:', e); }
     },
     get(key) {
@@ -1701,7 +835,7 @@ function showToast(message, type = 'success') {
         ? 'linear-gradient(135deg, #F59E0B, #D97706)'
         : 'linear-gradient(135deg, #10B981, #059669)';
     clearTimeout(window._toastT);
-    window._toastT = setTimeout(() => t.classList.remove('show'), 3500);
+    window._toastT = setTimeout(() => t.classList.remove('show'), 4000);
 }
 function setButtonLoading(btn, isLoading, loadingText, normalHTML) {
     if (isLoading) {
@@ -1726,9 +860,9 @@ function updateConnectionStatus(success, message) {
     }
 }
 
-/* ============================================================
-   📤 رفع الصور إلى catbox.moe (مجاني، بدون API Key، بدون بطاقة)
-   ============================================================ */
+/* ═══════════════════════════════════════════════════════════════
+   📤 رفع الصور إلى Cloudinary (يدعم CORS)
+   ═══════════════════════════════════════════════════════════════ */
 async function uploadImageToHost(file) {
     if (!file) throw new Error('لم يتم اختيار ملف');
     if (!file.type || !file.type.startsWith('image/')) {
@@ -1739,26 +873,29 @@ async function uploadImageToHost(file) {
         throw new Error(`حجم الصورة أكبر من ${MAX_MB} ميجابايت`);
     }
 
-    const formData = new FormData();
-    formData.append('reqtype', 'fileupload');
-    formData.append('fileToUpload', file);
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+        throw new Error('إعدادات Cloudinary غير مكتملة');
+    }
 
-    const res = await fetch('https://catbox.moe/user/api.php', {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, {
         method: 'POST',
-        body: formData,
+        body: fd,
     });
 
     if (!res.ok) {
         throw new Error('فشل الاتصال بخدمة الرفع (HTTP ' + res.status + ')');
     }
 
-    const text = (await res.text()).trim();
-
-    if (!text.startsWith('http')) {
-        throw new Error('فشل الرفع: ' + text.substring(0, 120));
+    const data = await res.json();
+    if (!data.secure_url) {
+        throw new Error('لم يتم استلام رابط الصورة من Cloudinary');
     }
 
-    return text;
+    return data.secure_url;
 }
 
 function openFilePickerAndUpload(button, targetInput) {
@@ -1769,7 +906,7 @@ function openFilePickerAndUpload(button, targetInput) {
 
     fileInput.addEventListener('change', async () => {
         const file = fileInput.files && fileInput.files[0];
-        if (!file) return;
+        if (!file) { fileInput.remove(); return; }
 
         const originalHTML = button.innerHTML;
         button.disabled = true;
@@ -1795,7 +932,7 @@ function openFilePickerAndUpload(button, targetInput) {
     fileInput.click();
 }
 
-// معالج مفوّض لجميع أزرار الرفع (بما فيها الألوان المضافة ديناميكياً)
+// معالج مفوّض لجميع أزرار الرفع
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-upload-target]');
     if (!btn) return;
@@ -1818,7 +955,6 @@ function setupPasswordToggle(inputId, buttonId, iconId) {
 
     button.addEventListener('click', () => {
         const isPassword = input.type === 'password';
-
         if (isPassword) {
             input.type = 'text';
             icon.classList.remove('fa-eye');
@@ -1838,7 +974,6 @@ function setupPasswordToggle(inputId, buttonId, iconId) {
             const len = input.value.length;
             try { input.setSelectionRange(len, len); } catch (e) {}
         }
-
         setTimeout(() => input.focus(), 0);
     });
 }
@@ -1870,10 +1005,7 @@ function updateHeaderLogo(store) {
     }
 }
 
-/* ============================================================
-   🎨 نظام الألوان الذكي
-   ============================================================ */
-
+/* 🎨 نظام الألوان الذكي */
 const UNKNOWN_COLOR_HEX = '#9CA3AF';
 
 const BASE_COLOR_MAP = {
@@ -1895,17 +1027,8 @@ const BASE_COLOR_MAP = {
     'navy': '#1E3A8A', 'teal': '#14B8A6', 'olive': '#4D7C0F', 'maroon': '#7F1D1D'
 };
 
-const LIGHT_KEYWORDS = [
-    'فاتح', 'فاتحة', 'فاتحه', 'باهت', 'باهتة', 'باهته',
-    'خفيف', 'خفيفة', 'خفيفه', 'ساطع', 'ساطعة', 'ساطعه',
-    'light', 'pale', 'soft'
-];
-
-const DARK_KEYWORDS = [
-    'غامق', 'غامقة', 'غامقه', 'داكن', 'داكنة', 'داكنه',
-    'عميق', 'عميقة', 'عميقه', 'قاتم', 'قاتمة', 'قاتمه',
-    'dark', 'deep', 'strong'
-];
+const LIGHT_KEYWORDS = ['فاتح', 'فاتحة', 'فاتحه', 'باهت', 'باهتة', 'باهته', 'خفيف', 'خفيفة', 'خفيفه', 'ساطع', 'ساطعة', 'ساطعه', 'light', 'pale', 'soft'];
+const DARK_KEYWORDS = ['غامق', 'غامقة', 'غامقه', 'داكن', 'داكنة', 'داكنه', 'عميق', 'عميقة', 'عميقه', 'قاتم', 'قاتمة', 'قاتمه', 'dark', 'deep', 'strong'];
 
 function normalizeColorName(name) {
     if (!name) return '';
@@ -1925,11 +1048,7 @@ function normalizeColorName(name) {
 function hexToRgb(hex) {
     const cleaned = String(hex).replace('#', '');
     if (cleaned.length !== 6) return null;
-    return {
-        r: parseInt(cleaned.substr(0, 2), 16),
-        g: parseInt(cleaned.substr(2, 2), 16),
-        b: parseInt(cleaned.substr(4, 2), 16)
-    };
+    return { r: parseInt(cleaned.substr(0, 2), 16), g: parseInt(cleaned.substr(2, 2), 16), b: parseInt(cleaned.substr(4, 2), 16) };
 }
 function rgbToHex(r, g, b) {
     const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
@@ -1943,18 +1062,16 @@ function applyModifier(hex, modifier) {
     if (!rgb) return hex;
     let { r, g, b } = rgb;
     switch (modifier) {
-        case 'light': {
+        case 'light':
             r = r + (255 - r) * 0.40;
             g = g + (255 - g) * 0.40;
             b = b + (255 - b) * 0.40;
             break;
-        }
-        case 'dark': {
+        case 'dark':
             r = r * 0.60;
             g = g * 0.60;
             b = b * 0.60;
             break;
-        }
     }
     return rgbToHex(r, g, b);
 }
@@ -2014,7 +1131,6 @@ function getFallbackHex(colorName) {
             return applyModifier(BASE_COLOR_MAP[key], inferredModifier);
         }
     }
-
     return UNKNOWN_COLOR_HEX;
 }
 
@@ -2076,7 +1192,6 @@ function getColorSortOrder(name) {
     let modifierOffset = 0;
     if (modifier === 'light') modifierOffset = 0.1;
     else if (modifier === 'dark') modifierOffset = 0.2;
-
     return baseOrder + modifierOffset;
 }
 
@@ -2097,11 +1212,7 @@ function getSession() {
     } catch { return null; }
 }
 function saveSession(store) {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-        id: store.id,
-        name: store.name,
-        loggedAt: Date.now()
-    }));
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ id: store.id, name: store.name, loggedAt: Date.now() }));
 }
 function clearSession() {
     sessionStorage.removeItem(SESSION_KEY);
@@ -2109,11 +1220,9 @@ function clearSession() {
 
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const enteredName = sanitizeInput($('loginStoreName').value);
     const enteredPass = $('loginPassword').value;
     const errEl = $('loginError');
-
     errEl.classList.remove('show');
 
     if (!enteredName) {
@@ -2168,7 +1277,6 @@ $('loginForm').addEventListener('submit', async (e) => {
         saveSession(foundStore);
         showToast(`مرحباً بك يا ${foundStore.name} ✅`);
         await enterDashboard();
-
     } catch (err) {
         console.error(err);
         errEl.textContent = '❌ ' + (err.message || 'حدث خطأ غير متوقع');
@@ -2204,10 +1312,7 @@ async function enterDashboard() {
 
 $('logoutBtn').addEventListener('click', () => {
     if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
-    if (productsUnsubscribe) {
-        productsUnsubscribe();
-        productsUnsubscribe = null;
-    }
+    if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
     clearSession();
     currentStore = null;
     location.reload();
@@ -2249,7 +1354,6 @@ function fillStoreForm(store) {
     } else {
         $('store_cover_preview').classList.add('hidden');
     }
-
     updateHeaderLogo(store);
 }
 
@@ -2263,33 +1367,17 @@ $('storeForm').addEventListener('submit', async (e) => {
     const whatsapp = cleanPhone($('store_whatsapp').value);
     const phone = cleanPhone($('store_phone').value);
 
-    if (!newName || newName.length < 2) {
-        showToast('اسم المتجر مطلوب (حرفان على الأقل)', 'error');
-        return;
-    }
-    if (newName.length > 100) {
-        showToast('اسم المتجر طويل جداً', 'error');
-        return;
-    }
-    if (!newPassword || newPassword.length < 4) {
-        showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error');
-        return;
-    }
-    if (!whatsapp || whatsapp.length < 10) {
-        showToast('رقم الواتساب مطلوب', 'error');
-        return;
-    }
+    if (!newName || newName.length < 2) { showToast('اسم المتجر مطلوب (حرفان على الأقل)', 'error'); return; }
+    if (newName.length > 100) { showToast('اسم المتجر طويل جداً', 'error'); return; }
+    if (!newPassword || newPassword.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
+    if (!whatsapp || whatsapp.length < 10) { showToast('رقم الواتساب مطلوب', 'error'); return; }
 
     const oldName = currentStore.name;
     const nameChanged = (newName !== oldName);
 
     if (nameChanged) {
         const confirmChange = confirm(
-            `⚠️ تنبيه مهم!\n\n` +
-            `سيتم تغيير اسم متجرك من:\n"${oldName}"\n\n` +
-            `إلى:\n"${newName}"\n\n` +
-            `سيتم تحديث اسم المتجر في جميع منتجاتك تلقائياً.\n\n` +
-            `هل أنت متأكد؟`
+            `⚠️ تنبيه مهم!\n\nسيتم تغيير اسم متجرك من:\n"${oldName}"\n\nإلى:\n"${newName}"\n\nسيتم تحديث اسم المتجر في جميع منتجاتك تلقائياً.\n\nهل أنت متأكد؟`
         );
         if (!confirmChange) return;
     }
@@ -2313,33 +1401,22 @@ $('storeForm').addEventListener('submit', async (e) => {
 
         if (nameChanged) {
             showToast('جاري تحديث المنتجات...', 'warning');
-
-            const productsSnap = await db.collection(productsTableName)
-                .where('store_name', '==', oldName)
-                .get();
-
-            const updates = productsSnap.docs.map(doc =>
-                db.collection(productsTableName).doc(doc.id).update({ store_name: newName })
-            );
+            const productsSnap = await db.collection(productsTableName).where('store_name', '==', oldName).get();
+            const updates = productsSnap.docs.map(doc => db.collection(productsTableName).doc(doc.id).update({ store_name: newName }));
             await Promise.all(updates);
 
             cacheManager.remove(`store_products_${oldName}`);
             cacheManager.remove(`store_products_${newName}`);
             cacheManager.remove('stores_list');
 
-            if (productsUnsubscribe) {
-                productsUnsubscribe();
-                productsUnsubscribe = null;
-            }
+            if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
             isFirstProductsSnapshot = true;
             lastProductsFingerprint = '';
 
             saveSession({ id: storeId, name: newName, loggedAt: Date.now() });
-
             $('welcomeStoreName').textContent = newName;
             $('product_store_name').value = newName;
             $('product_store_name_display').value = newName;
-
             showToast(`✅ تم تحديث الاسم و ${updates.length} منتج`);
         } else {
             showToast('تم حفظ التعديلات بنجاح ✅');
@@ -2350,10 +1427,7 @@ $('storeForm').addEventListener('submit', async (e) => {
         fillStoreForm(currentStore);
         updateHeaderLogo(currentStore);
 
-        if (nameChanged) {
-            setupRealtimeMyProductsListener();
-        }
-
+        if (nameChanged) setupRealtimeMyProductsListener();
     } catch (err) {
         console.error('خطأ حفظ المتجر:', err);
         showToast('فشل الحفظ: ' + err.message, 'error');
@@ -2376,23 +1450,18 @@ async function loadMyProducts(forceRefresh = false) {
         }
 
         if (!cached || forceRefresh) {
-            const snapshot = await db.collection(productsTableName)
-                .where('store_name', '==', currentStore.name)
-                .get();
-
+            const snapshot = await db.collection(productsTableName).where('store_name', '==', currentStore.name).get();
             productsData = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             productsData.sort((a, b) => {
                 const ta = a.created_at?.seconds || 0;
                 const tb = b.created_at?.seconds || 0;
                 return tb - ta;
             });
-
             cacheManager.set(cacheKey, productsData);
             updateProductsUI();
         }
 
         setupRealtimeMyProductsListener();
-
     } catch (err) {
         console.error('خطأ تحميل المنتجات:', err);
         $('productsList').innerHTML = `<div class="empty-state"><div class="empty-state-title" style="color:#EF4444;">تعذر تحميل المنتجات</div></div>`;
@@ -2401,11 +1470,7 @@ async function loadMyProducts(forceRefresh = false) {
 
 function setupRealtimeMyProductsListener() {
     if (!currentStore) return;
-
-    if (productsUnsubscribe) {
-        productsUnsubscribe();
-        productsUnsubscribe = null;
-    }
+    if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
 
     console.log(`🔄 بدء مراقبة "${currentStore.name}"...`);
 
@@ -2424,14 +1489,10 @@ function setupRealtimeMyProductsListener() {
             if (isFirstProductsSnapshot) {
                 isFirstProductsSnapshot = false;
                 lastProductsFingerprint = newFingerprint;
-
                 const cachedProducts = cacheManager.get(`store_products_${currentStore.name}`);
                 const cachedFingerprint = cachedProducts ? getProductsFingerprint(cachedProducts) : '';
-
                 cacheManager.set(`store_products_${currentStore.name}`, freshProducts);
-
                 if (cachedFingerprint !== newFingerprint) {
-                    console.log('📊 البيانات تغيرت - تحديث الواجهة');
                     productsData = freshProducts;
                     updateProductsUI();
                 }
@@ -2444,21 +1505,14 @@ function setupRealtimeMyProductsListener() {
             const addedCount = changes.filter(c => c.type === 'added').length;
             const removedCount = changes.filter(c => c.type === 'removed').length;
 
-            console.log(`🆕 تحديث: +${addedCount} -${removedCount}`);
-
             lastProductsFingerprint = newFingerprint;
             productsData = freshProducts;
             cacheManager.set(`store_products_${currentStore.name}`, freshProducts);
             updateProductsUI();
 
-            if (addedCount > 0) {
-                showToast(`🆕 تم إضافة ${addedCount} ${addedCount === 1 ? 'منتج جديد' : 'منتجات جديدة'}!`);
-            } else if (removedCount > 0) {
-                showToast(`🗑️ تم حذف ${removedCount} منتج`);
-            }
-        }, (error) => {
-            console.warn('⚠️ خطأ في المراقبة:', error);
-        });
+            if (addedCount > 0) showToast(`🆕 تم إضافة ${addedCount} ${addedCount === 1 ? 'منتج جديد' : 'منتجات جديدة'}!`);
+            else if (removedCount > 0) showToast(`🗑️ تم حذف ${removedCount} منتج`);
+        }, (error) => console.warn('⚠️ خطأ في المراقبة:', error));
 }
 
 function updateProductsUI() {
@@ -2507,19 +1561,13 @@ function renderMyProductsList(products) {
                     <div class="product-name">${escapeHtml(product.name)}</div>
                     <div class="product-meta">
                         <span class="product-price">${price.toLocaleString()} ج.س</span>
-                        <span class="product-rating">
-                            <i class="fas fa-star"></i> ${rating}
-                        </span>
+                        <span class="product-rating"><i class="fas fa-star"></i> ${rating}</span>
                         ${colorDotsHTML}
                     </div>
                 </div>
                 <div class="product-actions">
-                    <button class="icon-btn icon-btn-edit" onclick="editProduct('${product.id}')" title="تعديل">
-                        <i class="fas fa-pen"></i>
-                    </button>
-                    <button class="icon-btn icon-btn-delete" onclick="deleteProduct('${product.id}')" title="حذف">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <button class="icon-btn icon-btn-edit" onclick="editProduct('${product.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
+                    <button class="icon-btn icon-btn-delete" onclick="deleteProduct('${product.id}')" title="حذف"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         `;
@@ -2527,9 +1575,6 @@ function renderMyProductsList(products) {
     $('productsList').innerHTML = html;
 }
 
-/* ============================================================
-   🎨 إدارة حقول الألوان
-   ============================================================ */
 function updateColorPreview(nameInput, dotPreview) {
     const value = nameInput.value;
     const hex = getFallbackHex(value);
@@ -2542,7 +1587,6 @@ function addColorRow(name = '', image = '') {
     const row = document.createElement('div');
     row.className = 'color-row';
 
-    // ID فريد لحقل الصورة داخل هذا الصف
     const uniqueId = 'color_image_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 
     row.innerHTML = `
@@ -2572,13 +1616,8 @@ function addColorRow(name = '', image = '') {
     imageInput.value = image || '';
 
     updateColorPreview(nameInput, dotPreview);
-
-    nameInput.addEventListener('input', () => {
-        updateColorPreview(nameInput, dotPreview);
-    });
-    nameInput.addEventListener('change', () => {
-        updateColorPreview(nameInput, dotPreview);
-    });
+    nameInput.addEventListener('input', () => updateColorPreview(nameInput, dotPreview));
+    nameInput.addEventListener('change', () => updateColorPreview(nameInput, dotPreview));
 
     imageInput.addEventListener('input', (e) => {
         const url = e.target.value.trim();
@@ -2595,10 +1634,7 @@ function addColorRow(name = '', image = '') {
         imagePreview.src = image;
         imagePreview.classList.add('visible');
     }
-
-    imagePreview.addEventListener('error', () => {
-        imagePreview.classList.remove('visible');
-    });
+    imagePreview.addEventListener('error', () => imagePreview.classList.remove('visible'));
 
     removeBtn.addEventListener('click', () => {
         row.style.transition = 'all 0.25s ease';
@@ -2614,15 +1650,10 @@ function addColorRow(name = '', image = '') {
     });
 
     container.appendChild(row);
-
-    setTimeout(() => {
-        row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 100);
+    setTimeout(() => row.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
 }
 
-document.getElementById('addColorBtn').addEventListener('click', () => {
-    addColorRow();
-});
+document.getElementById('addColorBtn').addEventListener('click', () => addColorRow());
 
 $('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -2642,12 +1673,8 @@ $('productForm').addEventListener('submit', async (e) => {
     colorRows.forEach(row => {
         const cName = sanitizeInput(row.querySelector('.color-name').value);
         const cImage = sanitizeInput(row.querySelector('.color-image').value);
-
-        if (cName && cImage) {
-            colors.push({ name: cName, image: cImage });
-        } else if (cName || cImage) {
-            hasColorError = true;
-        }
+        if (cName && cImage) colors.push({ name: cName, image: cImage });
+        else if (cName || cImage) hasColorError = true;
     });
 
     if (hasColorError) {
@@ -2700,7 +1727,6 @@ function resetProductForm() {
     $('product_img_preview').classList.add('hidden');
     $('product_store_name').value = currentStore.name;
     $('product_store_name_display').value = currentStore.name;
-
     document.getElementById('productColorsContainer').innerHTML = '';
 }
 
@@ -2731,9 +1757,7 @@ window.editProduct = async (id) => {
         container.innerHTML = '';
         if (data.colors && Array.isArray(data.colors) && data.colors.length > 0) {
             const sortedColors = sortColorsByFamily(data.colors);
-            sortedColors.forEach(c => {
-                addColorRow(c.name, c.image);
-            });
+            sortedColors.forEach(c => addColorRow(c.name, c.image));
         }
 
         $('productFormTitle').textContent = 'تعديل: ' + data.name;
@@ -2767,9 +1791,7 @@ window.deleteProduct = async (id) => {
 async function updateMyStoreProductsCount() {
     if (!currentStore) return;
     try {
-        const snapshot = await db.collection(productsTableName)
-            .where('store_name', '==', currentStore.name)
-            .get();
+        const snapshot = await db.collection(productsTableName).where('store_name', '==', currentStore.name).get();
         const newCount = snapshot.size;
         await db.collection(storesTableName).doc(currentStore.id).update({ products_count: newCount });
         currentStore.products_count = newCount;
@@ -2824,7 +1846,6 @@ async function init() {
     try {
         const cachedStore = cacheManager.get(`store_${session.id}`);
         if (cachedStore) {
-            console.log(`⚡ [كاش] store_${session.id}`);
             currentStore = cachedStore;
             await enterDashboard();
 
@@ -2839,7 +1860,6 @@ async function init() {
                     }
                 }
             }).catch(err => console.warn('تعذر التحديث الخلفي:', err));
-
             return;
         }
 
