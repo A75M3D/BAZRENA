@@ -161,7 +161,7 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .ripple.animate::after { animation: rippleAnim 0.6s ease; }
 @keyframes rippleAnim { from { transform: scale(0); opacity: 0.7; } to { transform: scale(2); opacity: 0; } }
 
-/* ═══ SECTIONS (تم ضغط المسافات هنا) ═══ */
+/* ═══ SECTIONS (تم ضغط المسافات) ═══ */
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .section-title-group { display: flex; align-items: center; gap: 8px; }
 .section-icon-circle { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#FF7A00,#FFA64D); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.85rem; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); }
@@ -170,12 +170,12 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .section-title-md { font-size: clamp(1rem,2.5vw,1.2rem); font-weight: 900; color: var(--c-text); margin: 0; }
 .section-subtitle { font-size: 0.7rem; color: var(--c-text-soft); margin: 2px 0 0; font-weight: 600; }
 .section-subtitle-lg { color: var(--c-text-soft); font-size: 0.8rem; font-weight: 600; margin: 0.2rem 0 0; }
-.section-header-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; /* تم تقليله من 1.25rem */ gap: 0.5rem; flex-wrap: wrap; }
+.section-header-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; gap: 0.5rem; flex-wrap: wrap; }
 
-.followed-section { padding: 8px 0; /* تم تقليله */ }
-.stores-section { padding: 12px 0 16px; /* تم تقليله */ }
-.categories-section { padding: 12px 0; /* تم تقليله */ }
-.products-section { padding: 16px 0 24px; /* تم تقليله */ }
+.followed-section { padding: 8px 0; }
+.stores-section { padding: 12px 0 16px; }
+.categories-section { padding: 12px 0; }
+.products-section { padding: 16px 0 24px; }
 
 .badge-soft { font-size: 0.68rem; font-weight: 800; background: var(--c-primary-soft); color: #FF7A00; border: 1px solid #FFE0BD; padding: 0.25rem 0.6rem; border-radius: 9999px; }
 .nav-buttons { display: flex; gap: 6px; }
@@ -212,11 +212,11 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .chip.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border-color: #FF7A00; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); }
 
 /* ═══ STORE CARD ═══ */
-.store-card { width: 230px; /* تم تصغيره قليلاً */ background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 18px; overflow: hidden; box-shadow: 0 3px 12px rgba(15,23,42,0.05); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; flex-shrink: 0; }
+.store-card { width: 230px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 18px; overflow: hidden; box-shadow: 0 3px 12px rgba(15,23,42,0.05); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; flex-shrink: 0; }
 @media (max-width: 380px) { .store-card { width: 200px; } }
 .store-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(255,122,0,0.12); border-color: #FFE0BD; }
 .store-card:active { transform: translateY(-1px) scale(0.98); }
-.store-card .cover-image { height: 110px; /* تم تصغيره ليتناسب مع الموبايل */ width: 100%; object-fit: cover; display: block; }
+.store-card .cover-image { height: 110px; width: 100%; object-fit: cover; display: block; }
 .store-card .store-logo { width: 56px; height: 56px; border-radius: 50%; border: 3px solid var(--c-surface); object-fit: cover; margin-top: -28px; margin-right: 14px; position: relative; z-index: 2; background: var(--c-surface); box-shadow: 0 3px 10px rgba(15,23,42,0.1); }
 .store-card .store-info { padding: 0 14px 14px; text-align: right; }
 .store-card .store-name { font-weight: 800; font-size: 0.95rem; color: var(--c-text); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
@@ -463,3 +463,26 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 
 /* ═══ PRINT ═══ */
 @media print { body * { display: none !important; } body::before { content: '© 2026 BranZar | المحتوى محمي'; display: block !important; font-family: 'Cairo', sans-serif; color: #FF7A00; text-align: center; padding: 3rem; direction: rtl; font-weight: 900; } }
+
+/* ═══════════════════════════════════════════════════════════
+   VIEW TOGGLE GRID OVERRIDES (Desktop vs Mobile)
+   ═══════════════════════════════════════════════════════════ */
+/* وضع الهاتف: منتجين في الصف */
+body.view-mobile #allProductsGrid,
+body.view-mobile .store-products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* وضع سطح المكتب: 3 منتجات في الصف */
+body.view-desktop #allProductsGrid,
+body.view-desktop .store-products-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+}
+
+/* التأكد من أن وضع سطح المكتب يعرض 3 منتجات حتى على الشاشات الكبيرة */
+@media (min-width: 1024px) {
+    body.view-desktop #allProductsGrid,
+    body.view-desktop .store-products-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
