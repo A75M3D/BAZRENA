@@ -1329,38 +1329,41 @@ document.getElementById('cartButton')?.addEventListener('click', () => { haptic(
 document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
+
+
+
+
+
+/* ═══ CART - WhatsApp Order (رقم ثابت للإدارة) ═══ */
+const FIXED_WHATSAPP_NUMBER = '249908280115'; // الرقم الثابت لاستقبال الطلبات
+
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   if (cart.length === 0) { showToast('السلة فارغة'); return; }
   haptic('medium');
-  const grouped = {};
-  cart.forEach(item => { const wa = item.store_whatsapp || 'default'; if (!grouped[wa]) grouped[wa] = []; grouped[wa].push(item); });
-  const numbers = Object.keys(grouped);
-  if (numbers.length === 1) {
-    const wa = numbers[0];
-    let msg = 'مرحباً، أريد طلب:\n\n';
-    grouped[wa].forEach(item => {
-      msg += item.name + ' (x' + item.quantity + ') - ' + (item.price * item.quantity).toLocaleString() + ' ج.س\n';
-      if (item.selectedColor) msg += 'اللون: ' + item.selectedColor + '\n';
-      if (item.store_name) msg += 'من متجر: ' + item.store_name + '\n';
-    });
-    const total = cart.reduce((s,i) => s + i.price * i.quantity, 0);
-    msg += '\nالمجموع: ' + total.toLocaleString() + ' ج.س';
-    const finalWa = wa === 'default' ? '0924299798' : wa;
-    window.open('https://wa.me/' + finalWa.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
-  } else {
-    showToast('إرسال لكل متجر على حدة...');
-    numbers.forEach((wa, i) => {
-      setTimeout(() => {
-        let msg = 'مرحباً، أريد طلب:\n\n';
-        grouped[wa].forEach(item => {
-          msg += item.name + ' (x' + item.quantity + ') - ' + (item.price * item.quantity).toLocaleString() + ' ج.س\n';
-          if (item.selectedColor) msg += 'اللون: ' + item.selectedColor + '\n';
-        });
-        const finalWa = wa === 'default' ? '0924299798' : wa;
-        window.open('https://wa.me/' + finalWa.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
-      }, i * 500);
-    });
-  }
+
+  // بناء رسالة تجمع كل منتجات السلة في رسالة واحدة
+  let msg = '🛒 *طلب جديد من BranZar*\n\n';
+  msg += '📋 *تفاصيل الطلب:*\n';
+  msg += '━━━━━━━━━━━━━━\n';
+
+  cart.forEach((item, index) => {
+    msg += `${index + 1}. *${item.name}*\n`;
+    msg += `   • الكمية: ${item.quantity}\n`;
+    msg += `   • السعر: ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+    if (item.selectedColor) msg += `   • اللون: ${item.selectedColor}\n`;
+    if (item.store_name) msg += `   • المتجر: ${item.store_name}\n`;
+    msg += '\n';
+  });
+
+  msg += '━━━━━━━━━━━━━━\n';
+  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  msg += `💰 *المجموع الكلي:* ${total.toLocaleString()} ج.س\n\n`;
+  msg += `📦 عدد المنتجات: ${cart.reduce((s, i) => s + i.quantity, 0)}\n\n`;
+  msg += `شكراً لاستخدامكم BranZar 🌟`;
+
+  // فتح واتساب على الرقم الثابت فقط
+  const whatsappUrl = 'https://wa.me/' + FIXED_WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+  window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 });
 
 /* ═══ SHARE ═══ */
