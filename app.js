@@ -437,11 +437,13 @@ bottomNav?.addEventListener('click', (e) => {
   haptic('light');
   const nav = btn.dataset.nav;
   if (nav === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveNav('home'); }
-  else if (nav === 'followed') {
-    const sec = document.getElementById('followedStoresSection');
-    if (sec && !sec.classList.contains('hidden')) { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); setActiveNav('followed'); }
-    else { showToast('💡 لم تتابع أي متجر بعد'); setActiveNav('home'); }
+  else if (nav === 'categories') {
+  const sec = document.getElementById('categories');
+  if (sec) { 
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+    setActiveNav('categories'); 
   }
+}
   else if (nav === 'cart') { openCart(); }
   else if (nav === 'account') { openAccountModal(); }
 });
