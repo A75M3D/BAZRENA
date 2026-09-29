@@ -13,8 +13,8 @@
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;
         font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com;
         img-src 'self' data: blob: https:;
-        connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.firebaseapp.com https://firebasestorage.googleapis.com;
-        frame-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com https://www.youtube.com https://www.youtube-nocookie.com;
+        connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://*.firebaseapp.com https://firebasestorage.googleapis.com https://catbox.moe;
+        frame-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com;
         worker-src 'self' blob:;
         media-src 'self' https: blob:;
         object-src 'none';
@@ -395,217 +395,6 @@
             z-index: 3;
         }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
-
-        #imgbbTipBanner {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFE9D1 100%);
-            border: 1.5px solid #FFE0BD;
-            border-radius: 1.25rem;
-            padding: 0.75rem 0.9rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
-            box-shadow: 0 8px 22px -12px rgba(255,122,0,0.4);
-            position: relative;
-            overflow: hidden;
-            animation: bannerSlideDown 0.6s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        #imgbbTipBanner:hover {
-            background: linear-gradient(135deg, #FFE9D1 0%, #FFD9A8 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 14px 30px -12px rgba(255,122,0,0.6);
-        }
-        @keyframes bannerSlideDown {
-            from { transform: translateY(-30px); opacity: 0; }
-            to   { transform: translateY(0);     opacity: 1; }
-        }
-        .imgbb-tip-inner {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .imgbb-tip-icon {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            display: flex; align-items: center; justify-content: center;
-            color: #fff;
-            font-size: 1.15rem;
-            flex-shrink: 0;
-            box-shadow: 0 6px 16px -4px rgba(255,122,0,0.65);
-            animation: imgbbBellRing 3s ease-in-out infinite;
-        }
-        @keyframes imgbbBellRing {
-            0%, 100% { transform: rotate(0); }
-            8%, 24%  { transform: rotate(-12deg); }
-            16%      { transform: rotate(12deg); }
-            32%      { transform: rotate(0); }
-        }
-        .imgbb-tip-content { flex: 1; min-width: 0; text-align: right; }
-        .imgbb-tip-title {
-            font-weight: 900;
-            color: #1A1A1A;
-            font-size: 0.88rem;
-            margin-bottom: 2px;
-            line-height: 1.3;
-        }
-        .imgbb-tip-text {
-            color: #6B7280;
-            font-size: 0.72rem;
-            line-height: 1.5;
-            font-weight: 600;
-        }
-        @media (min-width: 640px) {
-            #imgbbTipBanner { padding: 0.9rem 1.1rem; border-radius: 1.35rem; }
-            .imgbb-tip-title { font-size: 1rem; }
-            .imgbb-tip-text  { font-size: 0.82rem; }
-        }
-        .imgbb-tip-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-            flex-shrink: 0;
-        }
-        .imgbb-tip-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #FF7A00;
-            color: #fff !important;
-            text-decoration: none;
-            padding: 0.55rem 0.95rem;
-            border-radius: 9999px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            transition: all 0.25s;
-            white-space: nowrap;
-            box-shadow: 0 6px 16px -6px rgba(255,122,0,0.7);
-            border: none;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-        }
-        .imgbb-tip-btn:hover {
-            background: #E06B00;
-            transform: translateY(-1px);
-            box-shadow: 0 10px 22px -6px rgba(255,122,0,0.85);
-        }
-        .imgbb-tip-btn i { font-size: 0.9rem; }
-        .imgbb-tip-close {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.85);
-            border: 1px solid #FFE0BD;
-            color: #999;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-        .imgbb-tip-close:hover {
-            background: #fff;
-            color: #FF7A00;
-            border-color: #FF7A00;
-        }
-        @media (max-width: 480px) {
-            .imgbb-tip-btn span { display: none; }
-            .imgbb-tip-btn { padding: 0.55rem 0.7rem; }
-            .imgbb-tip-icon { width: 38px; height: 38px; font-size: 1rem; }
-            .imgbb-tip-title { font-size: 0.82rem; }
-            .imgbb-tip-text  { font-size: 0.68rem; }
-        }
-
-        #videoModal {
-            position: fixed; inset: 0; z-index: 999999;
-            display: flex; align-items: center; justify-content: center;
-            padding: 1rem;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            animation: videoFadeIn 0.3s ease;
-            direction: rtl;
-        }
-        #videoModal.hidden { display: none !important; }
-        @keyframes videoFadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-        .video-modal-box {
-            width: 100%;
-            max-width: 900px;
-            background: #000;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(255,122,0,0.3);
-            border: 2px solid rgba(255,122,0,0.35);
-            animation: videoZoomIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
-            position: relative;
-        }
-        @keyframes videoZoomIn {
-            from { transform: scale(0.85); opacity: 0; }
-            to   { transform: scale(1);    opacity: 1; }
-        }
-        .video-modal-header {
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 0.75rem;
-            padding: 0.7rem 1rem;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff;
-        }
-        .video-modal-title {
-            display: flex; align-items: center; gap: 8px;
-            font-weight: 800; font-size: 0.9rem;
-            min-width: 0;
-        }
-        .video-modal-title span {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .video-modal-title i { font-size: 1.05rem; flex-shrink: 0; }
-        .video-modal-close {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: rgba(255,255,255,0.22);
-            border: none; color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; cursor: pointer;
-            transition: all 0.2s;
-            -webkit-tap-highlight-color: transparent;
-            flex-shrink: 0;
-        }
-        .video-modal-close:hover {
-            background: rgba(255,255,255,0.4);
-            transform: rotate(90deg);
-        }
-        .video-modal-frame {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 9 / 16;
-            max-height: 75vh;
-            background: #000;
-            display: flex; align-items: center; justify-content: center;
-        }
-        @media (min-width: 640px) {
-            .video-modal-frame { aspect-ratio: 16 / 9; }
-        }
-        .video-modal-frame iframe {
-            position: absolute;
-            inset: 0;
-            width: 100%; height: 100%;
-            border: 0;
-            display: block;
-        }
-        .video-modal-footer {
-            padding: 0.7rem 1rem;
-            background: #111;
-            color: #ccc;
-            font-size: 0.75rem;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            border-top: 1px solid rgba(255,122,0,0.25);
-            font-weight: 600;
-        }
-        .video-modal-footer i { color: #FF7A00; }
 
         .tabs-wrap {
             background: #fff;
@@ -1101,7 +890,76 @@
         @media (min-width: 768px) { .readonly-grid { grid-template-columns: repeat(4, 1fr); } }
 
         /* ============================================================
-           🎨 حقول الألوان - متجاوبة + معاينة صور
+           📤 أزرار رفع الصور
+           ============================================================ */
+        .url-upload-group {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+        .url-upload-group .form-input {
+            flex: 1;
+            min-width: 0;
+        }
+        .upload-btn {
+            padding: 0 1.05rem;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: #fff;
+            border: none;
+            border-radius: 0.9rem;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: all 0.22s;
+            font-family: 'Cairo', sans-serif;
+            white-space: nowrap;
+            flex-shrink: 0;
+            box-shadow: 0 6px 16px -8px rgba(255,122,0,0.7);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .upload-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(255,122,0,0.9);
+        }
+        .upload-btn:active:not(:disabled) { transform: translateY(0); }
+        .upload-btn:disabled { opacity: 0.75; cursor: not-allowed; }
+        .upload-btn i { font-size: 0.9rem; }
+
+        .color-upload-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-size: 0.95rem;
+            transition: all 0.22s;
+            box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .color-upload-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px -4px rgba(255,122,0,0.85);
+        }
+        .color-upload-btn:active:not(:disabled) { transform: translateY(0); }
+        .color-upload-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        @media (max-width: 480px) {
+            .upload-btn span { display: none; }
+            .upload-btn { padding: 0 0.85rem; }
+        }
+
+        /* ============================================================
+           🎨 حقول الألوان - متجاوبة
            ============================================================ */
         #productColorsContainer {
             display: flex;
@@ -1273,21 +1131,19 @@
             .remove-color-btn { width: 34px; height: 34px; font-size: 0.82rem; }
             .color-name { font-size: 0.85rem !important; padding: 0.55rem 0.7rem !important; }
             .color-image { font-size: 0.72rem !important; padding: 0.55rem 0.7rem !important; }
+            .color-upload-btn { width: 40px; height: 42px; font-size: 0.85rem; }
         }
 
         @media (min-width: 640px) {
             .color-row {
                 display: grid;
-                grid-template-columns: auto 1fr auto;
+                grid-template-columns: auto 1fr auto auto;
                 grid-template-rows: auto auto;
                 gap: 8px 10px;
                 align-items: center;
                 padding: 12px;
             }
-            .color-row-top {
-                grid-column: 1 / 3;
-                display: contents;
-            }
+            .color-row-top { display: contents; }
             .color-dot-preview {
                 grid-column: 1;
                 grid-row: 1;
@@ -1299,7 +1155,7 @@
                 grid-row: 1;
             }
             .remove-color-btn {
-                grid-column: 3;
+                grid-column: 4;
                 grid-row: 1 / 3;
                 width: 42px;
                 height: 100%;
@@ -1307,14 +1163,18 @@
                 align-self: stretch;
                 border-radius: 12px;
             }
-            .color-row-bottom {
-                grid-column: 1 / 3;
-                grid-row: 2;
-                display: contents;
-            }
+            .color-row-bottom { display: contents; }
             .color-image {
                 grid-column: 1 / 3;
                 grid-row: 2;
+            }
+            .color-upload-btn {
+                grid-column: 3;
+                grid-row: 2;
+                width: 100%;
+                height: 100%;
+                min-height: 42px;
+                border-radius: 10px;
             }
             .color-image-preview {
                 display: none !important;
@@ -1403,27 +1263,6 @@
         </div>
 
         <div class="main-content">
-
-            <div id="imgbbTipBanner" role="button" aria-label="شاهد شرح تحويل الصورة إلى رابط">
-                <div class="imgbb-tip-inner">
-                    <div class="imgbb-tip-icon">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <div class="imgbb-tip-content">
-                        <div class="imgbb-tip-title">💡كيف تحوّل الصورة إلى رابط عبر imgbb؟</div>
-                        <div class="imgbb-tip-text">شاهد الشرح خطوة بخطوة — اضغط هنا للمشاهدة</div>
-                    </div>
-                    <div class="imgbb-tip-actions">
-                        <button id="imgbbTipClose" class="imgbb-tip-close" type="button" aria-label="إغلاق">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <button id="imgbbTipLink" type="button" class="imgbb-tip-btn">
-                            <i class="fab fa-youtube"></i>
-                            <span>شاهد الشرح</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
 
             <div class="tabs-wrap">
                 <button id="tabStore" class="tab-item active">
@@ -1551,7 +1390,13 @@
                                     <i class="fas fa-image"></i>
                                     <span>رابط الشعار</span>
                                 </label>
-                                <input type="url" id="store_logo" class="form-input" placeholder="https://example.com/logo.png" dir="ltr" style="text-align: left;">
+                                <div class="url-upload-group">
+                                    <input type="url" id="store_logo" class="form-input" placeholder="https://example.com/logo.png" dir="ltr" style="text-align: left;">
+                                    <button type="button" class="upload-btn" data-upload-target="store_logo" title="رفع صورة من جهازك">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>رفع</span>
+                                    </button>
+                                </div>
                                 <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار" onerror="this.style.display='none'">
                             </div>
 
@@ -1560,7 +1405,13 @@
                                     <i class="fas fa-panorama"></i>
                                     <span>رابط الغلاف</span>
                                 </label>
-                                <input type="url" id="store_cover" class="form-input" placeholder="https://example.com/cover.png" dir="ltr" style="text-align: left;">
+                                <div class="url-upload-group">
+                                    <input type="url" id="store_cover" class="form-input" placeholder="https://example.com/cover.png" dir="ltr" style="text-align: left;">
+                                    <button type="button" class="upload-btn" data-upload-target="store_cover" title="رفع صورة من جهازك">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>رفع</span>
+                                    </button>
+                                </div>
                                 <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.style.display='none'">
                             </div>
 
@@ -1623,7 +1474,13 @@
                                         <i class="fas fa-image"></i>
                                         <span>رابط الصورة الأساسية</span>
                                     </label>
-                                    <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
+                                    <div class="url-upload-group">
+                                        <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
+                                        <button type="button" class="upload-btn" data-upload-target="product_img_url" title="رفع صورة من جهازك">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <span>رفع</span>
+                                        </button>
+                                    </div>
                                     <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج" onerror="this.style.display='none'">
                                 </div>
 
@@ -1700,7 +1557,6 @@
     <option value="أبيض"></option>
     <option value="بيج"></option>
     <option value="كريمي"></option>
-
     <option value="أحمر"></option>
     <option value="أحمر فاتح"></option>
     <option value="أحمر غامق"></option>
@@ -1710,7 +1566,6 @@
     <option value="وردي"></option>
     <option value="وردي فاتح"></option>
     <option value="وردي غامق"></option>
-
     <option value="أزرق"></option>
     <option value="أزرق فاتح"></option>
     <option value="أزرق غامق"></option>
@@ -1718,57 +1573,32 @@
     <option value="كحلي"></option>
     <option value="سماوي"></option>
     <option value="تركواز"></option>
-
     <option value="أخضر"></option>
     <option value="أخضر فاتح"></option>
     <option value="أخضر غامق"></option>
     <option value="أخضر داكن"></option>
     <option value="زيتي"></option>
     <option value="ليموني"></option>
-
     <option value="أصفر"></option>
     <option value="أصفر فاتح"></option>
     <option value="ذهبي"></option>
     <option value="نحاسي"></option>
-
     <option value="بني"></option>
     <option value="بني فاتح"></option>
     <option value="بني غامق"></option>
     <option value="بني داكن"></option>
     <option value="شوكولاتي"></option>
     <option value="جملي"></option>
-
     <option value="بنفسجي"></option>
     <option value="موف"></option>
     <option value="لافندر"></option>
     <option value="أرجواني"></option>
-
     <option value="برتقالي"></option>
     <option value="برتقالي فاتح"></option>
     <option value="برتقالي غامق"></option>
-
     <option value="فضي"></option>
     <option value="برونزي"></option>
 </datalist>
-
-<div id="videoModal" class="hidden" role="dialog" aria-modal="true" aria-label="شرح الفيديو">
-    <div class="video-modal-box">
-        <div class="video-modal-header">
-            <div class="video-modal-title">
-                <i class="fab fa-youtube"></i>
-                <span>شرح تحويل الصورة إلى رابط عبر imgbb</span>
-            </div>
-            <button id="videoModalClose" class="video-modal-close" aria-label="إغلاق">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="video-modal-frame" id="videoModalFrame"></div>
-        <div class="video-modal-footer">
-            <i class="fas fa-volume-up"></i>
-            <span>اضغط زر التشغيل لتشغيل الفيديو بالصوت</span>
-        </div>
-    </div>
-</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -1816,14 +1646,6 @@ const cacheManager = {
             }
             return cacheData.value;
         } catch (e) { return null; }
-    },
-    getAge(key) {
-        try {
-            const raw = localStorage.getItem(CACHE_PREFIX + key);
-            if (!raw) return -1;
-            const cacheData = JSON.parse(raw);
-            return Math.floor((Date.now() - cacheData.timestamp) / 60000);
-        } catch (e) { return -1; }
     },
     remove(key) { localStorage.removeItem(CACHE_PREFIX + key); },
     clearAll() {
@@ -1904,6 +1726,90 @@ function updateConnectionStatus(success, message) {
     }
 }
 
+/* ============================================================
+   📤 رفع الصور إلى catbox.moe (مجاني، بدون API Key، بدون بطاقة)
+   ============================================================ */
+async function uploadImageToHost(file) {
+    if (!file) throw new Error('لم يتم اختيار ملف');
+    if (!file.type || !file.type.startsWith('image/')) {
+        throw new Error('الملف المختار ليس صورة');
+    }
+    const MAX_MB = 10;
+    if (file.size > MAX_MB * 1024 * 1024) {
+        throw new Error(`حجم الصورة أكبر من ${MAX_MB} ميجابايت`);
+    }
+
+    const formData = new FormData();
+    formData.append('reqtype', 'fileupload');
+    formData.append('fileToUpload', file);
+
+    const res = await fetch('https://catbox.moe/user/api.php', {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (!res.ok) {
+        throw new Error('فشل الاتصال بخدمة الرفع (HTTP ' + res.status + ')');
+    }
+
+    const text = (await res.text()).trim();
+
+    if (!text.startsWith('http')) {
+        throw new Error('فشل الرفع: ' + text.substring(0, 120));
+    }
+
+    return text;
+}
+
+function openFilePickerAndUpload(button, targetInput) {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+
+    fileInput.addEventListener('change', async () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+
+        const originalHTML = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        try {
+            const url = await uploadImageToHost(file);
+            targetInput.value = url;
+            targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+            targetInput.dispatchEvent(new Event('change', { bubbles: true }));
+            showToast('✅ تم رفع الصورة بنجاح');
+        } catch (err) {
+            console.error('Upload error:', err);
+            showToast('❌ ' + (err.message || 'فشل الرفع'), 'error');
+        } finally {
+            button.disabled = false;
+            button.innerHTML = originalHTML;
+            fileInput.remove();
+        }
+    });
+
+    document.body.appendChild(fileInput);
+    fileInput.click();
+}
+
+// معالج مفوّض لجميع أزرار الرفع (بما فيها الألوان المضافة ديناميكياً)
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-upload-target]');
+    if (!btn) return;
+    e.preventDefault();
+
+    const targetId = btn.getAttribute('data-upload-target');
+    const targetInput = document.getElementById(targetId);
+    if (!targetInput) {
+        console.warn('Upload target not found:', targetId);
+        return;
+    }
+    openFilePickerAndUpload(btn, targetInput);
+});
+
 function setupPasswordToggle(inputId, buttonId, iconId) {
     const input = $(inputId);
     const button = $(buttonId);
@@ -1966,66 +1872,27 @@ function updateHeaderLogo(store) {
 
 /* ============================================================
    🎨 نظام الألوان الذكي
-   ============================================================
-   - يُظهر اللون الفعلي لأي اسم (فاتح/غامق/داكن...)
-   - الألوان غير المعروفة → رمادي بدون أي تلميح
    ============================================================ */
 
 const UNKNOWN_COLOR_HEX = '#9CA3AF';
 
 const BASE_COLOR_MAP = {
-    'اسود': '#1A1A1A',
-    'ابيض': '#FFFFFF',
-    'رمادي': '#6B7280',
-    'احمر': '#EF4444',
-    'نبيتي': '#7F1D1D',
-    'خمري': '#831843',
-    'وردي': '#EC4899',
-    'ازرق': '#3B82F6',
-    'كحلي': '#1E3A8A',
-    'سماوي': '#38BDF8',
-    'تركواز': '#14B8A6',
-    'تركوازي': '#14B8A6',
-    'اخضر': '#22C55E',
-    'زيتي': '#4D7C0F',
-    'ليموني': '#A3E635',
-    'اصفر': '#EAB308',
-    'ذهبي': '#F59E0B',
-    'نحاسي': '#B87333',
-    'بني': '#78350F',
-    'شوكولاتي': '#5C3A21',
-    'جملي': '#C19A6B',
-    'بيج': '#E8D5B7',
-    'كريمي': '#FFF8DC',
-    'سكري': '#F5DEB3',
-    'بنفسجي': '#8B5CF6',
-    'موف': '#A855F7',
-    'لافندر': '#D8B4FE',
-    'ارجواني': '#7C3AED',
-    'برتقالي': '#F97316',
-    'فضي': '#9CA3AF',
+    'اسود': '#1A1A1A', 'ابيض': '#FFFFFF', 'رمادي': '#6B7280',
+    'احمر': '#EF4444', 'نبيتي': '#7F1D1D', 'خمري': '#831843',
+    'وردي': '#EC4899', 'ازرق': '#3B82F6', 'كحلي': '#1E3A8A',
+    'سماوي': '#38BDF8', 'تركواز': '#14B8A6', 'تركوازي': '#14B8A6',
+    'اخضر': '#22C55E', 'زيتي': '#4D7C0F', 'ليموني': '#A3E635',
+    'اصفر': '#EAB308', 'ذهبي': '#F59E0B', 'نحاسي': '#B87333',
+    'بني': '#78350F', 'شوكولاتي': '#5C3A21', 'جملي': '#C19A6B',
+    'بيج': '#E8D5B7', 'كريمي': '#FFF8DC', 'سكري': '#F5DEB3',
+    'بنفسجي': '#8B5CF6', 'موف': '#A855F7', 'لافندر': '#D8B4FE',
+    'ارجواني': '#7C3AED', 'برتقالي': '#F97316', 'فضي': '#9CA3AF',
     'برونزي': '#CD7F32',
-
-    'black': '#1A1A1A',
-    'white': '#FFFFFF',
-    'gray': '#6B7280',
-    'grey': '#6B7280',
-    'red': '#EF4444',
-    'blue': '#3B82F6',
-    'green': '#22C55E',
-    'yellow': '#EAB308',
-    'brown': '#78350F',
-    'orange': '#F97316',
-    'pink': '#EC4899',
-    'purple': '#8B5CF6',
-    'gold': '#F59E0B',
-    'silver': '#9CA3AF',
-    'beige': '#E8D5B7',
-    'cream': '#FFF8DC',
-    'navy': '#1E3A8A',
-    'teal': '#14B8A6',
-    'olive': '#4D7C0F',
-    'maroon': '#7F1D1D'
+    'black': '#1A1A1A', 'white': '#FFFFFF', 'gray': '#6B7280', 'grey': '#6B7280',
+    'red': '#EF4444', 'blue': '#3B82F6', 'green': '#22C55E', 'yellow': '#EAB308',
+    'brown': '#78350F', 'orange': '#F97316', 'pink': '#EC4899', 'purple': '#8B5CF6',
+    'gold': '#F59E0B', 'silver': '#9CA3AF', 'beige': '#E8D5B7', 'cream': '#FFF8DC',
+    'navy': '#1E3A8A', 'teal': '#14B8A6', 'olive': '#4D7C0F', 'maroon': '#7F1D1D'
 };
 
 const LIGHT_KEYWORDS = [
@@ -2074,9 +1941,7 @@ function applyModifier(hex, modifier) {
     if (!modifier || !hex) return hex;
     const rgb = hexToRgb(hex);
     if (!rgb) return hex;
-
     let { r, g, b } = rgb;
-
     switch (modifier) {
         case 'light': {
             r = r + (255 - r) * 0.40;
@@ -2096,13 +1961,9 @@ function applyModifier(hex, modifier) {
 
 function getFallbackHex(colorName) {
     if (!colorName) return UNKNOWN_COLOR_HEX;
-
     const normalized = normalizeColorName(colorName);
     if (!normalized) return UNKNOWN_COLOR_HEX;
-
-    if (BASE_COLOR_MAP[normalized]) {
-        return BASE_COLOR_MAP[normalized];
-    }
+    if (BASE_COLOR_MAP[normalized]) return BASE_COLOR_MAP[normalized];
 
     let modifier = null;
     let baseCandidate = normalized;
@@ -2121,10 +1982,7 @@ function getFallbackHex(colorName) {
         }
         if (normalized.includes(mod.word)) {
             modifier = mod.type;
-            baseCandidate = normalized
-                .replace(mod.word, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
+            baseCandidate = normalized.replace(mod.word, ' ').replace(/\s+/g, ' ').trim();
             break;
         }
     }
@@ -2180,10 +2038,7 @@ const COLOR_FAMILY_ORDER = {
 function getColorSortOrder(name) {
     const normalized = normalizeColorName(name);
     if (!normalized) return 999;
-
-    if (COLOR_FAMILY_ORDER[normalized] !== undefined) {
-        return COLOR_FAMILY_ORDER[normalized];
-    }
+    if (COLOR_FAMILY_ORDER[normalized] !== undefined) return COLOR_FAMILY_ORDER[normalized];
 
     let baseName = normalized;
     let modifier = null;
@@ -2202,10 +2057,7 @@ function getColorSortOrder(name) {
     for (const key of sortedKeys) {
         if (baseName.includes(key) || key.includes(baseName)) {
             for (const [k, v] of Object.entries(COLOR_FAMILY_ORDER)) {
-                if (k.startsWith(key)) {
-                    baseOrder = v;
-                    break;
-                }
+                if (k.startsWith(key)) { baseOrder = v; break; }
             }
             if (baseOrder !== 999) break;
         }
@@ -2214,10 +2066,7 @@ function getColorSortOrder(name) {
         for (const key of sortedKeys) {
             if (normalized.includes(key)) {
                 for (const [k, v] of Object.entries(COLOR_FAMILY_ORDER)) {
-                    if (k.startsWith(key)) {
-                        baseOrder = v;
-                        break;
-                    }
+                    if (k.startsWith(key)) { baseOrder = v; break; }
                 }
                 if (baseOrder !== 999) break;
             }
@@ -2644,9 +2493,9 @@ function renderMyProductsList(products) {
             const sortedColors = sortColorsByFamily(product.colors);
             const visibleColors = sortedColors.slice(0, 5);
             colorDotsHTML = `<div style="display:flex; gap:4px; align-items:center; margin-right: 6px;">` +
-                visibleColors.map(c => 
+                visibleColors.map(c =>
                     `<div style="width:14px;height:14px;border-radius:50%;background-color:${getFallbackHex(c.name)};border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);" title="${escapeHtml(c.name)}"></div>`
-                ).join('') + 
+                ).join('') +
                 (sortedColors.length > 5 ? `<span style="font-size:10px;color:#9CA3AF;font-weight:bold;">+${sortedColors.length - 5}</span>` : '') +
             `</div>`;
         }
@@ -2685,7 +2534,6 @@ function updateColorPreview(nameInput, dotPreview) {
     const value = nameInput.value;
     const hex = getFallbackHex(value);
     dotPreview.style.backgroundColor = hex;
-    // بدون أي تلميح — يظهر اللون فقط
     dotPreview.removeAttribute('title');
 }
 
@@ -2693,6 +2541,9 @@ function addColorRow(name = '', image = '') {
     const container = document.getElementById('productColorsContainer');
     const row = document.createElement('div');
     row.className = 'color-row';
+
+    // ID فريد لحقل الصورة داخل هذا الصف
+    const uniqueId = 'color_image_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 
     row.innerHTML = `
         <div class="color-row-top">
@@ -2703,7 +2554,10 @@ function addColorRow(name = '', image = '') {
             </button>
         </div>
         <div class="color-row-bottom">
-            <input type="url" class="color-image" placeholder="رابط صورة المنتج بهذا اللون (اختياري)" dir="ltr">
+            <input type="url" id="${uniqueId}" class="color-image" placeholder="رابط صورة المنتج بهذا اللون (اختياري)" dir="ltr">
+            <button type="button" class="color-upload-btn" data-upload-target="${uniqueId}" title="رفع صورة" aria-label="رفع صورة">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </button>
             <img class="color-image-preview" alt="معاينة" onerror="this.classList.remove('visible')">
         </div>
     `;
@@ -2957,83 +2811,6 @@ $('product_img_url').addEventListener('input', (e) => {
     if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
     else p.classList.add('hidden');
 });
-
-/* ============================================================
-   🎬 بانر imgbb + نافذة الفيديو
-   ============================================================ */
-(function() {
-    const IMGBB_TIP_KEY  = 'branzarImgbBannerDismissed';
-    const YOUTUBE_ID     = 'd5QUoECNizs';
-    const EMBED_URL      = `https://www.youtube-nocookie.com/embed/${YOUTUBE_ID}?rel=0&modestbranding=1&playsinline=1`;
-
-    const banner     = document.getElementById('imgbbTipBanner');
-    const closeBtn   = document.getElementById('imgbbTipClose');
-    const videoModal = document.getElementById('videoModal');
-    const videoClose = document.getElementById('videoModalClose');
-    const videoFrame = document.getElementById('videoModalFrame');
-
-    if (!banner) return;
-
-    const dismissedAt = parseInt(localStorage.getItem(IMGBB_TIP_KEY) || '0');
-    if (dismissedAt && (Date.now() - dismissedAt) < 7 * 24 * 60 * 60 * 1000) {
-        banner.remove();
-    } else {
-        if (closeBtn) {
-            closeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                banner.style.transition = 'all 0.4s cubic-bezier(0.4,0,0.2,1)';
-                banner.style.maxHeight = '0';
-                banner.style.padding = '0';
-                banner.style.margin = '0';
-                banner.style.opacity = '0';
-                banner.style.overflow = 'hidden';
-                setTimeout(() => banner.remove(), 400);
-                localStorage.setItem(IMGBB_TIP_KEY, Date.now().toString());
-            });
-        }
-
-        banner.addEventListener('click', (e) => {
-            if (e.target.closest('#imgbbTipClose')) return;
-            e.preventDefault();
-            openVideoModal();
-        });
-    }
-
-    function openVideoModal() {
-        if (!videoModal || !videoFrame) return;
-        videoFrame.innerHTML = `
-            <iframe
-                src="${EMBED_URL}"
-                title="شرح تحويل الصورة إلى رابط"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-                loading="lazy">
-            </iframe>`;
-        videoModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeVideoModal() {
-        if (!videoModal || !videoFrame) return;
-        videoFrame.innerHTML = '';
-        videoModal.classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-
-    if (videoClose) videoClose.addEventListener('click', closeVideoModal);
-
-    if (videoModal) {
-        videoModal.addEventListener('click', (e) => {
-            if (e.target === videoModal) closeVideoModal();
-        });
-    }
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && videoModal && !videoModal.classList.contains('hidden')) {
-            closeVideoModal();
-        }
-    });
-})();
 
 async function init() {
     const session = getSession();
