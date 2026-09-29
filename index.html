@@ -64,7 +64,7 @@
       </div>
       <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><i class="fas fa-moon" aria-hidden="true"></i></button>
       
-      <!-- ✅ تم تحديث أيقونة السلة العلوية هنا -->
+      <!-- أيقونة السلة العلوية الجديدة -->
       <button id="cartButton" class="bzr-cart-btn" aria-label="عرض سلة التسوق">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"></circle>
@@ -90,7 +90,7 @@
 
 <main class="bzr-page-fade" id="mainContent">
 
-  <!-- ✅ تم حذف قسم الهيرو (Hero Section) بالكامل لإزالة الفراغات -->
+  <!-- تم حذف قسم الهيرو (Hero Section) لتقليل الفراغات -->
 
   <section id="followedStoresSection" class="hidden followed-section">
     <div class="bzr-container">
@@ -136,7 +136,7 @@
   <section id="categories" class="categories-section">
     <div class="bzr-container">
       <div class="section-header-flex">
-        <h2 class="section-title-md">التصنيفات</h2>
+        <h2 class="section-title-md">الفئات</h2> <!-- تم التغيير من التصنيفات -->
         <div class="nav-buttons">
           <button id="prevCategoriesBtn" class="scroll-btn" aria-label="السابق"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
           <button id="nextCategoriesBtn" class="scroll-btn" aria-label="التالي"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
@@ -248,7 +248,7 @@
   <div class="cart-overlay" id="cartOverlay"></div>
   <div class="cart-header">
     <div class="cart-header-title">
-      <!-- ✅ تم تحديث أيقونة السلة في القائمة الجانبية -->
+      <!-- أيقونة السلة في القائمة الجانبية -->
       <div class="cart-icon-circle">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"></circle>
@@ -331,9 +331,11 @@
 <nav id="bzrBottomNav" aria-label="التنقل الرئيسي">
   <div class="bzr-nav-list">
     <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية"><i class="fas fa-home" aria-hidden="true"></i><span>الرئيسية</span></button>
-    <button class="bzr-nav-item" data-nav="followed" aria-label="المتابَعة"><i class="fas fa-heart" aria-hidden="true"></i><span>المتابَعة</span></button>
     
-    <!-- ✅ تم تحديث أيقونة السلة في الشريط السفلي لتكون SVG -->
+    <!-- تم تغيير زر المتابعة إلى زر الفئات -->
+    <button class="bzr-nav-item" data-nav="categories" aria-label="الفئات"><i class="fas fa-layer-group" aria-hidden="true"></i><span>الفئات</span></button>
+    
+    <!-- أيقونة السلة في الشريط السفلي -->
     <button class="bzr-nav-item" data-nav="cart" aria-label="السلة">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="9" cy="21" r="1"></circle>
