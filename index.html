@@ -63,9 +63,13 @@
         <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب" title="وضع سطح المكتب"><i class="fas fa-desktop" aria-hidden="true"></i></button>
       </div>
       <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><i class="fas fa-moon" aria-hidden="true"></i></button>
+      
+      <!-- ✅ تم تحديث أيقونة السلة العلوية هنا -->
       <button id="cartButton" class="bzr-cart-btn" aria-label="عرض سلة التسوق">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="22" height="22">
-          <path d="M6 8V7a6 6 0 1 1 12 0v1h1.5a1.5 1.5 0 0 1 1.49 1.67l-1.2 10A2 2 0 0 1 17.8 21.5H6.2a2 2 0 0 1-1.99-1.83l-1.2-10A1.5 1.5 0 0 1 4.5 8H6Zm2 0h8V7a4 4 0 1 0-8 0v1Z" fill="currentColor"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
         <span id="cartCount" class="bzr-cart-badge" style="display:none;" aria-live="polite">0</span>
       </button>
@@ -86,7 +90,7 @@
 
 <main class="bzr-page-fade" id="mainContent">
 
-  <!-- تم حذف قسم الهيرو (Hero Section) بناءً على طلبك -->
+  <!-- ✅ تم حذف قسم الهيرو (Hero Section) بالكامل لإزالة الفراغات -->
 
   <section id="followedStoresSection" class="hidden followed-section">
     <div class="bzr-container">
@@ -244,6 +248,7 @@
   <div class="cart-overlay" id="cartOverlay"></div>
   <div class="cart-header">
     <div class="cart-header-title">
+      <!-- ✅ تم تحديث أيقونة السلة في القائمة الجانبية -->
       <div class="cart-icon-circle">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"></circle>
@@ -327,9 +332,10 @@
   <div class="bzr-nav-list">
     <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية"><i class="fas fa-home" aria-hidden="true"></i><span>الرئيسية</span></button>
     <button class="bzr-nav-item" data-nav="followed" aria-label="المتابَعة"><i class="fas fa-heart" aria-hidden="true"></i><span>المتابَعة</span></button>
+    
+    <!-- ✅ تم تحديث أيقونة السلة في الشريط السفلي لتكون SVG -->
     <button class="bzr-nav-item" data-nav="cart" aria-label="السلة">
-      <!-- الأيقونة الجديدة الحديثة هنا -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="9" cy="21" r="1"></circle>
         <circle cx="20" cy="21" r="1"></circle>
         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -337,6 +343,7 @@
       <span>السلة</span>
       <span class="bzr-nav-badge" id="bottomNavCartBadge" style="display:none;" aria-live="polite">0</span>
     </button>
+    
     <button class="bzr-nav-item" data-nav="account" aria-label="حسابي"><i class="fas fa-user-circle" aria-hidden="true"></i><span>حسابي</span></button>
   </div>
 </nav>
