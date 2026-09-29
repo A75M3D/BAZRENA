@@ -86,19 +86,7 @@
 
 <main class="bzr-page-fade" id="mainContent">
 
-  <section class="hero-section">
-    <div class="hero-content">
-      <h1 class="hero-title">
-        اكتشف أفضل<br>
-        <span class="hero-gradient">المتاجر والبراندات</span>
-      </h1>
-      <p class="hero-subtitle">أفضل البراندات والمتاجر السودانية والعالمية في مكان واحد.</p>
-      <div class="hero-actions">
-        <a href="#stores" class="btn-primary ripple" aria-label="تصفح المتاجر"><i class="fas fa-store" aria-hidden="true"></i><span>تصفح المتاجر</span></a>
-        <a href="#all-products" class="hero-secondary ripple" aria-label="عرض المنتجات"><i class="fas fa-boxes-stacked" aria-hidden="true"></i><span>المنتجات</span></a>
-      </div>
-    </div>
-  </section>
+  <!-- تم حذف قسم الهيرو (Hero Section) بناءً على طلبك -->
 
   <section id="followedStoresSection" class="hidden followed-section">
     <div class="bzr-container">
@@ -256,7 +244,13 @@
   <div class="cart-overlay" id="cartOverlay"></div>
   <div class="cart-header">
     <div class="cart-header-title">
-      <div class="cart-icon-circle"><i class="fas fa-shopping-bag" aria-hidden="true"></i></div>
+      <div class="cart-icon-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+      </div>
       <h2 id="cartTitle">سلة التسوق</h2>
     </div>
     <button id="closeCart" class="icon-btn" aria-label="إغلاق السلة"><i class="fas fa-times" aria-hidden="true"></i></button>
@@ -333,7 +327,16 @@
   <div class="bzr-nav-list">
     <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية"><i class="fas fa-home" aria-hidden="true"></i><span>الرئيسية</span></button>
     <button class="bzr-nav-item" data-nav="followed" aria-label="المتابَعة"><i class="fas fa-heart" aria-hidden="true"></i><span>المتابَعة</span></button>
-    <button class="bzr-nav-item" data-nav="cart" aria-label="السلة"><i class="fas fa-shopping-bag" aria-hidden="true"></i><span>السلة</span><span class="bzr-nav-badge" id="bottomNavCartBadge" style="display:none;" aria-live="polite">0</span></button>
+    <button class="bzr-nav-item" data-nav="cart" aria-label="السلة">
+      <!-- الأيقونة الجديدة الحديثة هنا -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      <span>السلة</span>
+      <span class="bzr-nav-badge" id="bottomNavCartBadge" style="display:none;" aria-live="polite">0</span>
+    </button>
     <button class="bzr-nav-item" data-nav="account" aria-label="حسابي"><i class="fas fa-user-circle" aria-hidden="true"></i><span>حسابي</span></button>
   </div>
 </nav>
