@@ -23,98 +23,32 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .admin-login-overlay {
-            position: fixed; inset: 0;
-            background: radial-gradient(ellipse at top, #1a1a1a 0%, #0a0a0a 100%);
-            display: flex; align-items: center; justify-content: center;
-            padding: 1rem; z-index: 99999; overflow-y: auto;
-        }
-        .admin-login-overlay::before {
-            content: ''; position: absolute; top: -180px; right: -140px;
-            width: 480px; height: 480px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,122,0,0.28) 0%, transparent 65%);
-            pointer-events: none; animation: float1 9s ease-in-out infinite;
-        }
-        .admin-login-overlay::after {
-            content: ''; position: absolute; bottom: -200px; left: -160px;
-            width: 520px; height: 520px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,166,77,0.18) 0%, transparent 65%);
-            pointer-events: none; animation: float2 11s ease-in-out infinite;
-        }
+        /* ... (نفس الـ CSS القديم الخاص بك مع إضافة تنسيقات أزرار الرفع) ... */
+        .admin-login-overlay { position: fixed; inset: 0; background: radial-gradient(ellipse at top, #1a1a1a 0%, #0a0a0a 100%); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 99999; overflow-y: auto; }
+        .admin-login-overlay::before { content: ''; position: absolute; top: -180px; right: -140px; width: 480px; height: 480px; border-radius: 50%; background: radial-gradient(circle, rgba(255,122,0,0.28) 0%, transparent 65%); pointer-events: none; animation: float1 9s ease-in-out infinite; }
+        .admin-login-overlay::after { content: ''; position: absolute; bottom: -200px; left: -160px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(255,166,77,0.18) 0%, transparent 65%); pointer-events: none; animation: float2 11s ease-in-out infinite; }
         @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-25px, 35px); } }
         @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(35px, -25px); } }
-
-        .admin-login-card {
-            position: relative; z-index: 2;
-            background: rgba(26,26,26,0.95);
-            backdrop-filter: blur(24px);
-            border: 1.5px solid rgba(255,122,0,0.28);
-            border-radius: 2rem;
-            padding: 2.5rem 1.75rem;
-            max-width: 440px; width: 100%;
-            box-shadow: 0 30px 80px -25px rgba(255,122,0,0.55), 0 10px 40px rgba(0,0,0,0.5);
-            animation: loginCardIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
-        }
+        .admin-login-card { position: relative; z-index: 2; background: rgba(26,26,26,0.95); backdrop-filter: blur(24px); border: 1.5px solid rgba(255,122,0,0.28); border-radius: 2rem; padding: 2.5rem 1.75rem; max-width: 440px; width: 100%; box-shadow: 0 30px 80px -25px rgba(255,122,0,0.55), 0 10px 40px rgba(0,0,0,0.5); animation: loginCardIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
         @media (min-width: 640px) { .admin-login-card { padding: 3rem 2.5rem; border-radius: 2.25rem; } }
-        @keyframes loginCardIn {
-            from { transform: translateY(40px) scale(0.92); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        .admin-shield-icon {
-            width: 88px; height: 88px; border-radius: 50%;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 2.2rem;
-            margin: 0 auto 1.5rem;
-            box-shadow: 0 16px 44px -12px rgba(255,122,0,0.85), 0 0 0 8px rgba(255,122,0,0.08);
-            animation: shieldPulse 3s ease-in-out infinite;
-        }
+        @keyframes loginCardIn { from { transform: translateY(40px) scale(0.92); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        .admin-shield-icon { width: 88px; height: 88px; border-radius: 50%; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2.2rem; margin: 0 auto 1.5rem; box-shadow: 0 16px 44px -12px rgba(255,122,0,0.85), 0 0 0 8px rgba(255,122,0,0.08); animation: shieldPulse 3s ease-in-out infinite; }
         @media (min-width: 640px) { .admin-shield-icon { width: 100px; height: 100px; font-size: 2.5rem; } }
-        @keyframes shieldPulse {
-            0%, 100% { box-shadow: 0 16px 44px -12px rgba(255,122,0,0.85), 0 0 0 8px rgba(255,122,0,0.08); }
-            50% { box-shadow: 0 20px 55px -12px rgba(255,122,0,1), 0 0 0 16px rgba(255,122,0,0.04); }
-        }
+        @keyframes shieldPulse { 0%, 100% { box-shadow: 0 16px 44px -12px rgba(255,122,0,0.85), 0 0 0 8px rgba(255,122,0,0.08); } 50% { box-shadow: 0 20px 55px -12px rgba(255,122,0,1), 0 0 0 16px rgba(255,122,0,0.04); } }
         .admin-login-title { font-size: 1.5rem; font-weight: 900; color: #FFFFFF; text-align: center; margin-bottom: 0.5rem; letter-spacing: -0.3px; }
         @media (min-width: 640px) { .admin-login-title { font-size: 1.75rem; } }
         .admin-login-subtitle { text-align: center; color: #9ca3af; font-size: 0.88rem; margin-bottom: 1.75rem; line-height: 1.7; }
         @media (min-width: 640px) { .admin-login-subtitle { font-size: 0.93rem; } }
-
         .admin-login-field { position: relative; margin-bottom: 1rem; }
         .admin-login-field-icon { position: absolute; right: 1.15rem; top: 50%; transform: translateY(-50%); color: #FF7A00; font-size: 1rem; pointer-events: none; }
-        .admin-login-input {
-            width: 100%; padding: 1rem 3.1rem 1rem 1rem;
-            border: 2px solid rgba(255,255,255,0.08); border-radius: 1.1rem;
-            font-size: 0.95rem; background: rgba(255,255,255,0.04);
-            color: #FFFFFF; transition: all 0.25s; font-weight: 600;
-        }
-        .admin-login-input:focus {
-            outline: none; border-color: #FF7A00;
-            background: rgba(255,122,0,0.08);
-            box-shadow: 0 0 0 5px rgba(255,122,0,0.15);
-            transform: translateY(-1px);
-        }
+        .admin-login-input { width: 100%; padding: 1rem 3.1rem 1rem 1rem; border: 2px solid rgba(255,255,255,0.08); border-radius: 1.1rem; font-size: 0.95rem; background: rgba(255,255,255,0.04); color: #FFFFFF; transition: all 0.25s; font-weight: 600; }
+        .admin-login-input:focus { outline: none; border-color: #FF7A00; background: rgba(255,122,0,0.08); box-shadow: 0 0 0 5px rgba(255,122,0,0.15); transform: translateY(-1px); }
         .admin-login-input::placeholder { color: #6b7280; font-weight: 500; }
-
-        .admin-login-btn {
-            width: 100%; padding: 1.05rem;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff; border: none; border-radius: 1.1rem;
-            font-weight: 800; font-size: 1.05rem; cursor: pointer;
-            transition: all 0.25s;
-            box-shadow: 0 14px 34px -10px rgba(255,122,0,0.75);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-top: 1.5rem;
-        }
+        .admin-login-btn { width: 100%; padding: 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 1.1rem; font-weight: 800; font-size: 1.05rem; cursor: pointer; transition: all 0.25s; box-shadow: 0 14px 34px -10px rgba(255,122,0,0.75); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 1.5rem; }
         .admin-login-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 44px -10px rgba(255,122,0,0.9); }
         .admin-login-btn:active:not(:disabled) { transform: translateY(0); }
         .admin-login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-
-        .admin-login-error {
-            background: rgba(220,38,38,0.15); border: 1.5px solid rgba(220,38,38,0.4);
-            color: #fca5a5; padding: 0.9rem 1rem; border-radius: 0.9rem;
-            font-size: 0.87rem; font-weight: 700; text-align: center;
-            margin-top: 1rem; display: none; animation: shake 0.4s; line-height: 1.6;
-        }
+        .admin-login-error { background: rgba(220,38,38,0.15); border: 1.5px solid rgba(220,38,38,0.4); color: #fca5a5; padding: 0.9rem 1rem; border-radius: 0.9rem; font-size: 0.87rem; font-weight: 700; text-align: center; margin-top: 1rem; display: none; animation: shake 0.4s; line-height: 1.6; }
         .admin-login-error.show { display: block; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
         .admin-login-footer { text-align: center; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px dashed rgba(255,122,0,0.25); color: #6b7280; font-size: 0.82rem; line-height: 1.9; }
@@ -123,212 +57,91 @@
 
         .app-container { max-width: 900px; margin: 0 auto; padding: 0 0 100px 0; min-height: 100vh; }
         @media (min-width: 1024px) { .app-container { max-width: 1200px; padding-bottom: 2rem; } }
-
-        .app-header {
-            background: linear-gradient(150deg, #1a1a1a 0%, #2d2d2d 50%, #3d2412 100%);
-            padding: 1.25rem 1.25rem 3rem; border-radius: 0 0 2rem 2rem;
-            position: relative; overflow: hidden;
-            box-shadow: 0 12px 30px -12px rgba(0,0,0,0.6);
-        }
+        .app-header { background: linear-gradient(150deg, #1a1a1a 0%, #2d2d2d 50%, #3d2412 100%); padding: 1.25rem 1.25rem 3rem; border-radius: 0 0 2rem 2rem; position: relative; overflow: hidden; box-shadow: 0 12px 30px -12px rgba(0,0,0,0.6); }
         @media (min-width: 640px) { .app-header { padding: 1.75rem 2rem 3.5rem; border-radius: 0 0 2.5rem 2.5rem; } }
-        .app-header::before {
-            content: ''; position: absolute; top: -80px; right: -60px;
-            width: 260px; height: 260px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .app-header::after {
-            content: ''; position: absolute; bottom: -120px; left: -80px;
-            width: 300px; height: 300px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,166,77,0.18) 0%, transparent 70%);
-            pointer-events: none;
-        }
+        .app-header::before { content: ''; position: absolute; top: -80px; right: -60px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(255,122,0,0.35) 0%, transparent 70%); pointer-events: none; }
+        .app-header::after { content: ''; position: absolute; bottom: -120px; left: -80px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(255,166,77,0.18) 0%, transparent 70%); pointer-events: none; }
         .header-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; gap: 10px; }
         .header-brand { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
-        .header-brand-logo {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: linear-gradient(135deg, #FF7A00, #FFA64D);
-            padding: 8px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 22px -6px rgba(255,122,0,0.7);
-        }
+        .header-brand-logo { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #FF7A00, #FFA64D); padding: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 22px -6px rgba(255,122,0,0.7); }
         .header-brand-logo i { color: #fff; font-size: 1.2rem; }
         .header-brand-text { min-width: 0; }
         .header-brand-title { color: #9ca3af; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px; }
         .header-brand-subtitle { color: #fff; font-size: 1rem; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.2; }
         @media (min-width: 640px) { .header-brand-subtitle { font-size: 1.15rem; } }
-
-        .logout-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(239,68,68,0.15); border: 1.5px solid rgba(239,68,68,0.4);
-            color: #fca5a5; padding: 0.55rem 0.9rem; border-radius: 9999px;
-            font-weight: 800; font-size: 0.82rem; cursor: pointer;
-            transition: all 0.22s; backdrop-filter: blur(10px); flex-shrink: 0;
-        }
+        .logout-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(239,68,68,0.15); border: 1.5px solid rgba(239,68,68,0.4); color: #fca5a5; padding: 0.55rem 0.9rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.22s; backdrop-filter: blur(10px); flex-shrink: 0; }
         .logout-btn:hover { background: rgba(239,68,68,0.25); transform: translateY(-1px); }
         .logout-btn:active { transform: translateY(0); }
         .logout-btn span { display: none; }
         @media (min-width: 400px) { .logout-btn span { display: inline; } }
-
-        .connection-pill {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-            color: #fff; padding: 0.45rem 0.9rem; border-radius: 9999px;
-            font-size: 0.78rem; font-weight: 700; margin-top: 1rem;
-            backdrop-filter: blur(10px); position: relative; z-index: 2;
-        }
+        .connection-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 0.45rem 0.9rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700; margin-top: 1rem; backdrop-filter: blur(10px); position: relative; z-index: 2; }
         .connection-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
         .dot-green { background: #4ADE80; box-shadow: 0 0 10px rgba(74,222,128,0.9); }
         .dot-red { background: #F87171; box-shadow: 0 0 10px rgba(248,113,113,0.9); }
         .dot-yellow { background: #FBBF24; box-shadow: 0 0 10px rgba(251,191,36,0.9); }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
         .main-content { margin-top: -2.25rem; padding: 0 1rem; position: relative; z-index: 3; }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
-
-        .tabs-wrap {
-            background: #fff; border-radius: 1.25rem; padding: 0.45rem;
-            display: flex; gap: 0.35rem;
-            box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 1.25rem;
-        }
-        .tab-item {
-            flex: 1; padding: 0.75rem 0.75rem; border-radius: 0.95rem;
-            font-weight: 800; font-size: 0.85rem; border: none;
-            background: transparent; color: #6B7280; cursor: pointer;
-            transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            white-space: nowrap;
-        }
+        .tabs-wrap { background: #fff; border-radius: 1.25rem; padding: 0.45rem; display: flex; gap: 0.35rem; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 1.25rem; }
+        .tab-item { flex: 1; padding: 0.75rem 0.75rem; border-radius: 0.95rem; font-weight: 800; font-size: 0.85rem; border: none; background: transparent; color: #6B7280; cursor: pointer; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
         @media (min-width: 640px) { .tab-item { font-size: 0.92rem; padding: 0.85rem 1rem; } }
         .tab-item:hover:not(.active) { background: #FFF7ED; color: #FF7A00; }
-        .tab-item.active {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #fff;
-            box-shadow: 0 8px 20px -6px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,122,0,0.3);
-        }
+        .tab-item.active { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: #fff; box-shadow: 0 8px 20px -6px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,122,0,0.3); }
         .tab-item.active i { color: #FF7A00; }
-        .tab-item .count-badge {
-            background: rgba(255,255,255,0.25); color: #fff;
-            padding: 0.1rem 0.5rem; border-radius: 9999px;
-            font-size: 0.7rem; min-width: 24px; text-align: center; font-weight: 900;
-        }
+        .tab-item .count-badge { background: rgba(255,255,255,0.25); color: #fff; padding: 0.1rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; min-width: 24px; text-align: center; font-weight: 900; }
         .tab-item:not(.active) .count-badge { background: #FFEDD5; color: #C2410C; }
-
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.25rem; }
         @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 0.85rem; } }
-        .stat-card {
-            background: #fff; border-radius: 1.25rem; padding: 1rem 0.85rem;
-            border: 1.5px solid #F0F0F0; transition: all 0.28s;
-            position: relative; overflow: hidden;
-        }
+        .stat-card { background: #fff; border-radius: 1.25rem; padding: 1rem 0.85rem; border: 1.5px solid #F0F0F0; transition: all 0.28s; position: relative; overflow: hidden; }
         @media (min-width: 640px) { .stat-card { padding: 1.25rem; border-radius: 1.5rem; } }
         .stat-card:hover { transform: translateY(-4px); border-color: #FFE0BD; box-shadow: 0 16px 40px -12px rgba(255,122,0,0.3); }
-        .stat-card::before {
-            content: ''; position: absolute; top: -40px; right: -40px;
-            width: 100px; height: 100px; border-radius: 50%;
-            background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-            pointer-events: none; opacity: 0.5;
-        }
+        .stat-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%); pointer-events: none; opacity: 0.5; }
         .stat-card-inner { display: flex; align-items: center; gap: 10px; position: relative; z-index: 2; }
         @media (min-width: 640px) { .stat-card-inner { gap: 14px; } }
-        .stat-icon {
-            width: 42px; height: 42px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1.05rem; flex-shrink: 0;
-            box-shadow: 0 8px 20px -6px rgba(0,0,0,0.25);
-        }
+        .stat-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.05rem; flex-shrink: 0; box-shadow: 0 8px 20px -6px rgba(0,0,0,0.25); }
         @media (min-width: 640px) { .stat-icon { width: 52px; height: 52px; border-radius: 14px; font-size: 1.3rem; } }
         .stat-info { min-width: 0; flex: 1; }
         .stat-value { font-size: 1.3rem; font-weight: 900; color: #1A1A1A; line-height: 1; letter-spacing: -0.5px; }
         @media (min-width: 640px) { .stat-value { font-size: 1.75rem; } }
         .stat-label { color: #6b7280; font-size: 0.68rem; font-weight: 700; margin-top: 0.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         @media (min-width: 640px) { .stat-label { font-size: 0.78rem; } }
-
-        .card {
-            background: #fff; border-radius: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
-            overflow: hidden; border: 1px solid rgba(0,0,0,0.03);
-        }
+        .card { background: #fff; border-radius: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; border: 1px solid rgba(0,0,0,0.03); }
         .card-body { padding: 1rem; }
         @media (min-width: 640px) { .card-body { padding: 1.5rem; } }
-
         .filter-bar { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
         @media (min-width: 640px) { .filter-bar { flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem; } }
         .filter-input-wrap { position: relative; flex: 1; min-width: 0; }
         .filter-input-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.9rem; pointer-events: none; }
-        .filter-input {
-            width: 100%; padding: 0.85rem 2.75rem 0.85rem 1rem;
-            border: 1.5px solid #E5E7EB; border-radius: 0.9rem;
-            font-size: 0.9rem; font-weight: 600; transition: all 0.22s;
-            background: #fff; color: #1A1A1A;
-        }
+        .filter-input { width: 100%; padding: 0.85rem 2.75rem 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.9rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; }
         .filter-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
-        .filter-select {
-            padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB;
-            border-radius: 0.9rem; font-size: 0.9rem; font-weight: 700;
-            transition: all 0.22s; background: #fff; color: #1A1A1A;
-            cursor: pointer; font-family: 'Cairo', sans-serif; width: 100%;
-        }
+        .filter-select { padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.9rem; font-weight: 700; transition: all 0.22s; background: #fff; color: #1A1A1A; cursor: pointer; font-family: 'Cairo', sans-serif; width: 100%; }
         @media (min-width: 640px) { .filter-select { min-width: 200px; width: auto; } }
         .filter-select:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
-
-        .btn-primary {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 0.85rem 1.25rem;
-            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
-            color: #fff; border: none; border-radius: 0.9rem;
-            font-weight: 800; font-size: 0.88rem; cursor: pointer;
-            transition: all 0.25s;
-            box-shadow: 0 12px 28px -10px rgba(255,122,0,0.7);
-            font-family: 'Cairo', sans-serif; white-space: nowrap;
-        }
+        .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.85rem 1.25rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; box-shadow: 0 12px 28px -10px rgba(255,122,0,0.7); font-family: 'Cairo', sans-serif; white-space: nowrap; }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(255,122,0,0.9); }
         .btn-primary:active:not(:disabled) { transform: translateY(0); }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
-
         .items-list { display: flex; flex-direction: column; gap: 0.75rem; }
-        .item-card {
-            background: #fff; border: 1.5px solid #F3F4F6;
-            border-radius: 1.1rem; padding: 0.9rem;
-            display: flex; gap: 0.85rem; transition: all 0.22s;
-            position: relative;
-        }
+        .item-card { background: #fff; border: 1.5px solid #F3F4F6; border-radius: 1.1rem; padding: 0.9rem; display: flex; gap: 0.85rem; transition: all 0.22s; position: relative; }
         @media (min-width: 640px) { .item-card { padding: 1rem 1.15rem; } }
         .item-card:hover { border-color: #FFE0BD; box-shadow: 0 8px 24px -10px rgba(255,122,0,0.3); transform: translateY(-2px); }
-        .item-thumb {
-            width: 56px; height: 56px; border-radius: 0.9rem;
-            object-fit: cover; background: #F9FAFB; flex-shrink: 0;
-            border: 1px solid #F0F0F0;
-        }
+        .item-thumb { width: 56px; height: 56px; border-radius: 0.9rem; object-fit: cover; background: #F9FAFB; flex-shrink: 0; border: 1px solid #F0F0F0; }
         @media (min-width: 640px) { .item-thumb { width: 68px; height: 68px; border-radius: 1rem; } }
-        .item-thumb-placeholder {
-            display: flex; align-items: center; justify-content: center;
-            color: #D1D5DB; font-size: 1.4rem;
-        }
+        .item-thumb-placeholder { display: flex; align-items: center; justify-content: center; color: #D1D5DB; font-size: 1.4rem; }
         .item-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.35rem; }
         .item-name { font-weight: 900; font-size: 0.92rem; color: #1A1A1A; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         @media (min-width: 640px) { .item-name { font-size: 1rem; } }
         .item-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 0.75rem; align-items: center; font-size: 0.75rem; color: #6B7280; font-weight: 700; }
         @media (min-width: 640px) { .item-meta { font-size: 0.8rem; } }
-        .meta-pill {
-            display: inline-flex; align-items: center; gap: 4px;
-            padding: 0.2rem 0.55rem; border-radius: 9999px;
-            font-size: 0.7rem; font-weight: 800; white-space: nowrap;
-        }
+        .meta-pill { display: inline-flex; align-items: center; gap: 4px; padding: 0.2rem 0.55rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 800; white-space: nowrap; }
         .meta-pill-cat { background: #F3F4F6; color: #4B5563; }
         .meta-pill-count { background: #EFF6FF; color: #1E40AF; }
         .meta-pill-verified { background: #FFF7ED; color: #E06B00; border: 1px solid #FFE0BD; }
         .meta-pill-not-verified { background: #F3F4F6; color: #6B7280; }
         .meta-pill-price { background: #FFF7ED; color: #E06B00; }
         .meta-pill-rating { background: #FEF3C7; color: #92400E; }
-
         .item-actions { display: flex; gap: 0.35rem; flex-shrink: 0; align-items: flex-start; }
-        .icon-btn {
-            width: 36px; height: 36px; border-radius: 0.75rem; border: none;
-            display: inline-flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.22s; font-size: 0.82rem;
-        }
+        .icon-btn { width: 36px; height: 36px; border-radius: 0.75rem; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; font-size: 0.82rem; }
         @media (min-width: 640px) { .icon-btn { width: 40px; height: 40px; font-size: 0.88rem; } }
         .icon-btn-edit { background: #EFF6FF; color: #3B82F6; }
         .icon-btn-edit:hover { background: #DBEAFE; transform: scale(1.05); }
@@ -336,134 +149,62 @@
         .icon-btn-view:hover { background: #D1FAE5; transform: scale(1.05); }
         .icon-btn-delete { background: #FEF2F2; color: #EF4444; }
         .icon-btn-delete:hover { background: #FEE2E2; transform: scale(1.05); }
-
         .empty-state { text-align: center; padding: 2.5rem 1rem; }
-        .empty-state-icon {
-            width: 80px; height: 80px; margin: 0 auto 1rem;
-            border-radius: 50%; background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; color: #FFA64D;
-        }
+        .empty-state-icon { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #FFF7ED, #FFF1E0); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #FFA64D; }
         .empty-state-title { font-size: 1rem; font-weight: 900; color: #374151; margin-bottom: 0.35rem; }
         .empty-state-text { font-size: 0.82rem; color: #9CA3AF; font-weight: 600; }
-
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
-            display: flex; align-items: flex-start; justify-content: center;
-            padding: 1rem; z-index: 99998; overflow-y: auto;
-            animation: fadeIn 0.22s;
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: flex-start; justify-content: center; padding: 1rem; z-index: 99998; overflow-y: auto; animation: fadeIn 0.22s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .modal-content {
-            background: #FFFFFF; border-radius: 1.5rem;
-            max-width: 640px; width: 100%; padding: 1.5rem;
-            margin-top: 2vh; margin-bottom: 2vh;
-            animation: modalIn 0.32s cubic-bezier(0.34,1.56,0.64,1);
-            box-shadow: 0 30px 80px -20px rgba(0,0,0,0.5);
-        }
+        .modal-content { background: #FFFFFF; border-radius: 1.5rem; max-width: 640px; width: 100%; padding: 1.5rem; margin-top: 2vh; margin-bottom: 2vh; animation: modalIn 0.32s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 30px 80px -20px rgba(0,0,0,0.5); }
         @media (min-width: 640px) { .modal-content { padding: 2rem; margin-top: 4vh; border-radius: 1.75rem; } }
-        @keyframes modalIn {
-            from { transform: translateY(30px) scale(0.94); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        .modal-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 1.5rem; padding-bottom: 1rem;
-            border-bottom: 2px solid #F3F4F6; gap: 12px;
-        }
+        @keyframes modalIn { from { transform: translateY(30px) scale(0.94); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #F3F4F6; gap: 12px; }
         .modal-header-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
-        .modal-header-icon {
-            width: 42px; height: 42px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1.1rem; flex-shrink: 0;
-            box-shadow: 0 6px 16px -4px rgba(0,0,0,0.25);
-        }
+        .modal-header-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.1rem; flex-shrink: 0; box-shadow: 0 6px 16px -4px rgba(0,0,0,0.25); }
         .modal-header-text { font-size: 1.05rem; font-weight: 900; color: #1A1A1A; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         @media (min-width: 640px) { .modal-header-text { font-size: 1.25rem; } }
-        .modal-close {
-            width: 38px; height: 38px; border-radius: 50%;
-            background: #F3F4F6; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            color: #6b7280; transition: all 0.25s; flex-shrink: 0;
-        }
+        .modal-close { width: 38px; height: 38px; border-radius: 50%; background: #F3F4F6; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #6b7280; transition: all 0.25s; flex-shrink: 0; }
         .modal-close:hover { background: #EF4444; color: #fff; transform: rotate(90deg); }
-
         .form-group { margin-bottom: 1rem; }
         .form-label { display: flex; align-items: center; gap: 6px; font-size: 0.83rem; font-weight: 800; color: #374151; margin-bottom: 0.45rem; }
         @media (min-width: 640px) { .form-label { font-size: 0.88rem; } }
         .form-label i { color: #FF7A00; font-size: 0.78rem; }
         .form-label .req { color: #EF4444; }
-        .form-input {
-            width: 100%; padding: 0.85rem 1rem;
-            border: 1.5px solid #E5E7EB; border-radius: 0.9rem;
-            font-size: 0.92rem; font-weight: 600; transition: all 0.22s;
-            background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif;
-        }
+        .form-input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.92rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif; }
         @media (min-width: 640px) { .form-input { padding: 0.9rem 1.1rem; font-size: 0.95rem; } }
         .form-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
         .form-input::placeholder { color: #9CA3AF; font-weight: 500; }
         .form-hint { font-size: 0.72rem; color: #6B7280; margin-top: 0.35rem; line-height: 1.6; font-weight: 600; }
         .form-row { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
         @media (min-width: 640px) { .form-row { grid-template-columns: 1fr 1fr; } }
-
-        .checkbox-wrap {
-            display: flex; align-items: center; gap: 10px;
-            padding: 0.85rem 1rem; background: #FFF7ED;
-            border: 1.5px solid #FFE0BD; border-radius: 0.9rem;
-            cursor: pointer; transition: all 0.22s;
-        }
+        .checkbox-wrap { display: flex; align-items: center; gap: 10px; padding: 0.85rem 1rem; background: #FFF7ED; border: 1.5px solid #FFE0BD; border-radius: 0.9rem; cursor: pointer; transition: all 0.22s; }
         .checkbox-wrap:hover { background: #FFF1E0; }
         .checkbox-wrap input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #FF7A00; flex-shrink: 0; }
         .checkbox-wrap span { font-weight: 800; font-size: 0.88rem; color: #92400E; }
-
-        .image-preview {
-            width: 100%; height: 140px; object-fit: cover;
-            border-radius: 0.9rem; margin-top: 0.65rem;
-            border: 1.5px solid #F0F0F0; background: #F9FAFB;
-            display: block;
-        }
+        .image-preview { width: 100%; height: 140px; object-fit: cover; border-radius: 0.9rem; margin-top: 0.65rem; border: 1.5px solid #F0F0F0; background: #F9FAFB; display: block; }
         @media (min-width: 640px) { .image-preview { height: 170px; } }
-
         .btn-row { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
         .btn-row .btn-primary { flex: 1; }
-        .btn-secondary {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            padding: 0.85rem 1.25rem; background: #F3F4F6;
-            color: #4B5563; border: none; border-radius: 0.9rem;
-            font-weight: 800; font-size: 0.88rem; cursor: pointer;
-            transition: all 0.22s; font-family: 'Cairo', sans-serif;
-        }
+        .btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0.85rem 1.25rem; background: #F3F4F6; color: #4B5563; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.22s; font-family: 'Cairo', sans-serif; }
         .btn-secondary:hover { background: #E5E7EB; }
-
         .btn-loading { opacity: 0.7 !important; cursor: not-allowed !important; pointer-events: none !important; }
-
-        .toast {
-            position: fixed; top: 20px; left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: #1F2937; color: #fff;
-            padding: 0.9rem 1.5rem; border-radius: 0.9rem;
-            z-index: 999999; opacity: 0;
-            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-            pointer-events: none; font-weight: 800; font-size: 0.88rem;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
-            max-width: calc(100% - 32px); text-align: center;
-        }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #1F2937; color: #fff; padding: 0.9rem 1.5rem; border-radius: 0.9rem; z-index: 999999; opacity: 0; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); pointer-events: none; font-weight: 800; font-size: 0.88rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4); max-width: calc(100% - 32px); text-align: center; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
         .hidden { display: none !important; }
         .tab-content { animation: fadeSlideIn 0.35s ease; }
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-            outline: 2px solid #FF7A00; outline-offset: 2px;
-        }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid #FF7A00; outline-offset: 2px; }
+        @supports (padding-bottom: env(safe-area-inset-bottom)) { .app-container { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } }
 
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .app-container { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
-        }
+        /* 📤 أزرار رفع الصور */
+        .url-upload-group { display: flex; gap: 8px; align-items: stretch; }
+        .url-upload-group .form-input { flex: 1; min-width: 0; }
+        .upload-btn { padding: 0 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.22s; font-family: 'Cairo', sans-serif; white-space: nowrap; flex-shrink: 0; box-shadow: 0 6px 16px -8px rgba(255,122,0,0.7); -webkit-tap-highlight-color: transparent; }
+        .upload-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 24px -8px rgba(255,122,0,0.9); }
+        .upload-btn:active:not(:disabled) { transform: translateY(0); }
+        .upload-btn:disabled { opacity: 0.75; cursor: not-allowed; }
+        .upload-btn i { font-size: 0.9rem; }
+        @media (max-width: 480px) { .upload-btn span { display: none; } .upload-btn { padding: 0 0.85rem; } }
     </style>
 </head>
 <body>
@@ -676,15 +417,29 @@
                 </div>
             </div>
 
+            <!-- ✨ تم إضافة زر الرفع هنا -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-image"></i><span>رابط الشعار (Logo)</span></label>
-                <input type="url" id="store_logo" class="form-input" placeholder="https://example.com/logo.png" dir="ltr" style="text-align: left;">
+                <div class="url-upload-group">
+                    <input type="url" id="store_logo" class="form-input" placeholder="https://example.com/logo.png" dir="ltr" style="text-align: left;">
+                    <button type="button" class="upload-btn" data-upload-target="store_logo" title="رفع صورة من جهازك">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>رفع</span>
+                    </button>
+                </div>
                 <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار" onerror="this.classList.add('hidden')">
             </div>
 
+            <!-- ✨ تم إضافة زر الرفع هنا -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-panorama"></i><span>رابط الغلاف (Cover)</span></label>
-                <input type="url" id="store_cover" class="form-input" placeholder="https://example.com/cover.png" dir="ltr" style="text-align: left;">
+                <div class="url-upload-group">
+                    <input type="url" id="store_cover" class="form-input" placeholder="https://example.com/cover.png" dir="ltr" style="text-align: left;">
+                    <button type="button" class="upload-btn" data-upload-target="store_cover" title="رفع صورة من جهازك">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>رفع</span>
+                    </button>
+                </div>
                 <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.classList.add('hidden')">
             </div>
 
@@ -750,9 +505,16 @@
                 </div>
             </div>
 
+            <!-- ✨ تم إضافة زر الرفع هنا -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-image"></i><span>رابط الصورة</span></label>
-                <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
+                <div class="url-upload-group">
+                    <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
+                    <button type="button" class="upload-btn" data-upload-target="product_img_url" title="رفع صورة من جهازك">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>رفع</span>
+                    </button>
+                </div>
                 <img id="product_img_preview" class="image-preview hidden" alt="معاينة الصورة" onerror="this.classList.add('hidden')">
             </div>
 
@@ -791,6 +553,12 @@ const db = firebase.firestore();
 
 const STORES_COLLECTION = 'stores';
 const PRODUCTS_COLLECTION = 'products';
+
+// ============================================================
+// 🔑 إعدادات Cloudinary (رفع الصور المباشر)
+// ============================================================
+const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh'; 
+const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 // ============================================================
 // 🗄️ Cache - 100 hours
@@ -862,11 +630,9 @@ let adminUser = '';
 let isSavingStore = false;
 let isSavingProduct = false;
 
-// 🛡️ Guards ضد التهيئة المزدوجة
 let dashboardInitialized = false;
 let listenersSetup = false;
 
-// 📡 Realtime listeners
 let storesUnsubscribe = null;
 let productsUnsubscribe = null;
 let isFirstStoresSnapshot = true;
@@ -874,7 +640,6 @@ let isFirstProductsSnapshot = true;
 let lastStoresFingerprint = '';
 let lastProductsFingerprint = '';
 
-// 🎯 Suppression - لا تظهر رسائل الـ listener أثناء الكتابة اليدوية
 let suppressStoresToast = false;
 let suppressProductsToast = false;
 
@@ -938,6 +703,94 @@ function updateConnectionStatus(ok, msg) {
         txt.textContent = 'فشل الاتصال ' + (msg ? '• ' + msg : '');
     }
 }
+
+// ============================================================
+// 📤 رفع الصور إلى Cloudinary (جديد)
+// ============================================================
+async function uploadImageToHost(file) {
+    if (!file) throw new Error('لم يتم اختيار ملف');
+    if (!file.type || !file.type.startsWith('image/')) {
+        throw new Error('الملف المختار ليس صورة');
+    }
+    const MAX_MB = 10;
+    if (file.size > MAX_MB * 1024 * 1024) {
+        throw new Error(`حجم الصورة أكبر من ${MAX_MB} ميجابايت`);
+    }
+
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+        throw new Error('إعدادات Cloudinary غير مكتملة');
+    }
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, {
+        method: 'POST',
+        body: fd,
+    });
+
+    if (!res.ok) {
+        throw new Error('فشل الاتصال بخدمة الرفع (HTTP ' + res.status + ')');
+    }
+
+    const data = await res.json();
+    if (!data.secure_url) {
+        throw new Error('لم يتم استلام رابط الصورة من Cloudinary');
+    }
+
+    return data.secure_url;
+}
+
+function openFilePickerAndUpload(button, targetInput) {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+
+    fileInput.addEventListener('change', async () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) { fileInput.remove(); return; }
+
+        const originalHTML = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        try {
+            const url = await uploadImageToHost(file);
+            targetInput.value = url;
+            // إرسال حدث الإدخال لتحديث المعاينة تلقائياً
+            targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+            targetInput.dispatchEvent(new Event('change', { bubbles: true }));
+            showToast('✅ تم رفع الصورة بنجاح');
+        } catch (err) {
+            console.error('Upload error:', err);
+            showToast('❌ ' + (err.message || 'فشل الرفع'), 'error');
+        } finally {
+            button.disabled = false;
+            button.innerHTML = originalHTML;
+            fileInput.remove();
+        }
+    });
+
+    document.body.appendChild(fileInput);
+    fileInput.click();
+}
+
+// معالج مفوّض لجميع أزرار الرفع
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-upload-target]');
+    if (!btn) return;
+    e.preventDefault();
+
+    const targetId = btn.getAttribute('data-upload-target');
+    const targetInput = document.getElementById(targetId);
+    if (!targetInput) {
+        console.warn('Upload target not found:', targetId);
+        return;
+    }
+    openFilePickerAndUpload(btn, targetInput);
+});
 
 // ============================================================
 // 🔒 Admin Verification
@@ -1053,13 +906,11 @@ async function loadAllData() {
 
         console.log('🌐 [Firestore] Fetching data...');
 
-        // ✅ بدون orderBy — نتجنب مشاكل الـ index وترتيب serverTimestamp
         const [storeSnap, productSnap] = await Promise.all([
             db.collection(STORES_COLLECTION).get(),
             db.collection(PRODUCTS_COLLECTION).get()
         ]);
 
-        // ✅ id في النهاية لضمان عدم استبداله
         allStores = storeSnap.docs.map(d => ({ ...d.data(), id: d.id }));
         allProducts = productSnap.docs.map(d => ({ ...d.data(), id: d.id }));
 
@@ -1076,7 +927,6 @@ async function loadAllData() {
 }
 
 function processLoadedData() {
-    // حساب عدد المنتجات لكل متجر
     const counts = {};
     allProducts.forEach(p => {
         if (p.store_name) counts[p.store_name] = (counts[p.store_name] || 0) + 1;
@@ -1088,7 +938,6 @@ function processLoadedData() {
     $('tabStoresCount').textContent = allStores.length;
     $('tabProductsCount').textContent = allProducts.length;
 
-    // Filter dropdown
     const sel = $('productsStoreFilter');
     const currentFilter = sel.value;
     sel.innerHTML = '<option value="">كل المتاجر</option>';
@@ -1100,7 +949,6 @@ function processLoadedData() {
     });
     if (currentFilter) sel.value = currentFilter;
 
-    // Product form store dropdown
     const psel = $('product_store_name');
     const currentProductStore = psel.value;
     psel.innerHTML = '<option value="">اختر المتجر</option>';
@@ -1266,7 +1114,7 @@ $('tabProducts').addEventListener('click', () => {
 });
 
 // ============================================================
-// 📡 Realtime Stores Listener (نسخة محسّنة)
+// 📡 Realtime Stores Listener
 // ============================================================
 function setupRealtimeStoresListener() {
     if (storesUnsubscribe) return;
@@ -1277,18 +1125,12 @@ function setupRealtimeStoresListener() {
             const freshStores = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
             const newFingerprint = getFingerprint(freshStores);
 
-            // 🔹 أول snapshot - نزامن مع الكاش بدون toast
             if (isFirstStoresSnapshot) {
                 isFirstStoresSnapshot = false;
                 lastStoresFingerprint = newFingerprint;
-
                 const cached = cacheManager.get('stores_list');
                 const cachedFp = cached ? getFingerprint(cached) : '';
-
-                // ✅ نحدّث الكاش دائماً بالبيانات الحية
                 cacheManager.set('stores_list', freshStores);
-
-                // فقط إذا اختلف الكاش - نعرض التغيير
                 if (cachedFp && cachedFp !== newFingerprint) {
                     console.log('🏪 Stores changed since cache - updating UI');
                     allStores = freshStores;
@@ -1299,10 +1141,8 @@ function setupRealtimeStoresListener() {
                 return;
             }
 
-            // 🔹 لا تغيير حقيقي
             if (newFingerprint === lastStoresFingerprint) return;
 
-            // 🔹 احسب نوع التغيير
             const changes = snapshot.docChanges();
             const added = changes.filter(c => c.type === 'added').length;
             const removed = changes.filter(c => c.type === 'removed').length;
@@ -1315,10 +1155,8 @@ function setupRealtimeStoresListener() {
             cacheManager.set('stores_list', freshStores);
             processLoadedData();
 
-            // 🔇 لا تُظهر رسالة لو العملية من المستخدم نفسه
             if (suppressStoresToast) return;
 
-            // 🎯 رسالة موحّدة (تدعم الأنواع المختلطة)
             const messages = [];
             if (added > 0) messages.push(`+${added}`);
             if (removed > 0) messages.push(`-${removed}`);
@@ -1354,11 +1192,9 @@ function setupRealtimeProductsListener() {
             if (isFirstProductsSnapshot) {
                 isFirstProductsSnapshot = false;
                 lastProductsFingerprint = newFingerprint;
-
                 const cached = cacheManager.get('all_products');
                 const cachedFp = cached ? getFingerprint(cached) : '';
                 cacheManager.set('all_products', freshProducts);
-
                 if (cachedFp && cachedFp !== newFingerprint) {
                     console.log('📦 Products changed since cache - updating UI');
                     allProducts = freshProducts;
@@ -1476,7 +1312,6 @@ $('storeForm').addEventListener('submit', async (e) => {
     const newNameLower = String(name).trim().toLowerCase();
     const nameChanged = !isEdit || (originalName !== newNameLower);
 
-    // فحص تكرار الاسم
     if (nameChanged) {
         const existing = allStores.find(s => {
             if (String(s.id) === String(id)) return false;
@@ -1488,7 +1323,6 @@ $('storeForm').addEventListener('submit', async (e) => {
         }
     }
 
-    // ✅ استخدام Date.now() بدل serverTimestamp() لتجنّب مشكلة الـ local/server mismatch
     const now = Date.now();
     const data = {
         name,
@@ -1501,12 +1335,12 @@ $('storeForm').addEventListener('submit', async (e) => {
         logo_url: sanitize($('store_logo').value),
         cover_url: sanitize($('store_cover').value),
         followers: parseInt($('store_followers').value) || 0,
-        is_verified: $('store_is_checked') ? false : $('store_is_verified').checked,
+        is_verified: $('store_is_verified').checked,
         updated_at: now
     };
 
     isSavingStore = true;
-    suppressStoresToast = true; // 🔇 لا تظهر رسائل الـ listener أثناء الكتابة
+    suppressStoresToast = true;
 
     setBtnLoading($('storeSubmitBtn'), true,
         isEdit ? 'جارٍ التعديل...' : 'جارٍ الإضافة...',
@@ -1517,7 +1351,6 @@ $('storeForm').addEventListener('submit', async (e) => {
             const oldStore = allStores.find(s => String(s.id) === String(id));
             await db.collection(STORES_COLLECTION).doc(id).update(data);
 
-            // تحديث اسم المتجر في منتجاته إذا تغيّر
             if (oldStore && oldStore.name !== name) {
                 const prodSnap = await db.collection(PRODUCTS_COLLECTION)
                     .where('store_name', '==', oldStore.name).get();
@@ -1542,7 +1375,6 @@ $('storeForm').addEventListener('submit', async (e) => {
         showToast('❌ فشل الحفظ: ' + (err.message || 'خطأ غير معروف'), 'error');
     } finally {
         isSavingStore = false;
-        // 🔓 أعد تشغيل رسائل الـ listener بعد 2 ثانية
         setTimeout(() => { suppressStoresToast = false; }, 2000);
         setBtnLoading($('storeSubmitBtn'), false, '',
             '<i class="fas fa-save"></i> <span>حفظ المتجر</span>');
@@ -1706,7 +1538,7 @@ window.deleteProduct = async (id) => {
 };
 
 // ============================================================
-// 🖼️ Image Previews — مع معاينة فورية
+// 🖼️ Image Previews — مع معاينة فورية (جديد)
 // ============================================================
 function attachImagePreview(inputId, previewId) {
     const input = $(inputId);
@@ -1718,16 +1550,17 @@ function attachImagePreview(inputId, previewId) {
         if (url) {
             preview.src = url;
             preview.classList.remove('hidden');
+            preview.style.display = 'block';
         } else {
             preview.classList.add('hidden');
             preview.removeAttribute('src');
         }
     });
 
-    // إعادة الظهور عند تحميل صورة صالحة
     preview.addEventListener('load', () => {
         if (preview.getAttribute('src')) {
             preview.classList.remove('hidden');
+            preview.style.display = 'block';
         }
     });
     preview.addEventListener('error', () => {
@@ -1771,14 +1604,12 @@ window.closeProductModal = closeProductModal;
 // ============================================================
 firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
-        // لم يتم الدخول - أعد إظهار شاشة الدخول
         $('adminLoginOverlay').classList.remove('hidden');
         $('adminDashboard').classList.add('hidden');
         setTimeout(() => $('adminEmail')?.focus(), 200);
         return;
     }
 
-    // تم الدخول - تحقق من الصلاحية
     const isAdmin = await verifyAdminAccess();
     if (!isAdmin) {
         try { await firebase.auth().signOut(); } catch (e) {}
