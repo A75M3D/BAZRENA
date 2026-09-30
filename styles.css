@@ -221,7 +221,24 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .store-card .store-info { padding: 0 14px 14px; text-align: right; }
 .store-card .store-name { font-weight: 800; font-size: 0.95rem; color: var(--c-text); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
 .store-card .store-category { color: var(--c-text-soft); font-size: 0.75rem; margin-top: 2px; }
-.verified-icon { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: linear-gradient(135deg, #3B82F6, #1E40AF); border-radius: 50%; color: #fff; font-size: 9px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(30,64,175,0.4); }
+
+/* ✅ شارة فيسبوك الأصلية - SVG */
+.verified-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  vertical-align: middle;
+  filter: drop-shadow(0 1px 2px rgba(24, 119, 242, 0.4));
+}
+
+.verified-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
 /* ═══ PRODUCT CARDS ═══ */
 #allProductsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
