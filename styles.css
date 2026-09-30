@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v8.3.0 — Styles (Optimized, Accessible, Secure)
+   BranZar v8.1.0 — Styles (Mobile App Optimized)
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -19,7 +19,6 @@
   --c-primary-soft: #FFF7ED;
   --c-secondary: #1E40AF;
   --c-secondary-soft: #DBEAFE;
-  --c-focus: #FF7A00;
 }
 
 body.theme-dark {
@@ -33,56 +32,22 @@ body.theme-dark {
   --c-secondary-soft: #1E3A8A;
 }
 
-/* ═══ FONT UTILITY (بديل Tailwind) ═══ */
-.font-cairo { font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif; }
-
 /* ═══ BASE ═══ */
-*, *::before, *::after { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-html { scroll-behavior: smooth; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+* { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   background: var(--c-bg);
   color: var(--c-text);
   direction: rtl;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   touch-action: pan-y;
   min-height: 100vh;
   padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 8px);
   transition: background-color 0.3s ease, color 0.3s ease;
   margin: 0;
-  line-height: 1.5;
 }
 body.modal-open { overflow: hidden; }
-
-/* ═══ SKIP LINK (Accessibility) ═══ */
-.skip-link {
-  position: absolute;
-  top: -100px;
-  right: 10px;
-  z-index: 999999;
-  background: var(--c-primary);
-  color: #fff;
-  padding: 12px 24px;
-  border-radius: 0 0 12px 12px;
-  font-weight: 800;
-  text-decoration: none;
-  transition: top 0.3s ease;
-  box-shadow: 0 4px 16px rgba(255,122,0,0.4);
-}
-.skip-link:focus { top: 0; outline: 3px solid #fff; outline-offset: 2px; }
-
-/* ═══ FOCUS VISIBLE (Accessibility) ═══ */
-*:focus { outline: none; }
-*:focus-visible {
-  outline: 3px solid var(--c-focus);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-button:focus-visible, a:focus-visible, input:focus-visible, [tabindex]:focus-visible {
-  outline: 3px solid var(--c-focus);
-  outline-offset: 2px;
-}
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -91,7 +56,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, [tabindex]:focus-vis
 
 .bzr-container { max-width: 1400px; margin: 0 auto; padding: 0 12px; }
 .hidden { display: none !important; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
 
 /* ═══ DARK THEME OVERRIDES ═══ */
 body.theme-dark .bzr-app-bar { background: rgba(15,23,42,0.85); border-color: rgba(255,255,255,0.06); }
@@ -137,7 +101,7 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 /* ═══ APP BAR ═══ */
 .bzr-app-bar { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.9); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--c-border); padding-top: var(--safe-top); }
 .bzr-app-bar-inner { height: var(--app-bar-h); max-width: 1400px; margin: 0 auto; padding: 0 10px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.bzr-logo-btn { background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; border-radius: 12px; }
+.bzr-logo-btn { background: transparent; border: none; padding: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; }
 .bzr-logo-circle { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; background: #fff; box-shadow: 0 3px 10px rgba(255,122,0,0.2); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
 @media (max-width: 380px) { .bzr-logo-circle { width: 40px; height: 40px; } }
 .bzr-logo-btn:active .bzr-logo-circle { transform: scale(0.92); }
@@ -197,13 +161,15 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .ripple.animate::after { animation: rippleAnim 0.6s ease; }
 @keyframes rippleAnim { from { transform: scale(0); opacity: 0.7; } to { transform: scale(2); opacity: 0; } }
 
-/* ═══ SECTIONS ═══ */
+/* ═══ SECTIONS (تم ضغط المسافات) ═══ */
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .section-title-group { display: flex; align-items: center; gap: 8px; }
 .section-icon-circle { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#FF7A00,#FFA64D); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.85rem; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); }
 .section-title { font-size: 1rem; font-weight: 900; color: var(--c-text); margin: 0; }
 .section-title-lg { font-size: clamp(1.1rem,3vw,1.4rem); font-weight: 900; color: var(--c-text); margin: 0; }
 .section-title-md { font-size: clamp(1rem,2.5vw,1.2rem); font-weight: 900; color: var(--c-text); margin: 0; }
+.section-subtitle { font-size: 0.7rem; color: var(--c-text-soft); margin: 2px 0 0; font-weight: 600; }
+.section-subtitle-lg { color: var(--c-text-soft); font-size: 0.8rem; font-weight: 600; margin: 0.2rem 0 0; }
 .section-header-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; gap: 0.5rem; flex-wrap: wrap; }
 
 .followed-section { padding: 8px 0; }
@@ -256,7 +222,7 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .store-card .store-name { font-weight: 800; font-size: 0.95rem; color: var(--c-text); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
 .store-card .store-category { color: var(--c-text-soft); font-size: 0.75rem; margin-top: 2px; }
 
-/* ✅ شارة التوثيق - Facebook Style */
+/* ✅ شارة فيسبوك الأصلية - SVG */
 .verified-icon {
   display: inline-flex;
   align-items: center;
@@ -267,7 +233,12 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
   vertical-align: middle;
   filter: drop-shadow(0 1px 2px rgba(24, 119, 242, 0.4));
 }
-.verified-icon svg { width: 100%; height: 100%; display: block; }
+
+.verified-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
 /* ═══ PRODUCT CARDS ═══ */
 #allProductsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
@@ -276,7 +247,7 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .product-card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(15,23,42,0.04); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; display: flex; flex-direction: column; }
 .product-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,122,0,0.12); border-color: #FFE0BD; }
 .product-card:active { transform: translateY(-1px) scale(0.98); }
-.product-image-container { background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; height: 120px; aspect-ratio: 1 / 1; }
+.product-image-container { background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; height: 120px; }
 @media (min-width: 640px) { .product-image-container { height: 150px; } }
 .product-image-container img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s ease; padding: 6px; }
 .product-card:hover .product-image-container img { transform: scale(1.05); }
@@ -502,44 +473,33 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .bzr-page-fade { animation: pageFade 0.3s ease; }
 @keyframes pageFade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ═══ ACCESSIBILITY (Reduced Motion) ═══ */
+/* ═══ A11Y ═══ */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
-}
-
-/* ═══ HIGH CONTRAST MODE ═══ */
-@media (prefers-contrast: high) {
-  .bzr-nav-item.active { color: #C2410C; }
-  .chip.active { background: #C2410C; }
-  .btn-primary { background: #C2410C; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
 /* ═══ PRINT ═══ */
 @media print { body * { display: none !important; } body::before { content: '© 2026 BranZar | المحتوى محمي'; display: block !important; font-family: 'Cairo', sans-serif; color: #FF7A00; text-align: center; padding: 3rem; direction: rtl; font-weight: 900; } }
 
 /* ═══════════════════════════════════════════════════════════
-   VIEW TOGGLE GRID OVERRIDES
+   VIEW TOGGLE GRID OVERRIDES (Desktop vs Mobile)
    ═══════════════════════════════════════════════════════════ */
+/* وضع الهاتف: منتجين في الصف */
 body.view-mobile #allProductsGrid,
-body.view-mobile .store-products-grid { grid-template-columns: repeat(2, 1fr) !important; }
+body.view-mobile .store-products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* وضع سطح المكتب: 3 منتجات في الصف */
 body.view-desktop #allProductsGrid,
-body.view-desktop .store-products-grid { grid-template-columns: repeat(3, 1fr) !important; }
+body.view-desktop .store-products-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+}
+
+/* التأكد من أن وضع سطح المكتب يعرض 3 منتجات حتى على الشاشات الكبيرة */
 @media (min-width: 1024px) {
-  body.view-desktop #allProductsGrid,
-  body.view-desktop .store-products-grid { grid-template-columns: repeat(3, 1fr) !important; }
-}
-
-/* ═══ BZR Icons — Inline SVG Support ═══ */
-.bzr-ico {
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  vertical-align: -0.125em;
-  flex-shrink: 0;
-  color: currentColor;
-}
-
-@keyframes bzr-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    body.view-desktop #allProductsGrid,
+    body.view-desktop .store-products-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
 }
