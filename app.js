@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v8.0.0
+   BranZar App Core v8.2.0
    Single-file production build (منطق موحد)
    ═══════════════════════════════════════════════════════════ */
 (function () {
@@ -22,7 +22,8 @@ const CONFIG = Object.freeze({
   UPDATE_CHECK_THROTTLE_MS: 10 * 60 * 1000,
   NOTIF_DISMISS_DAYS: 7,
   HAPTIC: { light: 8, medium: 15, heavy: [20, 30, 20] },
-  VAPID: "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw"
+  VAPID: "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw",
+  FIXED_WHATSAPP: "249908280115"
 });
 
 const FIREBASE_CONFIG = {
@@ -47,6 +48,9 @@ const KEYS = Object.freeze({
   VISITED: 'branzarVisitedBefore',
   INSTALLED: 'branzarInstalled'
 });
+
+/* ✅ شارة التوثيق - Facebook Style (SVG) */
+const VERIFIED_BADGE_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true"><path fill="#1877F2" d="M12 1l2.35 2.05 3.09-.41 1.13 2.92 2.92 1.13-.41 3.09L23 12l-2.05 2.35.41 3.09-2.92 1.13-1.13 2.92-3.09-.41L12 23l-2.35-2.05-3.09.41-1.13-2.92-2.92-1.13.41-3.09L1 12l2.05-2.35-.41-3.09 2.92-1.13 1.13-2.92 3.09.41L12 1z"/><path fill="#fff" d="M10.6 16.2l-3.8-3.8 1.4-1.4 2.4 2.4 6-6 1.4 1.4z"/></svg>';
 
 /* ═══ UTILS ═══ */
 function sanitizeHTML(str) {
@@ -438,12 +442,12 @@ bottomNav?.addEventListener('click', (e) => {
   const nav = btn.dataset.nav;
   if (nav === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveNav('home'); }
   else if (nav === 'categories') {
-  const sec = document.getElementById('categories');
-  if (sec) { 
-    sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
-    setActiveNav('categories'); 
+    const sec = document.getElementById('categories');
+    if (sec) {
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveNav('categories');
+    }
   }
-}
   else if (nav === 'cart') { openCart(); }
   else if (nav === 'account') { openAccountModal(); }
 });
@@ -623,8 +627,10 @@ function createSearchStoreRow(store) {
   row.onmouseout = () => row.style.background = '';
   const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--c-surface-2);flex-shrink:0;'; img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   const info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
-  const nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);display:flex;align-items:center;gap:4px;'; nm.textContent = store.name || '';
-  if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = '<i class="fas fa-check"></i>'; nm.appendChild(v); }
+  const nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);display:flex;align-items:center;gap:4px;';
+  /* ✅ الشارة أولاً (يمين الاسم) */
+  if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nm.appendChild(v); }
+  const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nm.appendChild(nameText);
   const meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:var(--c-text-soft);margin-top:2px;'; meta.textContent = (store.category || 'عام');
   info.appendChild(nm); info.appendChild(meta);
   const arrow = document.createElement('i'); arrow.className = 'fas fa-chevron-left'; arrow.style.cssText = 'color:var(--c-text-soft);font-size:0.75rem;';
@@ -894,8 +900,10 @@ function createStoreCard(store) {
   logo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   logo.onerror = function(){ this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
   const info = document.createElement('div'); info.className = 'store-info';
-  const nameRow = document.createElement('div'); nameRow.className = 'store-name'; nameRow.textContent = store.name || '';
-  if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = '<i class="fas fa-check"></i>'; nameRow.appendChild(v); }
+  const nameRow = document.createElement('div'); nameRow.className = 'store-name';
+  /* ✅ الشارة أولاً (يمين الاسم في RTL) */
+  if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nameRow.appendChild(v); }
+  const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nameRow.appendChild(nameText);
   const catRow = document.createElement('div'); catRow.className = 'store-category'; catRow.textContent = store.category || 'عام';
   const bottomRow = document.createElement('div'); bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;';
   const followBtn = document.createElement('button'); followBtn.style.cssText = 'background:#FF7A00;color:#fff;border:1.5px solid #FF7A00;border-radius:9999px;padding:0.3rem 0.7rem;font-size:0.7rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.25s;white-space:nowrap;';
@@ -1028,8 +1036,21 @@ function openStoreModal(store) {
   const catVal = (store.category && String(store.category).trim()) ? store.category : 'عام';
   document.getElementById('storeCategory').innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(catVal) + '</span>';
   updateFollowersDisplay(); updateFollowButtonUI();
-  if (store.is_verified) document.getElementById('storeName').innerHTML = sanitizeHTML(store.name) + ' <span class="verified-icon"><i class="fas fa-check"></i></span>';
-  else document.getElementById('storeName').textContent = store.name || '';
+  /* ✅ الشارة أولاً (يمين الاسم) */
+  if (store.is_verified) {
+    const storeNameEl = document.getElementById('storeName');
+    storeNameEl.innerHTML = '';
+    const badge = document.createElement('span');
+    badge.className = 'verified-icon';
+    badge.style.cssText = 'display:inline-flex;width:20px;height:20px;flex-shrink:0;';
+    badge.innerHTML = VERIFIED_BADGE_SVG;
+    const nameTxt = document.createElement('span');
+    nameTxt.textContent = store.name || '';
+    storeNameEl.appendChild(badge);
+    storeNameEl.appendChild(nameTxt);
+  } else {
+    document.getElementById('storeName').textContent = store.name || '';
+  }
   const phone = store.phone_number || '', wa = store.whatsapp_number || '';
   const callBtn = document.getElementById('storeCallButton');
   const waBtn = document.getElementById('storeWhatsAppButton');
@@ -1176,36 +1197,75 @@ function renderStoreProducts(products, append) {
   grid.appendChild(frag);
 }
 
-/* ═══ PRODUCT MODAL ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ PRODUCT MODAL — الإصلاح الجذري
+   الصورة الرئيسية تظهر أولاً + زر "الأصلي" للرجوع إليها
+   ═══════════════════════════════════════════════════════════ */
 let currentModalProduct = null, selectedColorVariant = null;
+
 function openProductModal(product) {
-  currentModalProduct = product; selectedColorVariant = null;
+  currentModalProduct = product;
+  selectedColorVariant = null;
+
   const defaultImg = product.img_url || 'https://via.placeholder.com/600';
   const imgEl = document.getElementById('productModalImage');
-  imgEl.src = defaultImg; imgEl.style.opacity = '1';
+
+  /* ✅ الصورة الرئيسية هي الافتراضية */
+  imgEl.src = defaultImg;
+  imgEl.style.opacity = '1';
   imgEl.onerror = function(){ this.src = 'https://via.placeholder.com/600'; };
+
   document.getElementById('productModalName').textContent = product.name;
   document.getElementById('productModalRating').textContent = product.ratting || 0;
   document.getElementById('productModalStore').textContent = product.store_name || 'غير محدد';
   document.getElementById('productModalPrice').textContent = (product.price || 0).toLocaleString() + ' ج.س';
+
   const origEl = document.getElementById('productModalOriginalPrice');
   if (product.original_price) { origEl.textContent = product.original_price.toLocaleString() + ' ج.س'; origEl.classList.remove('hidden'); }
   else { origEl.textContent = ''; origEl.classList.add('hidden'); }
+
   const colorsContainer = document.getElementById('productColorsContainer');
   const swatchesContainer = document.getElementById('productColorSwatches');
   const selColorName = document.getElementById('selectedColorName');
   swatchesContainer.innerHTML = '';
+
   if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
-    colorsContainer.classList.remove('hidden'); colorsContainer.style.display = 'flex';
-    selectedColorVariant = product.colors[0];
-    imgEl.src = selectedColorVariant.image || defaultImg;
-    selColorName.textContent = selectedColorVariant.name;
+    colorsContainer.classList.remove('hidden');
+    colorsContainer.style.display = 'flex';
+
+    /* ✅ نبدأ بالصورة الرئيسية — ما فيش لون مختار تلقائياً */
+    selColorName.textContent = 'الأصلي';
+
     const frag = document.createDocumentFragment();
-    product.colors.forEach((color, index) => {
+
+    /* ✅ زر "الأصلي" (برتقالي بأيقونة صورة) */
+    const originalBtn = document.createElement('div');
+    originalBtn.className = 'color-swatch active';
+    originalBtn.title = 'الصورة الأصلية';
+    originalBtn.style.cssText = 'background:linear-gradient(135deg,#FF7A00,#FFA64D);display:flex;align-items:center;justify-content:center;position:relative;';
+    originalBtn.innerHTML = '<i class="fas fa-image" style="color:#fff;font-size:14px;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,0.3);"></i>';
+    originalBtn.addEventListener('click', () => {
+      if (selectedColorVariant === null) return;
+      haptic('light');
+      imgEl.style.opacity = '0';
+      setTimeout(() => {
+        selectedColorVariant = null;
+        imgEl.src = defaultImg;
+        imgEl.onload = () => { imgEl.style.opacity = '1'; };
+      }, 200);
+      document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+      originalBtn.classList.add('active');
+      selColorName.textContent = 'الأصلي';
+      updateModalActionButtons();
+    });
+    frag.appendChild(originalBtn);
+
+    /* ✅ باقي الألوان */
+    product.colors.forEach((color) => {
       const swatch = document.createElement('div');
       const hex = safeHex(color && color.hex) || getFallbackHex(color && color.name);
       const isLight = ['#ffffff','#fff','#f8f9fa','white'].indexOf(String(hex).toLowerCase()) > -1;
-      swatch.className = 'color-swatch ' + (isLight ? 'light-color' : '') + (index === 0 ? ' active' : '');
+      swatch.className = 'color-swatch ' + (isLight ? 'light-color' : '');
       swatch.style.backgroundColor = hex;
       swatch.title = String(color && color.name || '');
       swatch.addEventListener('click', () => {
@@ -1218,13 +1278,18 @@ function openProductModal(product) {
           imgEl.onload = () => { imgEl.style.opacity = '1'; };
         }, 200);
         document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
-        swatch.classList.add('active'); selColorName.textContent = color.name;
+        swatch.classList.add('active');
+        selColorName.textContent = color.name;
         updateModalActionButtons();
       });
       frag.appendChild(swatch);
     });
     swatchesContainer.appendChild(frag);
-  } else { colorsContainer.classList.add('hidden'); colorsContainer.style.display = 'none'; }
+  } else {
+    colorsContainer.classList.add('hidden');
+    colorsContainer.style.display = 'none';
+  }
+
   document.getElementById('productModal').classList.remove('hidden');
   updateBodyScroll();
   updateModalActionButtons();
@@ -1330,18 +1395,11 @@ document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
 
-
-
-
-
 /* ═══ CART - WhatsApp Order (رقم ثابت للإدارة) ═══ */
-const FIXED_WHATSAPP_NUMBER = '249908280115'; // الرقم الثابت لاستقبال الطلبات
-
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   if (cart.length === 0) { showToast('السلة فارغة'); return; }
   haptic('medium');
 
-  // بناء رسالة تجمع كل منتجات السلة في رسالة واحدة
   let msg = '🛒 *طلب جديد من BranZar*\n\n';
   msg += '📋 *تفاصيل الطلب:*\n';
   msg += '━━━━━━━━━━━━━━\n';
@@ -1361,8 +1419,7 @@ document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   msg += `📦 عدد المنتجات: ${cart.reduce((s, i) => s + i.quantity, 0)}\n\n`;
   msg += `شكراً لاستخدامكم BranZar 🌟`;
 
-  // فتح واتساب على الرقم الثابت فقط
-  const whatsappUrl = 'https://wa.me/' + FIXED_WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+  const whatsappUrl = 'https://wa.me/' + CONFIG.FIXED_WHATSAPP + '?text=' + encodeURIComponent(msg);
   window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 });
 
@@ -1613,7 +1670,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '8.0.0',
+  version: '8.2.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
