@@ -528,3 +528,18 @@ body.view-desktop .store-products-grid { grid-template-columns: repeat(3, 1fr) !
   body.view-desktop #allProductsGrid,
   body.view-desktop .store-products-grid { grid-template-columns: repeat(3, 1fr) !important; }
 }
+
+/* ═══ BZR Icons — Inline SVG Support ═══ */
+.bzr-ico {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.125em;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+@keyframes bzr-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
