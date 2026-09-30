@@ -29,7 +29,7 @@
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="google" content="notranslate">
 <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fcmregistrations.googleapis.com https://fcm.googleapis.com https://*.firebaseapp.com https://firebasestorage.googleapis.com; frame-src 'self' https://*.firebaseapp.com https://apis.google.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://fcmregistrations.googleapis.com https://fcm.googleapis.com https://*.firebaseapp.com https://firebasestorage.googleapis.com; frame-src 'self' https://*.firebaseapp.com https://apis.google.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests;">
 <title>BranZar – بران زار | أكبر سوق إلكتروني لأشهر البراندات</title>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="BranZar">
@@ -53,9 +53,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 <link rel="dns-prefetch" href="https://www.gstatic.com">
-<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 <link rel="stylesheet" href="styles.css">
 <script type="application/ld+json">
 {
@@ -66,17 +64,8 @@
   "url": "https://branzar.vercel.app/",
   "logo": "https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png",
   "description": "أكبر سوق إلكتروني سوداني لأشهر البراندات والمتاجر",
-  "address": {
-    "@type": "PostalAddress",
-    "addressCountry": "SD"
-  },
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+249908280115",
-    "contactType": "customer service",
-    "availableLanguage": ["Arabic", "English"]
-  },
-  "sameAs": []
+  "address": { "@type": "PostalAddress", "addressCountry": "SD" },
+  "contactPoint": { "@type": "ContactPoint", "telephone": "+249908280115", "contactType": "customer service", "availableLanguage": ["Arabic", "English"] }
 }
 </script>
 </head>
@@ -99,16 +88,12 @@
     </button>
     <div class="bzr-app-actions">
       <div class="view-toggle-pill" role="tablist" aria-label="تبديل وضع العرض">
-        <button id="viewMobileBtn" data-view="mobile" role="tab" aria-label="وضع الهاتف" aria-selected="false" title="وضع الهاتف"><i class="fas fa-mobile-alt" aria-hidden="true"></i></button>
-        <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب" aria-selected="false" title="وضع سطح المكتب"><i class="fas fa-desktop" aria-hidden="true"></i></button>
+        <button id="viewMobileBtn" data-view="mobile" role="tab" aria-label="وضع الهاتف" aria-selected="false" title="وضع الهاتف"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></button>
+        <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب" aria-selected="false" title="وضع سطح المكتب"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></button>
       </div>
-      <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" aria-pressed="false" title="تبديل الوضع الداكن"><i class="fas fa-moon" aria-hidden="true"></i></button>
+      <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" aria-pressed="false" title="تبديل الوضع الداكن"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
       <button id="cartButton" class="bzr-cart-btn" aria-label="عرض سلة التسوق">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         <span id="cartCount" class="bzr-cart-badge" style="display:none;" aria-live="polite">0</span>
       </button>
     </div>
@@ -118,9 +103,9 @@
 <div class="bzr-search-bar-wrap" role="search">
   <div class="bzr-search-inner">
     <div class="bzr-search-input" id="bzrSearchWrapper">
-      <i class="fas fa-search" aria-hidden="true"></i>
+      <svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="searchInput" type="search" placeholder="ابحث عن متجر، منتج أو فئة..." autocomplete="off" aria-label="البحث في المتاجر والمنتجات" maxlength="100" enterkeyhint="search">
-      <button class="search-clear" id="searchClearBtn" aria-label="مسح البحث" type="button"><i class="fas fa-times-circle" aria-hidden="true"></i></button>
+      <button class="search-clear" id="searchClearBtn" aria-label="مسح البحث" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></button>
     </div>
   </div>
 </div>
@@ -132,10 +117,8 @@
     <div class="bzr-container">
       <div class="section-header">
         <div class="section-title-group">
-          <div class="section-icon-circle" aria-hidden="true"><i class="fas fa-heart"></i></div>
-          <div>
-            <h2 class="section-title" id="followedTitle">المتاجر التي تتابعها</h2>
-          </div>
+          <div class="section-icon-circle" aria-hidden="true"><svg class="bzr-ico" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          <div><h2 class="section-title" id="followedTitle">المتاجر التي تتابعها</h2></div>
         </div>
         <span id="followedCountBadge" class="badge-soft"></span>
       </div>
@@ -146,21 +129,19 @@
   <section id="stores" class="stores-section" aria-labelledby="storesTitle">
     <div class="bzr-container">
       <div class="section-header-flex">
-        <div>
-          <h2 class="section-title-lg" id="storesTitle">المتاجر المميزة</h2>
-        </div>
+        <div><h2 class="section-title-lg" id="storesTitle">المتاجر المميزة</h2></div>
         <div class="nav-buttons">
-          <button id="prevStoresBtn" class="scroll-btn" aria-label="تمرير المتاجر لليمين" title="السابق"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
-          <button id="nextStoresBtn" class="scroll-btn" aria-label="تمرير المتاجر لليسار" title="التالي"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+          <button id="prevStoresBtn" class="scroll-btn" aria-label="تمرير المتاجر لليمين" title="السابق"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <button id="nextStoresBtn" class="scroll-btn" aria-label="تمرير المتاجر لليسار" title="التالي"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
         </div>
       </div>
       <div id="storesScrollContainer" class="stores-scroll-container"></div>
       <div id="storesLoader" class="loader hidden" role="status" aria-live="polite">
-        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+        <svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation: bzr-spin 1s linear infinite; font-size: 1.8rem; color: #FF7A00; margin-bottom: 0.5rem;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
         <p>جاري تحميل المتاجر...</p>
       </div>
       <div id="storesEmpty" class="empty-state hidden" role="status">
-        <i class="fas fa-store-slash" aria-hidden="true"></i>
+        <svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="font-size: 2.5rem; color: #CBD5E1; margin-bottom: 0.5rem; display: block; margin-left: auto; margin-right: auto;"><path d="M3 9l1.5-6h15L21 9M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M9 21v-6h6v6"/><line x1="3" y1="15" x2="21" y2="21"/></svg>
         <p id="storesErrorMessage">لا توجد متاجر</p>
         <button id="retryStoresBtn" class="btn-primary ripple" type="button">إعادة المحاولة</button>
       </div>
@@ -172,8 +153,8 @@
       <div class="section-header-flex">
         <h2 class="section-title-md" id="categoriesTitle">الفئات</h2>
         <div class="nav-buttons">
-          <button id="prevCategoriesBtn" class="scroll-btn" aria-label="تمرير الفئات لليمين" title="السابق"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
-          <button id="nextCategoriesBtn" class="scroll-btn" aria-label="تمرير الفئات لليسار" title="التالي"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+          <button id="prevCategoriesBtn" class="scroll-btn" aria-label="تمرير الفئات لليمين" title="السابق"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <button id="nextCategoriesBtn" class="scroll-btn" aria-label="تمرير الفئات لليسار" title="التالي"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
         </div>
       </div>
       <div id="categoriesContainer" class="categories-scroll-container" role="tablist" aria-label="فئات المتاجر"></div>
@@ -185,15 +166,15 @@
       <h2 class="section-title-lg" id="productsTitle">جميع المنتجات</h2>
       <div id="allProductsGrid" role="list"></div>
       <div id="allProductsLoader" class="loader hidden" role="status" aria-live="polite">
-        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+        <svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation: bzr-spin 1s linear infinite; font-size: 1.8rem; color: #FF7A00; margin-bottom: 0.5rem;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
         <p>جاري تحميل المنتجات...</p>
       </div>
       <div id="allProductsEmpty" class="empty-state hidden" role="status">
-        <i class="fas fa-box-open" aria-hidden="true"></i>
+        <svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="font-size: 2.5rem; color: #CBD5E1; margin-bottom: 0.5rem; display: block; margin-left: auto; margin-right: auto;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         <p>لا توجد منتجات في هذه الفئة</p>
       </div>
       <div class="load-more-wrap">
-        <button id="loadMoreProductsBtn" class="load-more-btn ripple hidden" type="button"><span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+        <button id="loadMoreProductsBtn" class="load-more-btn ripple hidden" type="button"><span>عرض المزيد</span><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
       </div>
     </div>
   </section>
@@ -204,8 +185,8 @@
   <div class="modal-content">
     <div class="store-cover-wrap">
       <img id="storeCoverImage" src="" alt="" width="1200" height="600" loading="lazy" decoding="async">
-      <button id="closeStoreModal" class="store-close-btn" aria-label="إغلاق نافذة المتجر" type="button"><i class="fas fa-times" aria-hidden="true"></i></button>
-      <button id="storeShareBtn" class="store-share-btn" type="button" aria-label="مشاركة المتجر"><i class="fas fa-share-alt" aria-hidden="true"></i></button>
+      <button id="closeStoreModal" class="store-close-btn" aria-label="إغلاق نافذة المتجر" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <button id="storeShareBtn" class="store-share-btn" type="button" aria-label="مشاركة المتجر"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
     </div>
     <div class="store-info-card">
       <div class="store-header-row">
@@ -213,28 +194,28 @@
         <div class="store-header-info">
           <h3 id="storeName" class="store-header-name"></h3>
           <div class="store-header-meta">
-            <span class="store-meta-rating"><span id="storeRating">0.0</span><i class="fas fa-star" aria-hidden="true"></i></span>
-            <span class="store-meta-category" id="storeCategory"><i class="fas fa-tag" aria-hidden="true"></i><span>عام</span></span>
+            <span class="store-meta-rating"><span id="storeRating">0.0</span><svg class="bzr-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+            <span class="store-meta-category" id="storeCategory"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span>عام</span></span>
           </div>
         </div>
       </div>
       <p id="storeDescription" class="store-desc"></p>
       <div class="store-actions-grid">
-        <button id="storeFollowButton" class="store-action-btn primary ripple" type="button"><i class="fas fa-heart" aria-hidden="true"></i><span id="storeFollowText">متابعة</span></button>
-        <div class="store-action-btn static"><i class="fas fa-users" aria-hidden="true"></i><span id="storeFollowers">0</span><span>متابع</span></div>
-        <a id="storeWhatsAppButton" href="#" target="_blank" rel="noopener noreferrer" class="store-action-btn ripple" aria-label="تواصل عبر واتساب"><span class="icon-circle"><i class="fab fa-whatsapp" aria-hidden="true"></i></span><span>واتساب</span></a>
-        <a id="storeCallButton" href="#" class="store-action-btn ripple" aria-label="اتصل هاتفياً"><span class="icon-circle"><i class="fas fa-phone" aria-hidden="true"></i></span><span>اتصال</span></a>
+        <button id="storeFollowButton" class="store-action-btn primary ripple" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span id="storeFollowText">متابعة</span></button>
+        <div class="store-action-btn static"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span id="storeFollowers">0</span><span>متابع</span></div>
+        <a id="storeWhatsAppButton" href="#" target="_blank" rel="noopener noreferrer" class="store-action-btn ripple" aria-label="تواصل عبر واتساب"><span class="icon-circle"><svg class="bzr-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span><span>واتساب</span></a>
+        <a id="storeCallButton" href="#" class="store-action-btn ripple" aria-label="اتصل هاتفياً"><span class="icon-circle"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span>اتصال</span></a>
       </div>
     </div>
     <div class="divider-strip" aria-hidden="true"></div>
     <div class="store-products-section">
       <div class="store-products-header">
-        <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+        <svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         <h4>منتجات المتجر</h4>
       </div>
       <div id="storeProductsGrid" class="store-products-grid"></div>
       <div class="load-more-wrap">
-        <button id="loadMoreStoreProductsBtn" class="load-more-btn ripple hidden" type="button"><span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+        <button id="loadMoreStoreProductsBtn" class="load-more-btn ripple hidden" type="button"><span>عرض المزيد</span><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
       </div>
     </div>
   </div>
@@ -242,7 +223,7 @@
 
 <div id="productModal" class="product-modal hidden" role="dialog" aria-modal="true" aria-labelledby="productModalName">
   <div class="product-modal-content">
-    <button id="closeProductModal" class="icon-btn modal-close" aria-label="إغلاق نافذة المنتج" type="button"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <button id="closeProductModal" class="icon-btn modal-close" aria-label="إغلاق نافذة المنتج" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div class="product-modal-grid">
       <div class="product-modal-left">
         <div class="product-modal-image-wrapper"><img id="productModalImage" src="" alt="" width="600" height="600" loading="lazy" decoding="async"></div>
@@ -257,7 +238,7 @@
       <div class="product-modal-right">
         <h2 id="productModalName"></h2>
         <div class="product-rating-row">
-          <span class="star-icon"><i class="fas fa-star" aria-hidden="true"></i></span>
+          <span class="star-icon"><svg class="bzr-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
           <span id="productModalRating"></span>
           <span class="separator" aria-hidden="true">|</span>
           <span id="productModalStore"></span>
@@ -267,8 +248,8 @@
           <span id="productModalOriginalPrice" class="price-original"></span>
         </div>
         <div class="product-actions">
-          <button id="addToCartFromModal" class="btn-primary ripple" type="button"><i class="fas fa-shopping-bag" aria-hidden="true"></i><span>أضف إلى السلة</span></button>
-          <button id="buyNowFromModal" class="btn-whatsapp ripple" type="button"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>شراء مباشر عبر واتساب</span></button>
+          <button id="addToCartFromModal" class="btn-primary ripple" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>أضف إلى السلة</span></button>
+          <button id="buyNowFromModal" class="btn-whatsapp ripple" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>شراء مباشر عبر واتساب</span></button>
         </div>
       </div>
     </div>
@@ -280,21 +261,17 @@
   <div class="cart-header">
     <div class="cart-header-title">
       <div class="cart-icon-circle" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
+        <svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       </div>
       <h2 id="cartTitle">سلة التسوق</h2>
     </div>
-    <button id="closeCart" class="icon-btn" aria-label="إغلاق سلة التسوق" type="button"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <button id="closeCart" class="icon-btn" aria-label="إغلاق سلة التسوق" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <div id="cartItems" class="cart-items" role="list"></div>
   <div class="cart-footer">
     <div id="cartTotal" class="cart-total"><span>المجموع:</span><span>0 ج.س</span></div>
     <button id="continueShopping" class="btn-ghost ripple" type="button">مواصلة التسوق</button>
-    <button id="whatsappOrder" class="btn-whatsapp ripple" type="button"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>طلب السلة عبر واتساب</span></button>
+    <button id="whatsappOrder" class="btn-whatsapp ripple" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>طلب السلة عبر واتساب</span></button>
   </div>
 </div>
 
@@ -302,7 +279,7 @@
   <div class="account-overlay" id="accountOverlay"></div>
   <div class="account-sheet">
     <div class="account-handle" aria-hidden="true"></div>
-    <button id="closeAccountModal" class="account-close-btn" aria-label="إغلاق نافذة الحساب" type="button"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <button id="closeAccountModal" class="account-close-btn" aria-label="إغلاق نافذة الحساب" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div class="account-header">
       <div class="account-avatar"><img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="شعار BranZar" width="80" height="80" loading="lazy"></div>
       <div class="account-welcome">مرحباً بك في</div>
@@ -310,27 +287,27 @@
     </div>
     <div class="account-actions">
       <a href="a.html" class="account-action-btn primary ripple">
-        <div class="action-icon" aria-hidden="true"><i class="fas fa-sign-in-alt"></i></div>
+        <div class="action-icon" aria-hidden="true"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></div>
         <div class="action-info"><strong>تسجيل الدخول</strong><span>ادخل لإدارة منتجاتك ومتجرك</span></div>
-        <i class="fas fa-chevron-left action-arrow" aria-hidden="true"></i>
+        <svg class="bzr-ico action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </a>
       <button id="openCreateStoreBtn" class="account-action-btn ripple" type="button">
-        <div class="action-icon secondary" aria-hidden="true"><i class="fas fa-store"></i></div>
+        <div class="action-icon secondary" aria-hidden="true"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-6h15L21 9M3 9h18M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9M9 21v-6h6v6"/></svg></div>
         <div class="action-info"><strong>إنشاء متجر خاص</strong><span>انضم كتاجر أو صاحب براند</span></div>
-        <i class="fas fa-chevron-left action-arrow" aria-hidden="true"></i>
+        <svg class="bzr-ico action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
     </div>
     <div class="account-section">
       <div class="account-section-title">الإعدادات والتفضيلات</div>
       <div class="setting-row">
-        <div class="setting-label"><i class="fas fa-moon" aria-hidden="true"></i><span>الوضع الداكن</span></div>
+        <div class="setting-label"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span>الوضع الداكن</span></div>
         <div id="accountThemeSwitch" class="switch" role="switch" aria-label="الوضع الداكن" tabindex="0"></div>
       </div>
       <div class="setting-row">
-        <div class="setting-label"><i class="fas fa-mobile-alt" aria-hidden="true"></i><span>وضع العرض</span></div>
+        <div class="setting-label"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg><span>وضع العرض</span></div>
         <div class="view-toggle-pill">
-          <button id="accountViewMobileBtn" data-view="mobile" aria-label="وضع الهاتف" type="button"><i class="fas fa-mobile-alt" aria-hidden="true"></i></button>
-          <button id="accountViewDesktopBtn" data-view="desktop" aria-label="وضع سطح المكتب" type="button"><i class="fas fa-desktop" aria-hidden="true"></i></button>
+          <button id="accountViewMobileBtn" data-view="mobile" aria-label="وضع الهاتف" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></button>
+          <button id="accountViewDesktopBtn" data-view="desktop" aria-label="وضع سطح المكتب" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></button>
         </div>
       </div>
     </div>
@@ -339,17 +316,17 @@
 
 <div id="createStoreModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="createStoreTitle">
   <div class="create-store-box">
-    <div class="create-store-icon" aria-hidden="true"><i class="fas fa-crown"></i></div>
+    <div class="create-store-icon" aria-hidden="true"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M5 20h14"/></svg></div>
     <h3 class="create-store-title" id="createStoreTitle">هل تملك <span>براند خاص بك؟</span></h3>
     <p class="create-store-desc">للحصول على متجر احترافي بإسم البراند الخاص بك، تواصل مباشرة مع إدارة BranZar عبر واتساب وسنقوم بتفعيل متجرك في دقائق.</p>
     <div class="create-store-features">
-      <span><i class="fas fa-check-circle" aria-hidden="true"></i> متجر احترافي</span>
-      <span><i class="fas fa-bolt" aria-hidden="true"></i> تفعيل فوري</span>
-      <span><i class="fas fa-headset" aria-hidden="true"></i> دعم متواصل</span>
-      <span><i class="fas fa-chart-line" aria-hidden="true"></i> آلاف العملاء</span>
-      <span><i class="fas fa-gift" aria-hidden="true"></i> مجاناً</span>
+      <span><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> متجر احترافي</span>
+      <span><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> تفعيل فوري</span>
+      <span><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg> دعم متواصل</span>
+      <span><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> آلاف العملاء</span>
+      <span><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> مجاناً</span>
     </div>
-    <a id="createStoreWaBtn" href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%B1%D8%A7%D9%86%D8%B2%D8%A7%D8%B1" target="_blank" rel="noopener noreferrer" class="create-store-wa-btn ripple"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>تواصل مع الإدارة عبر واتساب</span></a>
+    <a id="createStoreWaBtn" href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%B1%D8%A7%D9%86%D8%B2%D8%A7%D8%B1" target="_blank" rel="noopener noreferrer" class="create-store-wa-btn ripple"><svg class="bzr-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>تواصل مع الإدارة عبر واتساب</span></a>
     <button id="cancelCreateStore" class="create-store-cancel" type="button">إلغاء</button>
   </div>
 </div>
@@ -358,40 +335,36 @@
 
 <nav id="bzrBottomNav" aria-label="التنقل الرئيسي" role="navigation">
   <div class="bzr-nav-list">
-    <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية"><i class="fas fa-home" aria-hidden="true"></i><span>الرئيسية</span></button>
-    <button class="bzr-nav-item" data-nav="categories" aria-label="الفئات"><i class="fas fa-layer-group" aria-hidden="true"></i><span>الفئات</span></button>
+    <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>الرئيسية</span></button>
+    <button class="bzr-nav-item" data-nav="categories" aria-label="الفئات"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span>الفئات</span></button>
     <button class="bzr-nav-item" data-nav="cart" aria-label="السلة">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-        <circle cx="9" cy="21" r="1"></circle>
-        <circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-      </svg>
+      <svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       <span>السلة</span>
       <span class="bzr-nav-badge" id="bottomNavCartBadge" style="display:none;" aria-live="polite">0</span>
     </button>
-    <button class="bzr-nav-item" data-nav="account" aria-label="حسابي"><i class="fas fa-user-circle" aria-hidden="true"></i><span>حسابي</span></button>
+    <button class="bzr-nav-item" data-nav="account" aria-label="حسابي"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>حسابي</span></button>
   </div>
 </nav>
 
 <button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث التطبيق">
-  <div class="update-icon-wrap" aria-hidden="true"><i class="fas fa-cloud-download-alt"></i></div>
+  <div class="update-icon-wrap" aria-hidden="true"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
   <div class="update-text-wrap">
     <strong>🎉 تحديث جديد متوفر</strong>
     <span>اضغط للتحديث الآن</span>
   </div>
-  <i class="fas fa-chevron-left update-arrow" aria-hidden="true"></i>
+  <svg class="bzr-ico update-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
 </button>
 
-<button id="installButtonFloating" class="hidden" title="تثبيت التطبيق" type="button" aria-label="تثبيت التطبيق على جهازك"><i class="fas fa-download" aria-hidden="true"></i><span>تثبيت التطبيق</span></button>
+<button id="installButtonFloating" class="hidden" title="تثبيت التطبيق" type="button" aria-label="تثبيت التطبيق على جهازك"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>تثبيت التطبيق</span></button>
 
 <div id="notifPermissionBanner" class="hidden" role="dialog" aria-labelledby="notifBannerTitle">
   <div class="notif-banner-content">
-    <div class="notif-bell-icon" aria-hidden="true"><i class="fas fa-bell"></i></div>
+    <div class="notif-bell-icon" aria-hidden="true"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
     <div class="notif-banner-text">
       <div class="notif-banner-title" id="notifBannerTitle">🔔 فعّل إشعارات BranZar</div>
       <p>كن أول من يعرف عند نزول عروض حصرية</p>
       <div class="notif-banner-actions">
-        <button id="enableNotifBtn" class="notif-btn-enable ripple" type="button"><i class="fas fa-bell" aria-hidden="true"></i><span>تفعيل</span></button>
+        <button id="enableNotifBtn" class="notif-btn-enable ripple" type="button"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span>تفعيل</span></button>
         <button id="dismissNotifBtn" class="notif-btn-dismiss" type="button">لاحقاً</button>
       </div>
     </div>
@@ -399,7 +372,7 @@
 </div>
 
 <div id="pushToast" role="alert" aria-live="assertive">
-  <div class="push-icon" aria-hidden="true"><i class="fas fa-bell"></i></div>
+  <div class="push-icon" aria-hidden="true"><svg class="bzr-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
   <div class="push-toast-text">
     <div id="pushToastTitle">إشعار جديد</div>
     <div id="pushToastBody">لديك جديد</div>
