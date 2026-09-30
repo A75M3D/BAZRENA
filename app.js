@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v8.2.0
+   BranZar App Core v8.3.0
    Single-file production build (منطق موحد)
+   ✅ Cloudinary Image Optimization Enabled
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -78,6 +79,14 @@ function debounce(fn, wait) {
   };
 }
 function $$(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
+
+/* ✅ Cloudinary Image Optimizer — يضغط الصور ويسرّع التحميل */
+function optimizeCloudinaryUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  if (!url.includes('cloudinary.com')) return url;
+  if (url.includes('/upload/q_auto')) return url;
+  return url.replace('/upload/', '/upload/q_auto,f_auto,w_800,c_limit/');
+}
 
 /* ═══ STATE ═══ */
 let cart = [];
@@ -625,10 +634,9 @@ function createSearchStoreRow(store) {
   row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;transition:background 0.2s;';
   row.onmouseover = () => row.style.background = 'var(--c-surface-2)';
   row.onmouseout = () => row.style.background = '';
-  const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--c-surface-2);flex-shrink:0;'; img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+  const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--c-surface-2);flex-shrink:0;'; img.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   const info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
   const nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);display:flex;align-items:center;gap:4px;';
-  /* ✅ الشارة أولاً (يمين الاسم) */
   if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nm.appendChild(v); }
   const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nm.appendChild(nameText);
   const meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:var(--c-text-soft);margin-top:2px;'; meta.textContent = (store.category || 'عام');
@@ -643,7 +651,7 @@ function createSearchProductRow(product) {
   row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;';
   row.onmouseover = () => row.style.background = 'var(--c-surface-2)';
   row.onmouseout = () => row.style.background = '';
-  const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:10px;object-fit:contain;background:var(--c-surface-2);padding:4px;flex-shrink:0;'; img.src = product.img_url || 'https://via.placeholder.com/100';
+  const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:10px;object-fit:contain;background:var(--c-surface-2);padding:4px;flex-shrink:0;'; img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/100';
   const info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
   const nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'; nm.textContent = product.name || '';
   const meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:#FF7A00;margin-top:2px;font-weight:800;'; meta.textContent = (parseFloat(product.price) || 0).toLocaleString() + ' ج.س';
@@ -771,7 +779,7 @@ function renderProductsBatch(items) {
     }
     card.innerHTML =
       '<div class="product-image-container">' +
-        '<img src="' + sanitizeHTML(product.img_url || 'https://via.placeholder.com/300') + '" loading="lazy" alt="' + sanitizeHTML(product.name) + '">' +
+        '<img src="' + sanitizeHTML(optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300') + '" loading="lazy" alt="' + sanitizeHTML(product.name) + '">' +
         (originalPrice ? '<span style="position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:9999px;box-shadow:0 3px 8px rgba(255,122,0,0.4);">خصم</span>' : '') +
       '</div>' +
       '<div style="padding:0.75rem;display:flex;flex-direction:column;gap:5px;flex:1;">' +
@@ -894,14 +902,13 @@ function createStoreCard(store) {
   const followed = isStoreFollowed(storeId);
   const card = document.createElement('div'); card.className = 'store-card';
   const cover = document.createElement('img'); cover.className = 'cover-image'; cover.loading = 'lazy'; cover.alt = store.name || '';
-  cover.src = store.cover_url || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
+  cover.src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
   cover.onerror = function(){ this.src = 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; };
   const logo = document.createElement('img'); logo.className = 'store-logo'; logo.loading = 'lazy'; logo.alt = '';
-  logo.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+  logo.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   logo.onerror = function(){ this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
   const info = document.createElement('div'); info.className = 'store-info';
   const nameRow = document.createElement('div'); nameRow.className = 'store-name';
-  /* ✅ الشارة أولاً (يمين الاسم في RTL) */
   if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nameRow.appendChild(v); }
   const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nameRow.appendChild(nameText);
   const catRow = document.createElement('div'); catRow.className = 'store-category'; catRow.textContent = store.category || 'عام';
@@ -975,7 +982,7 @@ function renderFollowedStores() {
     const item = document.createElement('div'); item.className = 'followed-store-item';
     const avatar = document.createElement('div'); avatar.className = 'followed-store-avatar';
     const img = document.createElement('img'); img.loading = 'lazy'; img.alt = ''; img.draggable = false;
-    img.src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+    img.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
     img.onerror = function(){ this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
     avatar.appendChild(img);
     const nm = document.createElement('div'); nm.className = 'followed-store-name'; nm.textContent = store.name || '';
@@ -1029,14 +1036,13 @@ function openStoreModal(store) {
   currentStoreId = getStoreId(store);
   currentFollowersCount = parseInt(store.followers) || 0;
   isFollowing = isStoreFollowed(currentStoreId);
-  document.getElementById('storeCoverImage').src = store.cover_url || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
-  document.getElementById('storeLogo').src = store.logo_url || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+  document.getElementById('storeCoverImage').src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
+  document.getElementById('storeLogo').src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   document.getElementById('storeDescription').textContent = store.description || 'متجر مميز';
   document.getElementById('storeRating').textContent = (parseFloat(store.ratting) || 0).toFixed(1);
   const catVal = (store.category && String(store.category).trim()) ? store.category : 'عام';
   document.getElementById('storeCategory').innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(catVal) + '</span>';
   updateFollowersDisplay(); updateFollowButtonUI();
-  /* ✅ الشارة أولاً (يمين الاسم) */
   if (store.is_verified) {
     const storeNameEl = document.getElementById('storeName');
     storeNameEl.innerHTML = '';
@@ -1178,7 +1184,7 @@ function renderStoreProducts(products, append) {
       showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
     });
     const imgWrap = document.createElement('div'); imgWrap.className = 'store-product-img-wrap';
-    const img = document.createElement('img'); img.loading = 'lazy'; img.alt = product.name || ''; img.src = product.img_url || 'https://via.placeholder.com/300';
+    const img = document.createElement('img'); img.loading = 'lazy'; img.alt = product.name || ''; img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300';
     img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
     imgWrap.appendChild(img);
     const info = document.createElement('div'); info.className = 'store-product-info';
@@ -1207,7 +1213,7 @@ function openProductModal(product) {
   currentModalProduct = product;
   selectedColorVariant = null;
 
-  const defaultImg = product.img_url || 'https://via.placeholder.com/600';
+  const defaultImg = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/600';
   const imgEl = document.getElementById('productModalImage');
 
   /* ✅ الصورة الرئيسية هي الافتراضية */
@@ -1274,7 +1280,7 @@ function openProductModal(product) {
         imgEl.style.opacity = '0';
         setTimeout(() => {
           selectedColorVariant = color;
-          imgEl.src = color.image || defaultImg;
+          imgEl.src = optimizeCloudinaryUrl(color.image) || defaultImg;
           imgEl.onload = () => { imgEl.style.opacity = '1'; };
         }, 200);
         document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
@@ -1355,7 +1361,7 @@ function updateCartUI() {
       const div = document.createElement('div');
       div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--c-border);';
       const itemId = item.cartItemId || item.id;
-      div.innerHTML = '<img src="' + sanitizeHTML(item.img_url || 'https://via.placeholder.com/80') + '" class="cart-item-image" alt="" loading="lazy">' +
+      div.innerHTML = '<img src="' + sanitizeHTML(optimizeCloudinaryUrl(item.img_url) || 'https://via.placeholder.com/80') + '" class="cart-item-image" alt="" loading="lazy">' +
         '<div style="flex:1;min-width:0;"><h5 style="font-weight:800;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text);margin:0;">' + sanitizeHTML(item.name) + '</h5>' +
         (item.store_name ? '<span style="font-size:0.72rem;color:#FF7A00;font-weight:800;display:block;">' + sanitizeHTML(item.store_name) + '</span>' : '') +
         (item.selectedColor ? '<span style="font-size:0.7rem;color:var(--c-text-soft);font-weight:700;background:var(--c-surface-2);padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px;">اللون: ' + sanitizeHTML(item.selectedColor) + '</span>' : '') +
@@ -1670,7 +1676,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '8.2.0',
+  version: '8.3.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
