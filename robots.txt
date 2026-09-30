@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /T.html
+Disallow: /a.html
+Disallow: /private.html
+Disallow: /api/
+
+Sitemap: https://branzar.vercel.app/sitemap.xml
