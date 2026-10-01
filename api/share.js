@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   const url = window.location.origin + '/api/share?store=' + encodeURIComponent(storeId);
   // بيانات افتراضية
   let title = 'BranZar | بران زار - أكبر سوق إلكتروني';
-  let description = '🛒🛍️ اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن';
+  let description = 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن 🛒🛍️';
   let image = 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png';
   
   if (store) {
