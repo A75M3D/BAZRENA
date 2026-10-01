@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v8.3.0
+   BranZar App Core v8.4.0
    Single-file production build (منطق موحد)
    ✅ Cloudinary Image Optimization Enabled
+   ✅ Dynamic Meta Tags for Store Sharing
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -24,7 +25,8 @@ const CONFIG = Object.freeze({
   NOTIF_DISMISS_DAYS: 7,
   HAPTIC: { light: 8, medium: 15, heavy: [20, 30, 20] },
   VAPID: "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw",
-  FIXED_WHATSAPP: "249908280115"
+  FIXED_WHATSAPP: "249908280115",
+  DEFAULT_OG_IMAGE: "https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png"
 });
 
 const FIREBASE_CONFIG = {
@@ -518,7 +520,7 @@ async function initFCM() {
         try {
           const n = new Notification(title, {
             body,
-            icon: (payload.notification && payload.notification.icon) || 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
+            icon: (payload.notification && payload.notification.icon) || CONFIG.DEFAULT_OG_IMAGE,
             dir: 'rtl', lang: 'ar',
             tag: (payload.data && payload.data.tag) || 'branzar-fg'
           });
@@ -1430,18 +1432,84 @@ document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 });
 
-/* ═══ SHARE ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ SHARE STORE + DYNAMIC META TAGS
+   ═══════════════════════════════════════════════════════════ */
+
+/* ✅ دالة تحديث وسوم الميتا ديناميكياً عند مشاركة متجر */
+function updateMetaTagsForStore(store) {
+  if (!store) return;
+  
+  const storeName = store.name || 'BranZar';
+  const storeDesc = (store.description && String(store.description).trim()) 
+    ? store.description 
+    : 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن🛒🛍️';
+  const storeImage = optimizeCloudinaryUrl(store.cover_url) 
+    || optimizeCloudinaryUrl(store.logo_url) 
+    || CONFIG.DEFAULT_OG_IMAGE;
+  const storeUrl = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(String(getStoreId(store)));
+  
+  // تحديث og:title
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', storeName + ' | BranZar');
+  
+  // تحديث og:description
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', storeDesc);
+  
+  // تحديث og:image
+  const ogImage = document.querySelector('meta[property="og:image"]');
+  if (ogImage) ogImage.setAttribute('content', storeImage);
+  
+  // تحديث og:url
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.setAttribute('content', storeUrl);
+  
+  // تحديث Twitter Cards
+  const twTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twTitle) twTitle.setAttribute('content', storeName + ' | BranZar');
+  
+  const twDesc = document.querySelector('meta[name="twitter:description"]');
+  if (twDesc) twDesc.setAttribute('content', storeDesc);
+  
+  const twImage = document.querySelector('meta[name="twitter:image"]');
+  if (twImage) twImage.setAttribute('content', storeImage);
+  
+  // تحديث عنوان الصفحة
+  document.title = storeName + ' | BranZar';
+}
+
 document.getElementById('storeShareBtn')?.addEventListener('click', () => { if (currentStore) shareStore(currentStore); });
+
 async function shareStore(store) {
   if (!store) return;
+  
+  // ✅ تحديث وسوم الميتا قبل المشاركة
+  updateMetaTagsForStore(store);
+  
   const storeId = String(getStoreId(store));
   const url = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(storeId);
+  
+  // ✅ نص المشاركة مع الإيموجي
+  const shareText = `اكتشف متجر ${store.name} على BranZar 🛒🛍️\n${store.description || 'أفضل المنتجات والبراندات في مكان واحد'}`;
+  
   if (navigator.share) {
-    try { await navigator.share({ title: store.name, text: 'اكتشف متجر ' + store.name, url }); haptic('medium'); return; }
+    try { 
+      await navigator.share({ 
+        title: store.name + ' | BranZar', 
+        text: shareText, 
+        url 
+      }); 
+      haptic('medium'); 
+      return; 
+    }
     catch(err){ if (err && err.name === 'AbortError') return; }
   }
   try {
-    if (navigator.clipboard) { await navigator.clipboard.writeText(url); showToast('✅ تم نسخ الرابط'); }
+    if (navigator.clipboard) { 
+      await navigator.clipboard.writeText(url); 
+      showToast('✅ تم نسخ الرابط'); 
+    }
   } catch(err){ showToast('تعذر النسخ'); }
 }
 
@@ -1484,7 +1552,9 @@ function setupRealtimeStores() {
   });
 }
 
-/* ═══ DEEP LINK ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ DEEP LINK — مع تحديث الميتا عند فتح الرابط مباشرة
+   ═══════════════════════════════════════════════════════════ */
 async function handleDeepLink() {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -1494,6 +1564,9 @@ async function handleDeepLink() {
     await new Promise(r => setTimeout(r, 1500));
     const store = stores.find(s => String(getStoreId(s)) === String(storeId));
     if (store) {
+      // ✅ تحديث وسوم الميتا عند فتح الرابط مباشرة
+      updateMetaTagsForStore(store);
+      
       try { window.history.replaceState({}, document.title, window.location.origin + window.location.pathname); } catch(e){}
       setTimeout(() => openStoreModal(store), 300);
     }
@@ -1677,7 +1750,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '8.3.0',
+  version: '8.4.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
