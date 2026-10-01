@@ -110,6 +110,16 @@ let _followedCache = null, _favsCache = null;
 /* ═══ FIREBASE ═══ */
 firebase.initializeApp(FIREBASE_CONFIG);
 const db = firebase.firestore();
+   /* ═══ App Check — تفعيل reCAPTCHA Enterprise ═══ */
+try {
+  const appCheck = firebase.appCheck();
+  appCheck.activate('6LfhKtktAAAAAD8zFTPQhBXU1yoh6AQHLedDrws_', true);
+  //                                                ↑
+  //                                       ضع Site Key هنا
+  console.log('[BZR] App Check activated ✅');
+} catch (e) {
+  console.warn('[BZR] App Check failed:', e);
+}
 try {
   db.enablePersistence({ synchronizeTabs: true }).catch(err => {
     if (err && err.code === 'failed-precondition') console.warn('[BZR] Persistence: multi-tab');
