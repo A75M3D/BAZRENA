@@ -5,7 +5,7 @@
       "namespace": "android_app",
       "package_name": "app.branzar.twa",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_YOUR_SHA256_FINGERPRINT_FROM_PWABUILDER_OR_BUBBLEWRAP"
+        "10:EA:8A:5E:DD:10:8C:24:78:E7:1D:6F:09:15:9E:DE:3F:70:EF:57:98:6D:92:76:7A:81:C7:5E:2C:35:B0:14"
       ]
     }
   }
