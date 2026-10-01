@@ -1,7 +1,6 @@
 // api/share.js
 export default async function handler(req, res) {
-  const { store } = req.query;
-  
+  const url = window.location.origin + '/api/share?store=' + encodeURIComponent(storeId);
   // بيانات افتراضية
   let title = 'BranZar | بران زار - أكبر سوق إلكتروني';
   let description = 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن🛒🛍️';
