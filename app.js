@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v9.0.0
-   Single-file production build
-   ✅ Cloudinary Image Optimization
-   ✅ Dynamic Meta Tags for Store Sharing
-   ✅ Multi-Layer Device Fingerprint Anti-Cheat (VPN-Proof)
+   BranZar App Core v9.1.0
+   ✅ Multi-Layer Device Fingerprint Anti-Cheat
+   ✅ Rate Limiter (Client-Side)
+   ✅ Long-Term Cache
+   ✅ Polling instead of onSnapshot (saves quota)
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -14,8 +14,9 @@ const CONFIG = Object.freeze({
   STORE_PRODUCTS_PER_PAGE: 40,
   SEARCH_CAP: 800,
   SEARCH_DEBOUNCE_MS: 200,
-  CACHE_TTL_STORES: 15 * 60 * 1000,
-  CACHE_TTL_PRODUCTS: 5 * 60 * 1000,
+  // ✅ مدة Cache طويلة لتقليل القراءات
+  CACHE_TTL_STORES: 60 * 60 * 1000,       // ساعة
+  CACHE_TTL_PRODUCTS: 30 * 60 * 1000,     // 30 دقيقة
   CACHE_PREFIX: 'branzar_cache_',
   CACHE_MAX_KEYS: 15,
   AUTO_SCROLL_RESUME: 5000,
@@ -32,7 +33,10 @@ const CONFIG = Object.freeze({
   FP_COOKIE_NAME: 'bzr_did_v2',
   FP_IDB_NAME: 'branzar_idb',
   FP_IDB_STORE: 'device_store',
-  FOLLOW_COOLDOWN_MS: 1500
+  FOLLOW_COOLDOWN_MS: 1500,
+  // ✅ Rate Limiting
+  RATE_MAX_PER_MINUTE: 30,
+  RATE_MAX_PER_DAY: 2000
 });
 
 const FIREBASE_CONFIG = {
@@ -58,7 +62,6 @@ const KEYS = Object.freeze({
   INSTALLED: 'branzarInstalled'
 });
 
-/* ✅ شارة التوثيق - Facebook Style (SVG) */
 const VERIFIED_BADGE_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true"><path fill="#1877F2" d="M12 1l2.35 2.05 3.09-.41 1.13 2.92 2.92 1.13-.41 3.09L23 12l-2.05 2.35.41 3.09-2.92 1.13-1.13 2.92-3.09-.41L12 23l-2.35-2.05-3.09.41-1.13-2.92-2.92-1.13.41-3.09L1 12l2.05-2.35-.41-3.09 2.92-1.13 1.13-2.92 3.09.41L12 1z"/><path fill="#fff" d="M10.6 16.2l-3.8-3.8 1.4-1.4 2.4 2.4 6-6 1.4 1.4z"/></svg>';
 
 /* ═══ UTILS ═══ */
@@ -96,11 +99,40 @@ function optimizeCloudinaryUrl(url) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   🛡️ DEVICE FINGERPRINT ANTI-CHEAT v2
-   Multilayer protection - survives cache/cookie/IDB clearing
+   ✅ RATE LIMITER (Client-Side) — يقلل استهلاك الحصة
    ═══════════════════════════════════════════════════════════ */
+const RateLimiter = {
+  _counts: {},
+  _lastReset: Date.now(),
+  canRequest(type = 'default') {
+    const now = Date.now();
+    if (now - this._lastReset > 60000) {
+      this._counts = {};
+      this._lastReset = now;
+    }
+    const key = 'r_' + type;
+    this._counts[key] = (this._counts[key] || 0) + 1;
+    if (this._counts[key] > CONFIG.RATE_MAX_PER_MINUTE) {
+      console.warn('[BZR] Rate limit exceeded:', type);
+      return false;
+    }
+    // حد يومي
+    try {
+      const dayKey = 'bzr_daily_' + new Date().toDateString();
+      const daily = parseInt(localStorage.getItem(dayKey) || '0') + 1;
+      localStorage.setItem(dayKey, daily.toString());
+      if (daily > CONFIG.RATE_MAX_PER_DAY) {
+        console.warn('[BZR] Daily rate limit exceeded');
+        return false;
+      }
+    } catch(e){}
+    return true;
+  }
+};
 
-/* FNV-1a hash - fast synchronous fallback */
+/* ═══════════════════════════════════════════════════════════
+   🛡️ DEVICE FINGERPRINT ANTI-CHEAT
+   ═══════════════════════════════════════════════════════════ */
 function fnv1a(str) {
   let hash = 0x811c9dc5;
   for (let i = 0; i < str.length; i++) {
@@ -109,8 +141,6 @@ function fnv1a(str) {
   }
   return hash.toString(16).padStart(8, '0');
 }
-
-/* SHA-256 via WebCrypto (with FNV fallback) */
 async function sha256Hex(str) {
   if (window.crypto && crypto.subtle && crypto.subtle.digest) {
     try {
@@ -119,11 +149,8 @@ async function sha256Hex(str) {
       return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
     } catch(e){}
   }
-  // Fallback: FNV chained 4x for 32-char hex
   return fnv1a(str) + fnv1a(str + '|s1') + fnv1a(str + '|s2') + fnv1a(str + '|s3');
 }
-
-/* Canvas fingerprint - very stable */
 function getCanvasFP() {
   try {
     const canvas = document.createElement('canvas');
@@ -146,8 +173,6 @@ function getCanvasFP() {
     return canvas.toDataURL();
   } catch(e) { return 'canvas-error'; }
 }
-
-/* WebGL fingerprint - very stable */
 function getWebGLFP() {
   try {
     const canvas = document.createElement('canvas');
@@ -162,8 +187,6 @@ function getWebGLFP() {
     return [vendor, renderer, version, shading, maxTex].join('|');
   } catch(e) { return 'webgl-error'; }
 }
-
-/* Audio fingerprint - stable, async */
 function getAudioFP() {
   return new Promise((resolve) => {
     try {
@@ -196,8 +219,6 @@ function getAudioFP() {
     } catch(e) { resolve('audio-error'); }
   });
 }
-
-/* Font detection */
 function getFontsFP() {
   try {
     if (!document.body) return 'no-body';
@@ -228,8 +249,6 @@ function getFontsFP() {
     return detected.join(',');
   } catch(e) { return 'fonts-error'; }
 }
-
-/* Compute full fingerprint */
 async function computeDeviceFingerprint() {
   const audioFP = await getAudioFP();
   const components = [
@@ -251,8 +270,6 @@ async function computeDeviceFingerprint() {
   const hash = await sha256Hex(raw);
   return 'fp_' + hash.substring(0, 40);
 }
-
-/* ═══ Multi-Layer Storage (4 layers) ═══ */
 function readFP_localStorage() {
   try { return localStorage.getItem(CONFIG.FP_STORAGE_KEY); } catch(e){ return null; }
 }
@@ -318,7 +335,6 @@ async function writeFP_IDB(fp) {
   } catch(e){ return false; }
 }
 async function readFPFromAllStorage() {
-  // Try in order of persistence
   let fp = readFP_localStorage();
   if (fp) return fp;
   fp = await readFP_IDB();
@@ -332,8 +348,6 @@ async function saveFPToAllStorage(fp) {
   writeFP_cookie(fp);
   await writeFP_IDB(fp);
 }
-
-/* ═══ Main fingerprint getter (cached promise) ═══ */
 let _fpCache = null;
 let _fpPromise = null;
 async function getDeviceFingerprint() {
@@ -378,8 +392,6 @@ let storeProductsHasMore = false;
 let currentStoreNameForProducts = null;
 let isPageVisible = !document.hidden;
 let _followedCache = null, _favsCache = null;
-
-// ✅ Server-side followed stores (source of truth)
 let _followedFromServer = new Set();
 let _lastFollowAction = 0;
 
@@ -479,14 +491,26 @@ const cacheManager = {
     for (let i = 0; i < r; i++) localStorage.removeItem(keys[i]);
   } catch(e){}
 })();
+
+/* ✅ fetchWithCache مع Rate Limiting */
 async function fetchWithCache(key, fn, force, ttl) {
-  if (!force) { const c = cacheManager.get(key); if (c !== null) return c; }
+  if (!force) { 
+    const c = cacheManager.get(key); 
+    if (c !== null) return c; 
+  }
+  // ✅ فحص Rate Limiter قبل الاستعلام
+  if (!RateLimiter.canRequest('cache_' + key)) {
+    // إذا تجاوز الحد، استخدم Cache قديم إن وُجد
+    const stale = cacheManager.get(key);
+    if (stale) return stale;
+    throw new Error('rate_limit_exceeded');
+  }
   const data = await fn();
   cacheManager.set(key, data, ttl);
   return data;
 }
 
-/* ═══ FOLLOWED / FAVS (local cache) ═══ */
+/* ═══ FOLLOWED / FAVS ═══ */
 function getFollowedStores() {
   if (_followedCache) return _followedCache;
   try { _followedCache = JSON.parse(localStorage.getItem(KEYS.FOLLOWED) || '[]'); } catch(e){ _followedCache = []; }
@@ -494,7 +518,6 @@ function getFollowedStores() {
 }
 function saveFollowedStores(list) { _followedCache = list; try { localStorage.setItem(KEYS.FOLLOWED, JSON.stringify(list)); } catch(e){} }
 function isStoreFollowed(id) {
-  // Server state wins
   if (_followedFromServer && _followedFromServer.has(String(id))) return true;
   return getFollowedStores().indexOf(id) > -1;
 }
@@ -1013,6 +1036,11 @@ async function loadAllProducts(force) {
 
 async function fetchProductsPage(cursorDoc, silent) {
   try {
+    // ✅ Rate limit check
+    if (!RateLimiter.canRequest('products')) {
+      if (silent) return;
+      throw new Error('rate_limit');
+    }
     let q = db.collection('products').orderBy('created_at', 'desc').limit(CONFIG.PRODUCTS_PER_PAGE);
     if (cursorDoc) q = db.collection('products').orderBy('created_at', 'desc').startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE);
     let snap;
@@ -1112,6 +1140,10 @@ async function applyProductsFilter(cat) {
 async function fetchProductsByCategoryPage(cursorDoc, silent) {
   const cat = currentCategory;
   if (!cat) return;
+  if (!RateLimiter.canRequest('products_cat')) {
+    if (!silent) throw new Error('rate_limit');
+    return;
+  }
   const storeNames = stores.filter(s => s.category === cat).map(s => s.name).filter(Boolean);
   if (!storeNames.length) {
     if (!silent) document.getElementById('allProductsGrid').innerHTML = '';
@@ -1171,10 +1203,8 @@ async function loadCategories(force) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   🛡️ SERVER-BASED FOLLOW SYSTEM (Anti-Cheat)
+   🛡️ SERVER-BASED FOLLOW SYSTEM
    ═══════════════════════════════════════════════════════════ */
-
-/* Sync followed stores from server (source of truth) */
 async function syncFollowedStoresFromServer() {
   try {
     const ok = await ensureAuth();
@@ -1189,16 +1219,13 @@ async function syncFollowedStoresFromServer() {
       if (data && data.storeId) serverIds.add(String(data.storeId));
     });
     _followedFromServer = serverIds;
-    // Merge with local cache
     const localList = getFollowedStores();
     const merged = new Set([...localList.map(String), ...serverIds]);
     saveFollowedStores(Array.from(merged));
-    // Migrate local-only follows to server (best-effort, one-time)
     const localOnly = localList.filter(id => !serverIds.has(String(id)));
     if (localOnly.length) {
       migrateLocalFollowsToServer(localOnly, fingerprint).catch(() => {});
     }
-    // Refresh UI
     renderFollowedStores();
     document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => {
       if (serverIds.has(String(btn.dataset.storeId))) {
@@ -1209,8 +1236,6 @@ async function syncFollowedStoresFromServer() {
     console.warn('[BZR] Sync follows failed:', err);
   }
 }
-
-/* Migrate local-only follows to server (one-time per device) */
 async function migrateLocalFollowsToServer(storeIds, fingerprint) {
   try {
     const batch = db.batch();
@@ -1229,16 +1254,13 @@ async function migrateLocalFollowsToServer(storeIds, fingerprint) {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
       count++;
-      if (count >= 400) break; // batch limit
+      if (count >= 400) break;
     }
     if (count > 0) await batch.commit();
-    console.log('[BZR] Migrated ' + count + ' follows to server');
   } catch(err) {
     console.warn('[BZR] Migration failed:', err);
   }
 }
-
-/* Perform follow toggle via Firestore transaction (atomic) */
 async function performFollowToggle(store) {
   const storeId = String(getStoreId(store));
   await ensureAuth();
@@ -1249,16 +1271,13 @@ async function performFollowToggle(store) {
 
   return await db.runTransaction(async (transaction) => {
     const followDoc = await transaction.get(followRef);
-
     if (followDoc.exists) {
-      // ✅ Unfollow
       transaction.delete(followRef);
       transaction.set(storeRef, {
         followers: firebase.firestore.FieldValue.increment(-1)
       }, { merge: true });
       return { action: 'unfollowed', storeId };
     } else {
-      // ✅ Follow (new)
       transaction.set(followRef, {
         storeId: storeId,
         fingerprint: fingerprint,
@@ -1275,8 +1294,6 @@ async function performFollowToggle(store) {
     }
   });
 }
-
-/* Check follow status from server */
 async function checkFollowStatusFromServer(storeId) {
   try {
     const fingerprint = await getDeviceFingerprint();
@@ -1329,12 +1346,9 @@ function setCardFollowState(btn, following) {
   if (following) { btn.style.background = 'transparent'; btn.style.color = '#FF7A00'; }
   else { btn.style.background = '#FF7A00'; btn.style.color = '#fff'; }
 }
-
-/* ✅ Anti-cheat toggle with fingerprint + Firestore transaction */
 async function toggleFollowFromCard(store, btn) {
   const storeId = String(getStoreId(store));
   if (btn.disabled) return;
-  // Cooldown to prevent rapid-fire
   const now = Date.now();
   if (now - _lastFollowAction < CONFIG.FOLLOW_COOLDOWN_MS) {
     showToast('رجاء الانتظار قليلاً');
@@ -1349,11 +1363,9 @@ async function toggleFollowFromCard(store, btn) {
     const action = result.action;
     const wasFollowing = (action === 'unfollowed');
 
-    // Update server cache
     if (wasFollowing) _followedFromServer.delete(storeId);
     else _followedFromServer.add(storeId);
 
-    // Update local list
     const list = getFollowedStores();
     if (wasFollowing) {
       const i = list.indexOf(storeId);
@@ -1384,7 +1396,6 @@ async function toggleFollowFromCard(store, btn) {
     btn.disabled = false;
   }
 }
-
 function updateCardFollowButtons(storeId) {
   const following = isStoreFollowed(storeId);
   document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => { if (btn.dataset.storeId === storeId) setCardFollowState(btn, following); });
@@ -1491,15 +1502,13 @@ function openStoreModal(store) {
   document.getElementById('storeModal').querySelector('.modal-content').scrollTop = 0;
   bzrPushModal();
 
-  // ✅ Sync follow status with server in background
   const storeIdSnapshot = currentStoreId;
   checkFollowStatusFromServer(storeIdSnapshot).then(serverFollowing => {
-    if (currentStoreId !== storeIdSnapshot) return; // modal changed
+    if (currentStoreId !== storeIdSnapshot) return;
     if (serverFollowing !== isFollowing) {
       isFollowing = serverFollowing;
       if (serverFollowing) _followedFromServer.add(storeIdSnapshot);
       else _followedFromServer.delete(storeIdSnapshot);
-      // Update localStorage too
       const list = getFollowedStores();
       if (serverFollowing && list.indexOf(storeIdSnapshot) === -1) {
         list.push(storeIdSnapshot); saveFollowedStores(list);
@@ -1528,8 +1537,6 @@ function updateFollowButtonUI() {
   if (isFollowing) { btn.classList.add('following'); txt.textContent = 'متابَع'; btn.querySelector('i').className = 'fas fa-check'; }
   else { btn.classList.remove('following'); txt.textContent = 'متابعة'; btn.querySelector('i').className = 'fas fa-heart'; }
 }
-
-/* ✅ Anti-cheat follow from Store Modal */
 document.getElementById('storeFollowButton')?.addEventListener('click', async () => {
   if (!currentStoreId || isUpdatingFollow || !currentStore) return;
   const now = Date.now();
@@ -1554,7 +1561,6 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
     if (nowFollowing) _followedFromServer.add(currentStoreId);
     else _followedFromServer.delete(currentStoreId);
 
-    // Update local list
     const list = getFollowedStores();
     if (!nowFollowing) {
       const i = list.indexOf(currentStoreId);
@@ -1602,6 +1608,7 @@ async function loadStoreProducts(storeName) {
     if (storeProductsHasMore) loadMoreBtn.classList.remove('hidden');
     return;
   }
+  if (!RateLimiter.canRequest('store_products')) return;
   try {
     let q = db.collection('products').where('store_name', '==', storeName).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
@@ -1629,6 +1636,7 @@ async function loadStoreProducts(storeName) {
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('loadMoreStoreProductsBtn');
   if (btn.disabled || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
+  if (!RateLimiter.canRequest('store_products')) { showToast('رجاء المحاولة لاحقاً'); return; }
   btn.disabled = true;
   haptic('light');
   try {
@@ -1684,7 +1692,7 @@ function renderStoreProducts(products, append) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ PRODUCT MODAL — with original image button
+   ✅ PRODUCT MODAL
    ═══════════════════════════════════════════════════════════ */
 let currentModalProduct = null, selectedColorVariant = null;
 
@@ -1878,11 +1886,9 @@ document.getElementById('continueShopping')?.addEventListener('click', closeCart
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   if (cart.length === 0) { showToast('السلة فارغة'); return; }
   haptic('medium');
-
   let msg = '🛒 *طلب جديد من BranZar*\n\n';
   msg += '📋 *تفاصيل الطلب:*\n';
   msg += '━━━━━━━━━━━━━━\n';
-
   cart.forEach((item, index) => {
     msg += `${index + 1}. *${item.name}*\n`;
     msg += `   • الكمية: ${item.quantity}\n`;
@@ -1891,18 +1897,16 @@ document.getElementById('whatsappOrder')?.addEventListener('click', () => {
     if (item.store_name) msg += `   • المتجر: ${item.store_name}\n`;
     msg += '\n';
   });
-
   msg += '━━━━━━━━━━━━━━\n';
   const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
   msg += `💰 *المجموع الكلي:* ${total.toLocaleString()} ج.س\n\n`;
   msg += `📦 عدد المنتجات: ${cart.reduce((s, i) => s + i.quantity, 0)}\n\n`;
   msg += `شكراً لاستخدامكم BranZar 🌟`;
-
   const whatsappUrl = 'https://wa.me/' + CONFIG.FIXED_WHATSAPP + '?text=' + encodeURIComponent(msg);
   window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 });
 
-/* ═══ SHARE STORE + DYNAMIC META TAGS ═══ */
+/* ═══ SHARE STORE ═══ */
 function updateMetaTagsForStore(store) {
   if (!store) return;
   const storeName = store.name || 'BranZar';
@@ -1932,16 +1936,13 @@ function updateMetaTagsForStore(store) {
 
   document.title = storeName + ' | BranZar';
 }
-
 document.getElementById('storeShareBtn')?.addEventListener('click', () => { if (currentStore) shareStore(currentStore); });
-
 async function shareStore(store) {
   if (!store) return;
   updateMetaTagsForStore(store);
   const storeId = String(getStoreId(store));
   const url = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(storeId);
   const shareText = `اكتشف متجر ${store.name} على BranZar 🛒🛍️\n${store.description || 'أفضل المنتجات والبراندات في مكان واحد'}`;
-
   if (navigator.share) {
     try { 
       await navigator.share({ title: store.name + ' | BranZar', text: shareText, url }); 
@@ -1958,34 +1959,40 @@ async function shareStore(store) {
   } catch(err){ showToast('تعذر النسخ'); }
 }
 
-/* ═══ REALTIME ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ REALTIME → POLLING (توفير الحصة)
+   ═══════════════════════════════════════════════════════════ */
 function setupRealtimeProducts() {
   if (allProductsUnsubscribe) return;
-  try {
-    allProductsUnsubscribe = db.collection('products').orderBy('created_at', 'desc').limit(30).onSnapshot((snap) => {
-      snap.docChanges().forEach(change => {
-        const doc = change.doc;
-        const data = { id: doc.id, ...doc.data() };
-        const idx = allProductsLocal.findIndex(p => p.id === data.id);
-        if (change.type === 'added' || change.type === 'modified') {
-          if (idx > -1) allProductsLocal[idx] = data;
-          else allProductsLocal.unshift(data);
-        } else if (change.type === 'removed') {
-          if (idx > -1) allProductsLocal.splice(idx, 1);
-        }
-      });
-      if (allProductsLocal.length > CONFIG.SEARCH_CAP) allProductsLocal = allProductsLocal.slice(0, CONFIG.SEARCH_CAP);
-      cacheManager.set('all_products_page1', { items: allProductsLocal.slice(0, CONFIG.PRODUCTS_PER_PAGE), hasMore: hasMoreProducts }, CONFIG.CACHE_TTL_PRODUCTS);
-    }, err => console.warn('[BZR] Products realtime:', err));
-  } catch(e){ console.warn('[BZR] realtime setup failed:', e); }
+  const POLL_INTERVAL = 5 * 60 * 1000; // 5 دقائق
+  const pollProducts = async () => {
+    if (!isPageVisible) return;
+    if (!RateLimiter.canRequest('poll_products')) return;
+    try {
+      const snap = await db.collection('products')
+        .orderBy('created_at', 'desc')
+        .limit(30)
+        .get();
+      const fresh = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (fresh.length) {
+        allProductsLocal = fresh;
+        cacheManager.set('all_products_page1', { items: fresh.slice(0, CONFIG.PRODUCTS_PER_PAGE), hasMore: hasMoreProducts }, CONFIG.CACHE_TTL_PRODUCTS);
+      }
+    } catch(e) {
+      console.warn('[BZR] Poll products failed:', e);
+    }
+  };
+  setTimeout(pollProducts, 5000);
+  allProductsUnsubscribe = setInterval(pollProducts, POLL_INTERVAL);
 }
 function setupRealtimeStores() {
   if (storesPollInterval) return;
-  const POLL_MS = 10 * 60 * 1000;
+  const POLL_MS = 15 * 60 * 1000; // 15 دقيقة
   function startPoll() {
     if (storesPollInterval) clearInterval(storesPollInterval);
     storesPollInterval = setInterval(() => {
       if (!isPageVisible) return;
+      if (!RateLimiter.canRequest('poll_stores')) return;
       cacheManager.remove('stores_list');
       loadStores(true);
     }, POLL_MS);
@@ -2105,7 +2112,7 @@ async function maybeShowUpdate() {
     _updateButtonShownThisLoad = true;
     showUpdateButton();
     try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){}
-  } catch(e){ /* silent */ }
+  } catch(e){}
 }
 async function checkForUpdate() {
   if (!swRegistration || document.hidden) return;
@@ -2167,23 +2174,18 @@ async function initApp() {
   if (!ok) { window.__bzrHideSplash(); return; }
   updateCartUI();
   initFCM().catch(() => {});
-
-  // ✅ Pre-compute device fingerprint (async, non-blocking)
   getDeviceFingerprint().catch(() => {});
-
   await Promise.all([loadStores(), loadCategories(), loadAllProducts()]);
   setupRealtimeProducts();
   setupRealtimeStores();
   handleDeepLink();
   setActiveNav('home');
   setTimeout(() => window.__bzrHideSplash(), 400);
-
-  // ✅ Sync followed stores from server (background)
   syncFollowedStoresFromServer().catch(() => {});
 }
 window.addEventListener('beforeunload', () => {
   try {
-    if (allProductsUnsubscribe) allProductsUnsubscribe();
+    if (allProductsUnsubscribe) clearInterval(allProductsUnsubscribe);
     if (storesPollInterval) clearInterval(storesPollInterval);
     stopAutoScroll();
     if (_cacheWriteTimer) { clearTimeout(_cacheWriteTimer); _flushCacheWrites(); }
@@ -2198,7 +2200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.0.0',
+  version: '9.1.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
