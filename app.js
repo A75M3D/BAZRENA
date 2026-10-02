@@ -1,8 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v8.4.0
-   Single-file production build (منطق موحد)
-   ✅ Cloudinary Image Optimization Enabled
+   BranZar App Core v9.0.0
+   Single-file production build
+   ✅ Cloudinary Image Optimization
    ✅ Dynamic Meta Tags for Store Sharing
+   ✅ Multi-Layer Device Fingerprint Anti-Cheat (VPN-Proof)
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -26,7 +27,12 @@ const CONFIG = Object.freeze({
   HAPTIC: { light: 8, medium: 15, heavy: [20, 30, 20] },
   VAPID: "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw",
   FIXED_WHATSAPP: "249908280115",
-  DEFAULT_OG_IMAGE: "https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png"
+  DEFAULT_OG_IMAGE: "https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png",
+  FP_STORAGE_KEY: 'branzar_device_id_v2',
+  FP_COOKIE_NAME: 'bzr_did_v2',
+  FP_IDB_NAME: 'branzar_idb',
+  FP_IDB_STORE: 'device_store',
+  FOLLOW_COOLDOWN_MS: 1500
 });
 
 const FIREBASE_CONFIG = {
@@ -82,12 +88,276 @@ function debounce(fn, wait) {
 }
 function $$(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
 
-/* ✅ Cloudinary Image Optimizer — يضغط الصور ويسرّع التحميل */
 function optimizeCloudinaryUrl(url) {
   if (!url || typeof url !== 'string') return url;
   if (!url.includes('cloudinary.com')) return url;
   if (url.includes('/upload/q_auto')) return url;
   return url.replace('/upload/', '/upload/q_auto,f_auto,w_800,c_limit/');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   🛡️ DEVICE FINGERPRINT ANTI-CHEAT v2
+   Multilayer protection - survives cache/cookie/IDB clearing
+   ═══════════════════════════════════════════════════════════ */
+
+/* FNV-1a hash - fast synchronous fallback */
+function fnv1a(str) {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    hash ^= str.charCodeAt(i);
+    hash = (hash * 0x01000193) >>> 0;
+  }
+  return hash.toString(16).padStart(8, '0');
+}
+
+/* SHA-256 via WebCrypto (with FNV fallback) */
+async function sha256Hex(str) {
+  if (window.crypto && crypto.subtle && crypto.subtle.digest) {
+    try {
+      const buf = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+    } catch(e){}
+  }
+  // Fallback: FNV chained 4x for 32-char hex
+  return fnv1a(str) + fnv1a(str + '|s1') + fnv1a(str + '|s2') + fnv1a(str + '|s3');
+}
+
+/* Canvas fingerprint - very stable */
+function getCanvasFP() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 220; canvas.height = 30;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return 'no-ctx';
+    ctx.textBaseline = 'top';
+    ctx.font = '14px "Arial"';
+    ctx.fillStyle = '#f60';
+    ctx.fillRect(125, 1, 62, 20);
+    ctx.fillStyle = '#069';
+    ctx.fillText('BranZar🔒FP', 2, 15);
+    ctx.fillStyle = 'rgba(102,204,0,0.7)';
+    ctx.fillText('BranZar🔒FP', 4, 17);
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.fillStyle = 'rgb(255,0,255)';
+    ctx.beginPath(); ctx.arc(50, 50, 50, 0, Math.PI * 2, true); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgb(0,255,255)';
+    ctx.beginPath(); ctx.arc(100, 50, 50, 0, Math.PI * 2, true); ctx.closePath(); ctx.fill();
+    return canvas.toDataURL();
+  } catch(e) { return 'canvas-error'; }
+}
+
+/* WebGL fingerprint - very stable */
+function getWebGLFP() {
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return 'no-webgl';
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const vendor = dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : 'no-v';
+    const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'no-r';
+    const version = gl.getParameter(gl.VERSION) || '';
+    const shading = gl.getParameter(gl.SHADING_LANGUAGE_VERSION) || '';
+    const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE) || '';
+    return [vendor, renderer, version, shading, maxTex].join('|');
+  } catch(e) { return 'webgl-error'; }
+}
+
+/* Audio fingerprint - stable, async */
+function getAudioFP() {
+  return new Promise((resolve) => {
+    try {
+      const AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      if (!AC) return resolve('no-audio');
+      const ctx = new AC(1, 44100, 44100);
+      const osc = ctx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.value = 10000;
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -50;
+      comp.knee.value = 40;
+      comp.ratio.value = 12;
+      comp.attack.value = 0;
+      comp.release.value = 0.25;
+      osc.connect(comp);
+      comp.connect(ctx.destination);
+      osc.start(0);
+      const timeout = setTimeout(() => resolve('audio-timeout'), 800);
+      ctx.oncomplete = (e) => {
+        clearTimeout(timeout);
+        try {
+          const buf = e.renderedBuffer.getChannelData(0);
+          let sum = 0;
+          for (let i = 4500; i < 5000; i++) sum += Math.abs(buf[i]);
+          resolve('audio_' + sum.toFixed(6));
+        } catch(err) { resolve('audio-err'); }
+      };
+      ctx.startRendering();
+    } catch(e) { resolve('audio-error'); }
+  });
+}
+
+/* Font detection */
+function getFontsFP() {
+  try {
+    if (!document.body) return 'no-body';
+    const baseFonts = ['monospace', 'sans-serif', 'serif'];
+    const testFonts = ['Arial', 'Courier New', 'Georgia', 'Times New Roman', 'Trebuchet MS',
+                       'Verdana', 'Tahoma', 'Comic Sans MS', 'Impact', 'Segoe UI',
+                       'Roboto', 'Ubuntu', 'Noto Sans Arabic', 'Cairo'];
+    const testStr = 'mmmmmmmmmmlli';
+    const span = document.createElement('span');
+    span.style.cssText = 'position:absolute;left:-9999px;top:-9999px;font-size:72px;visibility:hidden;';
+    span.textContent = testStr;
+    document.body.appendChild(span);
+    const baseWidths = {};
+    baseFonts.forEach(bf => {
+      span.style.fontFamily = bf;
+      baseWidths[bf] = span.offsetWidth;
+    });
+    const detected = [];
+    testFonts.forEach(font => {
+      let found = false;
+      for (let i = 0; i < baseFonts.length; i++) {
+        span.style.fontFamily = '"' + font + '",' + baseFonts[i];
+        if (span.offsetWidth !== baseWidths[baseFonts[i]]) { found = true; break; }
+      }
+      if (found) detected.push(font);
+    });
+    document.body.removeChild(span);
+    return detected.join(',');
+  } catch(e) { return 'fonts-error'; }
+}
+
+/* Compute full fingerprint */
+async function computeDeviceFingerprint() {
+  const audioFP = await getAudioFP();
+  const components = [
+    'screen:' + [Math.min(screen.width, screen.height), Math.max(screen.width, screen.height), screen.colorDepth, screen.pixelDepth].join('x'),
+    'cores:' + (navigator.hardwareConcurrency || 0),
+    'mem:' + (navigator.deviceMemory || 0),
+    'platform:' + (navigator.platform || ''),
+    'touch:' + (navigator.maxTouchPoints || 0),
+    'tz:' + (new Date().getTimezoneOffset()),
+    'lang:' + (navigator.language || ''),
+    'canvas:' + fnv1a(getCanvasFP()),
+    'webgl:' + fnv1a(getWebGLFP()),
+    'fonts:' + fnv1a(getFontsFP()),
+    'ua:' + navigator.userAgent,
+    'audio:' + audioFP,
+    'bzr-salt-v2-2025'
+  ];
+  const raw = components.join('|||');
+  const hash = await sha256Hex(raw);
+  return 'fp_' + hash.substring(0, 40);
+}
+
+/* ═══ Multi-Layer Storage (4 layers) ═══ */
+function readFP_localStorage() {
+  try { return localStorage.getItem(CONFIG.FP_STORAGE_KEY); } catch(e){ return null; }
+}
+function writeFP_localStorage(fp) {
+  try { localStorage.setItem(CONFIG.FP_STORAGE_KEY, fp); return true; } catch(e){ return false; }
+}
+function readFP_cookie() {
+  try {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + CONFIG.FP_COOKIE_NAME + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  } catch(e){ return null; }
+}
+function writeFP_cookie(fp) {
+  try {
+    const exp = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = CONFIG.FP_COOKIE_NAME + '=' + encodeURIComponent(fp) + '; expires=' + exp + '; path=/; SameSite=Lax; Secure';
+    return true;
+  } catch(e){ return false; }
+}
+function openFP_IDB() {
+  return new Promise((resolve) => {
+    try {
+      if (!window.indexedDB) return resolve(null);
+      const req = indexedDB.open(CONFIG.FP_IDB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const d = req.result;
+        if (!d.objectStoreNames.contains(CONFIG.FP_IDB_STORE)) {
+          d.createObjectStore(CONFIG.FP_IDB_STORE);
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => resolve(null);
+      req.onblocked = () => resolve(null);
+    } catch(e) { resolve(null); }
+  });
+}
+async function readFP_IDB() {
+  try {
+    const d = await openFP_IDB();
+    if (!d) return null;
+    return new Promise((resolve) => {
+      try {
+        const tx = d.transaction(CONFIG.FP_IDB_STORE, 'readonly');
+        const req = tx.objectStore(CONFIG.FP_IDB_STORE).get(CONFIG.FP_STORAGE_KEY);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      } catch(e) { resolve(null); }
+    });
+  } catch(e){ return null; }
+}
+async function writeFP_IDB(fp) {
+  try {
+    const d = await openFP_IDB();
+    if (!d) return false;
+    return new Promise((resolve) => {
+      try {
+        const tx = d.transaction(CONFIG.FP_IDB_STORE, 'readwrite');
+        tx.objectStore(CONFIG.FP_IDB_STORE).put(fp, CONFIG.FP_STORAGE_KEY);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => resolve(false);
+      } catch(e) { resolve(false); }
+    });
+  } catch(e){ return false; }
+}
+async function readFPFromAllStorage() {
+  // Try in order of persistence
+  let fp = readFP_localStorage();
+  if (fp) return fp;
+  fp = await readFP_IDB();
+  if (fp) return fp;
+  fp = readFP_cookie();
+  if (fp) return fp;
+  return null;
+}
+async function saveFPToAllStorage(fp) {
+  writeFP_localStorage(fp);
+  writeFP_cookie(fp);
+  await writeFP_IDB(fp);
+}
+
+/* ═══ Main fingerprint getter (cached promise) ═══ */
+let _fpCache = null;
+let _fpPromise = null;
+async function getDeviceFingerprint() {
+  if (_fpCache) return _fpCache;
+  if (_fpPromise) return _fpPromise;
+  _fpPromise = (async () => {
+    try {
+      const stored = await readFPFromAllStorage();
+      if (stored && stored.indexOf('fp_') === 0) {
+        _fpCache = stored;
+        saveFPToAllStorage(stored).catch(() => {});
+        return stored;
+      }
+      const fp = await computeDeviceFingerprint();
+      _fpCache = fp;
+      await saveFPToAllStorage(fp);
+      return fp;
+    } catch(e) {
+      const fb = 'fp_fb_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+      _fpCache = fb;
+      return fb;
+    }
+  })();
+  return _fpPromise;
 }
 
 /* ═══ STATE ═══ */
@@ -108,6 +378,10 @@ let storeProductsHasMore = false;
 let currentStoreNameForProducts = null;
 let isPageVisible = !document.hidden;
 let _followedCache = null, _favsCache = null;
+
+// ✅ Server-side followed stores (source of truth)
+let _followedFromServer = new Set();
+let _lastFollowAction = 0;
 
 /* ═══ FIREBASE ═══ */
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -212,21 +486,25 @@ async function fetchWithCache(key, fn, force, ttl) {
   return data;
 }
 
-/* ═══ FOLLOWED / FAVS ═══ */
+/* ═══ FOLLOWED / FAVS (local cache) ═══ */
 function getFollowedStores() {
   if (_followedCache) return _followedCache;
   try { _followedCache = JSON.parse(localStorage.getItem(KEYS.FOLLOWED) || '[]'); } catch(e){ _followedCache = []; }
   return _followedCache;
 }
-function saveFollowedStores(list) { _followedCache = list; localStorage.setItem(KEYS.FOLLOWED, JSON.stringify(list)); }
-function isStoreFollowed(id) { return getFollowedStores().indexOf(id) > -1; }
+function saveFollowedStores(list) { _followedCache = list; try { localStorage.setItem(KEYS.FOLLOWED, JSON.stringify(list)); } catch(e){} }
+function isStoreFollowed(id) {
+  // Server state wins
+  if (_followedFromServer && _followedFromServer.has(String(id))) return true;
+  return getFollowedStores().indexOf(id) > -1;
+}
 function getStoreId(store) { return store.id || store.name; }
 function getProductFavs() {
   if (_favsCache) return _favsCache;
   try { _favsCache = JSON.parse(localStorage.getItem(KEYS.FAVS) || '[]'); } catch(e){ _favsCache = []; }
   return _favsCache;
 }
-function saveProductFavs(list) { _favsCache = list; localStorage.setItem(KEYS.FAVS, JSON.stringify(list)); }
+function saveProductFavs(list) { _favsCache = list; try { localStorage.setItem(KEYS.FAVS, JSON.stringify(list)); } catch(e){} }
 function isProductFav(id) { return getProductFavs().indexOf(id) > -1; }
 function toggleProductFav(id) {
   const list = getProductFavs();
@@ -892,6 +1170,122 @@ async function loadCategories(force) {
   } catch(err){ console.error(err); }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   🛡️ SERVER-BASED FOLLOW SYSTEM (Anti-Cheat)
+   ═══════════════════════════════════════════════════════════ */
+
+/* Sync followed stores from server (source of truth) */
+async function syncFollowedStoresFromServer() {
+  try {
+    const ok = await ensureAuth();
+    if (!ok) return;
+    const fingerprint = await getDeviceFingerprint();
+    const snap = await db.collection('store_follows')
+      .where('fingerprint', '==', fingerprint)
+      .get();
+    const serverIds = new Set();
+    snap.docs.forEach(d => {
+      const data = d.data();
+      if (data && data.storeId) serverIds.add(String(data.storeId));
+    });
+    _followedFromServer = serverIds;
+    // Merge with local cache
+    const localList = getFollowedStores();
+    const merged = new Set([...localList.map(String), ...serverIds]);
+    saveFollowedStores(Array.from(merged));
+    // Migrate local-only follows to server (best-effort, one-time)
+    const localOnly = localList.filter(id => !serverIds.has(String(id)));
+    if (localOnly.length) {
+      migrateLocalFollowsToServer(localOnly, fingerprint).catch(() => {});
+    }
+    // Refresh UI
+    renderFollowedStores();
+    document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => {
+      if (serverIds.has(String(btn.dataset.storeId))) {
+        setCardFollowState(btn, true);
+      }
+    });
+  } catch(err) {
+    console.warn('[BZR] Sync follows failed:', err);
+  }
+}
+
+/* Migrate local-only follows to server (one-time per device) */
+async function migrateLocalFollowsToServer(storeIds, fingerprint) {
+  try {
+    const batch = db.batch();
+    let count = 0;
+    for (const sid of storeIds) {
+      const docId = sid + '_' + fingerprint;
+      const ref = db.collection('store_follows').doc(docId);
+      batch.set(ref, {
+        storeId: String(sid),
+        fingerprint: fingerprint,
+        ua: navigator.userAgent.substring(0, 200),
+        lang: navigator.language || 'ar',
+        platform: navigator.platform || 'unknown',
+        tz: new Date().getTimezoneOffset(),
+        migrated: true,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      count++;
+      if (count >= 400) break; // batch limit
+    }
+    if (count > 0) await batch.commit();
+    console.log('[BZR] Migrated ' + count + ' follows to server');
+  } catch(err) {
+    console.warn('[BZR] Migration failed:', err);
+  }
+}
+
+/* Perform follow toggle via Firestore transaction (atomic) */
+async function performFollowToggle(store) {
+  const storeId = String(getStoreId(store));
+  await ensureAuth();
+  const fingerprint = await getDeviceFingerprint();
+  const followDocId = storeId + '_' + fingerprint;
+  const followRef = db.collection('store_follows').doc(followDocId);
+  const storeRef = db.collection('stores').doc(storeId);
+
+  return await db.runTransaction(async (transaction) => {
+    const followDoc = await transaction.get(followRef);
+
+    if (followDoc.exists) {
+      // ✅ Unfollow
+      transaction.delete(followRef);
+      transaction.set(storeRef, {
+        followers: firebase.firestore.FieldValue.increment(-1)
+      }, { merge: true });
+      return { action: 'unfollowed', storeId };
+    } else {
+      // ✅ Follow (new)
+      transaction.set(followRef, {
+        storeId: storeId,
+        fingerprint: fingerprint,
+        ua: navigator.userAgent.substring(0, 200),
+        lang: navigator.language || 'ar',
+        platform: navigator.platform || 'unknown',
+        tz: new Date().getTimezoneOffset(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      transaction.set(storeRef, {
+        followers: firebase.firestore.FieldValue.increment(1)
+      }, { merge: true });
+      return { action: 'followed', storeId };
+    }
+  });
+}
+
+/* Check follow status from server */
+async function checkFollowStatusFromServer(storeId) {
+  try {
+    const fingerprint = await getDeviceFingerprint();
+    const docId = String(storeId) + '_' + fingerprint;
+    const doc = await db.collection('store_follows').doc(docId).get();
+    return doc.exists;
+  } catch(e) { return false; }
+}
+
 /* ═══ RENDER STORES ═══ */
 function displayStores() {
   const c = document.getElementById('storesScrollContainer');
@@ -935,36 +1329,62 @@ function setCardFollowState(btn, following) {
   if (following) { btn.style.background = 'transparent'; btn.style.color = '#FF7A00'; }
   else { btn.style.background = '#FF7A00'; btn.style.color = '#fff'; }
 }
+
+/* ✅ Anti-cheat toggle with fingerprint + Firestore transaction */
 async function toggleFollowFromCard(store, btn) {
-  const storeId = getStoreId(store);
+  const storeId = String(getStoreId(store));
   if (btn.disabled) return;
+  // Cooldown to prevent rapid-fire
+  const now = Date.now();
+  if (now - _lastFollowAction < CONFIG.FOLLOW_COOLDOWN_MS) {
+    showToast('رجاء الانتظار قليلاً');
+    return;
+  }
+  _lastFollowAction = now;
   btn.disabled = true;
-  const wasFollowing = isStoreFollowed(storeId);
+  haptic('light');
+
   try {
-    const ref = db.collection('stores').doc(storeId);
-    await ref.set({ followers: firebase.firestore.FieldValue.increment(wasFollowing ? -1 : 1) }, { merge: true });
+    const result = await performFollowToggle(store);
+    const action = result.action;
+    const wasFollowing = (action === 'unfollowed');
+
+    // Update server cache
+    if (wasFollowing) _followedFromServer.delete(storeId);
+    else _followedFromServer.add(storeId);
+
+    // Update local list
     const list = getFollowedStores();
-    if (wasFollowing) { const i = list.indexOf(storeId); if (i > -1) list.splice(i, 1); }
-    else if (list.indexOf(storeId) === -1) list.push(storeId);
+    if (wasFollowing) {
+      const i = list.indexOf(storeId);
+      if (i > -1) list.splice(i, 1);
+      store.followers = Math.max(0, (parseInt(store.followers) || 0) - 1);
+    } else {
+      if (list.indexOf(storeId) === -1) list.push(storeId);
+      store.followers = (parseInt(store.followers) || 0) + 1;
+    }
     saveFollowedStores(list);
-    store.followers = (parseInt(store.followers) || 0) + (wasFollowing ? -1 : 1);
+
     updateCardFollowButtons(storeId);
     renderFollowedStores();
+
     if (currentStoreId === storeId) {
       isFollowing = !wasFollowing;
       currentFollowersCount = store.followers;
       updateFollowersDisplay();
       updateFollowButtonUI();
     }
+
     showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
     haptic('medium');
-  } catch(err){
-    try {
-      await db.collection('stores').doc(storeId).set({ followers: wasFollowing ? 0 : 1 }, { merge: true });
-      showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
-    } catch(err2){ showToast('حدث خطأ'); }
-  } finally { btn.disabled = false; }
+  } catch(err) {
+    console.error('[BZR] Follow error:', err);
+    showToast('حدث خطأ، حاول مرة أخرى');
+  } finally {
+    btn.disabled = false;
+  }
 }
+
 function updateCardFollowButtons(storeId) {
   const following = isStoreFollowed(storeId);
   document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => { if (btn.dataset.storeId === storeId) setCardFollowState(btn, following); });
@@ -1036,7 +1456,7 @@ function highlightCategory(active) {
 /* ═══ STORE MODAL ═══ */
 function openStoreModal(store) {
   currentStore = store;
-  currentStoreId = getStoreId(store);
+  currentStoreId = String(getStoreId(store));
   currentFollowersCount = parseInt(store.followers) || 0;
   isFollowing = isStoreFollowed(currentStoreId);
   document.getElementById('storeCoverImage').src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
@@ -1070,6 +1490,28 @@ function openStoreModal(store) {
   updateBodyScroll();
   document.getElementById('storeModal').querySelector('.modal-content').scrollTop = 0;
   bzrPushModal();
+
+  // ✅ Sync follow status with server in background
+  const storeIdSnapshot = currentStoreId;
+  checkFollowStatusFromServer(storeIdSnapshot).then(serverFollowing => {
+    if (currentStoreId !== storeIdSnapshot) return; // modal changed
+    if (serverFollowing !== isFollowing) {
+      isFollowing = serverFollowing;
+      if (serverFollowing) _followedFromServer.add(storeIdSnapshot);
+      else _followedFromServer.delete(storeIdSnapshot);
+      // Update localStorage too
+      const list = getFollowedStores();
+      if (serverFollowing && list.indexOf(storeIdSnapshot) === -1) {
+        list.push(storeIdSnapshot); saveFollowedStores(list);
+      } else if (!serverFollowing) {
+        const i = list.indexOf(storeIdSnapshot);
+        if (i > -1) { list.splice(i, 1); saveFollowedStores(list); }
+      }
+      updateFollowButtonUI();
+      updateCardFollowButtons(storeIdSnapshot);
+      renderFollowedStores();
+    }
+  }).catch(() => {});
 }
 function closeStoreModalInternal() {
   document.getElementById('storeModal').classList.add('hidden');
@@ -1086,25 +1528,60 @@ function updateFollowButtonUI() {
   if (isFollowing) { btn.classList.add('following'); txt.textContent = 'متابَع'; btn.querySelector('i').className = 'fas fa-check'; }
   else { btn.classList.remove('following'); txt.textContent = 'متابعة'; btn.querySelector('i').className = 'fas fa-heart'; }
 }
+
+/* ✅ Anti-cheat follow from Store Modal */
 document.getElementById('storeFollowButton')?.addEventListener('click', async () => {
-  if (!currentStoreId || isUpdatingFollow) return;
+  if (!currentStoreId || isUpdatingFollow || !currentStore) return;
+  const now = Date.now();
+  if (now - _lastFollowAction < CONFIG.FOLLOW_COOLDOWN_MS) {
+    showToast('رجاء الانتظار قليلاً');
+    return;
+  }
+  _lastFollowAction = now;
   isUpdatingFollow = true;
-  const btn = document.getElementById('storeFollowButton'); btn.disabled = true;
+  const btn = document.getElementById('storeFollowButton'); 
+  btn.disabled = true;
   const wasFollowing = isFollowing;
   document.getElementById('storeFollowText').textContent = 'جاري...';
   haptic('light');
+
   try {
-    await db.collection('stores').doc(currentStoreId).set({ followers: firebase.firestore.FieldValue.increment(wasFollowing ? -1 : 1) }, { merge: true });
-    if (wasFollowing) { isFollowing = false; const list = getFollowedStores(); const i = list.indexOf(currentStoreId); if (i > -1) list.splice(i, 1); saveFollowedStores(list); }
-    else { isFollowing = true; const list = getFollowedStores(); if (list.indexOf(currentStoreId) === -1) list.push(currentStoreId); saveFollowedStores(list); }
-    currentFollowersCount = Math.max(0, currentFollowersCount + (wasFollowing ? -1 : 1));
-    updateFollowersDisplay(); updateFollowButtonUI();
-    updateCardFollowButtons(currentStoreId); renderFollowedStores();
-    showToast(isFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
+    const result = await performFollowToggle(currentStore);
+    const action = result.action;
+    const nowFollowing = (action === 'followed');
+    isFollowing = nowFollowing;
+
+    if (nowFollowing) _followedFromServer.add(currentStoreId);
+    else _followedFromServer.delete(currentStoreId);
+
+    // Update local list
+    const list = getFollowedStores();
+    if (!nowFollowing) {
+      const i = list.indexOf(currentStoreId);
+      if (i > -1) list.splice(i, 1);
+      currentFollowersCount = Math.max(0, currentFollowersCount - 1);
+    } else {
+      if (list.indexOf(currentStoreId) === -1) list.push(currentStoreId);
+      currentFollowersCount = currentFollowersCount + 1;
+    }
+    saveFollowedStores(list);
+
+    updateFollowersDisplay(); 
+    updateFollowButtonUI();
+    updateCardFollowButtons(currentStoreId); 
+    renderFollowedStores();
+    showToast(nowFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
     if (currentStore) currentStore.followers = currentFollowersCount;
   } catch(err) {
-    showToast('حدث خطأ'); isFollowing = wasFollowing; updateFollowButtonUI(); updateFollowersDisplay();
-  } finally { isUpdatingFollow = false; btn.disabled = false; }
+    console.error('[BZR] Follow error:', err);
+    showToast('حدث خطأ');
+    isFollowing = wasFollowing; 
+    updateFollowButtonUI(); 
+    updateFollowersDisplay();
+  } finally { 
+    isUpdatingFollow = false; 
+    btn.disabled = false; 
+  }
 });
 
 /* ═══ STORE PRODUCTS ═══ */
@@ -1207,8 +1684,7 @@ function renderStoreProducts(products, append) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ PRODUCT MODAL — الإصلاح الجذري
-   الصورة الرئيسية تظهر أولاً + زر "الأصلي" للرجوع إليها
+   ✅ PRODUCT MODAL — with original image button
    ═══════════════════════════════════════════════════════════ */
 let currentModalProduct = null, selectedColorVariant = null;
 
@@ -1219,7 +1695,6 @@ function openProductModal(product) {
   const defaultImg = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/600';
   const imgEl = document.getElementById('productModalImage');
 
-  /* ✅ الصورة الرئيسية هي الافتراضية */
   imgEl.src = defaultImg;
   imgEl.style.opacity = '1';
   imgEl.onerror = function(){ this.src = 'https://via.placeholder.com/600'; };
@@ -1241,13 +1716,9 @@ function openProductModal(product) {
   if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
     colorsContainer.classList.remove('hidden');
     colorsContainer.style.display = 'flex';
-
-    /* ✅ نبدأ بالصورة الرئيسية — ما فيش لون مختار تلقائياً */
     selColorName.textContent = 'الأصلي';
-
     const frag = document.createDocumentFragment();
 
-    /* ✅ زر "الأصلي" (برتقالي بأيقونة صورة) */
     const originalBtn = document.createElement('div');
     originalBtn.className = 'color-swatch active';
     originalBtn.title = 'الصورة الأصلية';
@@ -1269,7 +1740,6 @@ function openProductModal(product) {
     });
     frag.appendChild(originalBtn);
 
-    /* ✅ باقي الألوان */
     product.colors.forEach((color) => {
       const swatch = document.createElement('div');
       const hex = safeHex(color && color.hex) || getFallbackHex(color && color.name);
@@ -1341,7 +1811,7 @@ function addToCart(product) {
   const existing = cart.find(i => (i.cartItemId || i.id) === cartItemId);
   if (existing) existing.quantity += 1; else cart.push(item);
   updateCartUI();
-  localStorage.setItem(KEYS.CART, JSON.stringify(cart));
+  try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){}
   animateCartBounce();
   showToast('تمت الإضافة إلى السلة');
 }
@@ -1388,12 +1858,12 @@ function changeQuantity(id, delta) {
   if (!item) return;
   item.quantity = Math.max(1, item.quantity + delta);
   updateCartUI();
-  localStorage.setItem(KEYS.CART, JSON.stringify(cart));
+  try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){}
 }
 function removeFromCart(id) {
   cart = cart.filter(i => (i.cartItemId || i.id) !== id);
   updateCartUI();
-  localStorage.setItem(KEYS.CART, JSON.stringify(cart));
+  try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){}
   showToast('تمت الإزالة');
 }
 function openCart() { document.getElementById('cartSidebar').classList.add('open'); updateBodyScroll(); setActiveNav('cart'); bzrPushModal(); }
@@ -1404,7 +1874,7 @@ document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
 
-/* ═══ CART - WhatsApp Order (رقم ثابت للإدارة) ═══ */
+/* ═══ CART - WhatsApp Order ═══ */
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   if (cart.length === 0) { showToast('السلة فارغة'); return; }
   haptic('medium');
@@ -1432,14 +1902,9 @@ document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 });
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ SHARE STORE + DYNAMIC META TAGS
-   ═══════════════════════════════════════════════════════════ */
-
-/* ✅ دالة تحديث وسوم الميتا ديناميكياً عند مشاركة متجر */
+/* ═══ SHARE STORE + DYNAMIC META TAGS ═══ */
 function updateMetaTagsForStore(store) {
   if (!store) return;
-  
   const storeName = store.name || 'BranZar';
   const storeDesc = (store.description && String(store.description).trim()) 
     ? store.description 
@@ -1448,34 +1913,23 @@ function updateMetaTagsForStore(store) {
     || optimizeCloudinaryUrl(store.logo_url) 
     || CONFIG.DEFAULT_OG_IMAGE;
   const storeUrl = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(String(getStoreId(store)));
-  
-  // تحديث og:title
+
   const ogTitle = document.querySelector('meta[property="og:title"]');
   if (ogTitle) ogTitle.setAttribute('content', storeName + ' | BranZar');
-  
-  // تحديث og:description
   const ogDesc = document.querySelector('meta[property="og:description"]');
   if (ogDesc) ogDesc.setAttribute('content', storeDesc);
-  
-  // تحديث og:image
   const ogImage = document.querySelector('meta[property="og:image"]');
   if (ogImage) ogImage.setAttribute('content', storeImage);
-  
-  // تحديث og:url
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) ogUrl.setAttribute('content', storeUrl);
-  
-  // تحديث Twitter Cards
+
   const twTitle = document.querySelector('meta[name="twitter:title"]');
   if (twTitle) twTitle.setAttribute('content', storeName + ' | BranZar');
-  
   const twDesc = document.querySelector('meta[name="twitter:description"]');
   if (twDesc) twDesc.setAttribute('content', storeDesc);
-  
   const twImage = document.querySelector('meta[name="twitter:image"]');
   if (twImage) twImage.setAttribute('content', storeImage);
-  
-  // تحديث عنوان الصفحة
+
   document.title = storeName + ' | BranZar';
 }
 
@@ -1483,23 +1937,14 @@ document.getElementById('storeShareBtn')?.addEventListener('click', () => { if (
 
 async function shareStore(store) {
   if (!store) return;
-  
-  // ✅ تحديث وسوم الميتا قبل المشاركة
   updateMetaTagsForStore(store);
-  
   const storeId = String(getStoreId(store));
   const url = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(storeId);
-  
-  // ✅ نص المشاركة مع الإيموجي
   const shareText = `اكتشف متجر ${store.name} على BranZar 🛒🛍️\n${store.description || 'أفضل المنتجات والبراندات في مكان واحد'}`;
-  
+
   if (navigator.share) {
     try { 
-      await navigator.share({ 
-        title: store.name + ' | BranZar', 
-        text: shareText, 
-        url 
-      }); 
+      await navigator.share({ title: store.name + ' | BranZar', text: shareText, url }); 
       haptic('medium'); 
       return; 
     }
@@ -1552,9 +1997,7 @@ function setupRealtimeStores() {
   });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ DEEP LINK — مع تحديث الميتا عند فتح الرابط مباشرة
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ DEEP LINK ═══ */
 async function handleDeepLink() {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -1564,9 +2007,7 @@ async function handleDeepLink() {
     await new Promise(r => setTimeout(r, 1500));
     const store = stores.find(s => String(getStoreId(s)) === String(storeId));
     if (store) {
-      // ✅ تحديث وسوم الميتا عند فتح الرابط مباشرة
       updateMetaTagsForStore(store);
-      
       try { window.history.replaceState({}, document.title, window.location.origin + window.location.pathname); } catch(e){}
       setTimeout(() => openStoreModal(store), 300);
     }
@@ -1726,12 +2167,19 @@ async function initApp() {
   if (!ok) { window.__bzrHideSplash(); return; }
   updateCartUI();
   initFCM().catch(() => {});
+
+  // ✅ Pre-compute device fingerprint (async, non-blocking)
+  getDeviceFingerprint().catch(() => {});
+
   await Promise.all([loadStores(), loadCategories(), loadAllProducts()]);
   setupRealtimeProducts();
   setupRealtimeStores();
   handleDeepLink();
   setActiveNav('home');
   setTimeout(() => window.__bzrHideSplash(), 400);
+
+  // ✅ Sync followed stores from server (background)
+  syncFollowedStoresFromServer().catch(() => {});
 }
 window.addEventListener('beforeunload', () => {
   try {
@@ -1750,14 +2198,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '8.4.0',
+  version: '9.0.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
   showToast,
   haptic,
   setTheme: applyTheme,
-  setView: applyViewMode
+  setView: applyViewMode,
+  getFingerprint: getDeviceFingerprint,
+  syncFollows: syncFollowedStoresFromServer
 };
 
 })();
