@@ -23,7 +23,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ... (نفس الـ CSS القديم الخاص بك مع إضافة تنسيقات أزرار الرفع) ... */
+        /* ═══ Login Overlay ═══ */
         .admin-login-overlay { position: fixed; inset: 0; background: radial-gradient(ellipse at top, #1a1a1a 0%, #0a0a0a 100%); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 99999; overflow-y: auto; }
         .admin-login-overlay::before { content: ''; position: absolute; top: -180px; right: -140px; width: 480px; height: 480px; border-radius: 50%; background: radial-gradient(circle, rgba(255,122,0,0.28) 0%, transparent 65%); pointer-events: none; animation: float1 9s ease-in-out infinite; }
         .admin-login-overlay::after { content: ''; position: absolute; bottom: -200px; left: -160px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(255,166,77,0.18) 0%, transparent 65%); pointer-events: none; animation: float2 11s ease-in-out infinite; }
@@ -55,6 +55,7 @@
         .admin-login-footer a { color: #FF7A00; text-decoration: none; font-weight: 700; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .admin-login-footer a:hover { text-decoration: underline; }
 
+        /* ═══ App Layout ═══ */
         .app-container { max-width: 900px; margin: 0 auto; padding: 0 0 100px 0; min-height: 100vh; }
         @media (min-width: 1024px) { .app-container { max-width: 1200px; padding-bottom: 2rem; } }
         .app-header { background: linear-gradient(150deg, #1a1a1a 0%, #2d2d2d 50%, #3d2412 100%); padding: 1.25rem 1.25rem 3rem; border-radius: 0 0 2rem 2rem; position: relative; overflow: hidden; box-shadow: 0 12px 30px -12px rgba(0,0,0,0.6); }
@@ -82,6 +83,8 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         .main-content { margin-top: -2.25rem; padding: 0 1rem; position: relative; z-index: 3; }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
+
+        /* ═══ Tabs ═══ */
         .tabs-wrap { background: #fff; border-radius: 1.25rem; padding: 0.45rem; display: flex; gap: 0.35rem; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 1.25rem; }
         .tab-item { flex: 1; padding: 0.75rem 0.75rem; border-radius: 0.95rem; font-weight: 800; font-size: 0.85rem; border: none; background: transparent; color: #6B7280; cursor: pointer; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
         @media (min-width: 640px) { .tab-item { font-size: 0.92rem; padding: 0.85rem 1rem; } }
@@ -90,6 +93,8 @@
         .tab-item.active i { color: #FF7A00; }
         .tab-item .count-badge { background: rgba(255,255,255,0.25); color: #fff; padding: 0.1rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; min-width: 24px; text-align: center; font-weight: 900; }
         .tab-item:not(.active) .count-badge { background: #FFEDD5; color: #C2410C; }
+
+        /* ═══ Stats ═══ */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.25rem; }
         @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 0.85rem; } }
         .stat-card { background: #fff; border-radius: 1.25rem; padding: 1rem 0.85rem; border: 1.5px solid #F0F0F0; transition: all 0.28s; position: relative; overflow: hidden; }
@@ -105,6 +110,8 @@
         @media (min-width: 640px) { .stat-value { font-size: 1.75rem; } }
         .stat-label { color: #6b7280; font-size: 0.68rem; font-weight: 700; margin-top: 0.35rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         @media (min-width: 640px) { .stat-label { font-size: 0.78rem; } }
+
+        /* ═══ Cards & Filters ═══ */
         .card { background: #fff; border-radius: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02); overflow: hidden; border: 1px solid rgba(0,0,0,0.03); }
         .card-body { padding: 1rem; }
         @media (min-width: 640px) { .card-body { padding: 1.5rem; } }
@@ -117,10 +124,17 @@
         .filter-select { padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.9rem; font-weight: 700; transition: all 0.22s; background: #fff; color: #1A1A1A; cursor: pointer; font-family: 'Cairo', sans-serif; width: 100%; }
         @media (min-width: 640px) { .filter-select { min-width: 200px; width: auto; } }
         .filter-select:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
+
+        /* ═══ Buttons ═══ */
         .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.85rem 1.25rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; box-shadow: 0 12px 28px -10px rgba(255,122,0,0.7); font-family: 'Cairo', sans-serif; white-space: nowrap; }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(255,122,0,0.9); }
         .btn-primary:active:not(:disabled) { transform: translateY(0); }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+        .btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0.85rem 1.25rem; background: #F3F4F6; color: #4B5563; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.22s; font-family: 'Cairo', sans-serif; }
+        .btn-secondary:hover { background: #E5E7EB; }
+        .btn-loading { opacity: 0.7 !important; cursor: not-allowed !important; pointer-events: none !important; }
+
+        /* ═══ Items List ═══ */
         .items-list { display: flex; flex-direction: column; gap: 0.75rem; }
         .item-card { background: #fff; border: 1.5px solid #F3F4F6; border-radius: 1.1rem; padding: 0.9rem; display: flex; gap: 0.85rem; transition: all 0.22s; position: relative; }
         @media (min-width: 640px) { .item-card { padding: 1rem 1.15rem; } }
@@ -139,7 +153,10 @@
         .meta-pill-verified { background: #FFF7ED; color: #E06B00; border: 1px solid #FFE0BD; }
         .meta-pill-not-verified { background: #F3F4F6; color: #6B7280; }
         .meta-pill-price { background: #FFF7ED; color: #E06B00; }
-        .meta-pill-rating { background: #FEF3C7; color: #92400E; }
+        .meta-pill-subscribed { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+        .meta-pill-free { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+        .meta-pill-cats { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
+        .meta-pill-prodcat { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
         .item-actions { display: flex; gap: 0.35rem; flex-shrink: 0; align-items: flex-start; }
         .icon-btn { width: 36px; height: 36px; border-radius: 0.75rem; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; font-size: 0.82rem; }
         @media (min-width: 640px) { .icon-btn { width: 40px; height: 40px; font-size: 0.88rem; } }
@@ -153,6 +170,8 @@
         .empty-state-icon { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #FFF7ED, #FFF1E0); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #FFA64D; }
         .empty-state-title { font-size: 1rem; font-weight: 900; color: #374151; margin-bottom: 0.35rem; }
         .empty-state-text { font-size: 0.82rem; color: #9CA3AF; font-weight: 600; }
+
+        /* ═══ Modals ═══ */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: flex-start; justify-content: center; padding: 1rem; z-index: 99998; overflow-y: auto; animation: fadeIn 0.22s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content { background: #FFFFFF; border-radius: 1.5rem; max-width: 640px; width: 100%; padding: 1.5rem; margin-top: 2vh; margin-bottom: 2vh; animation: modalIn 0.32s cubic-bezier(0.34,1.56,0.64,1); box-shadow: 0 30px 80px -20px rgba(0,0,0,0.5); }
@@ -165,6 +184,8 @@
         @media (min-width: 640px) { .modal-header-text { font-size: 1.25rem; } }
         .modal-close { width: 38px; height: 38px; border-radius: 50%; background: #F3F4F6; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #6b7280; transition: all 0.25s; flex-shrink: 0; }
         .modal-close:hover { background: #EF4444; color: #fff; transform: rotate(90deg); }
+
+        /* ═══ Form ═══ */
         .form-group { margin-bottom: 1rem; }
         .form-label { display: flex; align-items: center; gap: 6px; font-size: 0.83rem; font-weight: 800; color: #374151; margin-bottom: 0.45rem; }
         @media (min-width: 640px) { .form-label { font-size: 0.88rem; } }
@@ -185,18 +206,31 @@
         @media (min-width: 640px) { .image-preview { height: 170px; } }
         .btn-row { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
         .btn-row .btn-primary { flex: 1; }
-        .btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0.85rem 1.25rem; background: #F3F4F6; color: #4B5563; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.22s; font-family: 'Cairo', sans-serif; }
-        .btn-secondary:hover { background: #E5E7EB; }
-        .btn-loading { opacity: 0.7 !important; cursor: not-allowed !important; pointer-events: none !important; }
+
+        /* ═══ Tags Input (Categories) ═══ */
+        .tags-input-wrap { border: 1.5px solid #E5E7EB; border-radius: 0.9rem; padding: 0.65rem; background: #fff; transition: all 0.22s; }
+        .tags-input-wrap:focus-within { border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
+        .tags-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0.55rem; }
+        .tags-list:empty { display: none; }
+        .tag-chip { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #FFF7ED, #FFEDD5); color: #C2410C; border: 1.5px solid #FFE0BD; padding: 0.32rem 0.55rem 0.32rem 0.7rem; border-radius: 9999px; font-weight: 800; font-size: 0.78rem; }
+        .tag-chip button { background: rgba(239,68,68,0.12); color: #DC2626; border: none; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem; transition: all 0.2s; }
+        .tag-chip button:hover { background: #EF4444; color: #fff; }
+        .tags-input-row { display: flex; gap: 8px; }
+        .tags-input-row .form-input { padding: 0.55rem 0.8rem; font-size: 0.85rem; border: 1px dashed #E5E7EB; }
+        .tags-input-row .form-input:focus { border-style: solid; }
+        .tags-input-row button { padding: 0.55rem 0.95rem; font-size: 0.82rem; }
+
+        /* ═══ Toast ═══ */
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #1F2937; color: #fff; padding: 0.9rem 1.5rem; border-radius: 0.9rem; z-index: 999999; opacity: 0; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); pointer-events: none; font-weight: 800; font-size: 0.88rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4); max-width: calc(100% - 32px); text-align: center; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
         .hidden { display: none !important; }
         .tab-content { animation: fadeSlideIn 0.35s ease; }
         @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid #FF7A00; outline-offset: 2px; }
         @supports (padding-bottom: env(safe-area-inset-bottom)) { .app-container { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } }
 
-        /* 📤 أزرار رفع الصور */
+        /* ═══ Upload Buttons ═══ */
         .url-upload-group { display: flex; gap: 8px; align-items: stretch; }
         .url-upload-group .form-input { flex: 1; min-width: 0; }
         .upload-btn { padding: 0 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.22s; font-family: 'Cairo', sans-serif; white-space: nowrap; flex-shrink: 0; box-shadow: 0 6px 16px -8px rgba(255,122,0,0.7); -webkit-tap-highlight-color: transparent; }
@@ -216,7 +250,7 @@
         <h1 class="admin-login-title">لوحة تحكم الأدمن</h1>
         <p class="admin-login-subtitle">
             الدخول مخصص لإدارة منصة بازارِنا فقط<br>
-            إدارة كاملة للمتاجر والمنتجات
+            إدارة كاملة للمتاجر والمنتجات والفئات
         </p>
         <form id="adminLoginForm" autocomplete="off">
             <div class="admin-login-field">
@@ -296,12 +330,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="stat-card" style="--glow-color: rgba(245,158,11,0.4);">
+                <div class="stat-card" style="--glow-color: rgba(139,92,246,0.4);">
                     <div class="stat-card-inner">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);"><i class="fas fa-star"></i></div>
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);"><i class="fas fa-crown"></i></div>
                         <div class="stat-info">
-                            <div class="stat-value" id="statAvgRating">0.0</div>
-                            <div class="stat-label">متوسط التقييم</div>
+                            <div class="stat-value" id="statSubscribedCount">0</div>
+                            <div class="stat-label">متاجر مشتركة</div>
                         </div>
                     </div>
                 </div>
@@ -390,15 +424,36 @@
                 <div class="form-hint"><i class="fas fa-info-circle"></i> سيستخدمها صاحب المتجر للدخول إلى لوحة تحكم متجره</div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label"><i class="fas fa-tag"></i><span>التصنيف</span></label>
-                    <input type="text" id="store_category" class="form-input" placeholder="مثال: إلكترونيات">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-tag"></i><span>الفئة الرئيسية (مجانية دائماً)</span></label>
+                <input type="text" id="store_category" class="form-input" placeholder="مثال: إلكترونيات">
+                <div class="form-hint"><i class="fas fa-info-circle"></i> الفئة الأساسية للمتجر — تظهر في قائمة فئات التطبيق الرئيسية</div>
+            </div>
+
+            <!-- ✅ جديد: محرر الفئات الإضافية -->
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-layer-group"></i><span>الفئات الإضافية (للمشتركين فقط)</span></label>
+                <div class="tags-input-wrap" id="storeCategoriesWrap">
+                    <div class="tags-list" id="storeCategoriesList"></div>
+                    <div class="tags-input-row">
+                        <input type="text" id="newCategoryInput" class="form-input" placeholder="اكتب اسم فئة جديدة...">
+                        <button type="button" id="addCategoryBtn" class="btn-primary">
+                            <i class="fas fa-plus"></i>
+                            <span>إضافة</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label"><i class="fas fa-star"></i><span>التقييم (0-5)</span></label>
-                    <input type="number" id="store_ratting" class="form-input" value="0" min="0" max="5" step="0.1">
-                </div>
+                <div class="form-hint"><i class="fas fa-lock"></i> هذه الفئات تظهر بقفل 🔒 للمتاجر المجانية وتفتح تلقائياً عند تفعيل الاشتراك</div>
+            </div>
+
+            <!-- ✅ جديد: مفتاح الاشتراك -->
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-crown" style="color:#8b5cf6;"></i><span>حالة الاشتراك</span></label>
+                <label class="checkbox-wrap" style="background:#F5F3FF;border-color:#DDD6FE;">
+                    <input type="checkbox" id="store_is_subscribed">
+                    <span style="color:#6D28D9;">⭐ متجر مشترك — جميع الفئات مفتوحة</span>
+                </label>
+                <div class="form-hint"><i class="fas fa-info-circle"></i> عند التفعيل، الفئات الإضافية تفتح فوراً للعملاء</div>
             </div>
 
             <div class="form-group">
@@ -417,7 +472,6 @@
                 </div>
             </div>
 
-            <!-- ✨ تم إضافة زر الرفع هنا -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-image"></i><span>رابط الشعار (Logo)</span></label>
                 <div class="url-upload-group">
@@ -430,7 +484,6 @@
                 <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار" onerror="this.classList.add('hidden')">
             </div>
 
-            <!-- ✨ تم إضافة زر الرفع هنا -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-panorama"></i><span>رابط الغلاف (Cover)</span></label>
                 <div class="url-upload-group">
@@ -494,18 +547,20 @@
                 </select>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label"><i class="fas fa-tag"></i><span>السعر (ج.س)</span><span class="req">*</span></label>
-                    <input type="number" id="product_price" class="form-input" required min="0" step="0.01" placeholder="0.00">
-                </div>
-                <div class="form-group">
-                    <label class="form-label"><i class="fas fa-star"></i><span>التقييم (0-5)</span></label>
-                    <input type="number" id="product_ratting" class="form-input" value="0" min="0" max="5" step="0.1">
-                </div>
+            <!-- ✅ جديد: اختيار الفئة (تعتمد على المتجر المحدد) -->
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-tag"></i><span>الفئة داخل المتجر</span></label>
+                <select id="product_category" class="form-input" disabled>
+                    <option value="">اختر المتجر أولاً</option>
+                </select>
+                <div class="form-hint"><i class="fas fa-info-circle"></i> اختر الفئة التي يظهر بها المنتج داخل صفحة المتجر</div>
             </div>
 
-            <!-- ✨ تم إضافة زر الرفع هنا -->
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-money-bill-wave"></i><span>السعر (ج.س)</span><span class="req">*</span></label>
+                <input type="number" id="product_price" class="form-input" required min="0" step="0.01" placeholder="0.00">
+            </div>
+
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-image"></i><span>رابط الصورة</span></label>
                 <div class="url-upload-group">
@@ -555,13 +610,13 @@ const STORES_COLLECTION = 'stores';
 const PRODUCTS_COLLECTION = 'products';
 
 // ============================================================
-// 🔑 إعدادات Cloudinary (رفع الصور المباشر)
+// 🔑 Cloudinary (رفع الصور)
 // ============================================================
-const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh'; 
+const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 // ============================================================
-// 🗄️ Cache - 100 hours
+// 🗄️ Cache
 // ============================================================
 const CACHE_DURATION = 100 * 60 * 60 * 1000;
 const CACHE_PREFIX = 'bazrena_admin_cache_v2_';
@@ -602,7 +657,7 @@ const cacheManager = {
 };
 
 // ============================================================
-// 🧬 Fingerprint - كشف كل تغييرات المحتوى
+// 🧬 Fingerprint
 // ============================================================
 function getFingerprint(items) {
     if (!Array.isArray(items) || items.length === 0) return 'empty';
@@ -626,6 +681,9 @@ let allProducts = [];
 let filteredStores = [];
 let filteredProducts = [];
 let adminUser = '';
+
+/* ✅ جديد: فئات المتجر الحالي أثناء التحرير */
+let currentEditingCategories = [];
 
 let isSavingStore = false;
 let isSavingProduct = false;
@@ -705,7 +763,7 @@ function updateConnectionStatus(ok, msg) {
 }
 
 // ============================================================
-// 📤 رفع الصور إلى Cloudinary (جديد)
+// 📤 رفع الصور إلى Cloudinary
 // ============================================================
 async function uploadImageToHost(file) {
     if (!file) throw new Error('لم يتم اختيار ملف');
@@ -716,29 +774,19 @@ async function uploadImageToHost(file) {
     if (file.size > MAX_MB * 1024 * 1024) {
         throw new Error(`حجم الصورة أكبر من ${MAX_MB} ميجابايت`);
     }
-
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
         throw new Error('إعدادات Cloudinary غير مكتملة');
     }
-
     const fd = new FormData();
     fd.append('file', file);
     fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
     const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, {
         method: 'POST',
         body: fd,
     });
-
-    if (!res.ok) {
-        throw new Error('فشل الاتصال بخدمة الرفع (HTTP ' + res.status + ')');
-    }
-
+    if (!res.ok) throw new Error('فشل الاتصال بخدمة الرفع (HTTP ' + res.status + ')');
     const data = await res.json();
-    if (!data.secure_url) {
-        throw new Error('لم يتم استلام رابط الصورة من Cloudinary');
-    }
-
+    if (!data.secure_url) throw new Error('لم يتم استلام رابط الصورة من Cloudinary');
     return data.secure_url;
 }
 
@@ -759,7 +807,6 @@ function openFilePickerAndUpload(button, targetInput) {
         try {
             const url = await uploadImageToHost(file);
             targetInput.value = url;
-            // إرسال حدث الإدخال لتحديث المعاينة تلقائياً
             targetInput.dispatchEvent(new Event('input', { bubbles: true }));
             targetInput.dispatchEvent(new Event('change', { bubbles: true }));
             showToast('✅ تم رفع الصورة بنجاح');
@@ -777,18 +824,13 @@ function openFilePickerAndUpload(button, targetInput) {
     fileInput.click();
 }
 
-// معالج مفوّض لجميع أزرار الرفع
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-upload-target]');
     if (!btn) return;
     e.preventDefault();
-
     const targetId = btn.getAttribute('data-upload-target');
     const targetInput = document.getElementById(targetId);
-    if (!targetInput) {
-        console.warn('Upload target not found:', targetId);
-        return;
-    }
+    if (!targetInput) return;
     openFilePickerAndUpload(btn, targetInput);
 });
 
@@ -810,7 +852,6 @@ async function verifyAdminAccess() {
 // ============================================================
 $('adminLoginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const email = sanitize($('adminEmail').value).toLowerCase();
     const password = $('adminPassword').value;
     const errEl = $('adminLoginError');
@@ -866,7 +907,7 @@ $('adminLogoutBtn').addEventListener('click', async () => {
 });
 
 // ============================================================
-// 🚀 Dashboard Entry (محمي ضد الاستدعاء المزدوج)
+// 🚀 Dashboard Entry
 // ============================================================
 async function enterDashboard() {
     if (dashboardInitialized) return;
@@ -960,6 +1001,11 @@ function processLoadedData() {
     });
     if (currentProductStore) psel.value = currentProductStore;
 
+    // ✅ إذا كان المودال مفتوح، حدّث قائمة الفئات
+    if (!$('productModal').classList.contains('hidden')) {
+        refreshProductCategoriesSelect();
+    }
+
     applyStoresFilter();
     applyProductsFilter();
 }
@@ -968,10 +1014,8 @@ function updateStats() {
     $('statStoresCount').textContent = allStores.length;
     $('statProductsCount').textContent = allProducts.length;
     $('statVerifiedCount').textContent = allStores.filter(s => s.is_verified).length;
-
-    const ratings = allStores.map(s => parseFloat(s.ratting) || 0).filter(r => r > 0);
-    const avg = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length) : 0;
-    $('statAvgRating').textContent = avg.toFixed(1);
+    /* ✅ جديد: عدد المتاجر المشتركة */
+    $('statSubscribedCount').textContent = allStores.filter(s => s.is_subscribed === true).length;
 }
 
 // ============================================================
@@ -1010,6 +1054,17 @@ function renderStoresList() {
             ? `<span class="meta-pill meta-pill-verified"><i class="fas fa-check"></i> موثّق</span>`
             : `<span class="meta-pill meta-pill-not-verified">غير موثّق</span>`;
 
+        /* ✅ جديد: شارة الاشتراك */
+        const subscribedBadge = s.is_subscribed === true
+            ? `<span class="meta-pill meta-pill-subscribed"><i class="fas fa-crown"></i> مشترك</span>`
+            : `<span class="meta-pill meta-pill-free"><i class="fas fa-lock"></i> مجاني</span>`;
+
+        /* ✅ جديد: عدد الفئات الإضافية */
+        const extraCatsCount = Array.isArray(s.categories) ? s.categories.length : 0;
+        const catsBadge = extraCatsCount > 0
+            ? `<span class="meta-pill meta-pill-cats"><i class="fas fa-layer-group"></i> ${extraCatsCount} فئة إضافية</span>`
+            : '';
+
         const whatsappHtml = s.whatsapp_number
             ? `<a href="https://wa.me/${cleanPhone(s.whatsapp_number)}" target="_blank" rel="noopener" style="color:#25D366;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:4px;"><i class="fab fa-whatsapp"></i> ${escapeHtml(s.whatsapp_number)}</a>`
             : '<span style="color:#9ca3af;">—</span>';
@@ -1025,6 +1080,8 @@ function renderStoresList() {
                         <span class="meta-pill meta-pill-cat"><i class="fas fa-tag"></i> ${escapeHtml(s.category || 'عام')}</span>
                         <span class="meta-pill meta-pill-count"><i class="fas fa-box"></i> ${s.products_count || 0}</span>
                         ${verifiedBadge}
+                        ${subscribedBadge}
+                        ${catsBadge}
                     </div>
                     <div style="font-size:0.72rem;color:#6B7280;font-weight:700;">${whatsappHtml}</div>
                 </div>
@@ -1074,7 +1131,11 @@ function renderProductsList() {
             : `<div class="item-thumb item-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
         const price = parseFloat(p.price || 0);
-        const rating = parseFloat(p.ratting || 0);
+
+        /* ✅ جديد: شارة الفئة للمنتج */
+        const prodCatBadge = (p.category && String(p.category).trim())
+            ? `<span class="meta-pill meta-pill-prodcat"><i class="fas fa-tag"></i> ${escapeHtml(p.category)}</span>`
+            : '';
 
         html += `
             <div class="item-card">
@@ -1083,8 +1144,8 @@ function renderProductsList() {
                     <div class="item-name">${escapeHtml(p.name || '')}</div>
                     <div class="item-meta">
                         <span class="meta-pill meta-pill-cat"><i class="fas fa-store"></i> ${escapeHtml(p.store_name || '')}</span>
+                        ${prodCatBadge}
                         <span class="meta-pill meta-pill-price"><i class="fas fa-tag"></i> ${price.toLocaleString()} ج.س</span>
-                        <span class="meta-pill meta-pill-rating"><i class="fas fa-star"></i> ${rating}</span>
                     </div>
                 </div>
                 <div class="item-actions">
@@ -1135,8 +1196,6 @@ function setupRealtimeStoresListener() {
                     console.log('🏪 Stores changed since cache - updating UI');
                     allStores = freshStores;
                     processLoadedData();
-                } else {
-                    console.log('✅ Stores cache is up-to-date');
                 }
                 return;
             }
@@ -1239,6 +1298,85 @@ function setupRealtimeProductsListener() {
 }
 
 // ============================================================
+// 🏷️ Categories Tag Editor (جديد)
+// ============================================================
+function renderCategoriesTags() {
+    const list = $('storeCategoriesList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!currentEditingCategories.length) {
+        list.innerHTML = '<div style="font-size:0.78rem;color:#9CA3AF;font-weight:700;padding:0.4rem 0.2rem;"><i class="fas fa-info-circle"></i> لا توجد فئات إضافية — أضف فئة لتفعيلها للمشتركين</div>';
+        return;
+    }
+
+    currentEditingCategories.forEach((cat, idx) => {
+        const chip = document.createElement('span');
+        chip.className = 'tag-chip';
+        chip.innerHTML = `<i class="fas fa-tag" style="font-size:0.65rem;"></i><span>${escapeHtml(cat)}</span><button type="button" data-idx="${idx}" title="إزالة"><i class="fas fa-times"></i></button>`;
+        list.appendChild(chip);
+    });
+
+    list.querySelectorAll('button[data-idx]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
+            if (isNaN(idx)) return;
+            const removed = currentEditingCategories[idx];
+            currentEditingCategories.splice(idx, 1);
+            renderCategoriesTags();
+            showToast(`تم إزالة الفئة "${removed}"`, 'warning');
+        });
+    });
+}
+
+function addCategoryTag() {
+    const input = $('newCategoryInput');
+    if (!input) return;
+
+    let val = sanitize(input.value);
+    if (!val) {
+        showToast('اكتب اسم الفئة أولاً', 'error');
+        input.focus();
+        return;
+    }
+    if (val.length > 40) {
+        showToast('اسم الفئة طويل جداً (40 حرف كحد أقصى)', 'error');
+        return;
+    }
+
+    // التحقق من عدم التكرار
+    const mainCat = sanitize($('store_category').value).toLowerCase();
+    const existsInExtra = currentEditingCategories.some(c => c.toLowerCase() === val.toLowerCase());
+
+    if (existsInExtra) {
+        showToast('هذه الفئة موجودة بالفعل', 'warning');
+        input.value = '';
+        input.focus();
+        return;
+    }
+    if (mainCat && val.toLowerCase() === mainCat) {
+        showToast('هذه الفئة هي الفئة الرئيسية', 'warning');
+        input.value = '';
+        input.focus();
+        return;
+    }
+
+    currentEditingCategories.push(val);
+    renderCategoriesTags();
+    input.value = '';
+    input.focus();
+    showToast(`✅ تمت إضافة الفئة "${val}"`);
+}
+
+$('addCategoryBtn')?.addEventListener('click', addCategoryTag);
+$('newCategoryInput')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        addCategoryTag();
+    }
+});
+
+// ============================================================
 // 🏪 Store Modal
 // ============================================================
 function openStoreModal(store = null) {
@@ -1252,13 +1390,15 @@ function openStoreModal(store = null) {
     $('store_cover_preview').classList.add('hidden');
     $('store_cover_preview').removeAttribute('src');
 
+    /* ✅ إعادة تعيين الفئات الإضافية */
+    currentEditingCategories = [];
+
     if (isEdit) {
         $('store_id').value = store.id;
         $('store_original_name').value = store.name || '';
         $('store_name').value = store.name || '';
         $('store_login_password').value = store.login_password || '';
         $('store_category').value = store.category || '';
-        $('store_ratting').value = store.ratting || 0;
         $('store_description').value = store.description || '';
         $('store_whatsapp').value = store.whatsapp_number || '';
         $('store_phone').value = store.phone_number || '';
@@ -1266,6 +1406,15 @@ function openStoreModal(store = null) {
         $('store_cover').value = store.cover_url || '';
         $('store_followers').value = store.followers || 0;
         $('store_is_verified').checked = !!store.is_verified;
+        /* ✅ الاشتراك */
+        $('store_is_subscribed').checked = store.is_subscribed === true;
+        /* ✅ الفئات الإضافية */
+        if (Array.isArray(store.categories)) {
+            currentEditingCategories = store.categories
+                .map(c => String(c || '').trim())
+                .filter(Boolean)
+                .filter(c => c !== String(store.category || '').trim());
+        }
 
         if (store.logo_url) {
             $('store_logo_preview').src = store.logo_url;
@@ -1275,7 +1424,12 @@ function openStoreModal(store = null) {
             $('store_cover_preview').src = store.cover_url;
             $('store_cover_preview').classList.remove('hidden');
         }
+    } else {
+        $('store_is_subscribed').checked = false;
     }
+
+    renderCategoriesTags();
+    $('newCategoryInput').value = '';
 
     $('storeModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -1302,6 +1456,7 @@ $('storeForm').addEventListener('submit', async (e) => {
     const name = sanitize($('store_name').value);
     const password = $('store_login_password').value;
     const whatsapp = cleanPhone($('store_whatsapp').value);
+    const mainCat = sanitize($('store_category').value);
 
     if (!name) { showToast('اسم المتجر مطلوب', 'error'); return; }
     if (!password || password.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
@@ -1323,12 +1478,22 @@ $('storeForm').addEventListener('submit', async (e) => {
         }
     }
 
+    /* ✅ تحضير الفئات الإضافية (تنظيف + إزالة المكرر مع الرئيسية) */
+    const cleanCategories = currentEditingCategories
+        .map(c => sanitize(c))
+        .filter(Boolean)
+        .filter((c, i, arr) => arr.indexOf(c) === i)
+        .filter(c => c.toLowerCase() !== mainCat.toLowerCase());
+
     const now = Date.now();
     const data = {
         name,
         login_password: password,
-        category: sanitize($('store_category').value),
-        ratting: toNum($('store_ratting').value),
+        category: mainCat,
+        /* ✅ الفئات الإضافية */
+        categories: cleanCategories,
+        /* ✅ حالة الاشتراك */
+        is_subscribed: $('store_is_subscribed').checked,
         description: sanitize($('store_description').value),
         whatsapp_number: whatsapp,
         phone_number: cleanPhone($('store_phone').value) || null,
@@ -1426,6 +1591,68 @@ window.viewStoreProducts = (storeName) => {
 };
 
 // ============================================================
+// 🏷️ Product Categories Select (يعتمد على المتجر)
+// ============================================================
+function refreshProductCategoriesSelect(selectedValue = null) {
+    const storeName = $('product_store_name').value;
+    const catSelect = $('product_category');
+
+    if (!storeName) {
+        catSelect.innerHTML = '<option value="">اختر المتجر أولاً</option>';
+        catSelect.disabled = true;
+        return;
+    }
+
+    const store = allStores.find(s => s.name === storeName);
+    if (!store) {
+        catSelect.innerHTML = '<option value="">المتجر غير موجود</option>';
+        catSelect.disabled = true;
+        return;
+    }
+
+    const mainCat = (store.category && String(store.category).trim()) ? String(store.category).trim() : '';
+    const extraCats = Array.isArray(store.categories)
+        ? store.categories.map(c => String(c || '').trim()).filter(c => c && c !== mainCat)
+        : [];
+
+    catSelect.innerHTML = '';
+    catSelect.disabled = false;
+
+    // خيار "بدون فئة" (يظهر في القائمة الرئيسية للمتجر)
+    const noCatOpt = document.createElement('option');
+    noCatOpt.value = '';
+    noCatOpt.textContent = '— بدون فئة (الفئة الرئيسية) —';
+    catSelect.appendChild(noCatOpt);
+
+    // الفئة الرئيسية
+    if (mainCat) {
+        const opt = document.createElement('option');
+        opt.value = mainCat;
+        opt.textContent = '🟢 ' + mainCat + ' (رئيسية - مجانية)';
+        catSelect.appendChild(opt);
+    }
+
+    // الفئات الإضافية
+    extraCats.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        const isLocked = store.is_subscribed !== true;
+        opt.textContent = (isLocked ? '🔒 ' : '⭐ ') + cat + (isLocked ? ' (مقفلة)' : ' (مفتوحة)');
+        catSelect.appendChild(opt);
+    });
+
+    // إعادة تعيين القيمة المختارة
+    if (selectedValue != null) {
+        catSelect.value = selectedValue;
+    }
+}
+
+// مراقبة تغيير المتجر → تحديث الفئات
+$('product_store_name')?.addEventListener('change', () => {
+    refreshProductCategoriesSelect();
+});
+
+// ============================================================
 // 📦 Product Modal
 // ============================================================
 function openProductModal(product = null) {
@@ -1435,14 +1662,18 @@ function openProductModal(product = null) {
     $('product_id').value = '';
     $('product_img_preview').classList.add('hidden');
     $('product_img_preview').removeAttribute('src');
+    $('product_category').innerHTML = '<option value="">اختر المتجر أولاً</option>';
+    $('product_category').disabled = true;
 
     if (isEdit) {
         $('product_id').value = product.id;
         $('product_name').value = product.name || '';
         $('product_store_name').value = product.store_name || '';
         $('product_price').value = product.price || 0;
-        $('product_ratting').value = product.ratting || 0;
         $('product_img_url').value = product.img_url || '';
+
+        // حدّث قائمة الفئات حسب المتجر
+        refreshProductCategoriesSelect(product.category || '');
 
         if (product.img_url) {
             $('product_img_preview').src = product.img_url;
@@ -1474,6 +1705,7 @@ $('productForm').addEventListener('submit', async (e) => {
     const name = sanitize($('product_name').value);
     const storeName = $('product_store_name').value;
     const price = toNum($('product_price').value);
+    const productCategory = sanitize($('product_category').value);
 
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (!storeName) { showToast('يجب اختيار المتجر', 'error'); return; }
@@ -1483,8 +1715,9 @@ $('productForm').addEventListener('submit', async (e) => {
     const data = {
         name,
         store_name: storeName,
+        /* ✅ الفئة داخل المتجر */
+        category: productCategory || null,
         price,
-        ratting: toNum($('product_ratting').value),
         img_url: sanitize($('product_img_url').value),
         updated_at: now
     };
@@ -1538,7 +1771,7 @@ window.deleteProduct = async (id) => {
 };
 
 // ============================================================
-// 🖼️ Image Previews — مع معاينة فورية (جديد)
+// 🖼️ Image Previews
 // ============================================================
 function attachImagePreview(inputId, previewId) {
     const input = $(inputId);
@@ -1595,12 +1828,11 @@ $('productModal').addEventListener('click', (e) => {
     if (e.target === $('productModal')) closeProductModal();
 });
 
-// تصدير الدوال المطلوبة عبر onclick
 window.closeStoreModal = closeStoreModal;
 window.closeProductModal = closeProductModal;
 
 // ============================================================
-// 🚀 Auto-login / Auth State
+// 🚀 Auth State
 // ============================================================
 firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
