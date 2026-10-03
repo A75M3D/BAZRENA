@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.2.0 — Styles (Mobile App Optimized)
+   BranZar v9.4.0 — Styles (Mobile App Optimized)
    ✅ Store Categories Tabs (Free + Locked)
    ✅ Rating Removal
+   ✅ New Categories Grid Design (Card-based with images)
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -82,7 +83,7 @@ body.theme-dark .bzr-splash-logo { background: #1E293B; }
 body.theme-dark .account-avatar { background: #1E293B; }
 body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 
-/* ✅ جديد: عناصر الفئات في الوضع الداكن */
+/* ✅ عناصر الفئات في الوضع الداكن */
 body.theme-dark .store-cat-tab { background: #334155; border-color: #475569; color: #CBD5E1; }
 body.theme-dark .store-cat-tab.main-tab { background: #3B2410; border-color: #FF7A00; color: #FF7A00; }
 body.theme-dark .store-cat-tab.main-tab.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; }
@@ -183,7 +184,6 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 
 .followed-section { padding: 8px 0; }
 .stores-section { padding: 12px 0 16px; }
-.categories-section { padding: 12px 0; }
 .products-section { padding: 16px 0 24px; }
 
 .badge-soft { font-size: 0.68rem; font-weight: 800; background: var(--c-primary-soft); color: #FF7A00; border: 1px solid #FFE0BD; padding: 0.25rem 0.6rem; border-radius: 9999px; }
@@ -211,14 +211,226 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .stores-scroll-container > * { direction: rtl; }
 .stores-scroll-container::-webkit-scrollbar { height: 4px; }
 .stores-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
-.categories-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 6px; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-.categories-scroll-container::-webkit-scrollbar { display: none; }
 .followed-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 8px; padding: 6px 0 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .followed-scroll-container::-webkit-scrollbar { display: none; }
+/* .chip مستخدم في نتائج البحث فقط */
 .chip { padding: 0.45rem 0.9rem; border-radius: 9999px; background: var(--c-surface); border: 1.5px solid var(--c-border); font-weight: 700; font-size: 0.8rem; color: var(--c-text-soft); white-space: nowrap; cursor: pointer; transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); flex-shrink: 0; }
 .chip:hover { border-color: #FF7A00; color: #FF7A00; background: var(--c-primary-soft); transform: translateY(-1px); }
 .chip:active { transform: scale(0.95); }
 .chip.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border-color: #FF7A00; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); }
+
+/* ═══════════════════════════════════════════════════════════
+   🎨 ALL CATEGORIES — التصميم الجديد (شبكة الفئات)
+   ═══════════════════════════════════════════════════════════ */
+.categories-section-new {
+  padding: 24px 0 32px;
+  background: linear-gradient(180deg, var(--c-bg) 0%, var(--c-surface-2) 100%);
+  position: relative;
+}
+
+.cat-section-header {
+  text-align: right;
+  margin-bottom: 22px;
+  padding: 0 4px;
+}
+
+.cat-section-title {
+  font-size: clamp(1.55rem, 5vw, 1.9rem);
+  font-weight: 900;
+  color: var(--c-text);
+  margin: 0 0 6px;
+  letter-spacing: -0.6px;
+  position: relative;
+  display: inline-block;
+  line-height: 1.2;
+}
+.cat-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  right: 0;
+  width: 52px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #FF7A00, #FFA64D);
+}
+
+.cat-section-subtitle {
+  font-size: 0.88rem;
+  color: var(--c-text-soft);
+  font-weight: 600;
+  margin: 14px 0 0;
+  line-height: 1.6;
+}
+
+/* 🎴 شبكة البطاقات */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* 🎴 بطاقة الفئة */
+.category-card-new {
+  position: relative;
+  border-radius: 20px;
+  padding: 16px 14px;
+  min-height: 165px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow: 0 4px 18px -6px rgba(15,23,42,0.08);
+  transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+}
+.category-card-new:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 38px -12px rgba(15,23,42,0.16);
+}
+.category-card-new:active { transform: translateY(-1px) scale(0.98); }
+
+/* 🎨 نصوص البطاقة */
+.cat-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative;
+  z-index: 3;
+  max-width: 60%;
+}
+.cat-card-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+}
+@media (min-width: 480px) { .cat-card-title { font-size: 1.08rem; } }
+
+.cat-card-subtitle {
+  font-size: 0.72rem;
+  color: #475569;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.45;
+  opacity: 0.9;
+}
+
+/* 🔘 زر السهم */
+.cat-card-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.82rem;
+  margin-top: 12px;
+  box-shadow: 0 5px 12px -3px rgba(0,0,0,0.28);
+  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+}
+.category-card-new:hover .cat-card-arrow { transform: translateX(-4px); }
+
+/* 🖼️ صورة الفئة */
+.cat-card-image {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%);
+  width: 46%;
+  max-width: 135px;
+  height: auto;
+  max-height: 82%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  filter: drop-shadow(0 10px 18px rgba(15,23,42,0.15));
+  border-radius: 12px;
+}
+.category-card-new:hover .cat-card-image { transform: translateY(-50%) scale(1.06); }
+
+/* 🎨 ألوان الخلفيات — مطابقة للنموذج */
+.cat-card-blue { background: linear-gradient(135deg, #E8F1FE 0%, #C7DBFB 100%); }
+.cat-card-blue .cat-card-arrow { background: linear-gradient(135deg, #60A5FA, #2563EB); }
+
+.cat-card-peach { background: linear-gradient(135deg, #FEF4E5 0%, #FCD8A4 100%); }
+.cat-card-peach .cat-card-arrow { background: linear-gradient(135deg, #FBBF24, #D97706); }
+
+.cat-card-green { background: linear-gradient(135deg, #E9F7EE 0%, #C0E8D0 100%); }
+.cat-card-green .cat-card-arrow { background: linear-gradient(135deg, #34D399, #059669); }
+
+.cat-card-pink { background: linear-gradient(135deg, #FCE9EE 0%, #F8C8D5 100%); }
+.cat-card-pink .cat-card-arrow { background: linear-gradient(135deg, #F472B6, #DB2777); }
+
+.cat-card-purple { background: linear-gradient(135deg, #F1EDFB 0%, #DACDF3 100%); }
+.cat-card-purple .cat-card-arrow { background: linear-gradient(135deg, #A78BFA, #7C3AED); }
+
+.cat-card-beige { background: linear-gradient(135deg, #FCF4E7 0%, #F1DBB5 100%); }
+.cat-card-beige .cat-card-arrow { background: linear-gradient(135deg, #D97706, #92400E); }
+
+.cat-card-gray { background: linear-gradient(135deg, #F1F5F9 0%, #D9E1EB 100%); }
+.cat-card-gray .cat-card-arrow { background: linear-gradient(135deg, #64748B, #334155); }
+
+/* بطاقة "أخرى" — عرض كامل */
+.category-card-new.cat-card-full {
+  grid-column: 1 / -1;
+  min-height: 130px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+}
+.category-card-new.cat-card-full .cat-card-text { max-width: 55%; }
+.category-card-new.cat-card-full .cat-card-image {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: 36%;
+  max-width: 140px;
+  max-height: 100%;
+  margin-right: auto;
+}
+.category-card-new.cat-card-full:hover .cat-card-image { transform: scale(1.05); }
+
+/* 🌙 الوضع الداكن */
+body.theme-dark .category-card-new {
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: 0 4px 18px -6px rgba(0,0,0,0.45);
+}
+body.theme-dark .cat-card-title { color: #F1F5F9; }
+body.theme-dark .cat-card-subtitle { color: #CBD5E1; opacity: 0.75; }
+
+body.theme-dark .cat-card-blue { background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%); }
+body.theme-dark .cat-card-peach { background: linear-gradient(135deg, #7C2D12 0%, #92400E 100%); }
+body.theme-dark .cat-card-green { background: linear-gradient(135deg, #064E3B 0%, #065F46 100%); }
+body.theme-dark .cat-card-pink { background: linear-gradient(135deg, #831843 0%, #9D174D 100%); }
+body.theme-dark .cat-card-purple { background: linear-gradient(135deg, #4C1D95 0%, #5B21B6 100%); }
+body.theme-dark .cat-card-beige { background: linear-gradient(135deg, #78350F 0%, #92400E 100%); }
+body.theme-dark .cat-card-gray { background: linear-gradient(135deg, #334155 0%, #475569 100%); }
+
+/* شاشات كبيرة */
+@media (min-width: 640px) {
+  .categories-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .category-card-new { min-height: 180px; padding: 20px 18px; border-radius: 22px; }
+  .cat-card-text { max-width: 62%; }
+}
+@media (min-width: 1024px) {
+  .categories-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .category-card-new { min-height: 195px; }
+  .cat-card-image { max-width: 150px; }
+}
 
 /* ═══ STORE CARD ═══ */
 .store-card { width: 230px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 18px; overflow: hidden; box-shadow: 0 3px 12px rgba(15,23,42,0.05); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; flex-shrink: 0; }
@@ -297,7 +509,7 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .product-price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem; flex-wrap: wrap; }
 .product-actions { display: flex; flex-direction: column; gap: 8px; }
 
-/* ✅ جديد: صف المتجر في Product Modal (بديل Rating) */
+/* ✅ صف المتجر في Product Modal (بديل Rating) */
 .product-store-row {
   display: inline-flex;
   align-items: center;
@@ -364,7 +576,7 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .store-action-btn .icon-circle { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-size: 0.85rem; background: linear-gradient(135deg, #FF7A00, #FFA64D); }
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ جديد: STORE CATEGORIES TABS — نظام الفئات المتقدم
+   ✅ STORE CATEGORIES TABS — نظام الفئات المتقدم
    ═══════════════════════════════════════════════════════════ */
 .store-categories-tabs {
   display: flex;
