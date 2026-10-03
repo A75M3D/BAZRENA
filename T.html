@@ -166,10 +166,23 @@
         .icon-btn-view:hover { background: #D1FAE5; transform: scale(1.05); }
         .icon-btn-delete { background: #FEF2F2; color: #EF4444; }
         .icon-btn-delete:hover { background: #FEE2E2; transform: scale(1.05); }
+        .icon-btn-key { background: #FEF3C7; color: #92400E; }
+        .icon-btn-key:hover { background: #FDE68A; transform: scale(1.05); }
         .empty-state { text-align: center; padding: 2.5rem 1rem; }
         .empty-state-icon { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #FFF7ED, #FFF1E0); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #FFA64D; }
         .empty-state-title { font-size: 1rem; font-weight: 900; color: #374151; margin-bottom: 0.35rem; }
         .empty-state-text { font-size: 0.82rem; color: #9CA3AF; font-weight: 600; }
+
+        /* ═══ Password Badge ═══ */
+        .password-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+        .password-label { font-size: 0.72rem; color: #6B7280; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
+        .password-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #FFF7ED, #FFEDD5); color: #C2410C; border: 1.5px solid #FFE0BD; padding: 0.2rem 0.35rem 0.2rem 0.55rem; border-radius: 0.55rem; font-weight: 800; font-size: 0.78rem; font-family: 'Courier New', monospace; letter-spacing: 0.5px; transition: all 0.2s; user-select: none; }
+        .password-badge .pwd-value { transition: filter 0.2s; }
+        .password-badge.blurred .pwd-value { filter: blur(5px); }
+        .password-badge .pwd-actions { display: inline-flex; gap: 3px; margin-right: 2px; }
+        .password-badge button { background: rgba(194,65,12,0.1); border: none; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: #C2410C; font-size: 0.62rem; transition: all 0.2s; }
+        .password-badge button:hover { background: #C2410C; color: #fff; }
+        .password-badge.copied { background: #D1FAE5 !important; border-color: #A7F3D0 !important; color: #059669 !important; }
 
         /* ═══ Modals ═══ */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: flex-start; justify-content: center; padding: 1rem; z-index: 99998; overflow-y: auto; animation: fadeIn 0.22s; }
@@ -191,6 +204,7 @@
         @media (min-width: 640px) { .form-label { font-size: 0.88rem; } }
         .form-label i { color: #FF7A00; font-size: 0.78rem; }
         .form-label .req { color: #EF4444; }
+        .form-label .optional { color: #9CA3AF; font-weight: 700; font-size: 0.72rem; }
         .form-input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.92rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif; }
         @media (min-width: 640px) { .form-input { padding: 0.9rem 1.1rem; font-size: 0.95rem; } }
         .form-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
@@ -238,6 +252,8 @@
         .upload-btn:active:not(:disabled) { transform: translateY(0); }
         .upload-btn:disabled { opacity: 0.75; cursor: not-allowed; }
         .upload-btn i { font-size: 0.9rem; }
+        .upload-btn.generate-btn { background: linear-gradient(135deg, #8b5cf6, #a78bfa); box-shadow: 0 6px 16px -8px rgba(139,92,246,0.7); }
+        .upload-btn.generate-btn:hover:not(:disabled) { box-shadow: 0 10px 24px -8px rgba(139,92,246,0.95); }
         @media (max-width: 480px) { .upload-btn span { display: none; } .upload-btn { padding: 0 0.85rem; } }
     </style>
 </head>
@@ -419,9 +435,19 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-key"></i><span>كلمة مرور الدخول</span><span class="req">*</span></label>
-                <input type="text" id="store_login_password" class="form-input" required placeholder="كلمة مرور صاحب المتجر" minlength="4">
-                <div class="form-hint"><i class="fas fa-info-circle"></i> سيستخدمها صاحب المتجر للدخول إلى لوحة تحكم متجره</div>
+                <label class="form-label">
+                    <i class="fas fa-key"></i>
+                    <span>كلمة مرور الدخول</span>
+                    <span class="optional">(اختياري — تُولَّد تلقائياً إن تُركت فارغة)</span>
+                </label>
+                <div class="url-upload-group">
+                    <input type="text" id="store_login_password" class="form-input" placeholder="اتركه فارغاً للتوليد التلقائي" minlength="4" style="font-family: 'Courier New', monospace; letter-spacing: 0.5px;">
+                    <button type="button" id="generatePasswordBtn" class="upload-btn generate-btn" title="توليد كلمة مرور قوية">
+                        <i class="fas fa-dice"></i>
+                        <span>توليد</span>
+                    </button>
+                </div>
+                <div class="form-hint"><i class="fas fa-eye"></i> كلمة المرور تظهر بوضوح في بطاقة المتجر — لا حاجة لحفظها يدوياً</div>
             </div>
 
             <div class="form-group">
@@ -430,7 +456,6 @@
                 <div class="form-hint"><i class="fas fa-info-circle"></i> الفئة الأساسية للمتجر — تظهر في قائمة فئات التطبيق الرئيسية</div>
             </div>
 
-            <!-- ✅ جديد: محرر الفئات الإضافية -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-layer-group"></i><span>الفئات الإضافية (للمشتركين فقط)</span></label>
                 <div class="tags-input-wrap" id="storeCategoriesWrap">
@@ -446,7 +471,6 @@
                 <div class="form-hint"><i class="fas fa-lock"></i> هذه الفئات تظهر بقفل 🔒 للمتاجر المجانية وتفتح تلقائياً عند تفعيل الاشتراك</div>
             </div>
 
-            <!-- ✅ جديد: مفتاح الاشتراك -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-crown" style="color:#8b5cf6;"></i><span>حالة الاشتراك</span></label>
                 <label class="checkbox-wrap" style="background:#F5F3FF;border-color:#DDD6FE;">
@@ -547,7 +571,6 @@
                 </select>
             </div>
 
-            <!-- ✅ جديد: اختيار الفئة (تعتمد على المتجر المحدد) -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-tag"></i><span>الفئة داخل المتجر</span></label>
                 <select id="product_category" class="form-input" disabled>
@@ -610,24 +633,121 @@ const STORES_COLLECTION = 'stores';
 const PRODUCTS_COLLECTION = 'products';
 
 // ============================================================
-// 🔑 Cloudinary (رفع الصور)
+// 🔑 Cloudinary
 // ============================================================
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 // ============================================================
+// 🔐 توليد كلمة مرور عشوائية
+// ============================================================
+function generateRandomPassword(length = 10) {
+    const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let pwd = '';
+    const cryptoObj = window.crypto || window.msCrypto;
+    if (cryptoObj && cryptoObj.getRandomValues) {
+        const arr = new Uint32Array(length);
+        cryptoObj.getRandomValues(arr);
+        for (let i = 0; i < length; i++) pwd += chars[arr[i] % chars.length];
+    } else {
+        for (let i = 0; i < length; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return pwd;
+}
+
+async function copyToClipboard(text) {
+    if (!text) return false;
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+        }
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        return true;
+    } catch (e) { return false; }
+}
+
+window.copyStorePassword = async (text, btnEl) => {
+    const ok = await copyToClipboard(text);
+    if (ok) {
+        showToast('📋 تم نسخ كلمة المرور');
+        if (btnEl) {
+            const badge = btnEl.closest('.password-badge');
+            if (badge) {
+                badge.classList.add('copied');
+                setTimeout(() => badge.classList.remove('copied'), 1200);
+            }
+        }
+    } else {
+        showToast('❌ فشل النسخ', 'error');
+    }
+};
+
+window.toggleStorePasswordVisibility = (el) => {
+    const wrapper = el.closest('.password-badge');
+    if (!wrapper) return;
+    wrapper.classList.toggle('blurred');
+    const icon = el.querySelector('i');
+    if (icon) {
+        icon.className = wrapper.classList.contains('blurred') ? 'fas fa-eye' : 'fas fa-eye-slash';
+    }
+};
+
+// ✅ تغيير كلمة المرور مباشرة من البطاقة
+window.quickChangePassword = async (storeId) => {
+    const store = allStores.find(s => String(s.id) === String(storeId));
+    if (!store) return;
+
+    const currentPwd = store.login_password || '(غير محددة)';
+    const newPwd = prompt(
+        `🔑 تغيير كلمة مرور المتجر:\n"${store.name}"\n\n` +
+        `كلمة المرور الحالية: ${currentPwd}\n\n` +
+        `اكتب كلمة المرور الجديدة (أو اترك الحقل فارغاً للتوليد التلقائي):`,
+        ''
+    );
+
+    if (newPwd === null) return;
+
+    let finalPwd = String(newPwd).trim();
+    if (!finalPwd) {
+        finalPwd = generateRandomPassword(10);
+        showToast('🎲 تم توليد كلمة مرور جديدة');
+    } else if (finalPwd.length < 4) {
+        showToast('كلمة المرور قصيرة (4 أحرف على الأقل)', 'error');
+        return;
+    }
+
+    suppressStoresToast = true;
+    try {
+        await db.collection(STORES_COLLECTION).doc(storeId).update({
+            login_password: finalPwd,
+            updated_at: Date.now()
+        });
+        showToast(`✅ تم تحديث كلمة المرور: ${finalPwd}`);
+    } catch (err) {
+        showToast('❌ فشل التحديث: ' + err.message, 'error');
+    } finally {
+        setTimeout(() => { suppressStoresToast = false; }, 2000);
+    }
+};
+
+// ============================================================
 // 🗄️ Cache
 // ============================================================
 const CACHE_DURATION = 100 * 60 * 60 * 1000;
-const CACHE_PREFIX = 'bazrena_admin_cache_v2_';
+const CACHE_PREFIX = 'bazrena_admin_cache_v3_';
 
 const cacheManager = {
     set(key, value) {
         try {
-            localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({
-                timestamp: Date.now(),
-                value: value
-            }));
+            localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ timestamp: Date.now(), value }));
         } catch (e) { console.warn('⚠️ Cache write failed:', e); }
     },
     get(key) {
@@ -681,23 +801,17 @@ let allProducts = [];
 let filteredStores = [];
 let filteredProducts = [];
 let adminUser = '';
-
-/* ✅ جديد: فئات المتجر الحالي أثناء التحرير */
 let currentEditingCategories = [];
-
 let isSavingStore = false;
 let isSavingProduct = false;
-
 let dashboardInitialized = false;
 let listenersSetup = false;
-
 let storesUnsubscribe = null;
 let productsUnsubscribe = null;
 let isFirstStoresSnapshot = true;
 let isFirstProductsSnapshot = true;
 let lastStoresFingerprint = '';
 let lastProductsFingerprint = '';
-
 let suppressStoresToast = false;
 let suppressProductsToast = false;
 
@@ -767,23 +881,14 @@ function updateConnectionStatus(ok, msg) {
 // ============================================================
 async function uploadImageToHost(file) {
     if (!file) throw new Error('لم يتم اختيار ملف');
-    if (!file.type || !file.type.startsWith('image/')) {
-        throw new Error('الملف المختار ليس صورة');
-    }
+    if (!file.type || !file.type.startsWith('image/')) throw new Error('الملف المختار ليس صورة');
     const MAX_MB = 10;
-    if (file.size > MAX_MB * 1024 * 1024) {
-        throw new Error(`حجم الصورة أكبر من ${MAX_MB} ميجابايت`);
-    }
-    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-        throw new Error('إعدادات Cloudinary غير مكتملة');
-    }
+    if (file.size > MAX_MB * 1024 * 1024) throw new Error(`حجم الصورة أكبر من ${MAX_MB} ميجابايت`);
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) throw new Error('إعدادات Cloudinary غير مكتملة');
     const fd = new FormData();
     fd.append('file', file);
     fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, {
-        method: 'POST',
-        body: fd,
-    });
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, { method: 'POST', body: fd });
     if (!res.ok) throw new Error('فشل الاتصال بخدمة الرفع (HTTP ' + res.status + ')');
     const data = await res.json();
     if (!data.secure_url) throw new Error('لم يتم استلام رابط الصورة من Cloudinary');
@@ -799,11 +904,9 @@ function openFilePickerAndUpload(button, targetInput) {
     fileInput.addEventListener('change', async () => {
         const file = fileInput.files && fileInput.files[0];
         if (!file) { fileInput.remove(); return; }
-
         const originalHTML = button.innerHTML;
         button.disabled = true;
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
         try {
             const url = await uploadImageToHost(file);
             targetInput.value = url;
@@ -834,6 +937,20 @@ document.addEventListener('click', (e) => {
     openFilePickerAndUpload(btn, targetInput);
 });
 
+// زر توليد كلمة المرور
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#generatePasswordBtn');
+    if (!btn) return;
+    e.preventDefault();
+    const input = $('store_login_password');
+    if (!input) return;
+    input.value = generateRandomPassword(10);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    showToast('🎲 تم توليد كلمة مرور جديدة');
+    input.focus();
+    input.select();
+});
+
 // ============================================================
 // 🔒 Admin Verification
 // ============================================================
@@ -855,7 +972,6 @@ $('adminLoginForm').addEventListener('submit', async (e) => {
     const email = sanitize($('adminEmail').value).toLowerCase();
     const password = $('adminPassword').value;
     const errEl = $('adminLoginError');
-
     errEl.classList.remove('show');
 
     if (!email || !password) {
@@ -869,16 +985,13 @@ $('adminLoginForm').addEventListener('submit', async (e) => {
     try {
         const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
         adminUser = cred.user.email;
-
         const isAdmin = await verifyAdminAccess();
         if (!isAdmin) {
             await firebase.auth().signOut();
             throw new Error('هذا الحساب غير مصرّح له بالدخول');
         }
-
         showToast(`مرحباً ${adminUser} ✅`);
         await enterDashboard();
-
     } catch (err) {
         console.error(err);
         let msg = 'خطأ غير متوقع';
@@ -888,7 +1001,6 @@ $('adminLoginForm').addEventListener('submit', async (e) => {
         else if (err.code === 'auth/invalid-credential') msg = 'البريد أو كلمة المرور غير صحيحة';
         else if (err.code === 'auth/too-many-requests') msg = 'محاولات كثيرة، حاول لاحقاً';
         else if (err.message) msg = err.message;
-
         errEl.textContent = '❌ ' + msg;
         errEl.classList.add('show');
         $('adminPassword').value = '';
@@ -912,11 +1024,9 @@ $('adminLogoutBtn').addEventListener('click', async () => {
 async function enterDashboard() {
     if (dashboardInitialized) return;
     dashboardInitialized = true;
-
     $('adminLoginOverlay').classList.add('hidden');
     $('adminDashboard').classList.remove('hidden');
     $('adminEmailDisplay').textContent = adminUser;
-
     await loadAllData();
     setupAllListeners();
     updateConnectionStatus(true, 'متصل بقاعدة البيانات');
@@ -938,7 +1048,7 @@ async function loadAllData() {
         const cachedProducts = cacheManager.get('all_products');
 
         if (cachedStores && cachedProducts) {
-            console.log(`⚡ [Cache] stores: ${cacheManager.getAge('stores_list')} min | products: ${cacheManager.getAge('all_products')} min`);
+            console.log(`⚡ [Cache] stores: ${cacheManager.getAge('stores_list')} min`);
             allStores = cachedStores;
             allProducts = cachedProducts;
             processLoadedData();
@@ -946,7 +1056,6 @@ async function loadAllData() {
         }
 
         console.log('🌐 [Firestore] Fetching data...');
-
         const [storeSnap, productSnap] = await Promise.all([
             db.collection(STORES_COLLECTION).get(),
             db.collection(PRODUCTS_COLLECTION).get()
@@ -959,7 +1068,6 @@ async function loadAllData() {
         cacheManager.set('all_products', allProducts);
 
         processLoadedData();
-
     } catch (err) {
         console.error('❌ Load error:', err);
         showToast('فشل تحميل البيانات: ' + err.message, 'error');
@@ -1001,7 +1109,6 @@ function processLoadedData() {
     });
     if (currentProductStore) psel.value = currentProductStore;
 
-    // ✅ إذا كان المودال مفتوح، حدّث قائمة الفئات
     if (!$('productModal').classList.contains('hidden')) {
         refreshProductCategoriesSelect();
     }
@@ -1014,7 +1121,6 @@ function updateStats() {
     $('statStoresCount').textContent = allStores.length;
     $('statProductsCount').textContent = allProducts.length;
     $('statVerifiedCount').textContent = allStores.filter(s => s.is_verified).length;
-    /* ✅ جديد: عدد المتاجر المشتركة */
     $('statSubscribedCount').textContent = allStores.filter(s => s.is_subscribed === true).length;
 }
 
@@ -1054,12 +1160,10 @@ function renderStoresList() {
             ? `<span class="meta-pill meta-pill-verified"><i class="fas fa-check"></i> موثّق</span>`
             : `<span class="meta-pill meta-pill-not-verified">غير موثّق</span>`;
 
-        /* ✅ جديد: شارة الاشتراك */
         const subscribedBadge = s.is_subscribed === true
             ? `<span class="meta-pill meta-pill-subscribed"><i class="fas fa-crown"></i> مشترك</span>`
             : `<span class="meta-pill meta-pill-free"><i class="fas fa-lock"></i> مجاني</span>`;
 
-        /* ✅ جديد: عدد الفئات الإضافية */
         const extraCatsCount = Array.isArray(s.categories) ? s.categories.length : 0;
         const catsBadge = extraCatsCount > 0
             ? `<span class="meta-pill meta-pill-cats"><i class="fas fa-layer-group"></i> ${extraCatsCount} فئة إضافية</span>`
@@ -1070,6 +1174,28 @@ function renderStoresList() {
             : '<span style="color:#9ca3af;">—</span>';
 
         const safeName = escapeHtml(s.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+        // ✅ عرض كلمة المرور
+        const pwd = s.login_password ? String(s.login_password) : '';
+        const pwdEscaped = escapeHtml(pwd).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const passwordHtml = pwd
+            ? `
+                <div class="password-row">
+                    <span class="password-label"><i class="fas fa-key"></i> كلمة المرور:</span>
+                    <span class="password-badge" title="اضغط زر النسخ لنسخها">
+                        <span class="pwd-value">${escapeHtml(pwd)}</span>
+                        <span class="pwd-actions">
+                            <button type="button" onclick="event.stopPropagation(); toggleStorePasswordVisibility(this);" title="إخفاء/إظهار">
+                                <i class="fas fa-eye-slash"></i>
+                            </button>
+                            <button type="button" onclick="event.stopPropagation(); copyStorePassword('${pwdEscaped}', this);" title="نسخ">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </span>
+                    </span>
+                </div>
+              `
+            : `<div class="password-row"><span class="password-label"><i class="fas fa-key"></i> كلمة المرور:</span><span style="color:#9ca3af;font-size:0.75rem;font-weight:700;">غير محددة</span></div>`;
 
         html += `
             <div class="item-card">
@@ -1084,9 +1210,11 @@ function renderStoresList() {
                         ${catsBadge}
                     </div>
                     <div style="font-size:0.72rem;color:#6B7280;font-weight:700;">${whatsappHtml}</div>
+                    ${passwordHtml}
                 </div>
                 <div class="item-actions">
                     <button class="icon-btn icon-btn-edit" onclick="openStoreEdit('${s.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
+                    <button class="icon-btn icon-btn-key" onclick="quickChangePassword('${s.id}')" title="تغيير كلمة المرور"><i class="fas fa-key"></i></button>
                     <button class="icon-btn icon-btn-view" onclick="viewStoreProducts('${safeName}')" title="عرض المنتجات"><i class="fas fa-eye"></i></button>
                     <button class="icon-btn icon-btn-delete" onclick="deleteStore('${s.id}')" title="حذف"><i class="fas fa-trash"></i></button>
                 </div>
@@ -1132,7 +1260,6 @@ function renderProductsList() {
 
         const price = parseFloat(p.price || 0);
 
-        /* ✅ جديد: شارة الفئة للمنتج */
         const prodCatBadge = (p.category && String(p.category).trim())
             ? `<span class="meta-pill meta-pill-prodcat"><i class="fas fa-tag"></i> ${escapeHtml(p.category)}</span>`
             : '';
@@ -1298,7 +1425,7 @@ function setupRealtimeProductsListener() {
 }
 
 // ============================================================
-// 🏷️ Categories Tag Editor (جديد)
+// 🏷️ Categories Tag Editor
 // ============================================================
 function renderCategoriesTags() {
     const list = $('storeCategoriesList');
@@ -1332,34 +1459,15 @@ function renderCategoriesTags() {
 function addCategoryTag() {
     const input = $('newCategoryInput');
     if (!input) return;
-
     let val = sanitize(input.value);
-    if (!val) {
-        showToast('اكتب اسم الفئة أولاً', 'error');
-        input.focus();
-        return;
-    }
-    if (val.length > 40) {
-        showToast('اسم الفئة طويل جداً (40 حرف كحد أقصى)', 'error');
-        return;
-    }
+    if (!val) { showToast('اكتب اسم الفئة أولاً', 'error'); input.focus(); return; }
+    if (val.length > 40) { showToast('اسم الفئة طويل جداً (40 حرف كحد أقصى)', 'error'); return; }
 
-    // التحقق من عدم التكرار
     const mainCat = sanitize($('store_category').value).toLowerCase();
     const existsInExtra = currentEditingCategories.some(c => c.toLowerCase() === val.toLowerCase());
 
-    if (existsInExtra) {
-        showToast('هذه الفئة موجودة بالفعل', 'warning');
-        input.value = '';
-        input.focus();
-        return;
-    }
-    if (mainCat && val.toLowerCase() === mainCat) {
-        showToast('هذه الفئة هي الفئة الرئيسية', 'warning');
-        input.value = '';
-        input.focus();
-        return;
-    }
+    if (existsInExtra) { showToast('هذه الفئة موجودة بالفعل', 'warning'); input.value = ''; input.focus(); return; }
+    if (mainCat && val.toLowerCase() === mainCat) { showToast('هذه الفئة هي الفئة الرئيسية', 'warning'); input.value = ''; input.focus(); return; }
 
     currentEditingCategories.push(val);
     renderCategoriesTags();
@@ -1370,10 +1478,7 @@ function addCategoryTag() {
 
 $('addCategoryBtn')?.addEventListener('click', addCategoryTag);
 $('newCategoryInput')?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        addCategoryTag();
-    }
+    if (e.key === 'Enter') { e.preventDefault(); addCategoryTag(); }
 });
 
 // ============================================================
@@ -1390,7 +1495,6 @@ function openStoreModal(store = null) {
     $('store_cover_preview').classList.add('hidden');
     $('store_cover_preview').removeAttribute('src');
 
-    /* ✅ إعادة تعيين الفئات الإضافية */
     currentEditingCategories = [];
 
     if (isEdit) {
@@ -1406,9 +1510,8 @@ function openStoreModal(store = null) {
         $('store_cover').value = store.cover_url || '';
         $('store_followers').value = store.followers || 0;
         $('store_is_verified').checked = !!store.is_verified;
-        /* ✅ الاشتراك */
         $('store_is_subscribed').checked = store.is_subscribed === true;
-        /* ✅ الفئات الإضافية */
+
         if (Array.isArray(store.categories)) {
             currentEditingCategories = store.categories
                 .map(c => String(c || '').trim())
@@ -1454,13 +1557,21 @@ $('storeForm').addEventListener('submit', async (e) => {
 
     const id = $('store_id').value;
     const name = sanitize($('store_name').value);
-    const password = $('store_login_password').value;
+    let password = $('store_login_password').value.trim();
     const whatsapp = cleanPhone($('store_whatsapp').value);
     const mainCat = sanitize($('store_category').value);
 
     if (!name) { showToast('اسم المتجر مطلوب', 'error'); return; }
-    if (!password || password.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
     if (!whatsapp || whatsapp.length < 10) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
+
+    // ✅ توليد تلقائي إذا فارغة
+    if (!password) {
+        password = generateRandomPassword(10);
+        showToast('🎲 تم توليد كلمة مرور تلقائياً');
+    } else if (password.length < 4) {
+        showToast('كلمة المرور قصيرة (4 أحرف على الأقل)', 'error');
+        return;
+    }
 
     const isEdit = !!id;
     const originalName = ($('store_original_name').value || '').trim().toLowerCase();
@@ -1472,13 +1583,9 @@ $('storeForm').addEventListener('submit', async (e) => {
             if (String(s.id) === String(id)) return false;
             return String(s.name || '').trim().toLowerCase() === newNameLower;
         });
-        if (existing) {
-            showToast('يوجد متجر آخر بنفس الاسم', 'error');
-            return;
-        }
+        if (existing) { showToast('يوجد متجر آخر بنفس الاسم', 'error'); return; }
     }
 
-    /* ✅ تحضير الفئات الإضافية (تنظيف + إزالة المكرر مع الرئيسية) */
     const cleanCategories = currentEditingCategories
         .map(c => sanitize(c))
         .filter(Boolean)
@@ -1490,9 +1597,7 @@ $('storeForm').addEventListener('submit', async (e) => {
         name,
         login_password: password,
         category: mainCat,
-        /* ✅ الفئات الإضافية */
         categories: cleanCategories,
-        /* ✅ حالة الاشتراك */
         is_subscribed: $('store_is_subscribed').checked,
         description: sanitize($('store_description').value),
         whatsapp_number: whatsapp,
@@ -1530,11 +1635,9 @@ $('storeForm').addEventListener('submit', async (e) => {
             data.created_at = now;
             data.products_count = 0;
             await db.collection(STORES_COLLECTION).add(data);
-            showToast('✅ تمت إضافة المتجر بنجاح');
+            showToast(`✅ تمت الإضافة — كلمة المرور: ${password}`);
         }
-
         closeStoreModal();
-
     } catch (err) {
         console.error('❌ Save store error:', err);
         showToast('❌ فشل الحفظ: ' + (err.message || 'خطأ غير معروف'), 'error');
@@ -1563,13 +1666,11 @@ window.deleteStore = async (id) => {
     try {
         const prodSnap = await db.collection(PRODUCTS_COLLECTION)
             .where('store_name', '==', store.name).get();
-
         if (!prodSnap.empty) {
             await Promise.all(prodSnap.docs.map(d =>
                 db.collection(PRODUCTS_COLLECTION).doc(d.id).delete()
             ));
         }
-
         await db.collection(STORES_COLLECTION).doc(id).delete();
         showToast('✅ تم حذف المتجر وجميع منتجاته');
     } catch (err) {
@@ -1591,7 +1692,7 @@ window.viewStoreProducts = (storeName) => {
 };
 
 // ============================================================
-// 🏷️ Product Categories Select (يعتمد على المتجر)
+// 🏷️ Product Categories Select
 // ============================================================
 function refreshProductCategoriesSelect(selectedValue = null) {
     const storeName = $('product_store_name').value;
@@ -1618,13 +1719,11 @@ function refreshProductCategoriesSelect(selectedValue = null) {
     catSelect.innerHTML = '';
     catSelect.disabled = false;
 
-    // خيار "بدون فئة" (يظهر في القائمة الرئيسية للمتجر)
     const noCatOpt = document.createElement('option');
     noCatOpt.value = '';
     noCatOpt.textContent = '— بدون فئة (الفئة الرئيسية) —';
     catSelect.appendChild(noCatOpt);
 
-    // الفئة الرئيسية
     if (mainCat) {
         const opt = document.createElement('option');
         opt.value = mainCat;
@@ -1632,7 +1731,6 @@ function refreshProductCategoriesSelect(selectedValue = null) {
         catSelect.appendChild(opt);
     }
 
-    // الفئات الإضافية
     extraCats.forEach(cat => {
         const opt = document.createElement('option');
         opt.value = cat;
@@ -1641,13 +1739,9 @@ function refreshProductCategoriesSelect(selectedValue = null) {
         catSelect.appendChild(opt);
     });
 
-    // إعادة تعيين القيمة المختارة
-    if (selectedValue != null) {
-        catSelect.value = selectedValue;
-    }
+    if (selectedValue != null) catSelect.value = selectedValue;
 }
 
-// مراقبة تغيير المتجر → تحديث الفئات
 $('product_store_name')?.addEventListener('change', () => {
     refreshProductCategoriesSelect();
 });
@@ -1671,10 +1765,7 @@ function openProductModal(product = null) {
         $('product_store_name').value = product.store_name || '';
         $('product_price').value = product.price || 0;
         $('product_img_url').value = product.img_url || '';
-
-        // حدّث قائمة الفئات حسب المتجر
         refreshProductCategoriesSelect(product.category || '');
-
         if (product.img_url) {
             $('product_img_preview').src = product.img_url;
             $('product_img_preview').classList.remove('hidden');
@@ -1715,7 +1806,6 @@ $('productForm').addEventListener('submit', async (e) => {
     const data = {
         name,
         store_name: storeName,
-        /* ✅ الفئة داخل المتجر */
         category: productCategory || null,
         price,
         img_url: sanitize($('product_img_url').value),
@@ -1740,7 +1830,6 @@ $('productForm').addEventListener('submit', async (e) => {
             showToast('✅ تمت إضافة المنتج');
         }
         closeProductModal();
-
     } catch (err) {
         console.error('❌ Save product error:', err);
         showToast('❌ فشل الحفظ: ' + (err.message || 'خطأ غير معروف'), 'error');
@@ -1758,7 +1847,6 @@ window.deleteProduct = async (id) => {
     if (!confirm(`هل أنت متأكد من حذف المنتج "${product.name}"؟`)) return;
 
     suppressProductsToast = true;
-
     try {
         await db.collection(PRODUCTS_COLLECTION).doc(id).delete();
         showToast('✅ تم حذف المنتج');
@@ -1796,9 +1884,7 @@ function attachImagePreview(inputId, previewId) {
             preview.style.display = 'block';
         }
     });
-    preview.addEventListener('error', () => {
-        preview.classList.add('hidden');
-    });
+    preview.addEventListener('error', () => { preview.classList.add('hidden'); });
 }
 
 attachImagePreview('store_logo', 'store_logo_preview');
