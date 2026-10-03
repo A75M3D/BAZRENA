@@ -1,11 +1,12 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v9.2.0
+   BranZar App Core v9.3.0
    ✅ Multi-Layer Device Fingerprint Anti-Cheat
    ✅ Rate Limiter (Client-Side)
    ✅ Long-Term Cache
    ✅ Polling instead of onSnapshot (saves quota)
    ✅ Store Categories System (Free main + Locked additional)
    ✅ Rating Removal
+   ✅ Client-Side Category Filter (Backward Compatible)
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -389,8 +390,7 @@ let storesPollInterval = null;
 let storeProductsLastDoc = null;
 let storeProductsHasMore = false;
 let currentStoreNameForProducts = null;
-/* ✅ جديد: الفئة النشطة حالياً في مودال المتجر */
-let currentStoreCategoryForProducts = null;
+let currentStoreCategoryForProducts = null; /* ✅ الفئة النشطة حالياً */
 let isPageVisible = !document.hidden;
 let _followedCache = null, _favsCache = null;
 let _followedFromServer = new Set();
@@ -1071,7 +1071,7 @@ async function fetchProductsPage(cursorDoc, silent) {
   } catch(err) { throw err; }
 }
 
-/* ✅ تم إزالة التقييم من بطاقات المنتجات */
+/* ✅ بدون تقييم — فقط السعر */
 function renderProductsBatch(items) {
   const grid = document.getElementById('allProductsGrid');
   if (!items.length) return;
@@ -1479,11 +1479,6 @@ function highlightCategory(active) {
    ✅ STORE CATEGORIES — نظام الفئات المتقدم
    ═══════════════════════════════════════════════════════════ */
 
-/**
- * يعرض شريط فئات المتجر:
- * - الفئة الرئيسية (store.category) → مجانية دائماً
- * - الفئات الإضافية (store.categories) → مقفلة إلا لو is_subscribed
- */
 function renderStoreCategoryTabs(store) {
   const container = document.getElementById('storeCategoriesTabs');
   if (!container) return;
@@ -1540,9 +1535,6 @@ function renderStoreCategoryTabs(store) {
   });
 }
 
-/**
- * تنشيط Tab معين وتحميل منتجاته
- */
 function selectStoreCategoryTab(tab, category) {
   const container = document.getElementById('storeCategoriesTabs');
   if (container) {
@@ -1559,9 +1551,6 @@ function selectStoreCategoryTab(tab, category) {
   if (currentStore) loadStoreProducts(currentStore.name, currentStoreCategoryForProducts);
 }
 
-/**
- * يعيد جلب بيانات المتجر من السيرفر عند فتح المودال (لظهور الفئات فوراً)
- */
 async function refreshStoreDataOnOpen(storeId) {
   if (!storeId) return;
   if (!RateLimiter.canRequest('store_refresh')) return;
@@ -1640,7 +1629,6 @@ function openStoreModal(store) {
   if (phone) { callBtn.href = 'tel:' + phone; callBtn.style.display = ''; } else callBtn.style.display = 'none';
   if (wa) { waBtn.href = 'https://wa.me/' + wa.replace(/[^0-9]/g, ''); waBtn.style.display = ''; } else waBtn.style.display = 'none';
 
-  // ✅ عرض الفئات + تحميل منتجات الفئة الرئيسية
   renderStoreCategoryTabs(store);
   loadStoreProducts(store.name, currentStoreCategoryForProducts);
 
@@ -1649,7 +1637,6 @@ function openStoreModal(store) {
   document.getElementById('storeModal').querySelector('.modal-content').scrollTop = 0;
   bzrPushModal();
 
-  // ✅ تحديث فوري للفئات عند فتح المودال
   refreshStoreDataOnOpen(currentStoreId);
 
   const storeIdSnapshot = currentStoreId;
@@ -1742,7 +1729,39 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
   }
 });
 
-/* ═══ STORE PRODUCTS ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ STORE PRODUCTS — استعلام بسيط + فلترة على العميل
+   ═══════════════════════════════════════════════════════════ */
+
+/**
+ * ✅ الفلترة الذكية على العميل — متوافقة مع البيانات القديمة والجديدة
+ * - الفئة الرئيسية → منتجات بدون category أو category = الرئيسية
+ * - فئة إضافية → منتجات فئتها = الفئة الإضافية فقط
+ */
+function filterStoreProductsByCategory(products, category) {
+  if (!Array.isArray(products)) return [];
+  if (!category) return products;
+
+  const mainCat = (currentStore && currentStore.category && String(currentStore.category).trim())
+    ? String(currentStore.category).trim()
+    : null;
+
+  // التبويب الرئيسي → المنتجات بدون فئة أو فئتها الرئيسية
+  if (category === mainCat) {
+    return products.filter(p => {
+      const pc = String(p.category || '').trim();
+      return !pc || pc === mainCat;
+    });
+  }
+
+  // تبويب فئة إضافية → فقط المنتجات بهذه الفئة
+  return products.filter(p => String(p.category || '').trim() === category);
+}
+
+/**
+ * ✅ يستخدم استعلام بسيط بـ store_name فقط (متوافق مع البيانات القديمة)
+ * ثم يفلتر على العميل حسب الفئة
+ */
 async function loadStoreProducts(storeName, category) {
   const grid = document.getElementById('storeProductsGrid');
   const loadMoreBtn = document.getElementById('loadMoreStoreProductsBtn');
@@ -1753,13 +1772,16 @@ async function loadStoreProducts(storeName, category) {
   storeProductsLastDoc = null;
   storeProductsHasMore = false;
 
-  const cacheKey = 'store_products_page1_' + storeName + (category ? '__' + category : '');
+  // ✅ Cache key: بالمتجر فقط (نخزّن القائمة الخام)
+  const cacheKey = 'store_products_page1_' + storeName;
   const cached = cacheManager.get(cacheKey);
+
   if (cached && Array.isArray(cached.items)) {
-    if (!cached.items.length) {
+    const filtered = filterStoreProductsByCategory(cached.items, category);
+    if (!filtered.length) {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات في هذه الفئة</div>';
     } else {
-      renderStoreProducts(cached.items);
+      renderStoreProducts(filtered);
     }
     storeProductsHasMore = cached.hasMore === true;
     if (storeProductsHasMore) loadMoreBtn.classList.remove('hidden');
@@ -1769,69 +1791,93 @@ async function loadStoreProducts(storeName, category) {
   if (!RateLimiter.canRequest('store_products')) return;
 
   try {
-    let q = db.collection('products').where('store_name', '==', storeName);
-    if (category) q = q.where('category', '==', category);
-    q = q.limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
+    // ✅ استعلام بسيط بـ store_name فقط — بدون composite index
+    let q = db.collection('products')
+      .where('store_name', '==', storeName)
+      .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
 
     let snap;
     try {
       snap = await q.get();
     } catch(innerErr) {
-      // Fallback: بدون orderBy
-      let q2 = db.collection('products').where('store_name', '==', storeName);
-      if (category) q2 = q2.where('category', '==', category);
-      q2 = q2.limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
-      snap = await q2.get();
+      // Fallback: بدون orderBy (لو الحقل غير موجود)
+      snap = await db.collection('products')
+        .where('store_name', '==', storeName)
+        .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
+        .get();
     }
 
-    // Fallback للفئة الرئيسية لو مفيش category field على المنتجات (توافق خلفي)
-    if (category && snap.empty && currentStore && category === currentStore.category) {
-      try {
-        let qAll = db.collection('products').where('store_name', '==', storeName).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
-        try { qAll = qAll.orderBy('created_at', 'desc'); } catch(e){}
-        snap = await qAll.get();
-      } catch(e){}
-    }
-
-    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
     storeProductsHasMore = snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE;
 
-    if (!list.length) {
+    const filtered = filterStoreProductsByCategory(rawList, category);
+
+    if (!filtered.length) {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات في هذه الفئة</div>';
     } else {
-      renderStoreProducts(list);
+      renderStoreProducts(filtered);
       if (storeProductsHasMore) loadMoreBtn.classList.remove('hidden');
-      cacheManager.set(cacheKey, { items: list, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
     }
+
+    // ✅ تخزين القائمة الخام (غير مفلترة)
+    cacheManager.set(cacheKey, { items: rawList, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
+
   } catch(err) {
+    console.error('[BZR] loadStoreProducts error:', err);
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">تعذر التحميل</div>';
   }
 }
 
+/* ✅ زر عرض المزيد — بسيط بدون فئة */
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('loadMoreStoreProductsBtn');
   if (btn.disabled || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
   if (!RateLimiter.canRequest('store_products')) { showToast('رجاء المحاولة لاحقاً'); return; }
   btn.disabled = true;
   haptic('light');
+
   try {
-    let q = db.collection('products').where('store_name', '==', currentStoreNameForProducts);
-    if (currentStoreCategoryForProducts) q = q.where('category', '==', currentStoreCategoryForProducts);
-    q = q.startAfter(storeProductsLastDoc).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
+    let q = db.collection('products')
+      .where('store_name', '==', currentStoreNameForProducts)
+      .startAfter(storeProductsLastDoc)
+      .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
-    const snap = await q.get();
-    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    let snap;
+    try {
+      snap = await q.get();
+    } catch(e) {
+      snap = await db.collection('products')
+        .where('store_name', '==', currentStoreNameForProducts)
+        .startAfter(storeProductsLastDoc)
+        .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
+        .get();
+    }
+
+    const rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
     storeProductsHasMore = snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE;
-    if (list.length) renderStoreProducts(list, true);
+
+    const filtered = filterStoreProductsByCategory(rawList, currentStoreCategoryForProducts);
+    if (filtered.length) renderStoreProducts(filtered, true);
+
+    // ✅ تحديث الـ Cache بالقائمة الخام
+    const cacheKey = 'store_products_page1_' + currentStoreNameForProducts;
+    const cached = cacheManager.get(cacheKey);
+    const allItems = (cached && Array.isArray(cached.items)) ? cached.items.concat(rawList) : rawList;
+    cacheManager.set(cacheKey, { items: allItems, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
+
     if (!storeProductsHasMore) btn.classList.add('hidden');
-  } catch(e){ showToast('تعذر تحميل المزيد'); }
+  } catch(e){
+    console.error('[BZR] loadMore error:', e);
+    showToast('تعذر تحميل المزيد');
+  }
   btn.disabled = false;
 });
 
-/* ✅ تم إزالة التقييم من بطاقات منتجات المتجر */
+/* ✅ بدون تقييم */
 function renderStoreProducts(products, append) {
   const grid = document.getElementById('storeProductsGrid');
   if (!append) grid.innerHTML = '';
@@ -2403,7 +2449,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.2.0',
+  version: '9.3.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
