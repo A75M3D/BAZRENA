@@ -166,8 +166,6 @@
         .icon-btn-view:hover { background: #D1FAE5; transform: scale(1.05); }
         .icon-btn-delete { background: #FEF2F2; color: #EF4444; }
         .icon-btn-delete:hover { background: #FEE2E2; transform: scale(1.05); }
-        .icon-btn-key { background: #FEF3C7; color: #92400E; }
-        .icon-btn-key:hover { background: #FDE68A; transform: scale(1.05); }
         .empty-state { text-align: center; padding: 2.5rem 1rem; }
         .empty-state-icon { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #FFF7ED, #FFF1E0); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #FFA64D; }
         .empty-state-title { font-size: 1rem; font-weight: 900; color: #374151; margin-bottom: 0.35rem; }
@@ -204,7 +202,6 @@
         @media (min-width: 640px) { .form-label { font-size: 0.88rem; } }
         .form-label i { color: #FF7A00; font-size: 0.78rem; }
         .form-label .req { color: #EF4444; }
-        .form-label .optional { color: #9CA3AF; font-weight: 700; font-size: 0.72rem; }
         .form-input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.92rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif; }
         @media (min-width: 640px) { .form-input { padding: 0.9rem 1.1rem; font-size: 0.95rem; } }
         .form-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
@@ -252,8 +249,6 @@
         .upload-btn:active:not(:disabled) { transform: translateY(0); }
         .upload-btn:disabled { opacity: 0.75; cursor: not-allowed; }
         .upload-btn i { font-size: 0.9rem; }
-        .upload-btn.generate-btn { background: linear-gradient(135deg, #8b5cf6, #a78bfa); box-shadow: 0 6px 16px -8px rgba(139,92,246,0.7); }
-        .upload-btn.generate-btn:hover:not(:disabled) { box-shadow: 0 10px 24px -8px rgba(139,92,246,0.95); }
         @media (max-width: 480px) { .upload-btn span { display: none; } .upload-btn { padding: 0 0.85rem; } }
     </style>
 </head>
@@ -435,19 +430,9 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">
-                    <i class="fas fa-key"></i>
-                    <span>كلمة مرور الدخول</span>
-                    <span class="optional">(اختياري — تُولَّد تلقائياً إن تُركت فارغة)</span>
-                </label>
-                <div class="url-upload-group">
-                    <input type="text" id="store_login_password" class="form-input" placeholder="اتركه فارغاً للتوليد التلقائي" minlength="4" style="font-family: 'Courier New', monospace; letter-spacing: 0.5px;">
-                    <button type="button" id="generatePasswordBtn" class="upload-btn generate-btn" title="توليد كلمة مرور قوية">
-                        <i class="fas fa-dice"></i>
-                        <span>توليد</span>
-                    </button>
-                </div>
-                <div class="form-hint"><i class="fas fa-eye"></i> كلمة المرور تظهر بوضوح في بطاقة المتجر — لا حاجة لحفظها يدوياً</div>
+                <label class="form-label"><i class="fas fa-key"></i><span>كلمة مرور الدخول</span><span class="req">*</span></label>
+                <input type="text" id="store_login_password" class="form-input" required placeholder="كلمة مرور صاحب المتجر" minlength="4" style="font-family: 'Courier New', monospace; letter-spacing: 0.5px;">
+                <div class="form-hint"><i class="fas fa-info-circle"></i> سيستخدمها صاحب المتجر للدخول إلى لوحة تحكم متجره</div>
             </div>
 
             <div class="form-group">
@@ -639,22 +624,8 @@ const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 // ============================================================
-// 🔐 توليد كلمة مرور عشوائية
+// 🔐 نسخ كلمة المرور وإظهارها
 // ============================================================
-function generateRandomPassword(length = 10) {
-    const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
-    let pwd = '';
-    const cryptoObj = window.crypto || window.msCrypto;
-    if (cryptoObj && cryptoObj.getRandomValues) {
-        const arr = new Uint32Array(length);
-        cryptoObj.getRandomValues(arr);
-        for (let i = 0; i < length; i++) pwd += chars[arr[i] % chars.length];
-    } else {
-        for (let i = 0; i < length; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return pwd;
-}
-
 async function copyToClipboard(text) {
     if (!text) return false;
     try {
@@ -700,49 +671,11 @@ window.toggleStorePasswordVisibility = (el) => {
     }
 };
 
-// ✅ تغيير كلمة المرور مباشرة من البطاقة
-window.quickChangePassword = async (storeId) => {
-    const store = allStores.find(s => String(s.id) === String(storeId));
-    if (!store) return;
-
-    const currentPwd = store.login_password || '(غير محددة)';
-    const newPwd = prompt(
-        `🔑 تغيير كلمة مرور المتجر:\n"${store.name}"\n\n` +
-        `كلمة المرور الحالية: ${currentPwd}\n\n` +
-        `اكتب كلمة المرور الجديدة (أو اترك الحقل فارغاً للتوليد التلقائي):`,
-        ''
-    );
-
-    if (newPwd === null) return;
-
-    let finalPwd = String(newPwd).trim();
-    if (!finalPwd) {
-        finalPwd = generateRandomPassword(10);
-        showToast('🎲 تم توليد كلمة مرور جديدة');
-    } else if (finalPwd.length < 4) {
-        showToast('كلمة المرور قصيرة (4 أحرف على الأقل)', 'error');
-        return;
-    }
-
-    suppressStoresToast = true;
-    try {
-        await db.collection(STORES_COLLECTION).doc(storeId).update({
-            login_password: finalPwd,
-            updated_at: Date.now()
-        });
-        showToast(`✅ تم تحديث كلمة المرور: ${finalPwd}`);
-    } catch (err) {
-        showToast('❌ فشل التحديث: ' + err.message, 'error');
-    } finally {
-        setTimeout(() => { suppressStoresToast = false; }, 2000);
-    }
-};
-
 // ============================================================
 // 🗄️ Cache
 // ============================================================
 const CACHE_DURATION = 100 * 60 * 60 * 1000;
-const CACHE_PREFIX = 'bazrena_admin_cache_v3_';
+const CACHE_PREFIX = 'bazrena_admin_cache_v4_';
 
 const cacheManager = {
     set(key, value) {
@@ -935,20 +868,6 @@ document.addEventListener('click', (e) => {
     const targetInput = document.getElementById(targetId);
     if (!targetInput) return;
     openFilePickerAndUpload(btn, targetInput);
-});
-
-// زر توليد كلمة المرور
-document.addEventListener('click', (e) => {
-    const btn = e.target.closest('#generatePasswordBtn');
-    if (!btn) return;
-    e.preventDefault();
-    const input = $('store_login_password');
-    if (!input) return;
-    input.value = generateRandomPassword(10);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    showToast('🎲 تم توليد كلمة مرور جديدة');
-    input.focus();
-    input.select();
 });
 
 // ============================================================
@@ -1214,7 +1133,6 @@ function renderStoresList() {
                 </div>
                 <div class="item-actions">
                     <button class="icon-btn icon-btn-edit" onclick="openStoreEdit('${s.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
-                    <button class="icon-btn icon-btn-key" onclick="quickChangePassword('${s.id}')" title="تغيير كلمة المرور"><i class="fas fa-key"></i></button>
                     <button class="icon-btn icon-btn-view" onclick="viewStoreProducts('${safeName}')" title="عرض المنتجات"><i class="fas fa-eye"></i></button>
                     <button class="icon-btn icon-btn-delete" onclick="deleteStore('${s.id}')" title="حذف"><i class="fas fa-trash"></i></button>
                 </div>
@@ -1557,21 +1475,13 @@ $('storeForm').addEventListener('submit', async (e) => {
 
     const id = $('store_id').value;
     const name = sanitize($('store_name').value);
-    let password = $('store_login_password').value.trim();
+    const password = $('store_login_password').value.trim();
     const whatsapp = cleanPhone($('store_whatsapp').value);
     const mainCat = sanitize($('store_category').value);
 
     if (!name) { showToast('اسم المتجر مطلوب', 'error'); return; }
+    if (!password || password.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
     if (!whatsapp || whatsapp.length < 10) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
-
-    // ✅ توليد تلقائي إذا فارغة
-    if (!password) {
-        password = generateRandomPassword(10);
-        showToast('🎲 تم توليد كلمة مرور تلقائياً');
-    } else if (password.length < 4) {
-        showToast('كلمة المرور قصيرة (4 أحرف على الأقل)', 'error');
-        return;
-    }
 
     const isEdit = !!id;
     const originalName = ($('store_original_name').value || '').trim().toLowerCase();
@@ -1635,7 +1545,7 @@ $('storeForm').addEventListener('submit', async (e) => {
             data.created_at = now;
             data.products_count = 0;
             await db.collection(STORES_COLLECTION).add(data);
-            showToast(`✅ تمت الإضافة — كلمة المرور: ${password}`);
+            showToast('✅ تمت إضافة المتجر بنجاح');
         }
         closeStoreModal();
     } catch (err) {
