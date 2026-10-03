@@ -1,5 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v8.1.0 — Styles (Mobile App Optimized)
+   BranZar v9.2.0 — Styles (Mobile App Optimized)
+   ✅ Store Categories Tabs (Free + Locked)
+   ✅ Rating Removal
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -79,6 +81,13 @@ body.theme-dark #bzrSplash { background: linear-gradient(160deg, #0F172A 0%, #1E
 body.theme-dark .bzr-splash-logo { background: #1E293B; }
 body.theme-dark .account-avatar { background: #1E293B; }
 body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
+
+/* ✅ جديد: عناصر الفئات في الوضع الداكن */
+body.theme-dark .store-cat-tab { background: #334155; border-color: #475569; color: #CBD5E1; }
+body.theme-dark .store-cat-tab.main-tab { background: #3B2410; border-color: #FF7A00; color: #FF7A00; }
+body.theme-dark .store-cat-tab.main-tab.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; }
+body.theme-dark .store-cat-tab.locked { background: #1E293B; border-color: #334155; color: #64748B; }
+body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A; color: #FFA64D; }
 
 /* ═══ SPLASH ═══ */
 #bzrSplash {
@@ -161,7 +170,7 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .ripple.animate::after { animation: rippleAnim 0.6s ease; }
 @keyframes rippleAnim { from { transform: scale(0); opacity: 0.7; } to { transform: scale(2); opacity: 0; } }
 
-/* ═══ SECTIONS (تم ضغط المسافات) ═══ */
+/* ═══ SECTIONS ═══ */
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .section-title-group { display: flex; align-items: center; gap: 8px; }
 .section-icon-circle { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#FF7A00,#FFA64D); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.85rem; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); }
@@ -222,7 +231,7 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .store-card .store-name { font-weight: 800; font-size: 0.95rem; color: var(--c-text); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
 .store-card .store-category { color: var(--c-text-soft); font-size: 0.75rem; margin-top: 2px; }
 
-/* ✅ شارة فيسبوك الأصلية - SVG */
+/* ✅ شارة فيسبوك الأصلية */
 .verified-icon {
   display: inline-flex;
   align-items: center;
@@ -233,7 +242,6 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
   vertical-align: middle;
   filter: drop-shadow(0 1px 2px rgba(24, 119, 242, 0.4));
 }
-
 .verified-icon svg {
   width: 100%;
   height: 100%;
@@ -284,15 +292,32 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .color-swatch.active.light-color::after { color: #0F172A; text-shadow: none; }
 .card-color-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid #fff; box-shadow: 0 1px 3px rgba(15,23,42,0.2); }
 #productModalName { font-size: 1.15rem; font-weight: 900; margin: 0 0 0.4rem; color: var(--c-text); }
-.product-rating-row { display: flex; align-items: center; gap: 6px; margin-bottom: 0.6rem; font-size: 0.82rem; flex-wrap: wrap; }
-.star-icon { color: #FBBF24; }
-#productModalRating { font-weight: 800; color: var(--c-text); }
-.separator { color: var(--c-border); }
-#productModalStore { color: #FF7A00; font-weight: 800; }
-.product-price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem; flex-wrap: wrap; }
 .price-current { font-size: 1.3rem; font-weight: 900; color: #FF7A00; }
 .price-original { font-size: 0.95rem; text-decoration: line-through; color: var(--c-text-soft); font-weight: 700; }
+.product-price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem; flex-wrap: wrap; }
 .product-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* ✅ جديد: صف المتجر في Product Modal (بديل Rating) */
+.product-store-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #FF7A00;
+  margin-bottom: 0.8rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--c-primary-soft);
+  border-radius: 10px;
+  border: 1px solid #FFE0BD;
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.product-store-row i { font-size: 0.8rem; flex-shrink: 0; }
+.product-store-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ═══ CART ═══ */
 #cartSidebar { position: fixed; top: 0; left: 0; height: 100%; width: 100%; max-width: 400px; background: var(--c-surface); z-index: 1500; transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); display: flex; flex-direction: column; box-shadow: -4px 0 25px rgba(15,23,42,0.15); }
@@ -327,7 +352,6 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .store-header-info { flex: 1; min-width: 0; padding-bottom: 4px; text-align: right; }
 .store-header-name { font-size: 1.15rem; font-weight: 900; color: var(--c-text); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; line-height: 1.25; }
 .store-header-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 0.82rem; flex-wrap: wrap; }
-.store-meta-rating { display: inline-flex; align-items: center; gap: 4px; color: #FF7A00; font-weight: 900; background: var(--c-primary-soft); border: 1px solid #FFE0BD; padding: 0.15rem 0.5rem; border-radius: 9999px; }
 .store-meta-category { display: inline-flex; align-items: center; gap: 4px; color: var(--c-secondary); font-weight: 700; font-size: 0.78rem; background: var(--c-secondary-soft); padding: 0.2rem 0.6rem; border-radius: 9999px; }
 .store-desc { text-align: center; color: var(--c-text-soft); font-size: 0.88rem; line-height: 1.8; margin: 1rem auto 0; max-width: 600px; }
 .store-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1.1rem; }
@@ -338,6 +362,89 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .store-action-btn.primary.following { background: var(--c-surface); color: #FF7A00; }
 .store-action-btn.static { cursor: default; pointer-events: none; }
 .store-action-btn .icon-circle { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-size: 0.85rem; background: linear-gradient(135deg, #FF7A00, #FFA64D); }
+
+/* ═══════════════════════════════════════════════════════════
+   ✅ جديد: STORE CATEGORIES TABS — نظام الفئات المتقدم
+   ═══════════════════════════════════════════════════════════ */
+.store-categories-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 14px 2px 4px;
+  margin-top: 4px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  direction: rtl;
+}
+.store-categories-tabs::-webkit-scrollbar { display: none; }
+.store-categories-tabs:empty { display: none; }
+
+.store-cat-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  background: var(--c-surface-2);
+  border: 1.5px solid var(--c-border);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: var(--c-text-soft);
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
+  line-height: 1;
+}
+.store-cat-tab i { font-size: 0.78rem; }
+.store-cat-tab:hover { transform: translateY(-1px); border-color: #FF7A00; color: #FF7A00; }
+.store-cat-tab:active { transform: scale(0.95); }
+
+.store-cat-tab.active {
+  background: linear-gradient(135deg, #FF7A00, #FFA64D);
+  color: #fff;
+  border-color: #FF7A00;
+  box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6);
+}
+.store-cat-tab.active .lock-icon { color: #fff; }
+
+.store-cat-tab.locked {
+  opacity: 0.72;
+  background: var(--c-surface-2);
+  color: var(--c-text-soft);
+  border-style: dashed;
+  cursor: pointer;
+}
+.store-cat-tab.locked:hover {
+  opacity: 0.9;
+  color: #FF7A00;
+  border-color: #FF7A00;
+  border-style: solid;
+}
+
+.store-cat-tab .lock-icon {
+  color: #FF7A00;
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.store-cat-tab.main-tab {
+  border-color: #FF7A00;
+  background: var(--c-primary-soft);
+  color: #FF7A00;
+}
+.store-cat-tab.main-tab.active {
+  background: linear-gradient(135deg, #FF7A00, #FFA64D);
+  color: #fff;
+}
+
+/* ═══ STORE PRODUCTS ═══ */
 .divider-strip { height: 8px; background: var(--c-surface-2); margin: 1.2rem 0; }
 .store-products-section { padding: 0 1rem 1.5rem; }
 .store-products-header { display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem; }
@@ -353,7 +460,6 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 .store-product-img-wrap img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
 .store-product-info { padding: 0.5rem 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 4px; flex: 1; }
 .store-product-name { font-size: 0.85rem; font-weight: 800; color: var(--c-text); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.store-product-rating { display: flex; align-items: center; gap: 4px; font-size: 0.72rem; color: #FF7A00; font-weight: 800; }
 .store-product-price { font-size: 0.9rem; font-weight: 900; color: #FF7A00; text-align: right; margin-top: auto; }
 .store-product-btn { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; height: 36px; background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 0.78rem; cursor: pointer; transition: all 0.25s ease; }
 .store-product-btn:active { transform: scale(0.96); }
@@ -484,19 +590,16 @@ body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 /* ═══════════════════════════════════════════════════════════
    VIEW TOGGLE GRID OVERRIDES (Desktop vs Mobile)
    ═══════════════════════════════════════════════════════════ */
-/* وضع الهاتف: منتجين في الصف */
 body.view-mobile #allProductsGrid,
 body.view-mobile .store-products-grid {
     grid-template-columns: repeat(2, 1fr) !important;
 }
 
-/* وضع سطح المكتب: 3 منتجات في الصف */
 body.view-desktop #allProductsGrid,
 body.view-desktop .store-products-grid {
     grid-template-columns: repeat(3, 1fr) !important;
 }
 
-/* التأكد من أن وضع سطح المكتب يعرض 3 منتجات حتى على الشاشات الكبيرة */
 @media (min-width: 1024px) {
     body.view-desktop #allProductsGrid,
     body.view-desktop .store-products-grid {
