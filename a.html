@@ -194,8 +194,8 @@
         @media (min-width: 640px) { .card-title { font-size: 1.1rem; } }
         .card-title-icon { width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; box-shadow: 0 6px 14px -4px rgba(255,122,0,0.5); }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.65rem; margin-bottom: 1.25rem; }
-        @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 0.85rem; } }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.65rem; margin-bottom: 1.25rem; }
+        @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 0.85rem; } }
         .stat-box { background: linear-gradient(135deg, #FFF7ED 0%, #FFF1E0 100%); border: 1.5px solid #FFE0BD; border-radius: 1rem; padding: 0.85rem 0.75rem; text-align: center; transition: all 0.22s; }
         @media (min-width: 640px) { .stat-box { padding: 1.1rem 1rem; } }
         .stat-box:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(255,122,0,0.35); }
@@ -264,7 +264,6 @@
         .product-meta { display: flex; align-items: center; gap: 0.75rem; font-size: 0.78rem; flex-wrap: wrap; }
         .product-price { font-weight: 900; color: #FF7A00; font-size: 0.88rem; }
         @media (min-width: 640px) { .product-price { font-size: 0.95rem; } }
-        .product-rating { display: inline-flex; align-items: center; gap: 3px; color: #F59E0B; font-weight: 800; font-size: 0.78rem; }
         .product-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
         .icon-btn { width: 36px; height: 36px; border-radius: 0.7rem; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; font-size: 0.82rem; }
         @media (min-width: 640px) { .icon-btn { width: 40px; height: 40px; font-size: 0.9rem; } }
@@ -451,11 +450,6 @@
 
             <div id="storeSection" class="tab-content">
                 <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-box-icon"><i class="fas fa-star"></i></div>
-                        <div class="stat-box-value" id="ro_ratting">0.0</div>
-                        <div class="stat-box-label">التقييم</div>
-                    </div>
                     <div class="stat-box">
                         <div class="stat-box-icon"><i class="fas fa-users"></i></div>
                         <div class="stat-box-value" id="ro_followers">0</div>
@@ -652,14 +646,6 @@
                                     <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج" onerror="this.style.display='none'">
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-star"></i>
-                                        <span>التقييم</span>
-                                    </label>
-                                    <input type="number" id="product_ratting" class="form-input" value="0" min="0" max="5" step="0.1" dir="ltr" style="text-align: right;">
-                                </div>
-
                                 <div class="section-divider">
                                     <i class="fas fa-palette"></i>
                                     <span>ألوان المنتج (اختياري)</span>
@@ -731,13 +717,6 @@
 <script>
 /* ═══════════════════════════════════════════════════════════════
    🔑 إعدادات Cloudinary
-   ═══════════════════════════════════════════════════════════════
-   📌 للحصول على المفاتيح (بدون بطاقة بنكية):
-   1. سجّل في https://cloudinary.com
-   2. من الـ Dashboard، انسخ "Cloud name"
-   3. اذهب إلى Settings > Upload > Upload presets
-   4. أضف Upload preset جديد واختر Signing Mode = Unsigned
-   5. انسخ اسم الـ Preset والصقه بالأسفل
    ═══════════════════════════════════════════════════════════════ */
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh'; 
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
@@ -861,7 +840,7 @@ function updateConnectionStatus(success, message) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   📤 رفع الصور إلى Cloudinary (يدعم CORS)
+   📤 رفع الصور إلى Cloudinary
    ═══════════════════════════════════════════════════════════════ */
 async function uploadImageToHost(file) {
     if (!file) throw new Error('لم يتم اختيار ملف');
@@ -932,7 +911,6 @@ function openFilePickerAndUpload(button, targetInput) {
     fileInput.click();
 }
 
-// معالج مفوّض لجميع أزرار الرفع
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-upload-target]');
     if (!btn) return;
@@ -1329,9 +1307,6 @@ function fillStoreForm(store) {
     $('store_logo').value = store.logo_url || '';
     $('store_cover').value = store.cover_url || '';
 
-    const rating = parseFloat(store.ratting) || 0;
-    $('ro_ratting').innerHTML = `${rating.toFixed(1)} <i class="fas fa-star" style="font-size:0.7rem;color:#F59E0B;"></i>`;
-
     const followers = parseInt(store.followers) || 0;
     $('ro_followers').textContent = followers.toLocaleString();
 
@@ -1536,7 +1511,6 @@ function renderMyProductsList(products) {
     let html = '';
     products.forEach(product => {
         const price = parseFloat(product.price || 0);
-        const rating = parseFloat(product.ratting || 0);
 
         const thumbHtml = product.img_url
             ? `<img src="${escapeHtml(product.img_url)}" class="product-thumb" alt="${escapeHtml(product.name)}" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
@@ -1561,7 +1535,6 @@ function renderMyProductsList(products) {
                     <div class="product-name">${escapeHtml(product.name)}</div>
                     <div class="product-meta">
                         <span class="product-price">${price.toLocaleString()} ج.س</span>
-                        <span class="product-rating"><i class="fas fa-star"></i> ${rating}</span>
                         ${colorDotsHTML}
                     </div>
                 </div>
@@ -1687,7 +1660,6 @@ $('productForm').addEventListener('submit', async (e) => {
         store_name: currentStore.name,
         price: price,
         img_url: sanitizeInput($('product_img_url').value),
-        ratting: toNumber($('product_ratting').value),
         colors: colors.length > 0 ? colors : null
     };
 
@@ -1744,7 +1716,6 @@ window.editProduct = async (id) => {
         $('product_name').value = data.name || '';
         $('product_price').value = data.price || 0;
         $('product_img_url').value = data.img_url || '';
-        $('product_ratting').value = data.ratting || 0;
 
         if (data.img_url) {
             $('product_img_preview').src = data.img_url;
