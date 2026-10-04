@@ -606,3 +606,66 @@ body.view-desktop .store-products-grid {
         grid-template-columns: repeat(3, 1fr) !important;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   💡 تلميح "اسحب لمشاهدة المزيد" — لفئات الصفحة الرئيسية
+   ═══════════════════════════════════════════════════════════ */
+.categories-scroll-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+  border: 1.5px solid #FFB377;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #C2410C;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px -3px rgba(255,122,0,0.4);
+  animation: hintPulse 2.5s ease-in-out infinite;
+  margin: 0 auto;
+}
+
+@keyframes hintPulse {
+  0%, 100% {
+    transform: translateX(0);
+    box-shadow: 0 3px 10px -3px rgba(255,122,0,0.4);
+  }
+  50% {
+    transform: translateX(-2px);
+    box-shadow: 0 5px 16px -3px rgba(255,122,0,0.6);
+  }
+}
+
+.categories-scroll-hint > i.fa-hand-point-left {
+  font-size: 0.85rem;
+  color: #FF7A00;
+  animation: handWave 1.5s ease-in-out infinite;
+}
+
+@keyframes handWave {
+  0%, 100% { transform: rotate(0) scale(1); }
+  25% { transform: rotate(-15deg) scale(1.1); }
+  50% { transform: rotate(0) scale(1); }
+  75% { transform: rotate(-10deg) scale(1.05); }
+}
+
+/* 🌙 الوضع الداكن */
+body.theme-dark .categories-scroll-hint {
+  background: linear-gradient(135deg, #3B2410 0%, #4A2E14 100%);
+  border-color: #FF7A00;
+  color: #FFA64D;
+}
+
+/* 📱 على الشاشات الصغيرة */
+@media (max-width: 480px) {
+  .categories-scroll-hint {
+    font-size: 0.65rem;
+    padding: 4px 10px;
+    gap: 5px;
+  }
+  .categories-scroll-hint > i.fa-hand-point-left {
+    font-size: 0.75rem;
+  }
+}
