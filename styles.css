@@ -608,64 +608,163 @@ body.view-desktop .store-products-grid {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   💡 تلميح "اسحب لمشاهدة المزيد" — لفئات الصفحة الرئيسية
+   💫 تلميح "اسحب لمشاهدة المزيد" — تصميم أنيق ومندمج
    ═══════════════════════════════════════════════════════════ */
+
 .categories-scroll-hint {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-  border: 1.5px solid #FFB377;
+  gap: 5px;
+  padding: 4px 11px 4px 9px;
+  background: rgba(255, 122, 0, 0.08);
+  border: 1px solid rgba(255, 122, 0, 0.2);
   border-radius: 9999px;
-  font-size: 0.72rem;
-  font-weight: 800;
+  font-size: 0.68rem;
+  font-weight: 700;
   color: #C2410C;
   white-space: nowrap;
-  box-shadow: 0 3px 10px -3px rgba(255,122,0,0.4);
-  animation: hintPulse 2.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
   margin: 0 auto;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-@keyframes hintPulse {
+/* ✨ بريق خفيف يمر عبر التلميح */
+.categories-scroll-hint::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 122, 0, 0.15) 50%,
+    transparent 100%
+  );
+  animation: hintShimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes hintShimmer {
+  0% { right: -100%; }
+  50%, 100% { right: 100%; }
+}
+
+/* 📝 النص */
+.categories-scroll-hint > span {
+  font-weight: 700;
+  letter-spacing: -0.1px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ➡️ الأسهم المتحركة (chevrons) */
+.categories-scroll-hint .hint-chevrons {
+  display: inline-flex;
+  align-items: center;
+  margin-right: -2px;
+  position: relative;
+  z-index: 1;
+}
+
+.categories-scroll-hint .hint-chevrons i {
+  font-size: 0.55rem;
+  color: #FF7A00;
+  opacity: 0.4;
+  margin-right: -3px;
+}
+
+.categories-scroll-hint .hint-chevrons i:nth-child(1) {
+  animation: chevronPulse 1.6s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.categories-scroll-hint .hint-chevrons i:nth-child(2) {
+  animation: chevronPulse 1.6s ease-in-out infinite;
+  animation-delay: 0.25s;
+}
+
+@keyframes chevronPulse {
   0%, 100% {
+    opacity: 0.3;
     transform: translateX(0);
-    box-shadow: 0 3px 10px -3px rgba(255,122,0,0.4);
   }
   50% {
+    opacity: 1;
     transform: translateX(-2px);
-    box-shadow: 0 5px 16px -3px rgba(255,122,0,0.6);
   }
 }
 
-.categories-scroll-hint > i.fa-hand-point-left {
-  font-size: 0.85rem;
-  color: #FF7A00;
-  animation: handWave 1.5s ease-in-out infinite;
+/* 💡 نقطة نابضة صغيرة على اليسار */
+.categories-scroll-hint .hint-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #FF7A00;
+  box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.7);
+  animation: dotPulse 2s ease-out infinite;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
-@keyframes handWave {
-  0%, 100% { transform: rotate(0) scale(1); }
-  25% { transform: rotate(-15deg) scale(1.1); }
-  50% { transform: rotate(0) scale(1); }
-  75% { transform: rotate(-10deg) scale(1.05); }
+@keyframes dotPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 122, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 122, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 122, 0, 0);
+  }
 }
 
 /* 🌙 الوضع الداكن */
 body.theme-dark .categories-scroll-hint {
-  background: linear-gradient(135deg, #3B2410 0%, #4A2E14 100%);
-  border-color: #FF7A00;
+  background: rgba(255, 122, 0, 0.12);
+  border-color: rgba(255, 122, 0, 0.3);
   color: #FFA64D;
 }
 
-/* 📱 على الشاشات الصغيرة */
-@media (max-width: 480px) {
+body.theme-dark .categories-scroll-hint::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 166, 77, 0.2) 50%,
+    transparent 100%
+  );
+}
+
+body.theme-dark .categories-scroll-hint .hint-chevrons i {
+  color: #FFA64D;
+}
+
+body.theme-dark .categories-scroll-hint .hint-dot {
+  background: #FFA64D;
+  box-shadow: 0 0 0 0 rgba(255, 166, 77, 0.7);
+}
+
+/* 📱 على الشاشات الصغيرة — إخفاء النص وإظهار الأسهم فقط */
+@media (max-width: 420px) {
   .categories-scroll-hint {
-    font-size: 0.65rem;
-    padding: 4px 10px;
-    gap: 5px;
+    padding: 4px 9px;
+    gap: 4px;
   }
-  .categories-scroll-hint > i.fa-hand-point-left {
-    font-size: 0.75rem;
+  .categories-scroll-hint > span {
+    font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .categories-scroll-hint > span {
+    display: none;
+  }
+  .categories-scroll-hint {
+    padding: 5px 8px;
   }
 }
