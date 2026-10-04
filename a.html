@@ -30,11 +30,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#FF7A00',
-                        'primary-dark': '#E06B00',
-                        'primary-light': '#FFA64D',
-                    },
+                    colors: { primary: '#FF7A00', 'primary-dark': '#E06B00', 'primary-light': '#FFA64D' },
                     fontFamily: { cairo: ['Cairo', 'sans-serif'] },
                 }
             }
@@ -43,77 +39,19 @@
     <style>
         * { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         html, body { overflow-x: hidden; }
-        body {
-            background: #F5F7FA;
-            direction: rtl;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
+        body { background: #F5F7FA; direction: rtl; margin: 0; padding: 0; min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-        .login-overlay {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(165deg, #FFF8F1 0%, #FFFFFF 45%, #FFF1E0 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 99999;
-            overflow-y: auto;
-        }
-        .login-overlay::before {
-            content: '';
-            position: absolute;
-            top: -180px; right: -140px;
-            width: 460px; height: 460px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,122,0,0.18) 0%, transparent 65%);
-            pointer-events: none;
-            animation: float1 8s ease-in-out infinite;
-        }
-        .login-overlay::after {
-            content: '';
-            position: absolute;
-            bottom: -200px; left: -160px;
-            width: 520px; height: 520px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,166,77,0.14) 0%, transparent 65%);
-            pointer-events: none;
-            animation: float2 10s ease-in-out infinite;
-        }
+        .login-overlay { position: fixed; inset: 0; background: linear-gradient(165deg, #FFF8F1 0%, #FFFFFF 45%, #FFF1E0 100%); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 99999; overflow-y: auto; }
+        .login-overlay::before { content: ''; position: absolute; top: -180px; right: -140px; width: 460px; height: 460px; border-radius: 50%; background: radial-gradient(circle, rgba(255,122,0,0.18) 0%, transparent 65%); pointer-events: none; animation: float1 8s ease-in-out infinite; }
+        .login-overlay::after { content: ''; position: absolute; bottom: -200px; left: -160px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, rgba(255,166,77,0.14) 0%, transparent 65%); pointer-events: none; animation: float2 10s ease-in-out infinite; }
         @keyframes float1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-20px, 30px); } }
         @keyframes float2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px, -20px); } }
-
-        .login-card {
-            position: relative;
-            z-index: 2;
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(20px);
-            border: 1.5px solid #FFE0BD;
-            border-radius: 2rem;
-            padding: 2.25rem 1.5rem;
-            max-width: 440px;
-            width: 100%;
-            box-shadow: 0 30px 70px -25px rgba(255,122,0,0.4), 0 10px 30px rgba(0,0,0,0.05);
-            animation: loginCardIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
-        }
+        .login-card { position: relative; z-index: 2; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1.5px solid #FFE0BD; border-radius: 2rem; padding: 2.25rem 1.5rem; max-width: 440px; width: 100%; box-shadow: 0 30px 70px -25px rgba(255,122,0,0.4), 0 10px 30px rgba(0,0,0,0.05); animation: loginCardIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
         @media (min-width: 640px) { .login-card { padding: 3rem 2.5rem; border-radius: 2.25rem; } }
-        @keyframes loginCardIn {
-            from { transform: translateY(40px) scale(0.92); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        .login-logo {
-            width: 88px; height: 88px; border-radius: 50%;
-            background: #fff; padding: 6px;
-            box-shadow: 0 14px 40px -10px rgba(255,122,0,0.65), 0 0 0 6px rgba(255,122,0,0.08);
-            margin: 0 auto 1.5rem;
-            animation: logoPulse 3s ease-in-out infinite;
-        }
+        @keyframes loginCardIn { from { transform: translateY(40px) scale(0.92); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        .login-logo { width: 88px; height: 88px; border-radius: 50%; background: #fff; padding: 6px; box-shadow: 0 14px 40px -10px rgba(255,122,0,0.65), 0 0 0 6px rgba(255,122,0,0.08); margin: 0 auto 1.5rem; animation: logoPulse 3s ease-in-out infinite; }
         @media (min-width: 640px) { .login-logo { width: 104px; height: 104px; } }
-        @keyframes logoPulse {
-            0%, 100% { box-shadow: 0 14px 40px -10px rgba(255,122,0,0.65), 0 0 0 6px rgba(255,122,0,0.08); }
-            50% { box-shadow: 0 18px 50px -10px rgba(255,122,0,0.85), 0 0 0 12px rgba(255,122,0,0.04); }
-        }
+        @keyframes logoPulse { 0%, 100% { box-shadow: 0 14px 40px -10px rgba(255,122,0,0.65), 0 0 0 6px rgba(255,122,0,0.08); } 50% { box-shadow: 0 18px 50px -10px rgba(255,122,0,0.85), 0 0 0 12px rgba(255,122,0,0.04); } }
         .login-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
         .login-title { font-size: 1.5rem; font-weight: 900; color: #1A1A1A; text-align: center; margin-bottom: 0.5rem; letter-spacing: -0.3px; }
         @media (min-width: 640px) { .login-title { font-size: 1.75rem; } }
@@ -129,7 +67,6 @@
         .password-toggle-btn:hover { background: #FFF7ED; color: #FF7A00; }
         .password-toggle-btn:active { transform: translateY(-50%) scale(0.92); }
         .password-toggle-btn.active { color: #FF7A00; }
-
         .login-btn { width: 100%; padding: 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 1.1rem; font-weight: 800; font-size: 1.05rem; cursor: pointer; transition: all 0.25s; box-shadow: 0 14px 32px -10px rgba(255,122,0,0.75); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 1.5rem; }
         .login-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 42px -10px rgba(255,122,0,0.9); }
         .login-btn:active:not(:disabled) { transform: translateY(0); }
@@ -143,7 +80,6 @@
 
         .app-container { max-width: 900px; margin: 0 auto; padding: 0 0 100px 0; min-height: 100vh; }
         @media (min-width: 1024px) { .app-container { padding-bottom: 2rem; } }
-
         .app-header { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); padding: 1.25rem 1.25rem 3rem; border-radius: 0 0 2rem 2rem; position: relative; overflow: hidden; box-shadow: 0 12px 30px -12px rgba(255,122,0,0.5); }
         @media (min-width: 640px) { .app-header { padding: 1.75rem 2rem 3.5rem; border-radius: 0 0 2.5rem 2.5rem; } }
         .app-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%); pointer-events: none; }
@@ -152,32 +88,25 @@
         .header-brand { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
         .header-brand-logo { width: 52px; height: 52px; border-radius: 50%; background: #FFFFFF; padding: 2.5px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 2.5px solid rgba(255,255,255,0.85); box-shadow: 0 8px 22px -6px rgba(0,0,0,0.35); overflow: hidden; transition: all 0.3s; }
         @media (min-width: 640px) { .header-brand-logo { width: 58px; height: 58px; padding: 3px; border-width: 3px; } }
-        .header-brand-logo:hover { transform: scale(1.05); box-shadow: 0 10px 28px -6px rgba(0,0,0,0.45); }
         .header-brand-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
         .header-brand-logo.fallback { background: linear-gradient(135deg, #FF7A00, #FFA64D); }
-        .header-brand-logo.fallback img { object-fit: contain; padding: 6px; }
         .header-brand-text { min-width: 0; }
         .header-brand-title { color: #fff; font-size: 0.72rem; font-weight: 700; opacity: 0.85; letter-spacing: 0.3px; }
         .header-brand-subtitle { color: #fff; font-size: 1rem; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.2; }
         @media (min-width: 640px) { .header-brand-subtitle { font-size: 1.15rem; } }
-
         .logout-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.35); color: #fff; padding: 0.55rem 0.9rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.22s; backdrop-filter: blur(10px); flex-shrink: 0; }
         .logout-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-1px); }
-        .logout-btn:active { transform: translateY(0); }
         .logout-btn span { display: none; }
         @media (min-width: 400px) { .logout-btn span { display: inline; } }
-
         .connection-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.45rem 0.9rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700; margin-top: 1rem; backdrop-filter: blur(10px); position: relative; z-index: 2; }
         .connection-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
         .dot-green { background: #4ADE80; box-shadow: 0 0 8px rgba(74,222,128,0.8); }
         .dot-red { background: #F87171; box-shadow: 0 0 8px rgba(248,113,113,0.8); }
         .dot-yellow { background: #FBBF24; box-shadow: 0 0 8px rgba(251,191,36,0.8); }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
         .main-content { margin-top: -2.25rem; padding: 0 1rem; position: relative; z-index: 3; }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
-
-        .tabs-wrap { background: #fff; border-radius: 1.25rem; padding: 0.45rem; display: flex; gap: 0.35rem; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 1.25rem; position: relative; }
+        .tabs-wrap { background: #fff; border-radius: 1.25rem; padding: 0.45rem; display: flex; gap: 0.35rem; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 1.25rem; }
         .tab-item { flex: 1; padding: 0.75rem 0.75rem; border-radius: 0.95rem; font-weight: 800; font-size: 0.85rem; border: none; background: transparent; color: #6B7280; cursor: pointer; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
         @media (min-width: 640px) { .tab-item { font-size: 0.92rem; padding: 0.85rem 1rem; } }
         .tab-item:hover:not(.active) { background: #FFF7ED; color: #FF7A00; }
@@ -189,7 +118,6 @@
         .card + .card { margin-top: 1rem; }
         .card-body { padding: 1.25rem; }
         @media (min-width: 640px) { .card-body { padding: 1.75rem; } }
-
         .card-title { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1rem; color: #1A1A1A; margin-bottom: 1.25rem; }
         @media (min-width: 640px) { .card-title { font-size: 1.1rem; } }
         .card-title-icon { width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; box-shadow: 0 6px 14px -4px rgba(255,122,0,0.5); }
@@ -218,28 +146,15 @@
         .form-input::placeholder { color: #9CA3AF; font-weight: 500; }
         textarea.form-input { resize: vertical; min-height: 80px; line-height: 1.6; }
 
-        /* 🔽 قائمة منسدلة مخصصة للفئات */
-        select.form-input {
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF7A00' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: left 1rem center;
-            background-size: 18px;
-            padding-left: 2.8rem;
-        }
+        select.form-input { cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF7A00' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: left 1rem center; background-size: 18px; padding-left: 2.8rem; }
         select.form-input:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .form-hint { font-size: 0.72rem; color: #6B7280; margin-top: 0.35rem; line-height: 1.6; font-weight: 600; }
         @media (min-width: 640px) { .form-hint { font-size: 0.78rem; } }
-
         .input-with-toggle { position: relative; width: 100%; }
         .input-with-toggle .form-input { padding-left: 3rem; }
         .input-toggle-btn { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 0.9rem; transition: all 0.22s; -webkit-tap-highlight-color: transparent; }
         .input-toggle-btn:hover { background: #FFF7ED; color: #FF7A00; }
-        .input-toggle-btn:active { transform: translateY(-50%) scale(0.92); }
         .input-toggle-btn.active { color: #FF7A00; }
 
         .section-divider { display: flex; align-items: center; gap: 10px; margin: 1.5rem 0 1rem; font-size: 0.85rem; font-weight: 900; color: #6B7280; }
@@ -258,12 +173,8 @@
         @media (min-width: 640px) { .btn { padding: 1rem 1.5rem; font-size: 1rem; } }
         .btn-primary { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; box-shadow: 0 12px 28px -10px rgba(255,122,0,0.65); }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(255,122,0,0.85); }
-        .btn-primary:active:not(:disabled) { transform: translateY(0); }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
         .btn-danger { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #fff; box-shadow: 0 12px 28px -10px rgba(239,68,68,0.55); }
-        .btn-danger:hover:not(:disabled) { transform: translateY(-2px); }
-        .btn-outline { background: #fff; color: #FF7A00; border: 2px solid #FF7A00; }
-        .btn-outline:hover:not(:disabled) { background: #FFF7ED; }
         .btn-row { display: flex; gap: 0.6rem; }
         .btn-row .btn { flex: 1; width: auto; }
 
@@ -304,69 +215,46 @@
         @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .btn.loading { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
 
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .app-container { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
-        }
-
-        @media (min-width: 1024px) {
-            .app-container { max-width: 1200px; padding-bottom: 2rem; }
-            .products-layout { display: grid; grid-template-columns: 420px 1fr; gap: 1.25rem; align-items: start; }
-            .card + .card { margin-top: 0; }
-            .products-layout .card:first-child { position: sticky; top: 1rem; }
-        }
-
+        @supports (padding-bottom: env(safe-area-inset-bottom)) { .app-container { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } }
+        @media (min-width: 1024px) { .app-container { max-width: 1200px; padding-bottom: 2rem; } .products-layout { display: grid; grid-template-columns: 420px 1fr; gap: 1.25rem; align-items: start; } .card + .card { margin-top: 0; } .products-layout .card:first-child { position: sticky; top: 1rem; } }
         button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid #FF7A00; outline-offset: 2px; }
 
         .url-upload-group { display: flex; gap: 8px; align-items: stretch; }
         .url-upload-group .form-input { flex: 1; min-width: 0; }
         .upload-btn { padding: 0 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.22s; font-family: 'Cairo', sans-serif; white-space: nowrap; flex-shrink: 0; box-shadow: 0 6px 16px -8px rgba(255,122,0,0.7); -webkit-tap-highlight-color: transparent; }
-        .upload-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 24px -8px rgba(255,122,0,0.9); }
-        .upload-btn:active:not(:disabled) { transform: translateY(0); }
+        .upload-btn:hover:not(:disabled) { transform: translateY(-2px); }
         .upload-btn:disabled { opacity: 0.75; cursor: not-allowed; }
-        .upload-btn i { font-size: 0.9rem; }
+        @media (max-width: 480px) { .upload-btn span { display: none; } .upload-btn { padding: 0 0.85rem; } }
 
         .color-upload-btn { width: 46px; height: 46px; border-radius: 10px; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 0.95rem; transition: all 0.22s; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); -webkit-tap-highlight-color: transparent; }
-        .color-upload-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 18px -4px rgba(255,122,0,0.85); }
-        .color-upload-btn:active:not(:disabled) { transform: translateY(0); }
-        .color-upload-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-
-        @media (max-width: 480px) {
-            .upload-btn span { display: none; }
-            .upload-btn { padding: 0 0.85rem; }
-        }
+        .color-upload-btn:hover:not(:disabled) { transform: translateY(-1px); }
 
         #productColorsContainer { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-        .color-row { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #F9FAFB; border-radius: 14px; border: 1.5px solid #E5E7EB; transition: all 0.25s; animation: fadeSlideIn 0.3s ease; position: relative; }
+        .color-row { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #F9FAFB; border-radius: 14px; border: 1.5px solid #E5E7EB; transition: all 0.25s; animation: fadeSlideIn 0.3s ease; }
         .color-row:hover { border-color: #FFE0BD; background: #FFFBF5; }
         .color-row-top { display: flex; align-items: center; gap: 8px; }
-        .color-dot-preview { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid #fff; box-shadow: 0 0 0 1.5px #D1D5DB, 0 2px 6px rgba(0,0,0,0.1); flex-shrink: 0; transition: background-color 0.3s, transform 0.2s; }
-        .color-dot-preview:hover { transform: scale(1.05); }
-        .color-name { flex: 1; min-width: 0; padding: 0.65rem 0.85rem !important; border-radius: 10px !important; border: 1.5px solid #D1D5DB !important; font-size: 0.9rem !important; font-weight: 700 !important; font-family: 'Cairo', sans-serif; color: #1A1A1A; background: #fff; transition: all 0.22s; }
+        .color-dot-preview { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid #fff; box-shadow: 0 0 0 1.5px #D1D5DB, 0 2px 6px rgba(0,0,0,0.1); flex-shrink: 0; transition: background-color 0.3s; }
+        .color-name { flex: 1; min-width: 0; padding: 0.65rem 0.85rem !important; border-radius: 10px !important; border: 1.5px solid #D1D5DB !important; font-size: 0.9rem !important; font-weight: 700 !important; font-family: 'Cairo', sans-serif; color: #1A1A1A; background: #fff; }
         .color-name:focus { outline: none; border-color: #FF7A00 !important; box-shadow: 0 0 0 3px rgba(255,122,0,0.12) !important; }
-        .color-name::placeholder { color: #9CA3AF; font-weight: 500; }
-        .remove-color-btn { width: 38px; height: 38px; border-radius: 10px; background: #FEF2F2; color: #EF4444; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; flex-shrink: 0; font-size: 0.9rem; -webkit-tap-highlight-color: transparent; }
-        .remove-color-btn:hover { background: #FEE2E2; transform: scale(1.05); }
-        .remove-color-btn:active { transform: scale(0.95); }
+        .remove-color-btn { width: 38px; height: 38px; border-radius: 10px; background: #FEF2F2; color: #EF4444; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; flex-shrink: 0; font-size: 0.9rem; }
+        .remove-color-btn:hover { background: #FEE2E2; }
         .color-row-bottom { display: flex; gap: 8px; align-items: center; }
-        .color-image { flex: 1; min-width: 0; padding: 0.65rem 0.85rem !important; border-radius: 10px !important; border: 1.5px solid #D1D5DB !important; font-size: 0.78rem !important; font-weight: 600 !important; font-family: 'Cairo', sans-serif; color: #1A1A1A; background: #fff; transition: all 0.22s; direction: ltr; text-align: left; }
+        .color-image { flex: 1; min-width: 0; padding: 0.65rem 0.85rem !important; border-radius: 10px !important; border: 1.5px solid #D1D5DB !important; font-size: 0.78rem !important; font-weight: 600 !important; font-family: 'Cairo', sans-serif; color: #1A1A1A; background: #fff; direction: ltr; text-align: left; }
         .color-image:focus { outline: none; border-color: #FF7A00 !important; box-shadow: 0 0 0 3px rgba(255,122,0,0.12) !important; }
-        .color-image::placeholder { color: #9CA3AF; font-weight: 500; font-size: 0.74rem; }
-        .color-image-preview { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; border: 1.5px solid #E5E7EB; background: #fff; flex-shrink: 0; display: none; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: opacity 0.25s; }
+        .color-image-preview { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; border: 1.5px solid #E5E7EB; background: #fff; flex-shrink: 0; display: none; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
         .color-image-preview.visible { display: block; animation: fadeSlideIn 0.25s ease; }
 
-        #addColorBtn { background: #FFF7ED; color: #FF7A00; border: 1.5px dashed #FFA64D; border-radius: 12px; padding: 0.7rem 1rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
-        #addColorBtn:hover { background: #FFE0BD; border-color: #FF7A00; transform: translateY(-1px); }
-        #addColorBtn:active { transform: translateY(0); }
+        #addColorBtn { background: #FFF7ED; color: #FF7A00; border: 1.5px dashed #FFA64D; border-radius: 12px; padding: 0.7rem 1rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-family: 'Cairo', sans-serif; }
+        #addColorBtn:hover { background: #FFE0BD; border-color: #FF7A00; }
 
         @media (max-width: 360px) {
             .color-dot-preview { width: 36px; height: 36px; }
             .color-image-preview { width: 40px; height: 40px; }
-            .remove-color-btn { width: 34px; height: 34px; font-size: 0.82rem; }
+            .remove-color-btn { width: 34px; height: 34px; }
             .color-name { font-size: 0.85rem !important; padding: 0.55rem 0.7rem !important; }
             .color-image { font-size: 0.72rem !important; padding: 0.55rem 0.7rem !important; }
-            .color-upload-btn { width: 40px; height: 42px; font-size: 0.85rem; }
+            .color-upload-btn { width: 40px; height: 42px; }
         }
-
         @media (min-width: 640px) {
             .color-row { display: grid; grid-template-columns: auto 1fr auto auto; grid-template-rows: auto auto; gap: 8px 10px; align-items: center; padding: 12px; }
             .color-row-top { display: contents; }
@@ -378,6 +266,14 @@
             .color-upload-btn { grid-column: 3; grid-row: 2; width: 100%; height: 100%; min-height: 42px; border-radius: 10px; }
             .color-image-preview { display: none !important; }
         }
+
+        /* 🏷️ عرض الفئات الإضافية */
+        .extra-cats-display { display: flex; flex-wrap: wrap; gap: 8px; padding: 0.75rem; background: #F9FAFB; border-radius: 0.9rem; border: 1.5px solid #E5E7EB; min-height: 50px; }
+        .extra-cat-chip { display: inline-flex; align-items: center; gap: 5px; padding: 0.35rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.78rem; white-space: nowrap; }
+        .extra-cat-chip.subscribed { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); color: #059669; border: 1.5px solid #A7F3D0; }
+        .extra-cat-chip.locked { background: linear-gradient(135deg, #F3F4F6, #E5E7EB); color: #6B7280; border: 1.5px solid #D1D5DB; }
+        .extra-cat-chip i { font-size: 0.7rem; }
+        .no-extra-cats { color: #9CA3AF; font-size: 0.8rem; font-weight: 700; padding: 0.3rem; }
     </style>
 </head>
 <body>
@@ -400,7 +296,7 @@
             <div class="login-field">
                 <input type="password" id="loginPassword" class="login-input has-toggle" placeholder="كلمة المرور" required autocomplete="off">
                 <i class="fas fa-lock login-field-icon"></i>
-                <button type="button" id="loginPasswordToggle" class="password-toggle-btn" aria-label="إظهار كلمة المرور" title="إظهار كلمة المرور">
+                <button type="button" id="loginPasswordToggle" class="password-toggle-btn" aria-label="إظهار كلمة المرور">
                     <i class="fas fa-eye" id="loginPasswordToggleIcon"></i>
                 </button>
             </div>
@@ -510,7 +406,7 @@
                                 </label>
                                 <div class="input-with-toggle">
                                     <input type="password" id="store_login_password" class="form-input" required placeholder="كلمة المرور" minlength="4" autocomplete="off">
-                                    <button type="button" id="storePasswordToggle" class="input-toggle-btn" aria-label="إظهار كلمة المرور" title="إظهار كلمة المرور">
+                                    <button type="button" id="storePasswordToggle" class="input-toggle-btn" aria-label="إظهار كلمة المرور">
                                         <i class="fas fa-eye" id="storePasswordToggleIcon"></i>
                                     </button>
                                 </div>
@@ -519,14 +415,28 @@
                                 </div>
                             </div>
 
+                            <!-- 🏷️ عرض الفئات -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-tag"></i>
-                                    <span>التصنيف</span>
+                                    <span>الفئة الرئيسية للمتجر</span>
                                 </label>
-                                <input type="text" id="store_category" class="form-input" placeholder="مثال: إلكترونيات، ملابس، طعام" maxlength="300">
+                                <input type="text" id="store_category" class="form-input" placeholder="مثال: إلكترونيات" maxlength="50" readonly style="background:#F9FAFB;cursor:not-allowed;">
                                 <div class="form-hint">
-                                    <i class="fas fa-info-circle"></i> اكتب الفئات مفصولة بفاصلة ( ، أو , ) — مثال: إلكترونيات، ملابس، طعام
+                                    <i class="fas fa-lock" style="color:#F59E0B;"></i> الفئة الرئيسية يحددها الأدمن — تواصل مع الإدارة للتغيير
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-layer-group"></i>
+                                    <span>الفئات الإضافية (للمشتركين)</span>
+                                </label>
+                                <div class="extra-cats-display" id="extraCatsDisplay">
+                                    <div class="no-extra-cats">لا توجد فئات إضافية</div>
+                                </div>
+                                <div class="form-hint" id="subscriptionHint">
+                                    <i class="fas fa-info-circle"></i> الفئات الإضافية تُدار من قِبل الإدارة
                                 </div>
                             </div>
 
@@ -573,7 +483,7 @@
                                 </label>
                                 <div class="url-upload-group">
                                     <input type="url" id="store_logo" class="form-input" placeholder="https://example.com/logo.png" dir="ltr" style="text-align: left;">
-                                    <button type="button" class="upload-btn" data-upload-target="store_logo" title="رفع صورة من جهازك">
+                                    <button type="button" class="upload-btn" data-upload-target="store_logo">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>رفع</span>
                                     </button>
@@ -588,7 +498,7 @@
                                 </label>
                                 <div class="url-upload-group">
                                     <input type="url" id="store_cover" class="form-input" placeholder="https://example.com/cover.png" dir="ltr" style="text-align: left;">
-                                    <button type="button" class="upload-btn" data-upload-target="store_cover" title="رفع صورة من جهازك">
+                                    <button type="button" class="upload-btn" data-upload-target="store_cover">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>رفع</span>
                                     </button>
@@ -637,7 +547,7 @@
                                         <option value="">— اختر الفئة —</option>
                                     </select>
                                     <div id="productCategoryHint" class="form-hint">
-                                        <i class="fas fa-info-circle"></i> الفئات متاحة من إعدادات متجرك
+                                        <i class="fas fa-info-circle"></i> الفئات متاحة من متجرك
                                     </div>
                                 </div>
 
@@ -669,7 +579,7 @@
                                     </label>
                                     <div class="url-upload-group">
                                         <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
-                                        <button type="button" class="upload-btn" data-upload-target="product_img_url" title="رفع صورة من جهازك">
+                                        <button type="button" class="upload-btn" data-upload-target="product_img_url">
                                             <i class="fas fa-cloud-upload-alt"></i>
                                             <span>رفع</span>
                                         </button>
@@ -688,7 +598,7 @@
                                         <span>إضافة لون جديد</span>
                                     </button>
                                     <div class="form-hint" style="margin-top: 0.5rem;">
-                                        <i class="fas fa-info-circle"></i> اكتب اسم اللون أو اختره من القائمة — يدعم "فاتح/غامق/داكن".
+                                        <i class="fas fa-info-circle"></i> اكتب اسم اللون أو اختره من القائمة.
                                     </div>
                                 </div>
 
@@ -713,7 +623,7 @@
                                     <div class="card-title-icon"><i class="fas fa-boxes"></i></div>
                                     <span>منتجاتي</span>
                                 </div>
-                                <span id="productsCount" style="background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 900; box-shadow: 0 6px 14px -6px rgba(255,122,0,0.6);">0</span>
+                                <span id="productsCount" style="background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 900;">0</span>
                             </div>
                             <div id="productsList" class="products-list"></div>
                         </div>
@@ -746,7 +656,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh'; 
+const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 const firebaseConfig = {
@@ -771,34 +681,20 @@ const CACHE_DURATION = 72 * 60 * 60 * 1000;
 const CACHE_PREFIX = 'bazrena_cache_';
 
 const cacheManager = {
-    set(key, value) {
-        try {
-            localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ timestamp: Date.now(), value }));
-        } catch (e) { console.warn('⚠️ فشل حفظ الكاش:', e); }
-    },
+    set(key, value) { try { localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ timestamp: Date.now(), value })); } catch (e) {} },
     get(key) {
         try {
             const raw = localStorage.getItem(CACHE_PREFIX + key);
             if (!raw) return null;
-            const cacheData = JSON.parse(raw);
-            if (Date.now() - cacheData.timestamp > CACHE_DURATION) {
-                localStorage.removeItem(CACHE_PREFIX + key);
-                return null;
-            }
-            return cacheData.value;
+            const data = JSON.parse(raw);
+            if (Date.now() - data.timestamp > CACHE_DURATION) { localStorage.removeItem(CACHE_PREFIX + key); return null; }
+            return data.value;
         } catch (e) { return null; }
     },
-    remove(key) { localStorage.removeItem(CACHE_PREFIX + key); },
-    clearAll() {
-        Object.keys(localStorage)
-            .filter(k => k.startsWith(CACHE_PREFIX))
-            .forEach(k => localStorage.removeItem(k));
-    }
+    remove(key) { localStorage.removeItem(CACHE_PREFIX + key); }
 };
 
-function getProductsFingerprint(products) {
-    return products.map(p => p.id).sort().join('|');
-}
+function getProductsFingerprint(products) { return products.map(p => p.id).sort().join('|'); }
 
 firebase.auth().signInAnonymously()
     .then(() => console.log('%c✅ تم الاتصال الآمن', 'color:#25D366;font-weight:bold;'))
@@ -809,94 +705,119 @@ let productsData = [];
 let isSavingProduct = false;
 let isSavingStore = false;
 let productsUnsubscribe = null;
+let storeUnsubscribe = null;
 let isFirstProductsSnapshot = true;
 let lastProductsFingerprint = '';
 
 const $ = id => document.getElementById(id);
 
-function sanitizeInput(str) {
-    if (!str) return '';
-    return String(str).replace(/<[^>]*>/g, '').trim();
-}
-function toNumber(value, defaultValue = 0) {
-    const num = parseFloat(value);
-    return isNaN(num) ? defaultValue : num;
-}
-function cleanPhone(p) {
-    if (!p) return '';
-    return String(p).replace(/[^0-9]/g, '');
-}
+function sanitizeInput(str) { if (!str) return ''; return String(str).replace(/<[^>]*>/g, '').trim(); }
+function toNumber(v, d = 0) { const n = parseFloat(v); return isNaN(n) ? d : n; }
+function cleanPhone(p) { if (!p) return ''; return String(p).replace(/[^0-9]/g, ''); }
 function escapeHtml(str) {
     if (str == null) return '';
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
 }
-function showToast(message, type = 'success') {
+function showToast(msg, type = 'success') {
     const t = $('toast');
-    t.textContent = message;
+    t.textContent = msg;
     t.className = 'toast show';
-    t.style.background = type === 'error'
-        ? 'linear-gradient(135deg, #EF4444, #DC2626)'
-        : type === 'warning'
-        ? 'linear-gradient(135deg, #F59E0B, #D97706)'
-        : 'linear-gradient(135deg, #10B981, #059669)';
+    t.style.background = type === 'error' ? 'linear-gradient(135deg, #EF4444, #DC2626)' : type === 'warning' ? 'linear-gradient(135deg, #F59E0B, #D97706)' : 'linear-gradient(135deg, #10B981, #059669)';
     clearTimeout(window._toastT);
     window._toastT = setTimeout(() => t.classList.remove('show'), 4000);
 }
 function setButtonLoading(btn, isLoading, loadingText, normalHTML) {
-    if (isLoading) {
-        btn.disabled = true;
-        btn.classList.add('loading');
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>${loadingText}</span>`;
-    } else {
-        btn.disabled = false;
-        btn.classList.remove('loading');
-        btn.innerHTML = normalHTML;
-    }
+    if (!btn) return;
+    if (isLoading) { btn.disabled = true; btn.classList.add('loading'); btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>${loadingText}</span>`; }
+    else { btn.disabled = false; btn.classList.remove('loading'); btn.innerHTML = normalHTML; }
 }
 function updateConnectionStatus(success, message) {
     const dot = $('connectionStatusDot');
     const txt = $('connectionStatusText');
-    if (success) {
-        dot.className = 'connection-dot dot-green';
-        txt.textContent = 'متصل ' + (message ? '• ' + message : '');
-    } else {
-        dot.className = 'connection-dot dot-red';
-        txt.textContent = 'فشل الاتصال ' + (message ? '• ' + message : '');
-    }
+    if (success) { dot.className = 'connection-dot dot-green'; txt.textContent = 'متصل ' + (message ? '• ' + message : ''); }
+    else { dot.className = 'connection-dot dot-red'; txt.textContent = 'فشل الاتصال ' + (message ? '• ' + message : ''); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   📂 إدارة فئات المتجر
+   📂 إدارة فئات المتجر — نسخة مطابقة للأدمن
    ═══════════════════════════════════════════════════════════════ */
-function parseStoreCategories(categoryStr) {
-    if (!categoryStr) return [];
-    return String(categoryStr)
-        .split(/[,،\/|;]+/)
-        .map(c => c.trim())
-        .filter(c => c.length > 0)
-        .filter((c, i, arr) => arr.indexOf(c) === i);
+function getStoreMainCategory() {
+    if (!currentStore) return '';
+    return (currentStore.category && String(currentStore.category).trim()) ? String(currentStore.category).trim() : '';
+}
+
+function getStoreExtraCategories() {
+    if (!currentStore) return [];
+    const mainCat = getStoreMainCategory();
+    const extras = Array.isArray(currentStore.categories) ? currentStore.categories : [];
+
+    const filtered = extras
+        .map(c => String(c || '').trim())
+        .filter(c => c && c.toLowerCase() !== mainCat.toLowerCase());
+
+    // إزالة التكرارات
+    return filtered.filter((c, i, arr) => arr.findIndex(x => x.toLowerCase() === c.toLowerCase()) === i);
+}
+
+function isStoreSubscribed() {
+    return !!(currentStore && currentStore.is_subscribed === true);
+}
+
+function renderExtraCategoriesDisplay() {
+    const display = $('extraCatsDisplay');
+    const hint = $('subscriptionHint');
+    if (!display) return;
+
+    const extras = getStoreExtraCategories();
+
+    if (extras.length === 0) {
+        display.innerHTML = '<div class="no-extra-cats">لا توجد فئات إضافية</div>';
+    } else {
+        const subscribed = isStoreSubscribed();
+        display.innerHTML = extras.map(cat => `
+            <span class="extra-cat-chip ${subscribed ? 'subscribed' : 'locked'}">
+                <i class="fas ${subscribed ? 'fa-unlock' : 'fa-lock'}"></i>
+                ${escapeHtml(cat)}
+            </span>
+        `).join('');
+    }
+
+    if (hint) {
+        if (extras.length === 0) {
+            hint.innerHTML = '<i class="fas fa-info-circle"></i> لا توجد فئات إضافية مُعينة لمتجرك';
+            hint.style.color = '';
+        } else if (isStoreSubscribed()) {
+            hint.innerHTML = '<i class="fas fa-crown" style="color:#8B5CF6;"></i> متجرك مشترك — جميع الفئات الإضافية <strong>مفتوحة</strong>';
+            hint.style.color = '#6D28D9';
+        } else {
+            hint.innerHTML = '<i class="fas fa-lock" style="color:#F59E0B;"></i> الفئات الإضافية <strong>مقفلة</strong> — فعّل الاشتراك لفتحها';
+            hint.style.color = '#92400E';
+        }
+    }
 }
 
 function populateProductCategories(preserveValue) {
     const select = $('product_category');
     const hint = $('productCategoryHint');
-    if (!select) return;
+    if (!select || !currentStore) return;
 
     const currentVal = preserveValue !== undefined ? preserveValue : select.value;
-    const categories = currentStore ? parseStoreCategories(currentStore.category) : [];
+    const mainCat = getStoreMainCategory();
+    const extras = getStoreExtraCategories();
+    const subscribed = isStoreSubscribed();
 
     select.innerHTML = '';
 
-    if (categories.length === 0) {
+    if (!mainCat && extras.length === 0) {
         const opt = document.createElement('option');
         opt.value = '';
-        opt.textContent = '⚠️ لا توجد فئات — أضفها من "متجري"';
+        opt.textContent = '⚠️ لم تُعيَّن فئات لمتجرك بعد';
         select.appendChild(opt);
         select.disabled = true;
         if (hint) {
-            hint.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F59E0B;"></i> لم تُضف فئات لمتجرك. اذهب إلى تبويب "متجري" وأضف الفئات مفصولة بفاصلة.';
+            hint.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F59E0B;"></i> تواصل مع الإدارة لتعيين فئات متجرك';
             hint.style.color = '#92400E';
         }
         return;
@@ -904,64 +825,62 @@ function populateProductCategories(preserveValue) {
 
     select.disabled = false;
     if (hint) {
-        hint.innerHTML = '<i class="fas fa-info-circle"></i> اختر الفئة المناسبة للمنتج من فئات متجرك';
+        hint.innerHTML = '<i class="fas fa-info-circle"></i> اختر الفئة المناسبة للمنتج';
         hint.style.color = '';
     }
 
     const placeholder = document.createElement('option');
     placeholder.value = '';
     placeholder.textContent = '— اختر الفئة —';
+    placeholder.disabled = true;
     select.appendChild(placeholder);
 
-    categories.forEach(cat => {
+    // 🟢 الفئة الرئيسية
+    if (mainCat) {
+        const opt = document.createElement('option');
+        opt.value = mainCat;
+        opt.textContent = '🟢 ' + mainCat + ' (رئيسية - مجانية)';
+        select.appendChild(opt);
+    }
+
+    // ⭐/🔒 الفئات الإضافية
+    extras.forEach(cat => {
         const opt = document.createElement('option');
         opt.value = cat;
-        opt.textContent = cat;
+        if (subscribed) {
+            opt.textContent = '⭐ ' + cat + ' (مفتوحة)';
+        } else {
+            opt.textContent = '🔒 ' + cat + ' (مقفلة)';
+            opt.disabled = true;
+        }
         select.appendChild(opt);
     });
 
-    if (currentVal && categories.includes(currentVal)) {
-        select.value = currentVal;
+    if (currentVal) {
+        const found = Array.from(select.options).find(o => o.value === currentVal && !o.disabled);
+        if (found) select.value = currentVal;
+        else select.value = mainCat || '';
     } else {
         select.value = '';
     }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   📤 رفع الصور إلى Cloudinary
+   📤 رفع الصور
    ═══════════════════════════════════════════════════════════════ */
 async function uploadImageToHost(file) {
     if (!file) throw new Error('لم يتم اختيار ملف');
-    if (!file.type || !file.type.startsWith('image/')) {
-        throw new Error('الملف المختار ليس صورة');
-    }
-    const MAX_MB = 10;
-    if (file.size > MAX_MB * 1024 * 1024) {
-        throw new Error(`حجم الصورة أكبر من ${MAX_MB} ميجابايت`);
-    }
-
-    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-        throw new Error('إعدادات Cloudinary غير مكتملة');
-    }
+    if (!file.type || !file.type.startsWith('image/')) throw new Error('الملف المختار ليس صورة');
+    if (file.size > 10 * 1024 * 1024) throw new Error('حجم الصورة أكبر من 10 ميجابايت');
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) throw new Error('إعدادات Cloudinary غير مكتملة');
 
     const fd = new FormData();
     fd.append('file', file);
     fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, {
-        method: 'POST',
-        body: fd,
-    });
-
-    if (!res.ok) {
-        throw new Error('فشل الاتصال بخدمة الرفع (HTTP ' + res.status + ')');
-    }
-
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, { method: 'POST', body: fd });
+    if (!res.ok) throw new Error('فشل الاتصال بخدمة الرفع');
     const data = await res.json();
-    if (!data.secure_url) {
-        throw new Error('لم يتم استلام رابط الصورة من Cloudinary');
-    }
-
+    if (!data.secure_url) throw new Error('لم يتم استلام رابط الصورة');
     return data.secure_url;
 }
 
@@ -974,11 +893,9 @@ function openFilePickerAndUpload(button, targetInput) {
     fileInput.addEventListener('change', async () => {
         const file = fileInput.files && fileInput.files[0];
         if (!file) { fileInput.remove(); return; }
-
         const originalHTML = button.innerHTML;
         button.disabled = true;
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
         try {
             const url = await uploadImageToHost(file);
             targetInput.value = url;
@@ -986,7 +903,6 @@ function openFilePickerAndUpload(button, targetInput) {
             targetInput.dispatchEvent(new Event('change', { bubbles: true }));
             showToast('✅ تم رفع الصورة بنجاح');
         } catch (err) {
-            console.error('Upload error:', err);
             showToast('❌ ' + (err.message || 'فشل الرفع'), 'error');
         } finally {
             button.disabled = false;
@@ -1003,47 +919,24 @@ document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-upload-target]');
     if (!btn) return;
     e.preventDefault();
-
     const targetId = btn.getAttribute('data-upload-target');
     const targetInput = document.getElementById(targetId);
-    if (!targetInput) {
-        console.warn('Upload target not found:', targetId);
-        return;
-    }
+    if (!targetInput) return;
     openFilePickerAndUpload(btn, targetInput);
 });
 
 function setupPasswordToggle(inputId, buttonId, iconId) {
-    const input = $(inputId);
-    const button = $(buttonId);
-    const icon = $(iconId);
+    const input = $(inputId), button = $(buttonId), icon = $(iconId);
     if (!input || !button || !icon) return;
-
     button.addEventListener('click', () => {
         const isPassword = input.type === 'password';
-        if (isPassword) {
-            input.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-            button.classList.add('active');
-            button.setAttribute('aria-label', 'إخفاء كلمة المرور');
-            button.setAttribute('title', 'إخفاء كلمة المرور');
-            const len = input.value.length;
-            try { input.setSelectionRange(len, len); } catch (e) {}
-        } else {
-            input.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-            button.classList.remove('active');
-            button.setAttribute('aria-label', 'إظهار كلمة المرور');
-            button.setAttribute('title', 'إظهار كلمة المرور');
-            const len = input.value.length;
-            try { input.setSelectionRange(len, len); } catch (e) {}
-        }
+        input.type = isPassword ? 'text' : 'password';
+        icon.classList.toggle('fa-eye', !isPassword);
+        icon.classList.toggle('fa-eye-slash', isPassword);
+        button.classList.toggle('active', isPassword);
         setTimeout(() => input.focus(), 0);
     });
 }
-
 setupPasswordToggle('loginPassword', 'loginPasswordToggle', 'loginPasswordToggleIcon');
 setupPasswordToggle('store_login_password', 'storePasswordToggle', 'storePasswordToggleIcon');
 
@@ -1051,239 +944,104 @@ function updateHeaderLogo(store) {
     const logoWrap = $('headerBrandLogo');
     const logoImg = $('headerStoreLogo');
     if (!logoImg || !logoWrap) return;
-
     const logoUrl = store && store.logo_url ? String(store.logo_url).trim() : '';
-
     if (logoUrl) {
         logoWrap.classList.remove('fallback');
         logoImg.src = logoUrl;
         logoImg.alt = (store && store.name) ? store.name : 'شعار المتجر';
-        logoImg.onerror = function () {
-            logoWrap.classList.add('fallback');
-            this.src = DEFAULT_LOGO;
-            this.onerror = null;
-        };
+        logoImg.onerror = function () { logoWrap.classList.add('fallback'); this.src = DEFAULT_LOGO; this.onerror = null; };
     } else {
         logoWrap.classList.add('fallback');
         logoImg.src = DEFAULT_LOGO;
-        logoImg.alt = 'بازارِنا';
+        logoImg.alt = 'BranZar';
         logoImg.onerror = null;
     }
 }
 
-/* 🎨 نظام الألوان الذكي */
+/* 🎨 نظام الألوان */
 const UNKNOWN_COLOR_HEX = '#9CA3AF';
-
 const BASE_COLOR_MAP = {
-    'اسود': '#1A1A1A', 'ابيض': '#FFFFFF', 'رمادي': '#6B7280',
-    'احمر': '#EF4444', 'نبيتي': '#7F1D1D', 'خمري': '#831843',
-    'وردي': '#EC4899', 'ازرق': '#3B82F6', 'كحلي': '#1E3A8A',
-    'سماوي': '#38BDF8', 'تركواز': '#14B8A6', 'تركوازي': '#14B8A6',
-    'اخضر': '#22C55E', 'زيتي': '#4D7C0F', 'ليموني': '#A3E635',
-    'اصفر': '#EAB308', 'ذهبي': '#F59E0B', 'نحاسي': '#B87333',
-    'بني': '#78350F', 'شوكولاتي': '#5C3A21', 'جملي': '#C19A6B',
-    'بيج': '#E8D5B7', 'كريمي': '#FFF8DC', 'سكري': '#F5DEB3',
-    'بنفسجي': '#8B5CF6', 'موف': '#A855F7', 'لافندر': '#D8B4FE',
-    'ارجواني': '#7C3AED', 'برتقالي': '#F97316', 'فضي': '#9CA3AF',
-    'برونزي': '#CD7F32',
-    'black': '#1A1A1A', 'white': '#FFFFFF', 'gray': '#6B7280', 'grey': '#6B7280',
-    'red': '#EF4444', 'blue': '#3B82F6', 'green': '#22C55E', 'yellow': '#EAB308',
-    'brown': '#78350F', 'orange': '#F97316', 'pink': '#EC4899', 'purple': '#8B5CF6',
-    'gold': '#F59E0B', 'silver': '#9CA3AF', 'beige': '#E8D5B7', 'cream': '#FFF8DC',
-    'navy': '#1E3A8A', 'teal': '#14B8A6', 'olive': '#4D7C0F', 'maroon': '#7F1D1D'
+    'اسود': '#1A1A1A', 'ابيض': '#FFFFFF', 'رمادي': '#6B7280', 'احمر': '#EF4444', 'نبيتي': '#7F1D1D',
+    'خمري': '#831843', 'وردي': '#EC4899', 'ازرق': '#3B82F6', 'كحلي': '#1E3A8A', 'سماوي': '#38BDF8',
+    'تركواز': '#14B8A6', 'تركوازي': '#14B8A6', 'اخضر': '#22C55E', 'زيتي': '#4D7C0F', 'ليموني': '#A3E635',
+    'اصفر': '#EAB308', 'ذهبي': '#F59E0B', 'نحاسي': '#B87333', 'بني': '#78350F', 'شوكولاتي': '#5C3A21',
+    'جملي': '#C19A6B', 'بيج': '#E8D5B7', 'كريمي': '#FFF8DC', 'سكري': '#F5DEB3', 'بنفسجي': '#8B5CF6',
+    'موف': '#A855F7', 'لافندر': '#D8B4FE', 'ارجواني': '#7C3AED', 'برتقالي': '#F97316', 'فضي': '#9CA3AF',
+    'برونزي': '#CD7F32', 'black': '#1A1A1A', 'white': '#FFFFFF', 'gray': '#6B7280', 'red': '#EF4444',
+    'blue': '#3B82F6', 'green': '#22C55E', 'yellow': '#EAB308', 'brown': '#78350F', 'orange': '#F97316',
+    'pink': '#EC4899', 'purple': '#8B5CF6'
 };
-
-const LIGHT_KEYWORDS = ['فاتح', 'فاتحة', 'فاتحه', 'باهت', 'باهتة', 'باهته', 'خفيف', 'خفيفة', 'خفيفه', 'ساطع', 'ساطعة', 'ساطعه', 'light', 'pale', 'soft'];
-const DARK_KEYWORDS = ['غامق', 'غامقة', 'غامقه', 'داكن', 'داكنة', 'داكنه', 'عميق', 'عميقة', 'عميقه', 'قاتم', 'قاتمة', 'قاتمه', 'dark', 'deep', 'strong'];
+const LIGHT_KEYWORDS = ['فاتح', 'فاتحة', 'فاتحه', 'باهت', 'باهتة', 'باهته', 'خفيف', 'خفيفة', 'خفيفه', 'light', 'pale', 'soft'];
+const DARK_KEYWORDS = ['غامق', 'غامقة', 'غامقه', 'داكن', 'داكنة', 'داكنه', 'عميق', 'عميقة', 'عميقه', 'قاتم', 'dark', 'deep'];
 
 function normalizeColorName(name) {
     if (!name) return '';
-    return String(name)
-        .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
-        .replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '')
-        .replace(/[أإآٱ]/g, 'ا')
-        .replace(/ة/g, 'ه')
-        .replace(/ى/g, 'ي')
-        .replace(/[ئ]/g, 'ي')
-        .replace(/ؤ/g, 'و')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .toLowerCase();
+    return String(name).replace(/[\u064B-\u0652\u0670\u0640]/g, '').replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/[ئ]/g, 'ي').replace(/ؤ/g, 'و').replace(/\s+/g, ' ').trim().toLowerCase();
 }
-
-function hexToRgb(hex) {
-    const cleaned = String(hex).replace('#', '');
-    if (cleaned.length !== 6) return null;
-    return { r: parseInt(cleaned.substr(0, 2), 16), g: parseInt(cleaned.substr(2, 2), 16), b: parseInt(cleaned.substr(4, 2), 16) };
-}
-function rgbToHex(r, g, b) {
-    const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
-    const toHex = v => clamp(v).toString(16).padStart(2, '0');
-    return '#' + toHex(r) + toHex(g) + toHex(b);
-}
-
-function applyModifier(hex, modifier) {
-    if (!modifier || !hex) return hex;
+function hexToRgb(hex) { const c = String(hex).replace('#', ''); if (c.length !== 6) return null; return { r: parseInt(c.substr(0, 2), 16), g: parseInt(c.substr(2, 2), 16), b: parseInt(c.substr(4, 2), 16) }; }
+function rgbToHex(r, g, b) { const cl = v => Math.max(0, Math.min(255, Math.round(v))); const to = v => cl(v).toString(16).padStart(2, '0'); return '#' + to(r) + to(g) + to(b); }
+function applyModifier(hex, mod) {
+    if (!mod || !hex) return hex;
     const rgb = hexToRgb(hex);
     if (!rgb) return hex;
     let { r, g, b } = rgb;
-    switch (modifier) {
-        case 'light':
-            r = r + (255 - r) * 0.40;
-            g = g + (255 - g) * 0.40;
-            b = b + (255 - b) * 0.40;
-            break;
-        case 'dark':
-            r = r * 0.60;
-            g = g * 0.60;
-            b = b * 0.60;
-            break;
-    }
+    if (mod === 'light') { r = r + (255 - r) * 0.40; g = g + (255 - g) * 0.40; b = b + (255 - b) * 0.40; }
+    else if (mod === 'dark') { r *= 0.60; g *= 0.60; b *= 0.60; }
     return rgbToHex(r, g, b);
 }
-
 function getFallbackHex(colorName) {
     if (!colorName) return UNKNOWN_COLOR_HEX;
-    const normalized = normalizeColorName(colorName);
-    if (!normalized) return UNKNOWN_COLOR_HEX;
-    if (BASE_COLOR_MAP[normalized]) return BASE_COLOR_MAP[normalized];
-
-    let modifier = null;
-    let baseCandidate = normalized;
-
-    const allModifiers = [
-        ...LIGHT_KEYWORDS.map(k => ({ word: normalizeColorName(k), type: 'light' })),
-        ...DARK_KEYWORDS.map(k => ({ word: normalizeColorName(k), type: 'dark' }))
-    ].sort((a, b) => b.word.length - a.word.length);
-
-    for (const mod of allModifiers) {
-        if (!mod.word) continue;
-        if (normalized === mod.word) {
-            modifier = mod.type;
-            baseCandidate = '';
-            break;
-        }
-        if (normalized.includes(mod.word)) {
-            modifier = mod.type;
-            baseCandidate = normalized.replace(mod.word, ' ').replace(/\s+/g, ' ').trim();
-            break;
-        }
+    const norm = normalizeColorName(colorName);
+    if (!norm) return UNKNOWN_COLOR_HEX;
+    if (BASE_COLOR_MAP[norm]) return BASE_COLOR_MAP[norm];
+    let mod = null, base = norm;
+    const mods = [...LIGHT_KEYWORDS.map(k => ({ w: normalizeColorName(k), t: 'light' })), ...DARK_KEYWORDS.map(k => ({ w: normalizeColorName(k), t: 'dark' }))].sort((a, b) => b.w.length - a.w.length);
+    for (const m of mods) {
+        if (!m.w) continue;
+        if (norm === m.w) { mod = m.t; base = ''; break; }
+        if (norm.includes(m.w)) { mod = m.t; base = norm.replace(m.w, ' ').replace(/\s+/g, ' ').trim(); break; }
     }
-
-    if (baseCandidate && BASE_COLOR_MAP[baseCandidate]) {
-        return applyModifier(BASE_COLOR_MAP[baseCandidate], modifier);
-    }
-
-    const sortedBaseKeys = Object.keys(BASE_COLOR_MAP).sort((a, b) => b.length - a.length);
-
-    if (baseCandidate) {
-        for (const key of sortedBaseKeys) {
-            if (baseCandidate.includes(key)) {
-                return applyModifier(BASE_COLOR_MAP[key], modifier);
-            }
-        }
-    }
-
-    for (const key of sortedBaseKeys) {
-        if (normalized.includes(key)) {
-            let inferredModifier = null;
-            for (const mod of allModifiers) {
-                if (!mod.word) continue;
-                if (normalized.includes(mod.word)) {
-                    inferredModifier = mod.type;
-                    break;
-                }
-            }
-            return applyModifier(BASE_COLOR_MAP[key], inferredModifier);
-        }
-    }
+    if (base && BASE_COLOR_MAP[base]) return applyModifier(BASE_COLOR_MAP[base], mod);
+    const keys = Object.keys(BASE_COLOR_MAP).sort((a, b) => b.length - a.length);
+    if (base) { for (const k of keys) { if (base.includes(k)) return applyModifier(BASE_COLOR_MAP[k], mod); } }
+    for (const k of keys) { if (norm.includes(k)) { let inf = null; for (const m of mods) { if (m.w && norm.includes(m.w)) { inf = m.t; break; } } return applyModifier(BASE_COLOR_MAP[k], inf); } }
     return UNKNOWN_COLOR_HEX;
 }
-
-const COLOR_FAMILY_ORDER = {
-    'اسود': 1, 'رمادي غامق': 2, 'رمادي': 3, 'رمادي فاتح': 4,
-    'ابيض': 5, 'بيج': 6, 'كريمي': 7, 'سكري': 8,
-    'احمر': 10, 'احمر فاتح': 11, 'احمر غامق': 12, 'احمر داكن': 13,
-    'نبيتي': 14, 'خمري': 15, 'وردي': 16, 'وردي فاتح': 17, 'وردي غامق': 18,
-    'ازرق': 20, 'ازرق فاتح': 21, 'ازرق غامق': 22, 'ازرق داكن': 23,
-    'كحلي': 24, 'سماوي': 25, 'تركواز': 26, 'تركوازي': 27,
-    'اخضر': 30, 'اخضر فاتح': 31, 'اخضر غامق': 32, 'اخضر داكن': 33,
-    'زيتي': 34, 'ليموني': 35,
-    'اصفر': 40, 'اصفر فاتح': 41, 'ذهبي': 42, 'نحاسي': 43,
-    'بني': 50, 'بني فاتح': 51, 'بني غامق': 52, 'بني داكن': 53,
-    'شوكولاتي': 54, 'جملي': 55,
-    'بنفسجي': 60, 'موف': 61, 'لافندر': 62, 'ارجواني': 63,
-    'برتقالي': 70, 'برتقالي فاتح': 71, 'برتقالي غامق': 72,
-    'فضي': 80, 'برونزي': 81
-};
-
+const COLOR_FAMILY_ORDER = { 'اسود': 1, 'رمادي غامق': 2, 'رمادي': 3, 'رمادي فاتح': 4, 'ابيض': 5, 'بيج': 6, 'كريمي': 7, 'سكري': 8, 'احمر': 10, 'احمر فاتح': 11, 'احمر غامق': 12, 'احمر داكن': 13, 'نبيتي': 14, 'خمري': 15, 'وردي': 16, 'وردي فاتح': 17, 'وردي غامق': 18, 'ازرق': 20, 'ازرق فاتح': 21, 'ازرق غامق': 22, 'ازرق داكن': 23, 'كحلي': 24, 'سماوي': 25, 'تركواز': 26, 'تركوازي': 27, 'اخضر': 30, 'اخضر فاتح': 31, 'اخضر غامق': 32, 'اخضر داكن': 33, 'زيتي': 34, 'ليموني': 35, 'اصفر': 40, 'اصفر فاتح': 41, 'ذهبي': 42, 'نحاسي': 43, 'بني': 50, 'بني فاتح': 51, 'بني غامق': 52, 'بني داكن': 53, 'شوكولاتي': 54, 'جملي': 55, 'بنفسجي': 60, 'موف': 61, 'لافندر': 62, 'ارجواني': 63, 'برتقالي': 70, 'برتقالي فاتح': 71, 'برتقالي غامق': 72, 'فضي': 80, 'برونزي': 81 };
 function getColorSortOrder(name) {
-    const normalized = normalizeColorName(name);
-    if (!normalized) return 999;
-    if (COLOR_FAMILY_ORDER[normalized] !== undefined) return COLOR_FAMILY_ORDER[normalized];
-
-    let baseName = normalized;
-    let modifier = null;
-
+    const norm = normalizeColorName(name);
+    if (!norm) return 999;
+    if (COLOR_FAMILY_ORDER[norm] !== undefined) return COLOR_FAMILY_ORDER[norm];
+    let base = norm, mod = null;
     for (const k of [...DARK_KEYWORDS, ...LIGHT_KEYWORDS]) {
         const w = normalizeColorName(k);
-        if (w && normalized.includes(w)) {
-            baseName = normalized.replace(w, ' ').replace(/\s+/g, ' ').trim();
-            modifier = DARK_KEYWORDS.includes(k) ? 'dark' : 'light';
-            break;
-        }
+        if (w && norm.includes(w)) { base = norm.replace(w, ' ').replace(/\s+/g, ' ').trim(); mod = DARK_KEYWORDS.includes(k) ? 'dark' : 'light'; break; }
     }
-
-    let baseOrder = 999;
-    const sortedKeys = Object.keys(BASE_COLOR_MAP).sort((a, b) => b.length - a.length);
-    for (const key of sortedKeys) {
-        if (baseName.includes(key) || key.includes(baseName)) {
-            for (const [k, v] of Object.entries(COLOR_FAMILY_ORDER)) {
-                if (k.startsWith(key)) { baseOrder = v; break; }
-            }
-            if (baseOrder !== 999) break;
-        }
+    let order = 999;
+    const keys = Object.keys(BASE_COLOR_MAP).sort((a, b) => b.length - a.length);
+    for (const k of keys) {
+        if (base.includes(k) || k.includes(base)) { for (const [kk, vv] of Object.entries(COLOR_FAMILY_ORDER)) { if (kk.startsWith(k)) { order = vv; break; } } if (order !== 999) break; }
     }
-    if (baseOrder === 999) {
-        for (const key of sortedKeys) {
-            if (normalized.includes(key)) {
-                for (const [k, v] of Object.entries(COLOR_FAMILY_ORDER)) {
-                    if (k.startsWith(key)) { baseOrder = v; break; }
-                }
-                if (baseOrder !== 999) break;
-            }
-        }
-    }
-
-    let modifierOffset = 0;
-    if (modifier === 'light') modifierOffset = 0.1;
-    else if (modifier === 'dark') modifierOffset = 0.2;
-    return baseOrder + modifierOffset;
+    if (order === 999) { for (const k of keys) { if (norm.includes(k)) { for (const [kk, vv] of Object.entries(COLOR_FAMILY_ORDER)) { if (kk.startsWith(k)) { order = vv; break; } } if (order !== 999) break; } } }
+    let off = mod === 'light' ? 0.1 : mod === 'dark' ? 0.2 : 0;
+    return order + off;
 }
-
 function sortColorsByFamily(colors) {
     if (!Array.isArray(colors)) return [];
     return colors.slice().sort((a, b) => {
-        const oa = getColorSortOrder(a.name);
-        const ob = getColorSortOrder(b.name);
+        const oa = getColorSortOrder(a.name), ob = getColorSortOrder(b.name);
         if (oa !== ob) return oa - ob;
         return String(a.name || '').localeCompare(String(b.name || ''), 'ar');
     });
 }
 
-function getSession() {
-    try {
-        const raw = sessionStorage.getItem(SESSION_KEY);
-        return raw ? JSON.parse(raw) : null;
-    } catch { return null; }
-}
-function saveSession(store) {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ id: store.id, name: store.name, loggedAt: Date.now() }));
-}
-function clearSession() {
-    sessionStorage.removeItem(SESSION_KEY);
-}
+function getSession() { try { const r = sessionStorage.getItem(SESSION_KEY); return r ? JSON.parse(r) : null; } catch { return null; } }
+function saveSession(store) { sessionStorage.setItem(SESSION_KEY, JSON.stringify({ id: store.id, name: store.name, loggedAt: Date.now() })); }
+function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
 
+/* ═══════════════════════════════════════════════════════════════
+   🔐 تسجيل الدخول
+   ═══════════════════════════════════════════════════════════════ */
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const enteredName = sanitizeInput($('loginStoreName').value);
@@ -1291,16 +1049,8 @@ $('loginForm').addEventListener('submit', async (e) => {
     const errEl = $('loginError');
     errEl.classList.remove('show');
 
-    if (!enteredName) {
-        errEl.textContent = '⚠️ الرجاء إدخال اسم المتجر';
-        errEl.classList.add('show');
-        return;
-    }
-    if (!enteredPass) {
-        errEl.textContent = '⚠️ الرجاء إدخال كلمة المرور';
-        errEl.classList.add('show');
-        return;
-    }
+    if (!enteredName) { errEl.textContent = '⚠️ الرجاء إدخال اسم المتجر'; errEl.classList.add('show'); return; }
+    if (!enteredPass) { errEl.textContent = '⚠️ الرجاء إدخال كلمة المرور'; errEl.classList.add('show'); return; }
 
     setButtonLoading($('loginSubmitBtn'), true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
 
@@ -1310,31 +1060,18 @@ $('loginForm').addEventListener('submit', async (e) => {
         let verifiedFromCache = false;
 
         if (storesData) {
-            storesData.forEach(store => {
-                if (store.name && store.name.trim().toLowerCase() === enteredName.toLowerCase()) {
-                    foundStore = store;
-                }
-            });
-            if (foundStore && foundStore.login_password === enteredPass) {
-                verifiedFromCache = true;
-                console.log(`⚡ [كاش] تم التحقق من ${foundStore.name}`);
-            }
+            storesData.forEach(s => { if (s.name && s.name.trim().toLowerCase() === enteredName.toLowerCase()) foundStore = s; });
+            if (foundStore && foundStore.login_password === enteredPass) { verifiedFromCache = true; }
         }
 
         if (!verifiedFromCache) {
-            const snapshot = await db.collection(storesTableName).get();
-            const freshStores = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
-            cacheManager.set('stores_list', freshStores);
-
+            const snap = await db.collection(storesTableName).get();
+            const fresh = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+            cacheManager.set('stores_list', fresh);
             foundStore = null;
-            freshStores.forEach(store => {
-                if (store.name && store.name.trim().toLowerCase() === enteredName.toLowerCase()) {
-                    foundStore = store;
-                }
-            });
-
+            fresh.forEach(s => { if (s.name && s.name.trim().toLowerCase() === enteredName.toLowerCase()) foundStore = s; });
             if (!foundStore) throw new Error('لم يتم العثور على متجر بهذا الاسم');
-            if (!foundStore.login_password) throw new Error('لم يتم تعيين كلمة مرور لهذا المتجر');
+            if (!foundStore.login_password) throw new Error('لم يتم تعيين كلمة مرور');
             if (foundStore.login_password !== enteredPass) throw new Error('كلمة المرور غير صحيحة');
         }
 
@@ -1344,18 +1081,9 @@ $('loginForm').addEventListener('submit', async (e) => {
         showToast(`مرحباً بك يا ${foundStore.name} ✅`);
         await enterDashboard();
     } catch (err) {
-        console.error(err);
-        errEl.textContent = '❌ ' + (err.message || 'حدث خطأ غير متوقع');
+        errEl.textContent = '❌ ' + (err.message || 'حدث خطأ');
         errEl.classList.add('show');
         $('loginPassword').value = '';
-        const passInput = $('loginPassword');
-        const icon = $('loginPasswordToggleIcon');
-        if (passInput.type !== 'password') {
-            passInput.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-            $('loginPasswordToggle').classList.remove('active');
-        }
     } finally {
         setButtonLoading($('loginSubmitBtn'), false, '', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     }
@@ -1369,17 +1097,57 @@ async function enterDashboard() {
     updateHeaderLogo(currentStore);
     fillStoreForm(currentStore);
     populateProductCategories();
+    renderExtraCategoriesDisplay();
 
     $('product_store_name').value = currentStore.name;
     $('product_store_name_display').value = currentStore.name;
+
+    // 🔄 مراقبة حية لتغييرات المتجر (الفئات من الأدمن)
+    setupRealtimeStoreListener();
 
     await loadMyProducts();
     updateConnectionStatus(true, currentStore.name);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   📡 مراقبة حية للمتجر (لتحديث الفئات فوراً)
+   ═══════════════════════════════════════════════════════════════ */
+function setupRealtimeStoreListener() {
+    if (!currentStore || storeUnsubscribe) return;
+
+    storeUnsubscribe = db.collection(storesTableName).doc(currentStore.id)
+        .onSnapshot((doc) => {
+            if (!doc.exists) return;
+            const freshStore = { ...doc.data(), id: doc.id };
+
+            // تحقق من تغيير الفئات أو الاشتراك
+            const catChanged = (freshStore.category || '') !== (currentStore.category || '');
+            const extrasChanged = JSON.stringify(freshStore.categories || []) !== JSON.stringify(currentStore.categories || []);
+            const subChanged = (freshStore.is_subscribed === true) !== (currentStore.is_subscribed === true);
+
+            currentStore = freshStore;
+            cacheManager.set(`store_${currentStore.id}`, currentStore);
+
+            // تحديث القوائم المعروضة
+            if (catChanged || extrasChanged || subChanged) {
+                renderExtraCategoriesDisplay();
+                populateProductCategories();
+                fillStoreForm(currentStore);
+
+                if (subChanged) {
+                    if (freshStore.is_subscribed) showToast('🎉 تم تفعيل اشتراكك — الفئات الإضافية مفتوحة الآن!');
+                    else showToast('⚠️ تم إيقاف اشتراكك — الفئات الإضافية أصبحت مقفلة', 'warning');
+                } else if (catChanged || extrasChanged) {
+                    showToast('📂 تم تحديث فئات متجرك');
+                }
+            }
+        }, (err) => console.warn('Store listener error:', err));
+}
+
 $('logoutBtn').addEventListener('click', () => {
     if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
     if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
+    if (storeUnsubscribe) { storeUnsubscribe(); storeUnsubscribe = null; }
     clearSession();
     currentStore = null;
     location.reload();
@@ -1406,19 +1174,13 @@ function fillStoreForm(store) {
         ? '<i class="fas fa-check-circle" style="color:#10B981;"></i> موثّق'
         : '<i class="fas fa-circle-xmark" style="color:#9CA3AF;"></i> غير موثّق';
 
-    if (store.logo_url) {
-        $('store_logo_preview').src = store.logo_url;
-        $('store_logo_preview').classList.remove('hidden');
-    } else {
-        $('store_logo_preview').classList.add('hidden');
-    }
-    if (store.cover_url) {
-        $('store_cover_preview').src = store.cover_url;
-        $('store_cover_preview').classList.remove('hidden');
-    } else {
-        $('store_cover_preview').classList.add('hidden');
-    }
+    if (store.logo_url) { $('store_logo_preview').src = store.logo_url; $('store_logo_preview').classList.remove('hidden'); }
+    else $('store_logo_preview').classList.add('hidden');
+    if (store.cover_url) { $('store_cover_preview').src = store.cover_url; $('store_cover_preview').classList.remove('hidden'); }
+    else $('store_cover_preview').classList.add('hidden');
+
     updateHeaderLogo(store);
+    renderExtraCategoriesDisplay();
 }
 
 $('storeForm').addEventListener('submit', async (e) => {
@@ -1430,24 +1192,20 @@ $('storeForm').addEventListener('submit', async (e) => {
     const newPassword = $('store_login_password').value;
     const whatsapp = cleanPhone($('store_whatsapp').value);
     const phone = cleanPhone($('store_phone').value);
-    const newCategory = sanitizeInput($('store_category').value);
 
-    if (!newName || newName.length < 2) { showToast('اسم المتجر مطلوب (حرفان على الأقل)', 'error'); return; }
-    if (newName.length > 100) { showToast('اسم المتجر طويل جداً', 'error'); return; }
+    if (!newName || newName.length < 2) { showToast('اسم المتجر مطلوب', 'error'); return; }
     if (!newPassword || newPassword.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
     if (!whatsapp || whatsapp.length < 10) { showToast('رقم الواتساب مطلوب', 'error'); return; }
 
     const oldName = currentStore.name;
     const nameChanged = (newName !== oldName);
-    const categoryChanged = (newCategory !== (currentStore.category || ''));
 
     if (nameChanged) {
-        const confirmChange = confirm(
-            `⚠️ تنبيه مهم!\n\nسيتم تغيير اسم متجرك من:\n"${oldName}"\n\nإلى:\n"${newName}"\n\nسيتم تحديث اسم المتجر في جميع منتجاتك تلقائياً.\n\nهل أنت متأكد؟`
-        );
+        const confirmChange = confirm(`⚠️ تنبيه مهم!\n\nسيتم تغيير اسم متجرك من:\n"${oldName}"\n\nإلى:\n"${newName}"\n\nسيتم تحديث اسم المتجر في جميع منتجاتك تلقائياً.\n\nهل أنت متأكد؟`);
         if (!confirmChange) return;
     }
 
+    // ⚠️ ملاحظة: لا نُرسل category لأنها تُدار من الأدمن فقط
     const updateData = {
         name: newName,
         login_password: newPassword,
@@ -1455,7 +1213,6 @@ $('storeForm').addEventListener('submit', async (e) => {
         phone_number: phone || null,
         logo_url: sanitizeInput($('store_logo').value),
         cover_url: sanitizeInput($('store_cover').value),
-        category: newCategory,
         description: sanitizeInput($('store_description').value)
     };
 
@@ -1467,8 +1224,8 @@ $('storeForm').addEventListener('submit', async (e) => {
 
         if (nameChanged) {
             showToast('جاري تحديث المنتجات...', 'warning');
-            const productsSnap = await db.collection(productsTableName).where('store_name', '==', oldName).get();
-            const updates = productsSnap.docs.map(doc => db.collection(productsTableName).doc(doc.id).update({ store_name: newName }));
+            const snap = await db.collection(productsTableName).where('store_name', '==', oldName).get();
+            const updates = snap.docs.map(doc => db.collection(productsTableName).doc(doc.id).update({ store_name: newName }));
             await Promise.all(updates);
 
             cacheManager.remove(`store_products_${oldName}`);
@@ -1490,16 +1247,9 @@ $('storeForm').addEventListener('submit', async (e) => {
 
         currentStore = { ...currentStore, ...updateData };
         cacheManager.set(`store_${storeId}`, currentStore);
-        fillStoreForm(currentStore);
-        updateHeaderLogo(currentStore);
-
-        if (categoryChanged) {
-            populateProductCategories();
-        }
 
         if (nameChanged) setupRealtimeMyProductsListener();
     } catch (err) {
-        console.error('خطأ حفظ المتجر:', err);
         showToast('فشل الحفظ: ' + err.message, 'error');
     } finally {
         isSavingStore = false;
@@ -1507,33 +1257,27 @@ $('storeForm').addEventListener('submit', async (e) => {
     }
 });
 
+/* ═══════════════════════════════════════════════════════════════
+   📦 المنتجات
+   ═══════════════════════════════════════════════════════════════ */
 async function loadMyProducts(forceRefresh = false) {
     if (!currentStore) return;
     const cacheKey = `store_products_${currentStore.name}`;
 
     try {
         const cached = cacheManager.get(cacheKey);
-        if (cached && !forceRefresh) {
-            productsData = cached;
-            console.log(`⚡ [كاش] ${cacheKey}`);
-            updateProductsUI();
-        }
+        if (cached && !forceRefresh) { productsData = cached; updateProductsUI(); }
 
         if (!cached || forceRefresh) {
-            const snapshot = await db.collection(productsTableName).where('store_name', '==', currentStore.name).get();
-            productsData = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
-            productsData.sort((a, b) => {
-                const ta = a.created_at?.seconds || 0;
-                const tb = b.created_at?.seconds || 0;
-                return tb - ta;
-            });
+            const snap = await db.collection(productsTableName).where('store_name', '==', currentStore.name).get();
+            productsData = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+            productsData.sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
             cacheManager.set(cacheKey, productsData);
             updateProductsUI();
         }
 
         setupRealtimeMyProductsListener();
     } catch (err) {
-        console.error('خطأ تحميل المنتجات:', err);
         $('productsList').innerHTML = `<div class="empty-state"><div class="empty-state-title" style="color:#EF4444;">تعذر تحميل المنتجات</div></div>`;
     }
 }
@@ -1542,47 +1286,37 @@ function setupRealtimeMyProductsListener() {
     if (!currentStore) return;
     if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
 
-    console.log(`🔄 بدء مراقبة "${currentStore.name}"...`);
-
     productsUnsubscribe = db.collection(productsTableName)
         .where('store_name', '==', currentStore.name)
         .onSnapshot((snapshot) => {
-            const freshProducts = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
-            freshProducts.sort((a, b) => {
-                const ta = a.created_at?.seconds || 0;
-                const tb = b.created_at?.seconds || 0;
-                return tb - ta;
-            });
-
-            const newFingerprint = getProductsFingerprint(freshProducts);
+            const fresh = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+            fresh.sort((a, b) => (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0));
+            const fp = getProductsFingerprint(fresh);
 
             if (isFirstProductsSnapshot) {
                 isFirstProductsSnapshot = false;
-                lastProductsFingerprint = newFingerprint;
-                const cachedProducts = cacheManager.get(`store_products_${currentStore.name}`);
-                const cachedFingerprint = cachedProducts ? getProductsFingerprint(cachedProducts) : '';
-                cacheManager.set(`store_products_${currentStore.name}`, freshProducts);
-                if (cachedFingerprint !== newFingerprint) {
-                    productsData = freshProducts;
-                    updateProductsUI();
-                }
+                lastProductsFingerprint = fp;
+                const cached = cacheManager.get(`store_products_${currentStore.name}`);
+                const cfp = cached ? getProductsFingerprint(cached) : '';
+                cacheManager.set(`store_products_${currentStore.name}`, fresh);
+                if (cfp !== fp) { productsData = fresh; updateProductsUI(); }
                 return;
             }
 
-            if (newFingerprint === lastProductsFingerprint) return;
+            if (fp === lastProductsFingerprint) return;
 
             const changes = snapshot.docChanges();
-            const addedCount = changes.filter(c => c.type === 'added').length;
-            const removedCount = changes.filter(c => c.type === 'removed').length;
+            const added = changes.filter(c => c.type === 'added').length;
+            const removed = changes.filter(c => c.type === 'removed').length;
 
-            lastProductsFingerprint = newFingerprint;
-            productsData = freshProducts;
-            cacheManager.set(`store_products_${currentStore.name}`, freshProducts);
+            lastProductsFingerprint = fp;
+            productsData = fresh;
+            cacheManager.set(`store_products_${currentStore.name}`, fresh);
             updateProductsUI();
 
-            if (addedCount > 0) showToast(`🆕 تم إضافة ${addedCount} ${addedCount === 1 ? 'منتج جديد' : 'منتجات جديدة'}!`);
-            else if (removedCount > 0) showToast(`🗑️ تم حذف ${removedCount} منتج`);
-        }, (error) => console.warn('⚠️ خطأ في المراقبة:', error));
+            if (added > 0) showToast(`🆕 تم إضافة ${added} منتج!`);
+            else if (removed > 0) showToast(`🗑️ تم حذف ${removed} منتج`);
+        }, err => console.warn('Products listener error:', err));
 }
 
 function updateProductsUI() {
@@ -1594,53 +1328,42 @@ function updateProductsUI() {
 
 function renderMyProductsList(products) {
     if (products.length === 0) {
-        $('productsList').innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon"><i class="fas fa-box-open"></i></div>
-                <div class="empty-state-title">لا توجد منتجات بعد</div>
-                <div class="empty-state-text">ابدأ بإضافة أول منتج من النموذج المجاور</div>
-            </div>`;
+        $('productsList').innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-box-open"></i></div><div class="empty-state-title">لا توجد منتجات بعد</div><div class="empty-state-text">ابدأ بإضافة أول منتج</div></div>`;
         return;
     }
 
     let html = '';
-    products.forEach(product => {
-        const price = parseFloat(product.price || 0);
-
-        const thumbHtml = product.img_url
-            ? `<img src="${escapeHtml(product.img_url)}" class="product-thumb" alt="${escapeHtml(product.name)}" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
+    products.forEach(p => {
+        const price = parseFloat(p.price || 0);
+        const thumbHtml = p.img_url
+            ? `<img src="${escapeHtml(p.img_url)}" class="product-thumb" alt="" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
             : `<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
-        const categoryBadge = product.category
-            ? `<span class="product-category-badge"><i class="fas fa-tag" style="font-size:0.6rem;"></i> ${escapeHtml(product.category)}</span>`
-            : '';
+        const catBadge = p.category ? `<span class="product-category-badge"><i class="fas fa-tag" style="font-size:0.6rem;"></i> ${escapeHtml(p.category)}</span>` : '';
 
-        let colorDotsHTML = '';
-        if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
-            const sortedColors = sortColorsByFamily(product.colors);
-            const visibleColors = sortedColors.slice(0, 5);
-            colorDotsHTML = `<div style="display:flex; gap:4px; align-items:center; margin-right: 6px;">` +
-                visibleColors.map(c =>
-                    `<div style="width:14px;height:14px;border-radius:50%;background-color:${getFallbackHex(c.name)};border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);" title="${escapeHtml(c.name)}"></div>`
-                ).join('') +
-                (sortedColors.length > 5 ? `<span style="font-size:10px;color:#9CA3AF;font-weight:bold;">+${sortedColors.length - 5}</span>` : '') +
-            `</div>`;
+        let colorDots = '';
+        if (p.colors && Array.isArray(p.colors) && p.colors.length > 0) {
+            const sorted = sortColorsByFamily(p.colors);
+            const vis = sorted.slice(0, 5);
+            colorDots = `<div style="display:flex;gap:4px;align-items:center;">` +
+                vis.map(c => `<div style="width:14px;height:14px;border-radius:50%;background-color:${getFallbackHex(c.name)};border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.2);" title="${escapeHtml(c.name)}"></div>`).join('') +
+                (sorted.length > 5 ? `<span style="font-size:10px;color:#9CA3AF;font-weight:bold;">+${sorted.length - 5}</span>` : '') + `</div>`;
         }
 
         html += `
             <div class="product-row">
                 ${thumbHtml}
                 <div class="product-info">
-                    <div class="product-name">${escapeHtml(product.name)}</div>
+                    <div class="product-name">${escapeHtml(p.name)}</div>
                     <div class="product-meta">
                         <span class="product-price">${price.toLocaleString()} ج.س</span>
-                        ${categoryBadge}
-                        ${colorDotsHTML}
+                        ${catBadge}
+                        ${colorDots}
                     </div>
                 </div>
                 <div class="product-actions">
-                    <button class="icon-btn icon-btn-edit" onclick="editProduct('${product.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
-                    <button class="icon-btn icon-btn-delete" onclick="deleteProduct('${product.id}')" title="حذف"><i class="fas fa-trash"></i></button>
+                    <button class="icon-btn icon-btn-edit" onclick="editProduct('${p.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
+                    <button class="icon-btn icon-btn-delete" onclick="deleteProduct('${p.id}')" title="حذف"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         `;
@@ -1649,32 +1372,24 @@ function renderMyProductsList(products) {
 }
 
 function updateColorPreview(nameInput, dotPreview) {
-    const value = nameInput.value;
-    const hex = getFallbackHex(value);
-    dotPreview.style.backgroundColor = hex;
-    dotPreview.removeAttribute('title');
+    dotPreview.style.backgroundColor = getFallbackHex(nameInput.value);
 }
 
 function addColorRow(name = '', image = '') {
     const container = document.getElementById('productColorsContainer');
     const row = document.createElement('div');
     row.className = 'color-row';
-
     const uniqueId = 'color_image_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 
     row.innerHTML = `
         <div class="color-row-top">
             <div class="color-dot-preview"></div>
             <input type="text" class="color-name" list="colorList" placeholder="اكتب أو اختر اللون" autocomplete="off">
-            <button type="button" class="remove-color-btn" title="حذف هذا اللون" aria-label="حذف اللون">
-                <i class="fas fa-times"></i>
-            </button>
+            <button type="button" class="remove-color-btn" title="حذف"><i class="fas fa-times"></i></button>
         </div>
         <div class="color-row-bottom">
             <input type="url" id="${uniqueId}" class="color-image" placeholder="رابط صورة المنتج بهذا اللون (اختياري)" dir="ltr">
-            <button type="button" class="color-upload-btn" data-upload-target="${uniqueId}" title="رفع صورة" aria-label="رفع صورة">
-                <i class="fas fa-cloud-upload-alt"></i>
-            </button>
+            <button type="button" class="color-upload-btn" data-upload-target="${uniqueId}" title="رفع صورة"><i class="fas fa-cloud-upload-alt"></i></button>
             <img class="color-image-preview" alt="معاينة" onerror="this.classList.remove('visible')">
         </div>
     `;
@@ -1687,39 +1402,23 @@ function addColorRow(name = '', image = '') {
 
     nameInput.value = name || '';
     imageInput.value = image || '';
-
     updateColorPreview(nameInput, dotPreview);
     nameInput.addEventListener('input', () => updateColorPreview(nameInput, dotPreview));
-    nameInput.addEventListener('change', () => updateColorPreview(nameInput, dotPreview));
 
-    imageInput.addEventListener('input', (e) => {
-        const url = e.target.value.trim();
-        if (url) {
-            imagePreview.src = url;
-            imagePreview.classList.add('visible');
-        } else {
-            imagePreview.src = '';
-            imagePreview.classList.remove('visible');
-        }
+    imageInput.addEventListener('input', () => {
+        const url = imageInput.value.trim();
+        if (url) { imagePreview.src = url; imagePreview.classList.add('visible'); }
+        else { imagePreview.src = ''; imagePreview.classList.remove('visible'); }
     });
 
-    if (image) {
-        imagePreview.src = image;
-        imagePreview.classList.add('visible');
-    }
+    if (image) { imagePreview.src = image; imagePreview.classList.add('visible'); }
     imagePreview.addEventListener('error', () => imagePreview.classList.remove('visible'));
 
     removeBtn.addEventListener('click', () => {
-        row.style.transition = 'all 0.25s ease';
+        row.style.transition = 'all 0.25s';
         row.style.opacity = '0';
         row.style.transform = 'translateX(-20px)';
-        row.style.maxHeight = row.scrollHeight + 'px';
-        setTimeout(() => {
-            row.style.maxHeight = '0';
-            row.style.padding = '0';
-            row.style.marginBottom = '0';
-            setTimeout(() => row.remove(), 250);
-        }, 250);
+        setTimeout(() => row.remove(), 250);
     });
 
     container.appendChild(row);
@@ -1752,16 +1451,10 @@ $('productForm').addEventListener('submit', async (e) => {
         else if (cName || cImage) hasColorError = true;
     });
 
-    if (hasColorError) {
-        showToast('⚠️ يجب إكمال بيانات كل لون (الاسم + رابط الصورة) أو حذفه', 'error');
-        return;
-    }
+    if (hasColorError) { showToast('⚠️ أكمل بيانات كل لون أو احذفه', 'error'); return; }
 
     const productData = {
-        name: name,
-        category: category,
-        store_name: currentStore.name,
-        price: price,
+        name, category, store_name: currentStore.name, price,
         img_url: sanitizeInput($('product_img_url').value),
         colors: colors.length > 0 ? colors : null
     };
@@ -1773,9 +1466,7 @@ $('productForm').addEventListener('submit', async (e) => {
     try {
         if (id) {
             const existing = await db.collection(productsTableName).doc(id).get();
-            if (!existing.exists || existing.data().store_name !== currentStore.name) {
-                throw new Error('لا تملك صلاحية تعديل هذا المنتج');
-            }
+            if (!existing.exists || existing.data().store_name !== currentStore.name) throw new Error('لا تملك صلاحية التعديل');
             await db.collection(productsTableName).doc(id).update(productData);
             showToast('تم تعديل المنتج بنجاح ✅');
         } else {
@@ -1786,7 +1477,6 @@ $('productForm').addEventListener('submit', async (e) => {
         }
         resetProductForm();
     } catch (err) {
-        console.error('خطأ حفظ المنتج:', err);
         showToast('فشل الحفظ: ' + err.message, 'error');
     } finally {
         isSavingProduct = false;
@@ -1811,10 +1501,7 @@ window.editProduct = async (id) => {
         const snap = await db.collection(productsTableName).doc(id).get();
         if (!snap.exists) throw new Error('المنتج غير موجود');
         const data = { ...snap.data(), id: snap.id };
-
-        if (data.store_name !== currentStore.name) {
-            throw new Error('لا تملك صلاحية تعديل هذا المنتج');
-        }
+        if (data.store_name !== currentStore.name) throw new Error('لا تملك صلاحية التعديل');
 
         $('product_id').value = data.id;
         $('product_name').value = data.name || '';
@@ -1823,25 +1510,19 @@ window.editProduct = async (id) => {
 
         populateProductCategories(data.category || '');
 
-        if (data.img_url) {
-            $('product_img_preview').src = data.img_url;
-            $('product_img_preview').classList.remove('hidden');
-        } else {
-            $('product_img_preview').classList.add('hidden');
-        }
+        if (data.img_url) { $('product_img_preview').src = data.img_url; $('product_img_preview').classList.remove('hidden'); }
+        else $('product_img_preview').classList.add('hidden');
 
         const container = document.getElementById('productColorsContainer');
         container.innerHTML = '';
         if (data.colors && Array.isArray(data.colors) && data.colors.length > 0) {
-            const sortedColors = sortColorsByFamily(data.colors);
-            sortedColors.forEach(c => addColorRow(c.name, c.image));
+            sortColorsByFamily(data.colors).forEach(c => addColorRow(c.name, c.image));
         }
 
         $('productFormTitle').textContent = 'تعديل: ' + data.name;
         $('cancelEditProduct').classList.remove('hidden');
         $('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
-        console.error('خطأ تحميل المنتج:', err);
         showToast('فشل: ' + err.message, 'error');
     }
 };
@@ -1853,14 +1534,11 @@ window.deleteProduct = async (id) => {
     try {
         const snap = await db.collection(productsTableName).doc(id).get();
         if (!snap.exists) throw new Error('المنتج غير موجود');
-        if (snap.data().store_name !== currentStore.name) {
-            throw new Error('لا تملك صلاحية حذف هذا المنتج');
-        }
+        if (snap.data().store_name !== currentStore.name) throw new Error('لا تملك الصلاحية');
         await db.collection(productsTableName).doc(id).delete();
         showToast('تم حذف المنتج ✅');
         await updateMyStoreProductsCount();
     } catch (err) {
-        console.error('خطأ الحذف:', err);
         showToast('فشل الحذف: ' + err.message, 'error');
     }
 };
@@ -1868,19 +1546,20 @@ window.deleteProduct = async (id) => {
 async function updateMyStoreProductsCount() {
     if (!currentStore) return;
     try {
-        const snapshot = await db.collection(productsTableName).where('store_name', '==', currentStore.name).get();
-        const newCount = snapshot.size;
+        const snap = await db.collection(productsTableName).where('store_name', '==', currentStore.name).get();
+        const newCount = snap.size;
         await db.collection(storesTableName).doc(currentStore.id).update({ products_count: newCount });
         currentStore.products_count = newCount;
         $('ro_products_count').textContent = newCount;
         $('productsCount').textContent = newCount;
         $('productsCountBadge').textContent = newCount;
         cacheManager.set(`store_${currentStore.id}`, currentStore);
-    } catch (err) {
-        console.error('خطأ تحديث عدد المنتجات:', err);
-    }
+    } catch (err) {}
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   🎛️ Tabs & Previews
+   ═══════════════════════════════════════════════════════════════ */
 $('tabStore').addEventListener('click', () => {
     $('tabStore').classList.add('active');
     $('tabProducts').classList.remove('active');
@@ -1898,20 +1577,20 @@ $('tabProducts').addEventListener('click', () => {
 
 $('store_logo').addEventListener('input', (e) => {
     const p = $('store_logo_preview');
-    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
-    else p.classList.add('hidden');
+    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); } else p.classList.add('hidden');
 });
 $('store_cover').addEventListener('input', (e) => {
     const p = $('store_cover_preview');
-    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
-    else p.classList.add('hidden');
+    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); } else p.classList.add('hidden');
 });
 $('product_img_url').addEventListener('input', (e) => {
     const p = $('product_img_preview');
-    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
-    else p.classList.add('hidden');
+    if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); } else p.classList.add('hidden');
 });
 
+/* ═══════════════════════════════════════════════════════════════
+   🚀 Init
+   ═══════════════════════════════════════════════════════════════ */
 async function init() {
     const session = getSession();
     if (!session || !session.id) {
@@ -1927,6 +1606,7 @@ async function init() {
             currentStore = cachedStore;
             await enterDashboard();
 
+            // تحديث خلفي
             db.collection(storesTableName).doc(session.id).get().then(snap => {
                 if (snap.exists) {
                     const freshStore = { ...snap.data(), id: snap.id };
@@ -1938,7 +1618,7 @@ async function init() {
                         $('welcomeStoreName').textContent = currentStore.name;
                     }
                 }
-            }).catch(err => console.warn('تعذر التحديث الخلفي:', err));
+            }).catch(err => console.warn('Background refresh failed:', err));
             return;
         }
 
@@ -1953,18 +1633,14 @@ async function init() {
         cacheManager.set(`store_${session.id}`, currentStore);
         await enterDashboard();
     } catch (err) {
-        console.error(err);
         clearSession();
         $('loginOverlay').classList.remove('hidden');
         $('dashboard').classList.add('hidden');
     }
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
 </script>
 
 </body>
