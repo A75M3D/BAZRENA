@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v9.3.0
+   BranZar App Core v9.4.0
    ✅ Multi-Layer Device Fingerprint Anti-Cheat
    ✅ Rate Limiter (Client-Side)
    ✅ Long-Term Cache
@@ -7,6 +7,7 @@
    ✅ Store Categories System (Free main + Locked additional)
    ✅ Rating Removal
    ✅ Client-Side Category Filter (Backward Compatible)
+   ✅ Categories Auto-Scroll (3 passes then stop)
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -37,7 +38,10 @@ const CONFIG = Object.freeze({
   FP_IDB_STORE: 'device_store',
   FOLLOW_COOLDOWN_MS: 1500,
   RATE_MAX_PER_MINUTE: 30,
-  RATE_MAX_PER_DAY: 2000
+  RATE_MAX_PER_DAY: 2000,
+  CAT_SCROLL_PASSES: 3,
+  CAT_SCROLL_INTERVAL: 28,
+  CAT_SCROLL_STEP: 1.4
 });
 
 const FIREBASE_CONFIG = {
@@ -390,7 +394,7 @@ let storesPollInterval = null;
 let storeProductsLastDoc = null;
 let storeProductsHasMore = false;
 let currentStoreNameForProducts = null;
-let currentStoreCategoryForProducts = null; /* ✅ الفئة النشطة حالياً */
+let currentStoreCategoryForProducts = null;
 let isPageVisible = !document.hidden;
 let _followedCache = null, _favsCache = null;
 let _followedFromServer = new Set();
@@ -666,7 +670,7 @@ document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setVi
 document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
 document.getElementById('accountViewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
 
-/* ═══ AUTO-SCROLL ═══ */
+/* ═══ AUTO-SCROLL (Stores) ═══ */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
@@ -704,6 +708,75 @@ function startAutoScroll() {
 }
 function stopAutoScroll() {
   if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ✅ CATEGORIES AUTO-SCROLL — 3 حركات ثم توقف نهائي
+   ═══════════════════════════════════════════════════════════ */
+let _catScrollRAFId = null;
+let _catScrollPassesLeft = 0;
+let _catScrollDir = 1;
+let _catLastFrame = 0;
+let _catHovering = false;
+
+function _catMaxScroll() {
+  const c = document.getElementById('categoriesContainer');
+  return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
+}
+
+function _catScrollLoop(ts) {
+  const c = document.getElementById('categoriesContainer');
+  if (!c) { _catScrollRAFId = null; return; }
+  if (!isPageVisible || _catHovering) {
+    _catScrollRAFId = requestAnimationFrame(_catScrollLoop);
+    return;
+  }
+  if (_catScrollPassesLeft <= 0) { _catScrollRAFId = null; return; }
+  if (ts - _catLastFrame < CONFIG.CAT_SCROLL_INTERVAL) {
+    _catScrollRAFId = requestAnimationFrame(_catScrollLoop);
+    return;
+  }
+  _catLastFrame = ts;
+  const max = _catMaxScroll();
+  if (max <= 0) { _catScrollRAFId = null; return; }
+
+  if (_catScrollDir === 1) {
+    c.scrollLeft += CONFIG.CAT_SCROLL_STEP;
+    if (c.scrollLeft >= max - 0.5) {
+      c.scrollLeft = max;
+      _catScrollPassesLeft--;
+      if (_catScrollPassesLeft <= 0) { _catScrollRAFId = null; return; }
+      _catScrollDir = -1;
+    }
+  } else {
+    c.scrollLeft -= CONFIG.CAT_SCROLL_STEP;
+    if (c.scrollLeft <= 0.5) {
+      c.scrollLeft = 0;
+      _catScrollPassesLeft--;
+      if (_catScrollPassesLeft <= 0) { _catScrollRAFId = null; return; }
+      _catScrollDir = 1;
+    }
+  }
+  _catScrollRAFId = requestAnimationFrame(_catScrollLoop);
+}
+
+function startCategoriesAutoScroll() {
+  stopCategoriesAutoScroll();
+  const c = document.getElementById('categoriesContainer');
+  if (!c) return;
+  if (_catMaxScroll() <= 0) return;
+  _catScrollPassesLeft = CONFIG.CAT_SCROLL_PASSES;
+  _catScrollDir = 1;
+  _catLastFrame = 0;
+  _catScrollRAFId = requestAnimationFrame(_catScrollLoop);
+}
+
+function stopCategoriesAutoScroll() {
+  if (_catScrollRAFId) {
+    cancelAnimationFrame(_catScrollRAFId);
+    _catScrollRAFId = null;
+  }
+  _catScrollPassesLeft = 0;
 }
 
 /* ═══ BODY SCROLL LOCK ═══ */
@@ -980,6 +1053,7 @@ function goToCategory(cat) {
   const target = btns.find(b => b.textContent.trim() === cat);
   if (target) highlightCategory(target);
   applyProductsFilter(cat);
+  startCategoriesAutoScroll();
   const s = document.getElementById('stores');
   if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -1071,7 +1145,6 @@ async function fetchProductsPage(cursorDoc, silent) {
   } catch(err) { throw err; }
 }
 
-/* ✅ بدون تقييم — فقط السعر */
 function renderProductsBatch(items) {
   const grid = document.getElementById('allProductsGrid');
   if (!items.length) return;
@@ -1453,7 +1526,10 @@ function displayCategories() {
   const c = document.getElementById('categoriesContainer');
   c.innerHTML = '';
   const frag = document.createDocumentFragment();
-  const allBtn = document.createElement('button'); allBtn.className = 'chip active'; allBtn.textContent = 'الكل';
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'chip active';
+  allBtn.textContent = 'الكل';
   allBtn.addEventListener('click', () => {
     haptic('light');
     currentCategory = null;
@@ -1461,11 +1537,21 @@ function displayCategories() {
     highlightCategory(allBtn);
     startAutoScroll();
     applyProductsFilter(null);
+    startCategoriesAutoScroll();
   });
   frag.appendChild(allBtn);
+
   categories.forEach(cat => {
-    const btn = document.createElement('button'); btn.className = 'chip'; btn.textContent = cat;
-    btn.addEventListener('click', () => { haptic('light'); filterStoresByCategory(cat); highlightCategory(btn); applyProductsFilter(cat); });
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = cat;
+    btn.addEventListener('click', () => {
+      haptic('light');
+      filterStoresByCategory(cat);
+      highlightCategory(btn);
+      applyProductsFilter(cat);
+      startCategoriesAutoScroll();
+    });
     frag.appendChild(btn);
   });
   c.appendChild(frag);
@@ -1474,6 +1560,33 @@ function highlightCategory(active) {
   document.getElementById('categoriesContainer').querySelectorAll('button').forEach(b => b.classList.remove('active'));
   active.classList.add('active');
 }
+
+/* ═══ CATEGORIES CONTAINER INTERACTION ═══ */
+(function initCategoriesContainerInteraction() {
+  const c = document.getElementById('categoriesContainer');
+  if (!c) return;
+
+  // إيقاف فوري عند أي لمس/سحب يدوي
+  c.addEventListener('pointerdown', () => { stopCategoriesAutoScroll(); }, { passive: true });
+  c.addEventListener('touchstart', () => { stopCategoriesAutoScroll(); }, { passive: true });
+  c.addEventListener('mousedown', () => { stopCategoriesAutoScroll(); }, { passive: true });
+
+  // إيقاف عند التمرير بالعجلة
+  c.addEventListener('wheel', () => { stopCategoriesAutoScroll(); }, { passive: true });
+
+  // إيقاف مؤقت عند مرور الماوس (ديسكتوب)
+  c.addEventListener('mouseenter', () => { _catHovering = true; }, { passive: true });
+  c.addEventListener('mouseleave', () => { _catHovering = false; }, { passive: true });
+
+  // أزرار التنقل اليدوي توقف أيضاً
+  document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => stopCategoriesAutoScroll());
+  document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => stopCategoriesAutoScroll());
+
+  // عجلة الماوس الحالية (احتفظ بها كما هي)
+  c.addEventListener('wheel', (e) => {
+    if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; }
+  }, { passive: false });
+})();
 
 /* ═══════════════════════════════════════════════════════════
    ✅ STORE CATEGORIES — نظام الفئات المتقدم
@@ -1496,7 +1609,6 @@ function renderStoreCategoryTabs(store) {
   }
   container.style.display = 'flex';
 
-  // 🟢 الفئة الرئيسية — مجانية
   if (mainCat) {
     const tab = document.createElement('button');
     tab.type = 'button';
@@ -1509,7 +1621,6 @@ function renderStoreCategoryTabs(store) {
     container.appendChild(tab);
   }
 
-  // 🔒 الفئات الإضافية
   additional.forEach(cat => {
     const tab = document.createElement('button');
     tab.type = 'button';
@@ -1730,14 +1841,8 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
 });
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ STORE PRODUCTS — استعلام بسيط + فلترة على العميل
+   ✅ STORE PRODUCTS
    ═══════════════════════════════════════════════════════════ */
-
-/**
- * ✅ الفلترة الذكية على العميل — متوافقة مع البيانات القديمة والجديدة
- * - الفئة الرئيسية → منتجات بدون category أو category = الرئيسية
- * - فئة إضافية → منتجات فئتها = الفئة الإضافية فقط
- */
 function filterStoreProductsByCategory(products, category) {
   if (!Array.isArray(products)) return [];
   if (!category) return products;
@@ -1746,7 +1851,6 @@ function filterStoreProductsByCategory(products, category) {
     ? String(currentStore.category).trim()
     : null;
 
-  // التبويب الرئيسي → المنتجات بدون فئة أو فئتها الرئيسية
   if (category === mainCat) {
     return products.filter(p => {
       const pc = String(p.category || '').trim();
@@ -1754,14 +1858,9 @@ function filterStoreProductsByCategory(products, category) {
     });
   }
 
-  // تبويب فئة إضافية → فقط المنتجات بهذه الفئة
   return products.filter(p => String(p.category || '').trim() === category);
 }
 
-/**
- * ✅ يستخدم استعلام بسيط بـ store_name فقط (متوافق مع البيانات القديمة)
- * ثم يفلتر على العميل حسب الفئة
- */
 async function loadStoreProducts(storeName, category) {
   const grid = document.getElementById('storeProductsGrid');
   const loadMoreBtn = document.getElementById('loadMoreStoreProductsBtn');
@@ -1772,7 +1871,6 @@ async function loadStoreProducts(storeName, category) {
   storeProductsLastDoc = null;
   storeProductsHasMore = false;
 
-  // ✅ Cache key: بالمتجر فقط (نخزّن القائمة الخام)
   const cacheKey = 'store_products_page1_' + storeName;
   const cached = cacheManager.get(cacheKey);
 
@@ -1791,7 +1889,6 @@ async function loadStoreProducts(storeName, category) {
   if (!RateLimiter.canRequest('store_products')) return;
 
   try {
-    // ✅ استعلام بسيط بـ store_name فقط — بدون composite index
     let q = db.collection('products')
       .where('store_name', '==', storeName)
       .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
@@ -1801,7 +1898,6 @@ async function loadStoreProducts(storeName, category) {
     try {
       snap = await q.get();
     } catch(innerErr) {
-      // Fallback: بدون orderBy (لو الحقل غير موجود)
       snap = await db.collection('products')
         .where('store_name', '==', storeName)
         .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
@@ -1821,7 +1917,6 @@ async function loadStoreProducts(storeName, category) {
       if (storeProductsHasMore) loadMoreBtn.classList.remove('hidden');
     }
 
-    // ✅ تخزين القائمة الخام (غير مفلترة)
     cacheManager.set(cacheKey, { items: rawList, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
 
   } catch(err) {
@@ -1830,7 +1925,6 @@ async function loadStoreProducts(storeName, category) {
   }
 }
 
-/* ✅ زر عرض المزيد — بسيط بدون فئة */
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('loadMoreStoreProductsBtn');
   if (btn.disabled || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
@@ -1863,7 +1957,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     const filtered = filterStoreProductsByCategory(rawList, currentStoreCategoryForProducts);
     if (filtered.length) renderStoreProducts(filtered, true);
 
-    // ✅ تحديث الـ Cache بالقائمة الخام
     const cacheKey = 'store_products_page1_' + currentStoreNameForProducts;
     const cached = cacheManager.get(cacheKey);
     const allItems = (cached && Array.isArray(cached.items)) ? cached.items.concat(rawList) : rawList;
@@ -1877,7 +1970,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
   btn.disabled = false;
 });
 
-/* ✅ بدون تقييم */
 function renderStoreProducts(products, append) {
   const grid = document.getElementById('storeProductsGrid');
   if (!append) grid.innerHTML = '';
@@ -1938,7 +2030,7 @@ function renderStoreProducts(products, append) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ PRODUCT MODAL (بدون تقييم)
+   ✅ PRODUCT MODAL
    ═══════════════════════════════════════════════════════════ */
 let currentModalProduct = null, selectedColorVariant = null;
 
@@ -2279,13 +2371,8 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ═══ NAV CONTROLS ═══ */
-document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) => {
-  if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; }
-}, { passive: false });
 document.getElementById('prevStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: 300, behavior: 'smooth' }); });
 document.getElementById('nextStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: -300, behavior: 'smooth' }); });
-document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: -200, behavior: 'smooth' }));
-document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: 200, behavior: 'smooth' }));
 
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
@@ -2437,6 +2524,7 @@ window.addEventListener('beforeunload', () => {
     if (allProductsUnsubscribe) clearInterval(allProductsUnsubscribe);
     if (storesPollInterval) clearInterval(storesPollInterval);
     stopAutoScroll();
+    stopCategoriesAutoScroll();
     if (_cacheWriteTimer) { clearTimeout(_cacheWriteTimer); _flushCacheWrites(); }
   } catch(e){}
 });
@@ -2449,7 +2537,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.3.0',
+  version: '9.4.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
@@ -2458,7 +2546,9 @@ window.BranZar = {
   setTheme: applyTheme,
   setView: applyViewMode,
   getFingerprint: getDeviceFingerprint,
-  syncFollows: syncFollowedStoresFromServer
+  syncFollows: syncFollowedStoresFromServer,
+  startCategoriesAutoScroll,
+  stopCategoriesAutoScroll
 };
 
 })();
