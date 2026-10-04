@@ -625,4 +625,33 @@ body.theme-dark .categories-scroll-hint {
   color: #94A3B8;
   background: #334155;
 }
+/* ═══════════════════════════════════════════════════════════
+   ✅ زر "عرض المزيد" داخل المتجر — قاعدة قوية
+   ═══════════════════════════════════════════════════════════ */
+#loadMoreStoreProductsBtn.hidden,
+#loadMoreStoreProductsBtn[hidden] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* الزر عند ظهوره */
+#loadMoreStoreProductsBtn:not(.hidden) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: fadeInLoadMore 0.3s ease;
+}
+
+@keyframes fadeInLoadMore {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+#loadMoreStoreProductsBtn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
 
