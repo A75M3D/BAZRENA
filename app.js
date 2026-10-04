@@ -1,12 +1,14 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v9.3.0
-   ✅ Multi-Layer Device Fingerprint Anti-Cheat
+   BranZar App Core v9.5.0
+   ✅ Multi-Layer Device Fingerprint Anti-Cheat (local only)
    ✅ Rate Limiter (Client-Side)
    ✅ Long-Term Cache
    ✅ Polling instead of onSnapshot (saves quota)
    ✅ Store Categories System (Free main + Locked additional)
    ✅ Rating Removal
    ✅ Client-Side Category Filter (Backward Compatible)
+   ✅ New Categories Grid Design (Card-based with images)
+   ✅ Professional Category Tabs (Glow Effect + Scroll Indicators)
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -64,6 +66,48 @@ const KEYS = Object.freeze({
 });
 
 const VERIFIED_BADGE_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true"><path fill="#1877F2" d="M12 1l2.35 2.05 3.09-.41 1.13 2.92 2.92 1.13-.41 3.09L23 12l-2.05 2.35.41 3.09-2.92 1.13-1.13 2.92-3.09-.41L12 23l-2.35-2.05-3.09.41-1.13-2.92-2.92-1.13.41-3.09L1 12l2.05-2.35-.41-3.09 2.92-1.13 1.13-2.92 3.09.41L12 1z"/><path fill="#fff" d="M10.6 16.2l-3.8-3.8 1.4-1.4 2.4 2.4 6-6 1.4 1.4z"/></svg>';
+
+/* ═══ إعدادات الفئات الافتراضية — مع صور وألوان مخصصة ═══ */
+const CATEGORY_CONFIG = {
+  'الإلكترونيات': {
+    image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=400&q=80',
+    color: 'blue',
+    subtitle: 'أجهزة ذكية وتقنية'
+  },
+  'السفر والسياحة': {
+    image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=400&q=80',
+    color: 'peach',
+    subtitle: 'رحلات، فنادق، حجوزات'
+  },
+  'النقل والتوصيل': {
+    image: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?auto=format&fit=crop&w=400&q=80',
+    color: 'green',
+    subtitle: 'توصيل، نقل، شحن'
+  },
+  'الصحة والجمال': {
+    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=400&q=80',
+    color: 'pink',
+    subtitle: 'عناية، صحة، جمال'
+  },
+  'الخدمات والأعمال': {
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=80',
+    color: 'purple',
+    subtitle: 'خدمات، مهارات، أعمال'
+  },
+  'الأزياء': {
+    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=400&q=80',
+    color: 'beige',
+    subtitle: 'ملابس، أحذية، إكسسوارات'
+  },
+  'أخرى': {
+    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=400&q=80',
+    color: 'gray',
+    subtitle: 'كل ما هو جديد ومميز',
+    full: true
+  }
+};
+
+const CARD_COLORS_ROTATION = ['blue', 'peach', 'green', 'pink', 'purple', 'beige'];
 
 /* ═══ UTILS ═══ */
 function sanitizeHTML(str) {
@@ -131,7 +175,7 @@ const RateLimiter = {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   🛡️ DEVICE FINGERPRINT ANTI-CHEAT
+   🛡️ DEVICE FINGERPRINT ANTI-CHEAT (محلي فقط)
    ═══════════════════════════════════════════════════════════ */
 function fnv1a(str) {
   let hash = 0x811c9dc5;
@@ -390,7 +434,7 @@ let storesPollInterval = null;
 let storeProductsLastDoc = null;
 let storeProductsHasMore = false;
 let currentStoreNameForProducts = null;
-let currentStoreCategoryForProducts = null; /* ✅ الفئة النشطة حالياً */
+let currentStoreCategoryForProducts = null;
 let isPageVisible = !document.hidden;
 let _followedCache = null, _favsCache = null;
 let _followedFromServer = new Set();
@@ -850,8 +894,7 @@ async function registerFCMToken(reg) {
     const prev = localStorage.getItem(KEYS.FCM_TOKEN + '_saved');
     if (prev !== token) {
       await db.collection('fcm_tokens').doc(token).set({
-        token, userAgent: navigator.userAgent, platform: navigator.platform || 'unknown',
-        language: navigator.language || 'ar',
+        token,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
         active: true
@@ -976,9 +1019,17 @@ function createSearchProductRow(product) {
 function goToCategory(cat) {
   currentCategory = cat;
   filterStoresByCategory(cat);
-  const btns = Array.from(document.getElementById('categoriesContainer').querySelectorAll('button'));
-  const target = btns.find(b => b.textContent.trim() === cat);
-  if (target) highlightCategory(target);
+
+  /* ✅ تحديد بصري للبطاقة النشطة في الشبكة */
+  document.querySelectorAll('.category-card-new').forEach(card => {
+    const title = card.querySelector('.cat-card-title');
+    if (title && title.textContent.trim() === cat) {
+      card.style.outline = '3px solid #FF7A00';
+      card.style.outlineOffset = '3px';
+      setTimeout(() => { card.style.outline = ''; card.style.outlineOffset = ''; }, 2000);
+    }
+  });
+
   applyProductsFilter(cat);
   const s = document.getElementById('stores');
   if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1071,7 +1122,7 @@ async function fetchProductsPage(cursorDoc, silent) {
   } catch(err) { throw err; }
 }
 
-/* ✅ بدون تقييم — فقط السعر */
+/* ✅ بدون تقييم */
 function renderProductsBatch(items) {
   const grid = document.getElementById('allProductsGrid');
   if (!items.length) return;
@@ -1214,7 +1265,7 @@ async function loadCategories(force) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   🛡️ SERVER-BASED FOLLOW SYSTEM
+   🛡️ SERVER-BASED FOLLOW SYSTEM (بدون بيانات الجهاز)
    ═══════════════════════════════════════════════════════════ */
 async function syncFollowedStoresFromServer() {
   try {
@@ -1247,6 +1298,8 @@ async function syncFollowedStoresFromServer() {
     console.warn('[BZR] Sync follows failed:', err);
   }
 }
+
+/* ✅ فقط storeId + fingerprint + createdAt */
 async function migrateLocalFollowsToServer(storeIds, fingerprint) {
   try {
     const batch = db.batch();
@@ -1257,10 +1310,6 @@ async function migrateLocalFollowsToServer(storeIds, fingerprint) {
       batch.set(ref, {
         storeId: String(sid),
         fingerprint: fingerprint,
-        ua: navigator.userAgent.substring(0, 200),
-        lang: navigator.language || 'ar',
-        platform: navigator.platform || 'unknown',
-        tz: new Date().getTimezoneOffset(),
         migrated: true,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
@@ -1272,6 +1321,8 @@ async function migrateLocalFollowsToServer(storeIds, fingerprint) {
     console.warn('[BZR] Migration failed:', err);
   }
 }
+
+/* ✅ فقط storeId + fingerprint + createdAt */
 async function performFollowToggle(store) {
   const storeId = String(getStoreId(store));
   await ensureAuth();
@@ -1292,10 +1343,6 @@ async function performFollowToggle(store) {
       transaction.set(followRef, {
         storeId: storeId,
         fingerprint: fingerprint,
-        ua: navigator.userAgent.substring(0, 200),
-        lang: navigator.language || 'ar',
-        platform: navigator.platform || 'unknown',
-        tz: new Date().getTimezoneOffset(),
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       transaction.set(storeRef, {
@@ -1448,35 +1495,90 @@ function filterStoresByCategory(cat) {
   startAutoScroll();
 }
 
-/* ═══ CATEGORIES ═══ */
+/* ═══════════════════════════════════════════════════════════
+   🎨 ALL CATEGORIES — شبكة الفئات الجديدة (Grid + صور)
+   ═══════════════════════════════════════════════════════════ */
+
 function displayCategories() {
-  const c = document.getElementById('categoriesContainer');
-  c.innerHTML = '';
+  const grid = document.getElementById('categoriesGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const dynamicCats = new Set(categories.filter(Boolean));
+  const predefinedCats = Object.keys(CATEGORY_CONFIG).filter(k => k !== 'أخرى');
+
+  const allCats = [];
+  predefinedCats.forEach(cat => {
+    allCats.push(cat);
+    dynamicCats.delete(cat);
+  });
+  dynamicCats.forEach(cat => {
+    if (cat && cat !== 'أخرى') allCats.push(cat);
+  });
+
   const frag = document.createDocumentFragment();
-  const allBtn = document.createElement('button'); allBtn.className = 'chip active'; allBtn.textContent = 'الكل';
-  allBtn.addEventListener('click', () => {
-    haptic('light');
-    currentCategory = null;
-    displayStores();
-    highlightCategory(allBtn);
-    startAutoScroll();
-    applyProductsFilter(null);
+  allCats.forEach((cat, idx) => {
+    const config = CATEGORY_CONFIG[cat] || {
+      image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=400&q=80',
+      color: CARD_COLORS_ROTATION[idx % CARD_COLORS_ROTATION.length],
+      subtitle: 'تصفح الفئة'
+    };
+    frag.appendChild(createCategoryCard(cat, config));
   });
-  frag.appendChild(allBtn);
-  categories.forEach(cat => {
-    const btn = document.createElement('button'); btn.className = 'chip'; btn.textContent = cat;
-    btn.addEventListener('click', () => { haptic('light'); filterStoresByCategory(cat); highlightCategory(btn); applyProductsFilter(cat); });
-    frag.appendChild(btn);
-  });
-  c.appendChild(frag);
+  frag.appendChild(createCategoryCard('أخرى', CATEGORY_CONFIG['أخرى']));
+  grid.appendChild(frag);
 }
-function highlightCategory(active) {
-  document.getElementById('categoriesContainer').querySelectorAll('button').forEach(b => b.classList.remove('active'));
-  active.classList.add('active');
+
+function createCategoryCard(catName, config) {
+  const card = document.createElement('div');
+  card.className = 'category-card-new cat-card-' + (config.color || 'blue') + (config.full ? ' cat-card-full' : '');
+  card.setAttribute('role', 'button');
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('aria-label', 'تصفح فئة ' + catName);
+
+  const img = document.createElement('img');
+  img.className = 'cat-card-image';
+  img.src = config.image;
+  img.alt = catName;
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  img.onerror = function() {
+    this.src = 'https://via.placeholder.com/300x300/FFA64D/FFFFFF?text=' + encodeURIComponent(catName);
+  };
+
+  const textWrap = document.createElement('div');
+  textWrap.className = 'cat-card-text';
+
+  const title = document.createElement('h3');
+  title.className = 'cat-card-title';
+  title.textContent = catName;
+
+  const subtitle = document.createElement('p');
+  subtitle.className = 'cat-card-subtitle';
+  subtitle.textContent = config.subtitle || '';
+
+  const arrow = document.createElement('span');
+  arrow.className = 'cat-card-arrow';
+  arrow.innerHTML = '<i class="fas fa-arrow-left" aria-hidden="true"></i>';
+
+  textWrap.appendChild(title);
+  textWrap.appendChild(subtitle);
+  textWrap.appendChild(arrow);
+
+  card.appendChild(img);
+  card.appendChild(textWrap);
+
+  const handleClick = () => { haptic('light'); goToCategory(catName); };
+  card.addEventListener('click', handleClick);
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); }
+  });
+
+  return card;
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ STORE CATEGORIES — نظام الفئات المتقدم
+   ✅ STORE CATEGORIES — نظام الفئات المتقدم + مؤشرات التمرير
    ═══════════════════════════════════════════════════════════ */
 
 function renderStoreCategoryTabs(store) {
@@ -1513,12 +1615,12 @@ function renderStoreCategoryTabs(store) {
   additional.forEach(cat => {
     const tab = document.createElement('button');
     tab.type = 'button';
-    tab.className = 'store-cat-tab' + (subscribed ? '' : ' locked');
+    tab.className = 'store-cat-tab' + (subscribed ? ' subscribed-tab' : ' locked');
     tab.dataset.cat = cat;
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-selected', 'false');
     const icon = subscribed
-      ? '<i class="fas fa-tag"></i>'
+      ? '<i class="fas fa-crown" aria-hidden="true"></i>'
       : '<i class="fas fa-lock lock-icon" aria-hidden="true"></i>';
     tab.innerHTML = icon + '<span>' + sanitizeHTML(cat) + '</span>';
     if (!subscribed) tab.setAttribute('aria-label', cat + ' - مقفلة، تتطلب اشتراكاً');
@@ -1533,6 +1635,29 @@ function renderStoreCategoryTabs(store) {
     });
     container.appendChild(tab);
   });
+
+  // ✅ مؤشرات التمرير بعد الرسم
+  setTimeout(updateCategoryScrollIndicators, 100);
+
+  // ✅ ربط مستمع التمرير (مرة واحدة فقط)
+  if (!container.dataset.scrollBound) {
+    container.dataset.scrollBound = '1';
+    container.addEventListener('scroll', updateCategoryScrollIndicators, { passive: true });
+    window.addEventListener('resize', updateCategoryScrollIndicators, { passive: true });
+  }
+}
+
+/* ✅ مؤشرات التمرير — تُظهر "فيه فئات أكتر" */
+function updateCategoryScrollIndicators() {
+  const wrap = document.getElementById('storeCategoriesTabsWrap');
+  const tabs = document.getElementById('storeCategoriesTabs');
+  if (!wrap || !tabs) return;
+
+  const hasOverflowLeft = tabs.scrollLeft + tabs.clientWidth < tabs.scrollWidth - 5;
+  const hasOverflowRight = tabs.scrollLeft > 5;
+
+  wrap.classList.toggle('has-overflow-left', hasOverflowLeft);
+  wrap.classList.toggle('has-overflow-right', hasOverflowRight);
 }
 
 function selectStoreCategoryTab(tab, category) {
@@ -1545,7 +1670,18 @@ function selectStoreCategoryTab(tab, category) {
   }
   tab.classList.add('active');
   tab.setAttribute('aria-selected', 'true');
-  haptic('light');
+
+  /* ✅ تأثير الانفجار الضوئي */
+  tab.classList.add('tab-clicked');
+  setTimeout(() => tab.classList.remove('tab-clicked'), 900);
+
+  /* ✅ إضافة حلقة الضوء الممتدة */
+  const ring = document.createElement('span');
+  ring.className = 'glow-ring';
+  tab.appendChild(ring);
+  setTimeout(() => { if (ring.parentNode) ring.parentNode.removeChild(ring); }, 950);
+
+  haptic('medium');
 
   currentStoreCategoryForProducts = category || null;
   if (currentStore) loadStoreProducts(currentStore.name, currentStoreCategoryForProducts);
@@ -1733,11 +1869,6 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
    ✅ STORE PRODUCTS — استعلام بسيط + فلترة على العميل
    ═══════════════════════════════════════════════════════════ */
 
-/**
- * ✅ الفلترة الذكية على العميل — متوافقة مع البيانات القديمة والجديدة
- * - الفئة الرئيسية → منتجات بدون category أو category = الرئيسية
- * - فئة إضافية → منتجات فئتها = الفئة الإضافية فقط
- */
 function filterStoreProductsByCategory(products, category) {
   if (!Array.isArray(products)) return [];
   if (!category) return products;
@@ -1746,7 +1877,6 @@ function filterStoreProductsByCategory(products, category) {
     ? String(currentStore.category).trim()
     : null;
 
-  // التبويب الرئيسي → المنتجات بدون فئة أو فئتها الرئيسية
   if (category === mainCat) {
     return products.filter(p => {
       const pc = String(p.category || '').trim();
@@ -1754,14 +1884,9 @@ function filterStoreProductsByCategory(products, category) {
     });
   }
 
-  // تبويب فئة إضافية → فقط المنتجات بهذه الفئة
   return products.filter(p => String(p.category || '').trim() === category);
 }
 
-/**
- * ✅ يستخدم استعلام بسيط بـ store_name فقط (متوافق مع البيانات القديمة)
- * ثم يفلتر على العميل حسب الفئة
- */
 async function loadStoreProducts(storeName, category) {
   const grid = document.getElementById('storeProductsGrid');
   const loadMoreBtn = document.getElementById('loadMoreStoreProductsBtn');
@@ -1772,7 +1897,6 @@ async function loadStoreProducts(storeName, category) {
   storeProductsLastDoc = null;
   storeProductsHasMore = false;
 
-  // ✅ Cache key: بالمتجر فقط (نخزّن القائمة الخام)
   const cacheKey = 'store_products_page1_' + storeName;
   const cached = cacheManager.get(cacheKey);
 
@@ -1791,7 +1915,6 @@ async function loadStoreProducts(storeName, category) {
   if (!RateLimiter.canRequest('store_products')) return;
 
   try {
-    // ✅ استعلام بسيط بـ store_name فقط — بدون composite index
     let q = db.collection('products')
       .where('store_name', '==', storeName)
       .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
@@ -1801,7 +1924,6 @@ async function loadStoreProducts(storeName, category) {
     try {
       snap = await q.get();
     } catch(innerErr) {
-      // Fallback: بدون orderBy (لو الحقل غير موجود)
       snap = await db.collection('products')
         .where('store_name', '==', storeName)
         .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
@@ -1821,7 +1943,6 @@ async function loadStoreProducts(storeName, category) {
       if (storeProductsHasMore) loadMoreBtn.classList.remove('hidden');
     }
 
-    // ✅ تخزين القائمة الخام (غير مفلترة)
     cacheManager.set(cacheKey, { items: rawList, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
 
   } catch(err) {
@@ -1830,7 +1951,6 @@ async function loadStoreProducts(storeName, category) {
   }
 }
 
-/* ✅ زر عرض المزيد — بسيط بدون فئة */
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('loadMoreStoreProductsBtn');
   if (btn.disabled || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
@@ -1863,7 +1983,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     const filtered = filterStoreProductsByCategory(rawList, currentStoreCategoryForProducts);
     if (filtered.length) renderStoreProducts(filtered, true);
 
-    // ✅ تحديث الـ Cache بالقائمة الخام
     const cacheKey = 'store_products_page1_' + currentStoreNameForProducts;
     const cached = cacheManager.get(cacheKey);
     const allItems = (cached && Array.isArray(cached.items)) ? cached.items.concat(rawList) : rawList;
@@ -1877,7 +1996,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
   btn.disabled = false;
 });
 
-/* ✅ بدون تقييم */
 function renderStoreProducts(products, append) {
   const grid = document.getElementById('storeProductsGrid');
   if (!append) grid.innerHTML = '';
@@ -2278,14 +2396,9 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ═══ NAV CONTROLS ═══ */
-document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) => {
-  if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; }
-}, { passive: false });
+/* ═══ NAV CONTROLS (Stores only — Categories now use grid) ═══ */
 document.getElementById('prevStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: 300, behavior: 'smooth' }); });
 document.getElementById('nextStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: -300, behavior: 'smooth' }); });
-document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: -200, behavior: 'smooth' }));
-document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: 200, behavior: 'smooth' }));
 
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
@@ -2449,7 +2562,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.3.0',
+  version: '9.5.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
