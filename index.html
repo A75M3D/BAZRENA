@@ -140,16 +140,16 @@
     </div>
   </section>
 
-  <section id="categories" class="categories-section">
+  <!-- ═══════════════════════════════════════════════════════════
+       ✅ جديد: قسم الفئات — تصميم شبكة احترافي (Grid)
+       ═══════════════════════════════════════════════════════════ -->
+  <section id="categories" class="categories-section-new">
     <div class="bzr-container">
-      <div class="section-header-flex">
-        <h2 class="section-title-md">الفئات</h2>
-        <div class="nav-buttons">
-          <button id="prevCategoriesBtn" class="scroll-btn" aria-label="السابق"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
-          <button id="nextCategoriesBtn" class="scroll-btn" aria-label="التالي"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
-        </div>
+      <div class="cat-section-header">
+        <h2 class="cat-section-title">جميع الفئات</h2>
+        <p class="cat-section-subtitle">اختر الفئة التي تناسبك واستكشف ما فيها</p>
       </div>
-      <div id="categoriesContainer" class="categories-scroll-container"></div>
+      <div id="categoriesGrid" class="categories-grid"></div>
     </div>
   </section>
 
@@ -187,7 +187,6 @@
         <div class="store-header-info">
           <h3 id="storeName" class="store-header-name"></h3>
           <div class="store-header-meta">
-            <!-- ✅ تم حذف التقييم (store-meta-rating) نهائياً -->
             <span class="store-meta-category" id="storeCategory"><i class="fas fa-tag" aria-hidden="true"></i><span>عام</span></span>
           </div>
         </div>
@@ -200,8 +199,13 @@
         <a id="storeCallButton" href="#" class="store-action-btn ripple"><span class="icon-circle"><i class="fas fa-phone" aria-hidden="true"></i></span><span>اتصال</span></a>
       </div>
 
-      <!-- ✅ جديد: شريط فئات المتجر (يُعبأ ديناميكياً) -->
-      <div id="storeCategoriesTabs" class="store-categories-tabs" role="tablist" aria-label="فئات المتجر"></div>
+      <!-- ═══════════════════════════════════════════════════════════
+           ✅ جديد: شريط فئات المتجر — مع مؤشرات التمرير + سهم احترافي
+           ═══════════════════════════════════════════════════════════ -->
+      <div class="store-categories-tabs-wrap" id="storeCategoriesTabsWrap">
+        <div id="storeCategoriesTabs" class="store-categories-tabs" role="tablist" aria-label="فئات المتجر"></div>
+        <div class="scroll-hint-arrow" aria-hidden="true"><i class="fas fa-chevron-left"></i></div>
+      </div>
     </div>
     <div class="divider-strip"></div>
     <div class="store-products-section">
@@ -234,7 +238,7 @@
       </div>
       <div class="product-modal-right">
         <h2 id="productModalName"></h2>
-        <!-- ✅ تم استبدال صف التقييم بصف بسيط يحتوي على اسم المتجر فقط -->
+        <!-- ✅ صف المتجر (بديل Rating) -->
         <div class="product-store-row">
           <i class="fas fa-store" aria-hidden="true"></i>
           <span id="productModalStore">—</span>
