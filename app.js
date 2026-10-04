@@ -1,42 +1,56 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v9.7.0
+   BranZar App Core v9.8.0
    ✅ Multi-Layer Device Fingerprint (Local Only — لا يُرسل لـ Firebase)
    ✅ Firebase Auth UID (يُستخدم كمعرّف المستخدم في Firestore)
    ✅ FollowGuard (Anti-Bot + Anti-Spam Rate Limiter)
    ✅ Rate Limiter (Client-Side)
-   ✅ Long-Term Cache
-   ✅ Polling instead of onSnapshot (saves quota)
+   ✅ Long-Term Cache + Request Deduping
+   ✅ Polling (60 min بدل 5 min — بدون تحديث أولي)
    ✅ Store Categories System (Free main + Locked additional)
    ✅ Rating Removal
    ✅ Client-Side Category Filter (Backward Compatible)
+   ✅ Manual Refresh Button Support
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
 
 /* ═══ CONFIG ═══ */
 const CONFIG = Object.freeze({
-  PRODUCTS_PER_PAGE: 10,
-  STORE_PRODUCTS_PER_PAGE: 40,
+  /* ✅ تقليل حجم الصفحات لتوفير القراءات */
+  PRODUCTS_PER_PAGE: 8,               // كان 10
+  STORE_PRODUCTS_PER_PAGE: 16,        // كان 40
   SEARCH_CAP: 800,
   SEARCH_DEBOUNCE_MS: 200,
-  CACHE_TTL_STORES: 60 * 60 * 1000,
+
+  /* ✅ إطالة مدة الكاش لتقليل الاستعلامات المتكررة */
+  CACHE_TTL_STORES: 3 * 60 * 60 * 1000,       // كان ساعة → 3 ساعات
   CACHE_TTL_PRODUCTS: 30 * 60 * 1000,
+  CACHE_TTL_CATEGORIES: 24 * 60 * 60 * 1000,  // جديد
   CACHE_PREFIX: 'branzar_cache_',
   CACHE_MAX_KEYS: 15,
+
   AUTO_SCROLL_RESUME: 5000,
   AUTO_SCROLL_INTERVAL: 32,
   SCROLL_STEP: 0.9,
+
+  /* ✅ تحديث دوري معقول — 60 دقيقة للمنتجات والمتاجر */
+  PRODUCTS_REFRESH_INTERVAL_MS: 60 * 60 * 1000,  // كان 5 دقائق
+  STORES_REFRESH_INTERVAL_MS: 60 * 60 * 1000,    // كان 15 دقيقة
+
   UPDATE_CHECK_INTERVAL_MS: 30 * 60 * 1000,
   UPDATE_CHECK_THROTTLE_MS: 10 * 60 * 1000,
   NOTIF_DISMISS_DAYS: 7,
+
   HAPTIC: { light: 8, medium: 15, heavy: [20, 30, 20] },
   VAPID: "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw",
   FIXED_WHATSAPP: "249908280115",
   DEFAULT_OG_IMAGE: "https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png",
+
   FP_STORAGE_KEY: 'branzar_device_id_v2',
   FP_COOKIE_NAME: 'bzr_did_v2',
   FP_IDB_NAME: 'branzar_idb',
   FP_IDB_STORE: 'device_store',
+
   FOLLOW_COOLDOWN_MS: 1500,
   RATE_MAX_PER_MINUTE: 30,
   RATE_MAX_PER_DAY: 2000,
@@ -193,7 +207,6 @@ const FollowGuard = {
   _addStrike(reason) {
     this._strikes++;
     console.warn('[BZR] Follow strike #' + this._strikes + ':', reason);
-
     if (this._strikes >= CONFIG.FOLLOW_STRIKE_THRESHOLD) {
       const blockDuration = this._strikes >= 6
         ? CONFIG.FOLLOW_LONG_BLOCK_MS
@@ -211,9 +224,7 @@ const FollowGuard = {
     if (this._blockedUntil > now) {
       const remaining = this._blockedUntil - now;
       return {
-        allowed: false,
-        reason: 'blocked',
-        remaining: remaining,
+        allowed: false, reason: 'blocked', remaining: remaining,
         message: '⛔ تم حظر المتابعة مؤقتاً — حاول بعد ' + Math.ceil(remaining / 60000) + ' دقيقة'
       };
     }
@@ -222,8 +233,7 @@ const FollowGuard = {
       const lastAction = this._actionHistory[this._actionHistory.length - 1];
       if (now - lastAction < CONFIG.FOLLOW_MIN_GAP_MS) {
         return {
-          allowed: false,
-          reason: 'too_fast',
+          allowed: false, reason: 'too_fast',
           remaining: CONFIG.FOLLOW_MIN_GAP_MS - (now - lastAction),
           message: '⏳ انتظر لحظة قبل المحاولة مرة أخرى'
         };
@@ -235,9 +245,7 @@ const FollowGuard = {
       const remaining = CONFIG.FOLLOW_PER_STORE_GAP_MS - (now - lastForStore);
       this._addStrike('rapid_same_store');
       return {
-        allowed: false,
-        reason: 'same_store',
-        remaining: remaining,
+        allowed: false, reason: 'same_store', remaining: remaining,
         message: '⏳ لا يمكن التبديل على نفس المتجر بسرعة'
       };
     }
@@ -251,9 +259,7 @@ const FollowGuard = {
       this._addStrike('toggle_burst');
       this._addStrike('toggle_burst');
       return {
-        allowed: false,
-        reason: 'toggle_burst',
-        remaining: 0,
+        allowed: false, reason: 'toggle_burst', remaining: 0,
         message: '🚫 محاولات متكررة على نفس المتجر'
       };
     }
@@ -261,32 +267,17 @@ const FollowGuard = {
     const lastMinute = this._actionHistory.filter(t => now - t < 60000);
     if (lastMinute.length >= CONFIG.FOLLOW_MAX_PER_MINUTE) {
       this._addStrike('rate_minute');
-      return {
-        allowed: false,
-        reason: 'rate_minute',
-        remaining: 0,
-        message: '🚫 محاولات كثيرة جداً — انتظر قليلاً'
-      };
+      return { allowed: false, reason: 'rate_minute', remaining: 0, message: '🚫 محاولات كثيرة جداً — انتظر قليلاً' };
     }
 
     const lastHour = this._actionHistory.filter(t => now - t < 3600000);
     if (lastHour.length >= CONFIG.FOLLOW_MAX_PER_HOUR) {
       this._addStrike('rate_hour');
-      return {
-        allowed: false,
-        reason: 'rate_hour',
-        remaining: 0,
-        message: '🚫 تجاوزت الحد المسموح في الساعة'
-      };
+      return { allowed: false, reason: 'rate_hour', remaining: 0, message: '🚫 تجاوزت الحد المسموح في الساعة' };
     }
 
     if (this._dailyCount >= CONFIG.FOLLOW_MAX_PER_DAY) {
-      return {
-        allowed: false,
-        reason: 'daily_limit',
-        remaining: 0,
-        message: '🚫 وصلت للحد اليومي للمتابعة — حاول غداً'
-      };
+      return { allowed: false, reason: 'daily_limit', remaining: 0, message: '🚫 وصلت للحد اليومي للمتابعة — حاول غداً' };
     }
 
     return { allowed: true };
@@ -294,10 +285,8 @@ const FollowGuard = {
 
   recordAction(storeId) {
     const now = Date.now();
-
     this._actionHistory.push(now);
     this._actionHistory = this._actionHistory.filter(t => now - t < 3600000);
-
     this._perStoreLastAction[storeId] = now;
 
     const toggleData = this._perStoreToggleCount[storeId] || { count: 0, windowStart: now };
@@ -316,15 +305,14 @@ const FollowGuard = {
   isSuspiciousBot() {
     const now = Date.now();
     const lastMinute = this._actionHistory.filter(t => now - t < 60000);
-    if (lastMinute.length >= 5) return true;
-    return false;
+    return lastMinute.length >= 5;
   }
 };
 
 FollowGuard.init();
 
 /* ═══════════════════════════════════════════════════════════
-   🛡️ DEVICE FINGERPRINT (محلي فقط — لا يُرسل لـ Firebase)
+   🛡️ DEVICE FINGERPRINT (محلي فقط)
    ═══════════════════════════════════════════════════════════ */
 function fnv1a(str) {
   let hash = 0x811c9dc5;
@@ -425,10 +413,7 @@ function getFontsFP() {
     span.textContent = testStr;
     document.body.appendChild(span);
     const baseWidths = {};
-    baseFonts.forEach(bf => {
-      span.style.fontFamily = bf;
-      baseWidths[bf] = span.offsetWidth;
-    });
+    baseFonts.forEach(bf => { span.style.fontFamily = bf; baseWidths[bf] = span.offsetWidth; });
     const detected = [];
     testFonts.forEach(font => {
       let found = false;
@@ -463,12 +448,8 @@ async function computeDeviceFingerprint() {
   const hash = await sha256Hex(raw);
   return 'fp_' + hash.substring(0, 40);
 }
-function readFP_localStorage() {
-  try { return localStorage.getItem(CONFIG.FP_STORAGE_KEY); } catch(e){ return null; }
-}
-function writeFP_localStorage(fp) {
-  try { localStorage.setItem(CONFIG.FP_STORAGE_KEY, fp); return true; } catch(e){ return false; }
-}
+function readFP_localStorage() { try { return localStorage.getItem(CONFIG.FP_STORAGE_KEY); } catch(e){ return null; } }
+function writeFP_localStorage(fp) { try { localStorage.setItem(CONFIG.FP_STORAGE_KEY, fp); return true; } catch(e){ return false; } }
 function readFP_cookie() {
   try {
     const m = document.cookie.match(new RegExp('(?:^|; )' + CONFIG.FP_COOKIE_NAME + '=([^;]*)'));
@@ -489,9 +470,7 @@ function openFP_IDB() {
       const req = indexedDB.open(CONFIG.FP_IDB_NAME, 1);
       req.onupgradeneeded = () => {
         const d = req.result;
-        if (!d.objectStoreNames.contains(CONFIG.FP_IDB_STORE)) {
-          d.createObjectStore(CONFIG.FP_IDB_STORE);
-        }
+        if (!d.objectStoreNames.contains(CONFIG.FP_IDB_STORE)) d.createObjectStore(CONFIG.FP_IDB_STORE);
       };
       req.onsuccess = () => resolve(req.result);
       req.onerror = () => resolve(null);
@@ -611,8 +590,6 @@ async function ensureAuth() {
   if (authReady) return true;
   try { await authPromise; return true; } catch(e){ return false; }
 }
-
-/* ✅ معرّف المستخدم من Firebase Auth — يُستخدم في Firestore بدل بصمة الجهاز */
 function getUserIdentity() {
   try {
     const user = firebase.auth().currentUser;
@@ -659,9 +636,14 @@ document.addEventListener('pointerdown', (e) => {
 let _cacheWriteQueue = new Map(), _cacheWriteTimer = null;
 function _flushCacheWrites() {
   _cacheWriteQueue.forEach((entry, key) => {
-    try { localStorage.setItem(CONFIG.CACHE_PREFIX + key, JSON.stringify({ timestamp: Date.now(), value: entry.value, ttl: entry.ttl })); } catch(e){}
+    try {
+      localStorage.setItem(CONFIG.CACHE_PREFIX + key, JSON.stringify({
+        timestamp: Date.now(), value: entry.value, ttl: entry.ttl
+      }));
+    } catch(e){}
   });
-  _cacheWriteQueue.clear(); _cacheWriteTimer = null;
+  _cacheWriteQueue.clear();
+  _cacheWriteTimer = null;
 }
 const cacheManager = {
   set(key, value, ttl = CONFIG.CACHE_TTL_PRODUCTS) {
@@ -674,7 +656,10 @@ const cacheManager = {
       if (!raw) return null;
       const d = JSON.parse(raw);
       const ttl = d.ttl || CONFIG.CACHE_TTL_PRODUCTS;
-      if (Date.now() - d.timestamp > ttl) { localStorage.removeItem(CONFIG.CACHE_PREFIX + key); return null; }
+      if (Date.now() - d.timestamp > ttl) {
+        localStorage.removeItem(CONFIG.CACHE_PREFIX + key);
+        return null;
+      }
       return d.value;
     } catch(e){ return null; }
   },
@@ -694,19 +679,33 @@ const cacheManager = {
   } catch(e){}
 })();
 
-async function fetchWithCache(key, fn, force, ttl) {
+/* ✅ منع تنفيذ نفس الاستعلام مرتين متزامنتين (Request Deduping) */
+const _inFlightRequests = new Map();
+
+function fetchWithCache(key, fn, force, ttl) {
   if (!force) {
     const c = cacheManager.get(key);
-    if (c !== null) return c;
+    if (c !== null) return Promise.resolve(c);
   }
-  if (!RateLimiter.canRequest('cache_' + key)) {
-    const stale = cacheManager.get(key);
-    if (stale) return stale;
-    throw new Error('rate_limit_exceeded');
-  }
-  const data = await fn();
-  cacheManager.set(key, data, ttl);
-  return data;
+  if (_inFlightRequests.has(key)) return _inFlightRequests.get(key);
+
+  const promise = (async () => {
+    try {
+      if (!RateLimiter.canRequest('cache_' + key)) {
+        const stale = cacheManager.get(key);
+        if (stale) return stale;
+        throw new Error('rate_limit_exceeded');
+      }
+      const data = await fn();
+      cacheManager.set(key, data, ttl);
+      return data;
+    } finally {
+      _inFlightRequests.delete(key);
+    }
+  })();
+
+  _inFlightRequests.set(key, promise);
+  return promise;
 }
 
 /* ═══ FOLLOWED / FAVS ═══ */
@@ -796,7 +795,11 @@ function getFallbackHex(colorName) {
       const mod = allMods[i];
       if (!mod.word) continue;
       if (n === mod.word) { modifier = mod.type; baseCandidate = ''; break; }
-      if (n.indexOf(mod.word) > -1) { modifier = mod.type; baseCandidate = n.replace(mod.word, ' ').replace(/\s+/g,' ').trim(); break; }
+      if (n.indexOf(mod.word) > -1) {
+        modifier = mod.type;
+        baseCandidate = n.replace(mod.word, ' ').replace(/\s+/g,' ').trim();
+        break;
+      }
     }
     if (baseCandidate && BASE_COLOR_MAP[baseCandidate]) {
       result = applyColorModifier(BASE_COLOR_MAP[baseCandidate], modifier);
@@ -858,7 +861,8 @@ function applyViewMode(mode) {
 function initViewMode() {
   const saved = localStorage.getItem(KEYS.VIEW);
   if (saved) { applyViewMode(saved); return; }
-  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent) || window.matchMedia('(max-width: 767px)').matches;
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent)
+    || window.matchMedia('(max-width: 767px)').matches;
   applyViewMode(isMobile ? 'mobile' : 'desktop');
 }
 function setView(mode) { applyViewMode(mode); haptic('light'); }
@@ -955,10 +959,7 @@ bottomNav?.addEventListener('click', (e) => {
   if (nav === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveNav('home'); }
   else if (nav === 'categories') {
     const sec = document.getElementById('categories');
-    if (sec) {
-      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveNav('categories');
-    }
+    if (sec) { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); setActiveNav('categories'); }
   }
   else if (nav === 'cart') { openCart(); }
   else if (nav === 'account') { openAccountModal(); }
@@ -980,18 +981,32 @@ document.getElementById('closeAccountModal')?.addEventListener('click', closeAcc
 document.getElementById('accountOverlay')?.addEventListener('click', closeAccountModal);
 document.getElementById('openCreateStoreBtn')?.addEventListener('click', () => { haptic('medium'); createStoreModal.classList.remove('hidden'); updateBodyScroll(); bzrPushModal(); });
 document.getElementById('cancelCreateStore')?.addEventListener('click', () => { createStoreModal.classList.add('hidden'); updateBodyScroll(); bzrCloseModalUI(); });
-createStoreModal?.addEventListener('click', (e) => { if (e.target === createStoreModal) { createStoreModal.classList.add('hidden'); updateBodyScroll(); bzrCloseModalUI(); } });
+createStoreModal?.addEventListener('click', (e) => {
+  if (e.target === createStoreModal) { createStoreModal.classList.add('hidden'); updateBodyScroll(); bzrCloseModalUI(); }
+});
 
 document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
 /* ═══ PWA INSTALL ═══ */
 let deferredPrompt = null;
 function isAppInstalled() {
-  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true || localStorage.getItem(KEYS.INSTALLED) === 'true';
+  return window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true
+    || localStorage.getItem(KEYS.INSTALLED) === 'true';
 }
 const installBtn = document.getElementById('installButtonFloating');
-window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if (!isAppInstalled()) installBtn.classList.add('show'); });
-window.addEventListener('appinstalled', () => { localStorage.setItem(KEYS.INSTALLED, 'true'); installBtn.classList.remove('show'); deferredPrompt = null; showToast('تم تثبيت التطبيق بنجاح!'); haptic('heavy'); });
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!isAppInstalled()) installBtn.classList.add('show');
+});
+window.addEventListener('appinstalled', () => {
+  localStorage.setItem(KEYS.INSTALLED, 'true');
+  installBtn.classList.remove('show');
+  deferredPrompt = null;
+  showToast('تم تثبيت التطبيق بنجاح!');
+  haptic('heavy');
+});
 installBtn?.addEventListener('click', async () => {
   if (!deferredPrompt) { showToast('التطبيق مثبت بالفعل'); return; }
   haptic('medium');
@@ -1004,8 +1019,9 @@ if (isAppInstalled()) installBtn.classList.remove('show');
 
 /* ═══ NOTIFICATIONS (FCM) ═══ */
 let messaging = null;
-function isNotificationSupported() { return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window; }
-
+function isNotificationSupported() {
+  return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+}
 async function initFCM() {
   try {
     if (!isNotificationSupported()) return;
@@ -1024,7 +1040,11 @@ async function initFCM() {
             dir: 'rtl', lang: 'ar',
             tag: (payload.data && payload.data.tag) || 'branzar-fg'
           });
-          n.onclick = () => { window.focus(); window.location.href = (payload.data && payload.data.url) || 'https://branzar.vercel.app'; n.close(); };
+          n.onclick = () => {
+            window.focus();
+            window.location.href = (payload.data && payload.data.url) || 'https://branzar.vercel.app';
+            n.close();
+          };
         } catch(e){}
       }
     });
@@ -1041,8 +1061,18 @@ function shouldShowNotifBanner() {
   if (dismissed && (Date.now() - dismissed) < CONFIG.NOTIF_DISMISS_DAYS * 24 * 60 * 60 * 1000) return false;
   return true;
 }
-function showNotifBanner() { const b = document.getElementById('notifPermissionBanner'); if (!b) return; b.classList.remove('hidden'); requestAnimationFrame(() => setTimeout(() => b.classList.add('show'), 50)); }
-function hideNotifBanner() { const b = document.getElementById('notifPermissionBanner'); if (!b) return; b.classList.remove('show'); setTimeout(() => b.classList.add('hidden'), 600); }
+function showNotifBanner() {
+  const b = document.getElementById('notifPermissionBanner');
+  if (!b) return;
+  b.classList.remove('hidden');
+  requestAnimationFrame(() => setTimeout(() => b.classList.add('show'), 50));
+}
+function hideNotifBanner() {
+  const b = document.getElementById('notifPermissionBanner');
+  if (!b) return;
+  b.classList.remove('show');
+  setTimeout(() => b.classList.add('hidden'), 600);
+}
 async function registerFCMToken(reg) {
   try {
     const token = await messaging.getToken({ vapidKey: CONFIG.VAPID, serviceWorkerRegistration: reg });
@@ -1081,7 +1111,9 @@ document.getElementById('enableNotifBtn')?.addEventListener('click', async () =>
   } catch(err){}
   btn.disabled = false;
 });
-document.getElementById('dismissNotifBtn')?.addEventListener('click', () => { hideNotifBanner(); localStorage.setItem(KEYS.NOTIF_DISMISS, Date.now().toString()); });
+document.getElementById('dismissNotifBtn')?.addEventListener('click', () => {
+  hideNotifBanner(); localStorage.setItem(KEYS.NOTIF_DISMISS, Date.now().toString());
+});
 
 /* ═══ SEARCH ═══ */
 const searchInput = document.getElementById('searchInput');
@@ -1096,37 +1128,67 @@ searchInput?.addEventListener('input', (e) => {
   performSearchDebounced(e.target.value);
 });
 searchInput?.addEventListener('focus', () => { if (searchInput.value.trim()) performSearch(searchInput.value); });
-searchClearBtn?.addEventListener('click', () => { searchInput.value = ''; searchWrapper.classList.remove('has-value'); searchResults.classList.remove('show'); searchInput.focus(); });
-document.addEventListener('click', (e) => { if (!searchResults.contains(e.target) && !searchWrapper.contains(e.target)) searchResults.classList.remove('show'); });
+searchClearBtn?.addEventListener('click', () => {
+  searchInput.value = '';
+  searchWrapper.classList.remove('has-value');
+  searchResults.classList.remove('show');
+  searchInput.focus();
+});
+document.addEventListener('click', (e) => {
+  if (!searchResults.contains(e.target) && !searchWrapper.contains(e.target)) searchResults.classList.remove('show');
+});
 
 function performSearch(query) {
   query = (query || '').trim().toLowerCase().slice(0, 100);
   if (!query) { searchResults.classList.remove('show'); return; }
   const searchPool = allProductsLocal.slice(0, CONFIG.SEARCH_CAP);
   const matchedCats = categories.filter(c => c.toLowerCase().indexOf(query) > -1);
-  const matchedStores = stores.filter(s => (s.name || '').toLowerCase().indexOf(query) > -1 || (s.category || '').toLowerCase().indexOf(query) > -1);
-  const matchedProducts = searchPool.filter(p => (p.name || '').toLowerCase().indexOf(query) > -1 || (p.store_name || '').toLowerCase().indexOf(query) > -1).slice(0, 8);
+  const matchedStores = stores.filter(s =>
+    (s.name || '').toLowerCase().indexOf(query) > -1 ||
+    (s.category || '').toLowerCase().indexOf(query) > -1
+  );
+  const matchedProducts = searchPool.filter(p =>
+    (p.name || '').toLowerCase().indexOf(query) > -1 ||
+    (p.store_name || '').toLowerCase().indexOf(query) > -1
+  ).slice(0, 8);
   searchResults.innerHTML = '';
   if (!matchedCats.length && !matchedStores.length && !matchedProducts.length) {
     searchResults.innerHTML = '<div style="text-align:center;padding:2rem 0;color:var(--c-text-soft);"><i class="fas fa-search" style="font-size:2rem;margin-bottom:0.5rem;display:block;color:#CBD5E1;"></i><p style="font-weight:700;">لا توجد نتائج</p></div>';
     searchResults.classList.add('show'); return;
   }
   if (matchedCats.length) {
-    const title = document.createElement('p'); title.style.cssText = 'font-size:0.78rem;font-weight:800;color:var(--c-text-soft);margin:0 0 10px;'; title.textContent = 'الفئات'; searchResults.appendChild(title);
-    const chips = document.createElement('div'); chips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;';
+    const title = document.createElement('p');
+    title.style.cssText = 'font-size:0.78rem;font-weight:800;color:var(--c-text-soft);margin:0 0 10px;';
+    title.textContent = 'الفئات';
+    searchResults.appendChild(title);
+    const chips = document.createElement('div');
+    chips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;';
     matchedCats.forEach(cat => {
-      const chip = document.createElement('button'); chip.className = 'chip'; chip.textContent = cat;
-      chip.addEventListener('click', () => { searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value'); goToCategory(cat); });
+      const chip = document.createElement('button');
+      chip.className = 'chip';
+      chip.textContent = cat;
+      chip.addEventListener('click', () => {
+        searchResults.classList.remove('show');
+        searchInput.value = '';
+        searchWrapper.classList.remove('has-value');
+        goToCategory(cat);
+      });
       chips.appendChild(chip);
     });
     searchResults.appendChild(chips);
   }
   if (matchedStores.length) {
-    const title = document.createElement('p'); title.style.cssText = 'font-size:0.78rem;font-weight:800;color:var(--c-text-soft);margin:0 0 10px;'; title.textContent = 'المتاجر (' + matchedStores.length + ')'; searchResults.appendChild(title);
+    const title = document.createElement('p');
+    title.style.cssText = 'font-size:0.78rem;font-weight:800;color:var(--c-text-soft);margin:0 0 10px;';
+    title.textContent = 'المتاجر (' + matchedStores.length + ')';
+    searchResults.appendChild(title);
     matchedStores.slice(0, 5).forEach(store => searchResults.appendChild(createSearchStoreRow(store)));
   }
   if (matchedProducts.length) {
-    const title = document.createElement('p'); title.style.cssText = 'font-size:0.78rem;font-weight:800;color:var(--c-text-soft);margin:14px 0 10px;'; title.textContent = 'المنتجات (' + matchedProducts.length + ')'; searchResults.appendChild(title);
+    const title = document.createElement('p');
+    title.style.cssText = 'font-size:0.78rem;font-weight:800;color:var(--c-text-soft);margin:14px 0 10px;';
+    title.textContent = 'المنتجات (' + matchedProducts.length + ')';
+    searchResults.appendChild(title);
     matchedProducts.forEach(p => searchResults.appendChild(createSearchProductRow(p)));
   }
   searchResults.classList.add('show');
@@ -1136,16 +1198,33 @@ function createSearchStoreRow(store) {
   row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;transition:background 0.2s;';
   row.onmouseover = () => row.style.background = 'var(--c-surface-2)';
   row.onmouseout = () => row.style.background = '';
-  const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--c-surface-2);flex-shrink:0;'; img.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+  const img = document.createElement('img');
+  img.style.cssText = 'width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--c-surface-2);flex-shrink:0;';
+  img.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   const info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
-  const nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);display:flex;align-items:center;gap:4px;';
-  if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nm.appendChild(v); }
+  const nm = document.createElement('div');
+  nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);display:flex;align-items:center;gap:4px;';
+  if (store.is_verified) {
+    const v = document.createElement('span');
+    v.className = 'verified-icon';
+    v.innerHTML = VERIFIED_BADGE_SVG;
+    nm.appendChild(v);
+  }
   const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nm.appendChild(nameText);
-  const meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:var(--c-text-soft);margin-top:2px;'; meta.textContent = (store.category || 'عام');
+  const meta = document.createElement('div');
+  meta.style.cssText = 'font-size:0.72rem;color:var(--c-text-soft);margin-top:2px;';
+  meta.textContent = (store.category || 'عام');
   info.appendChild(nm); info.appendChild(meta);
-  const arrow = document.createElement('i'); arrow.className = 'fas fa-chevron-left'; arrow.style.cssText = 'color:var(--c-text-soft);font-size:0.75rem;';
+  const arrow = document.createElement('i');
+  arrow.className = 'fas fa-chevron-left';
+  arrow.style.cssText = 'color:var(--c-text-soft);font-size:0.75rem;';
   row.appendChild(img); row.appendChild(info); row.appendChild(arrow);
-  row.addEventListener('click', () => { searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value'); openStoreModal(store); });
+  row.addEventListener('click', () => {
+    searchResults.classList.remove('show');
+    searchInput.value = '';
+    searchWrapper.classList.remove('has-value');
+    openStoreModal(store);
+  });
   return row;
 }
 function createSearchProductRow(product) {
@@ -1153,14 +1232,22 @@ function createSearchProductRow(product) {
   row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;';
   row.onmouseover = () => row.style.background = 'var(--c-surface-2)';
   row.onmouseout = () => row.style.background = '';
-  const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:10px;object-fit:contain;background:var(--c-surface-2);padding:4px;flex-shrink:0;'; img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/100';
+  const img = document.createElement('img');
+  img.style.cssText = 'width:42px;height:42px;border-radius:10px;object-fit:contain;background:var(--c-surface-2);padding:4px;flex-shrink:0;';
+  img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/100';
   const info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
-  const nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'; nm.textContent = product.name || '';
-  const meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:#FF7A00;margin-top:2px;font-weight:800;'; meta.textContent = (parseFloat(product.price) || 0).toLocaleString() + ' ج.س';
+  const nm = document.createElement('div');
+  nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+  nm.textContent = product.name || '';
+  const meta = document.createElement('div');
+  meta.style.cssText = 'font-size:0.72rem;color:#FF7A00;margin-top:2px;font-weight:800;';
+  meta.textContent = (parseFloat(product.price) || 0).toLocaleString() + ' ج.س';
   info.appendChild(nm); info.appendChild(meta);
   row.appendChild(img); row.appendChild(info);
   row.addEventListener('click', () => {
-    searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value');
+    searchResults.classList.remove('show');
+    searchInput.value = '';
+    searchWrapper.classList.remove('has-value');
     openProductModal({
       id: product.id, name: product.name, img_url: product.img_url,
       price: parseFloat(product.price) || 0,
@@ -1185,59 +1272,96 @@ function goToCategory(cat) {
 }
 
 /* ═══ DATA LOADING ═══ */
+
+/* ✅ loadStores: حد 30 بدل 50 + استخراج الأقسام محلياً بدون استعلام منفصل */
 async function loadStores(force) {
   const loader = document.getElementById('storesLoader');
   const empty = document.getElementById('storesEmpty');
   const container = document.getElementById('storesScrollContainer');
-  loader.classList.remove('hidden'); empty.classList.add('hidden'); container.innerHTML = '';
+  loader.classList.remove('hidden');
+  empty.classList.add('hidden');
+  container.innerHTML = '';
+
   try {
     const result = await fetchWithCache('stores_list', async () => {
       let snap;
-      try { snap = await db.collection('stores').orderBy('created_at', 'desc').limit(50).get(); }
-      catch(e){ snap = await db.collection('stores').limit(50).get(); }
+      try {
+        snap = await db.collection('stores')
+          .orderBy('created_at', 'desc')
+          .limit(30)
+          .get();
+      } catch(e) {
+        snap = await db.collection('stores').limit(30).get();
+      }
       return snap.docs.map(d => ({ id: d.id, ...d.data() }));
     }, force, CONFIG.CACHE_TTL_STORES);
+
     stores = result;
+
+    /* ✅ استخراج الأقسام من نفس البيانات (0 قراءات إضافية) */
+    const cats = [];
+    stores.forEach(s => {
+      const c = s.category;
+      if (c && String(c).trim() && cats.indexOf(c) === -1) cats.push(c);
+    });
+    categories = cats;
+    displayCategories();
+
     if (stores.length === 0) {
-      document.getElementById('storesErrorMessage').textContent = '⚠️ لا توجد متاجر متاحة';
-      empty.classList.remove('hidden'); renderFollowedStores();
+      document.getElementById('storesErrorMessage').textContent = '⚠️ لا توجد متاجر متاحة حالياً';
+      empty.classList.remove('hidden');
+      renderFollowedStores();
     } else {
       displayStores();
       startAutoScroll();
       renderFollowedStores();
       localStorage.setItem(KEYS.VISITED, 'true');
     }
-  } catch(err){
-    document.getElementById('storesErrorMessage').textContent = 'تعذر تحميل المتاجر';
+  } catch(err) {
+    document.getElementById('storesErrorMessage').textContent =
+      '⚠️ تعذر تحميل المتاجر — تحقق من الاتصال وحاول مجدداً';
     empty.classList.remove('hidden');
-  } finally { loader.classList.add('hidden'); }
+  } finally {
+    loader.classList.add('hidden');
+  }
 }
 document.getElementById('retryStoresBtn')?.addEventListener('click', () => loadStores(true));
 
+/* ✅ loadAllProducts: حذف التحديث الصامت عند وجود كاش صالح */
 async function loadAllProducts(force) {
   if (isLoadingProducts) return;
   isLoadingProducts = true;
   const loader = document.getElementById('allProductsLoader');
   const empty = document.getElementById('allProductsEmpty');
   const grid = document.getElementById('allProductsGrid');
-  loader.classList.remove('hidden'); empty.classList.add('hidden'); grid.innerHTML = '';
+  loader.classList.remove('hidden');
+  empty.classList.add('hidden');
+  grid.innerHTML = '';
   document.getElementById('loadMoreProductsBtn').classList.add('hidden');
-  allProductsLocal = []; lastVisibleDoc = null; hasMoreProducts = true;
+  allProductsLocal = [];
+  lastVisibleDoc = null;
+  hasMoreProducts = true;
+
+  /* ✅ كاش صالح → عرض فوري بدون استعلام خلفي */
   if (!force) {
     const cached = cacheManager.get('all_products_page1');
     if (cached && Array.isArray(cached.items)) {
       allProductsLocal = cached.items;
       renderProductsBatch(allProductsLocal);
       hasMoreProducts = cached.hasMore !== false;
-      fetchProductsPage(null, true).catch(() => {});
+      if (hasMoreProducts) document.getElementById('loadMoreProductsBtn').classList.remove('hidden');
       loader.classList.add('hidden');
       isLoadingProducts = false;
       return;
     }
   }
   try { await fetchProductsPage(null, false); }
-  catch(err) { grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--c-text-soft);">تعذر تحميل المنتجات</p>'; }
-  finally { loader.classList.add('hidden'); isLoadingProducts = false; }
+  catch(err) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--c-text-soft);">تعذر تحميل المنتجات</p>';
+  } finally {
+    loader.classList.add('hidden');
+    isLoadingProducts = false;
+  }
 }
 
 async function fetchProductsPage(cursorDoc, silent) {
@@ -1247,7 +1371,10 @@ async function fetchProductsPage(cursorDoc, silent) {
       throw new Error('rate_limit');
     }
     let q = db.collection('products').orderBy('created_at', 'desc').limit(CONFIG.PRODUCTS_PER_PAGE);
-    if (cursorDoc) q = db.collection('products').orderBy('created_at', 'desc').startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE);
+    if (cursorDoc) {
+      q = db.collection('products').orderBy('created_at', 'desc')
+        .startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE);
+    }
     let snap;
     try { snap = await q.get(); }
     catch(e) {
@@ -1262,12 +1389,18 @@ async function fetchProductsPage(cursorDoc, silent) {
     const newItems = fresh.filter(p => !existingIds.has(p.id));
     allProductsLocal = allProductsLocal.concat(newItems);
     if (!silent) renderProductsBatch(fresh);
+
     const loadBtn = document.getElementById('loadMoreProductsBtn');
     const emptyEl = document.getElementById('allProductsEmpty');
     if (allProductsLocal.length === 0) { emptyEl.classList.remove('hidden'); loadBtn.classList.add('hidden'); }
     else emptyEl.classList.add('hidden');
     if (hasMoreProducts) loadBtn.classList.remove('hidden'); else loadBtn.classList.add('hidden');
-    if (!cursorDoc) cacheManager.set('all_products_page1', { items: allProductsLocal.slice(0, CONFIG.PRODUCTS_PER_PAGE), hasMore: hasMoreProducts }, CONFIG.CACHE_TTL_PRODUCTS);
+
+    if (!cursorDoc) {
+      cacheManager.set('all_products_page1',
+        { items: allProductsLocal.slice(0, CONFIG.PRODUCTS_PER_PAGE), hasMore: hasMoreProducts },
+        CONFIG.CACHE_TTL_PRODUCTS);
+    }
   } catch(err) { throw err; }
 }
 
@@ -1294,7 +1427,9 @@ function renderProductsBatch(items) {
         const name = sanitizeHTML((c && c.name) || '');
         return '<div class="card-color-dot" style="background-color:' + hex + '" title="' + name + '"></div>';
       }).join('');
-      const extra = product.colors.length > 4 ? '<span style="font-size:10px;color:var(--c-text-soft);font-weight:800;align-self:center;">+' + (product.colors.length - 4) + '</span>' : '';
+      const extra = product.colors.length > 4
+        ? '<span style="font-size:10px;color:var(--c-text-soft);font-weight:800;align-self:center;">+' + (product.colors.length - 4) + '</span>'
+        : '';
       colorDots = '<div style="display:flex;gap:4px;margin-bottom:6px;justify-content:flex-end;">' + dots + extra + '</div>';
     }
     card.innerHTML =
@@ -1337,12 +1472,19 @@ async function applyProductsFilter(cat) {
   const emptyEl = document.getElementById('allProductsEmpty');
   const loadBtn = document.getElementById('loadMoreProductsBtn');
   if (!cat) {
-    grid.innerHTML = ''; allProductsLocal = []; lastVisibleDoc = null; hasMoreProducts = true;
+    grid.innerHTML = '';
+    allProductsLocal = [];
+    lastVisibleDoc = null;
+    hasMoreProducts = true;
     try { await fetchProductsPage(null, false); } catch(e){}
     return;
   }
-  grid.innerHTML = ''; allProductsLocal = []; lastVisibleDoc = null; hasMoreProducts = true;
-  loadBtn.classList.add('hidden'); emptyEl.classList.add('hidden');
+  grid.innerHTML = '';
+  allProductsLocal = [];
+  lastVisibleDoc = null;
+  hasMoreProducts = true;
+  loadBtn.classList.add('hidden');
+  emptyEl.classList.add('hidden');
   try { await fetchProductsByCategoryPage(null, false); }
   catch(e){ emptyEl.classList.remove('hidden'); }
 }
@@ -1369,7 +1511,10 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
   for (const chunk of chunks) {
     try {
       let q = db.collection('products').where('store_name', 'in', chunk).limit(CONFIG.PRODUCTS_PER_PAGE);
-      if (cursorDoc) q = db.collection('products').where('store_name', 'in', chunk).startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE);
+      if (cursorDoc) {
+        q = db.collection('products').where('store_name', 'in', chunk)
+          .startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE);
+      }
       try { q = q.orderBy('created_at', 'desc'); } catch(e){}
       const snap = await q.get();
       snap.docs.forEach(d => fetched.push(d));
@@ -1399,23 +1544,37 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
   if (hasMoreProducts) loadBtn.classList.remove('hidden'); else loadBtn.classList.add('hidden');
 }
 
+/* ✅ loadCategories: تستخدم المتاجر المحمّلة (0 قراءات) */
 async function loadCategories(force) {
+  /* إذا المتاجر محمّلة → استخرج الأقسام محلياً */
+  if (!force && stores && stores.length) {
+    const cats = [];
+    stores.forEach(s => {
+      const c = s.category;
+      if (c && String(c).trim() && cats.indexOf(c) === -1) cats.push(c);
+    });
+    categories = cats;
+    displayCategories();
+    return;
+  }
+  /* fallback: استعلام المتاجر إن لم تكن محمّلة */
   try {
     const storesData = await fetchWithCache('stores_list', async () => {
-      const snap = await db.collection('stores').limit(50).get();
+      const snap = await db.collection('stores').limit(30).get();
       return snap.docs.map(d => ({ id: d.id, ...d.data() }));
     }, force, CONFIG.CACHE_TTL_STORES);
     const cats = [];
-    storesData.forEach(s => { const c = s.category; if (c && String(c).trim() !== '' && cats.indexOf(c) === -1) cats.push(c); });
+    storesData.forEach(s => {
+      const c = s.category;
+      if (c && String(c).trim() && cats.indexOf(c) === -1) cats.push(c);
+    });
     categories = cats;
     displayCategories();
-  } catch(err){ console.error(err); }
+  } catch(err){ console.error('[BZR] loadCategories:', err); }
 }
 
 /* ═══════════════════════════════════════════════════════════
    🛡️ SERVER-BASED FOLLOW SYSTEM
-   ✅ يُستخدم Firebase Auth UID (بدل بصمة الجهاز)
-   ✅ localStorage أولاً + Firebase احتياطي
    ═══════════════════════════════════════════════════════════ */
 async function syncFollowedStoresFromServer() {
   try {
@@ -1437,14 +1596,10 @@ async function syncFollowedStoresFromServer() {
     const merged = new Set([...localList.map(String), ...serverIds]);
     saveFollowedStores(Array.from(merged));
     const localOnly = localList.filter(id => !serverIds.has(String(id)));
-    if (localOnly.length) {
-      migrateLocalFollowsToServer(localOnly, userId).catch(() => {});
-    }
+    if (localOnly.length) migrateLocalFollowsToServer(localOnly, userId).catch(() => {});
     renderFollowedStores();
     document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => {
-      if (serverIds.has(String(btn.dataset.storeId))) {
-        setCardFollowState(btn, true);
-      }
+      if (serverIds.has(String(btn.dataset.storeId))) setCardFollowState(btn, true);
     });
   } catch(err) {
     console.warn('[BZR] Sync follows failed:', err);
@@ -1485,9 +1640,7 @@ async function performFollowToggle(store) {
     const followDoc = await transaction.get(followRef);
     if (followDoc.exists) {
       transaction.delete(followRef);
-      transaction.set(storeRef, {
-        followers: firebase.firestore.FieldValue.increment(-1)
-      }, { merge: true });
+      transaction.set(storeRef, { followers: firebase.firestore.FieldValue.increment(-1) }, { merge: true });
       return { action: 'unfollowed', storeId };
     } else {
       transaction.set(followRef, {
@@ -1495,9 +1648,7 @@ async function performFollowToggle(store) {
         fingerprint: userId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      transaction.set(storeRef, {
-        followers: firebase.firestore.FieldValue.increment(1)
-      }, { merge: true });
+      transaction.set(storeRef, { followers: firebase.firestore.FieldValue.increment(1) }, { merge: true });
       return { action: 'followed', storeId };
     }
   });
@@ -1532,17 +1683,28 @@ function createStoreCard(store) {
   logo.onerror = function(){ this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
   const info = document.createElement('div'); info.className = 'store-info';
   const nameRow = document.createElement('div'); nameRow.className = 'store-name';
-  if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nameRow.appendChild(v); }
+  if (store.is_verified) {
+    const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG;
+    nameRow.appendChild(v);
+  }
   const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nameRow.appendChild(nameText);
   const catRow = document.createElement('div'); catRow.className = 'store-category'; catRow.textContent = store.category || 'عام';
-  const bottomRow = document.createElement('div'); bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;';
-  const followBtn = document.createElement('button'); followBtn.style.cssText = 'background:#FF7A00;color:#fff;border:1.5px solid #FF7A00;border-radius:9999px;padding:0.3rem 0.7rem;font-size:0.7rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.25s;white-space:nowrap;';
+  const bottomRow = document.createElement('div');
+  bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;';
+  const followBtn = document.createElement('button');
+  followBtn.style.cssText = 'background:#FF7A00;color:#fff;border:1.5px solid #FF7A00;border-radius:9999px;padding:0.3rem 0.7rem;font-size:0.7rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.25s;white-space:nowrap;';
   followBtn.dataset.storeId = storeId;
   setCardFollowState(followBtn, followed);
-  followBtn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); haptic('light'); toggleFollowFromCard(store, followBtn); });
-  const shareBtn = document.createElement('button'); shareBtn.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--c-primary-soft);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all 0.25s;padding:0;';
+  followBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); e.preventDefault(); haptic('light');
+    toggleFollowFromCard(store, followBtn);
+  });
+  const shareBtn = document.createElement('button');
+  shareBtn.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--c-primary-soft);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all 0.25s;padding:0;';
   shareBtn.innerHTML = '<i class="fas fa-share-alt"></i>';
-  shareBtn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); haptic('light'); shareStore(store); });
+  shareBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); e.preventDefault(); haptic('light'); shareStore(store);
+  });
   bottomRow.appendChild(followBtn); bottomRow.appendChild(shareBtn);
   info.appendChild(nameRow); info.appendChild(catRow); info.appendChild(bottomRow);
   card.appendChild(cover); card.appendChild(logo); card.appendChild(info);
@@ -1551,7 +1713,9 @@ function createStoreCard(store) {
 }
 function setCardFollowState(btn, following) {
   btn.classList.toggle('following', following);
-  btn.innerHTML = following ? '<i class="fas fa-check"></i><span>متابَع</span>' : '<i class="fas fa-plus"></i><span>متابعة</span>';
+  btn.innerHTML = following
+    ? '<i class="fas fa-check"></i><span>متابَع</span>'
+    : '<i class="fas fa-plus"></i><span>متابعة</span>';
   if (following) { btn.style.background = 'transparent'; btn.style.color = '#FF7A00'; }
   else { btn.style.background = '#FF7A00'; btn.style.color = '#fff'; }
 }
@@ -1559,7 +1723,6 @@ async function toggleFollowFromCard(store, btn) {
   const storeId = String(getStoreId(store));
   if (btn.disabled) return;
 
-  /* 🛡️ فحص الحماية أولاً */
   const guardCheck = FollowGuard.canFollow(storeId);
   if (!guardCheck.allowed) {
     haptic('heavy');
@@ -1568,22 +1731,15 @@ async function toggleFollowFromCard(store, btn) {
     setTimeout(() => btn.classList.remove('blocked-flash'), 600);
     return;
   }
-
   btn.disabled = true;
   haptic('light');
-
   try {
     const result = await performFollowToggle(store);
-
-    /* ✅ سجّل العملية الناجحة */
     FollowGuard.recordAction(storeId);
-
     const action = result.action;
     const wasFollowing = (action === 'unfollowed');
-
     if (wasFollowing) _followedFromServer.delete(storeId);
     else _followedFromServer.add(storeId);
-
     const list = getFollowedStores();
     if (wasFollowing) {
       const i = list.indexOf(storeId);
@@ -1594,17 +1750,14 @@ async function toggleFollowFromCard(store, btn) {
       store.followers = (parseInt(store.followers) || 0) + 1;
     }
     saveFollowedStores(list);
-
     updateCardFollowButtons(storeId);
     renderFollowedStores();
-
     if (currentStoreId === storeId) {
       isFollowing = !wasFollowing;
       currentFollowersCount = store.followers;
       updateFollowersDisplay();
       updateFollowButtonUI();
     }
-
     showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
     haptic('medium');
   } catch(err) {
@@ -1616,16 +1769,27 @@ async function toggleFollowFromCard(store, btn) {
 }
 function updateCardFollowButtons(storeId) {
   const following = isStoreFollowed(storeId);
-  document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => { if (btn.dataset.storeId === storeId) setCardFollowState(btn, following); });
+  document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => {
+    if (btn.dataset.storeId === storeId) setCardFollowState(btn, following);
+  });
 }
 function renderFollowedStores() {
   const section = document.getElementById('followedStoresSection');
   const container = document.getElementById('followedStoresContainer');
   const badge = document.getElementById('followedCountBadge');
   const ids = getFollowedStores();
-  if (!ids.length) { section.classList.add('hidden'); container.innerHTML = ''; if (badge) badge.textContent = ''; return; }
+  if (!ids.length) {
+    section.classList.add('hidden');
+    container.innerHTML = '';
+    if (badge) badge.textContent = '';
+    return;
+  }
   const followed = ids.map(id => stores.find(s => getStoreId(s) === id)).filter(Boolean);
-  if (!followed.length) { section.classList.add('hidden'); container.innerHTML = ''; return; }
+  if (!followed.length) {
+    section.classList.add('hidden');
+    container.innerHTML = '';
+    return;
+  }
   section.classList.remove('hidden');
   if (badge) badge.textContent = followed.length + ' متجر';
   container.innerHTML = '';
@@ -1649,8 +1813,13 @@ function filterStoresByCategory(cat) {
   const filtered = stores.filter(s => s.category === cat);
   const c = document.getElementById('storesScrollContainer');
   c.innerHTML = '';
-  if (filtered.length === 0) c.innerHTML = '<div style="text-align:center;width:100%;padding:2.5rem 0;color:var(--c-text-soft);">لا توجد متاجر في هذه الفئة</div>';
-  else { const frag = document.createDocumentFragment(); filtered.forEach(s => frag.appendChild(createStoreCard(s))); c.appendChild(frag); }
+  if (filtered.length === 0) {
+    c.innerHTML = '<div style="text-align:center;width:100%;padding:2.5rem 0;color:var(--c-text-soft);">لا توجد متاجر في هذه الفئة</div>';
+  } else {
+    const frag = document.createDocumentFragment();
+    filtered.forEach(s => frag.appendChild(createStoreCard(s)));
+    c.appendChild(frag);
+  }
   lastStoresInteraction = Date.now();
   startAutoScroll();
 }
@@ -1660,7 +1829,9 @@ function displayCategories() {
   const c = document.getElementById('categoriesContainer');
   c.innerHTML = '';
   const frag = document.createDocumentFragment();
-  const allBtn = document.createElement('button'); allBtn.className = 'chip active'; allBtn.textContent = 'الكل';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'chip active';
+  allBtn.textContent = 'الكل';
   allBtn.addEventListener('click', () => {
     haptic('light');
     currentCategory = null;
@@ -1671,8 +1842,15 @@ function displayCategories() {
   });
   frag.appendChild(allBtn);
   categories.forEach(cat => {
-    const btn = document.createElement('button'); btn.className = 'chip'; btn.textContent = cat;
-    btn.addEventListener('click', () => { haptic('light'); filterStoresByCategory(cat); highlightCategory(btn); applyProductsFilter(cat); });
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = cat;
+    btn.addEventListener('click', () => {
+      haptic('light');
+      filterStoresByCategory(cat);
+      highlightCategory(btn);
+      applyProductsFilter(cat);
+    });
     frag.appendChild(btn);
   });
   c.appendChild(frag);
@@ -1750,7 +1928,6 @@ function selectStoreCategoryTab(tab, category) {
   tab.classList.add('active');
   tab.setAttribute('aria-selected', 'true');
   haptic('light');
-
   currentStoreCategoryForProducts = category || null;
   if (currentStore) loadStoreProducts(currentStore.name, currentStoreCategoryForProducts);
 }
@@ -1764,7 +1941,6 @@ async function refreshStoreDataOnOpen(storeId) {
     if (currentStoreId !== String(storeId)) return;
 
     const fresh = { id: doc.id, ...doc.data() };
-
     const oldMain = String(currentStore?.category || '');
     const newMain = String(fresh.category || '');
     const oldList = JSON.stringify(currentStore?.categories || []);
@@ -1774,21 +1950,15 @@ async function refreshStoreDataOnOpen(storeId) {
 
     if (oldMain !== newMain || oldList !== newList || oldSub !== newSub) {
       currentStore = { ...currentStore, ...fresh };
-
       const activeCat = currentStoreCategoryForProducts;
       const mainCat = (fresh.category && String(fresh.category).trim()) ? String(fresh.category).trim() : null;
       const isExtra = Array.isArray(fresh.categories) && fresh.categories.indexOf(activeCat) > -1;
       const locked = !newSub && isExtra;
-      if (locked || (!mainCat && !isExtra)) {
-        currentStoreCategoryForProducts = mainCat;
-      }
-
+      if (locked || (!mainCat && !isExtra)) currentStoreCategoryForProducts = mainCat;
       renderStoreCategoryTabs(fresh);
       loadStoreProducts(fresh.name, currentStoreCategoryForProducts);
-
       const catVal = (fresh.category && String(fresh.category).trim()) ? fresh.category : 'عام';
       document.getElementById('storeCategory').innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(catVal) + '</span>';
-
       cacheManager.remove('stores_list');
     }
   } catch(e) { /* silent */ }
@@ -1872,18 +2042,26 @@ function closeStoreModalInternal() {
 }
 function closeStoreModal() { closeStoreModalInternal(); bzrCloseModalUI(); }
 document.getElementById('closeStoreModal')?.addEventListener('click', closeStoreModal);
-function updateFollowersDisplay() { document.getElementById('storeFollowers').textContent = currentFollowersCount.toLocaleString(); }
+function updateFollowersDisplay() {
+  document.getElementById('storeFollowers').textContent = currentFollowersCount.toLocaleString();
+}
 function updateFollowButtonUI() {
   const btn = document.getElementById('storeFollowButton');
   const txt = document.getElementById('storeFollowText');
   if (!btn || !txt) return;
-  if (isFollowing) { btn.classList.add('following'); txt.textContent = 'متابَع'; btn.querySelector('i').className = 'fas fa-check'; }
-  else { btn.classList.remove('following'); txt.textContent = 'متابعة'; btn.querySelector('i').className = 'fas fa-heart'; }
+  if (isFollowing) {
+    btn.classList.add('following');
+    txt.textContent = 'متابَع';
+    btn.querySelector('i').className = 'fas fa-check';
+  } else {
+    btn.classList.remove('following');
+    txt.textContent = 'متابعة';
+    btn.querySelector('i').className = 'fas fa-heart';
+  }
 }
 document.getElementById('storeFollowButton')?.addEventListener('click', async () => {
   if (!currentStoreId || isUpdatingFollow || !currentStore) return;
 
-  /* 🛡️ فحص الحماية */
   const guardCheck = FollowGuard.canFollow(currentStoreId);
   if (!guardCheck.allowed) {
     haptic('heavy');
@@ -1905,17 +2083,12 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
 
   try {
     const result = await performFollowToggle(currentStore);
-
-    /* ✅ سجّل العملية الناجحة */
     FollowGuard.recordAction(currentStoreId);
-
     const action = result.action;
     const nowFollowing = (action === 'followed');
     isFollowing = nowFollowing;
-
     if (nowFollowing) _followedFromServer.add(currentStoreId);
     else _followedFromServer.delete(currentStoreId);
-
     const list = getFollowedStores();
     if (!nowFollowing) {
       const i = list.indexOf(currentStoreId);
@@ -1926,7 +2099,6 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
       currentFollowersCount = currentFollowersCount + 1;
     }
     saveFollowedStores(list);
-
     updateFollowersDisplay();
     updateFollowButtonUI();
     updateCardFollowButtons(currentStoreId);
@@ -1946,23 +2118,20 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
 });
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ STORE PRODUCTS — استعلام بسيط + فلترة على العميل
+   ✅ STORE PRODUCTS
    ═══════════════════════════════════════════════════════════ */
 function filterStoreProductsByCategory(products, category) {
   if (!Array.isArray(products)) return [];
   if (!category) return products;
-
   const mainCat = (currentStore && currentStore.category && String(currentStore.category).trim())
     ? String(currentStore.category).trim()
     : null;
-
   if (category === mainCat) {
     return products.filter(p => {
       const pc = String(p.category || '').trim();
       return !pc || pc === mainCat;
     });
   }
-
   return products.filter(p => String(p.category || '').trim() === category);
 }
 
@@ -2014,7 +2183,6 @@ async function loadStoreProducts(storeName, category) {
     storeProductsHasMore = snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE;
 
     const filtered = filterStoreProductsByCategory(rawList, category);
-
     if (!filtered.length) {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات في هذه الفئة</div>';
     } else {
@@ -2023,7 +2191,6 @@ async function loadStoreProducts(storeName, category) {
     }
 
     cacheManager.set(cacheKey, { items: rawList, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
-
   } catch(err) {
     console.error('[BZR] loadStoreProducts error:', err);
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">تعذر التحميل</div>';
@@ -2135,7 +2302,7 @@ function renderStoreProducts(products, append) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ PRODUCT MODAL (بدون تقييم)
+   ✅ PRODUCT MODAL
    ═══════════════════════════════════════════════════════════ */
 let currentModalProduct = null, selectedColorVariant = null;
 
@@ -2228,16 +2395,24 @@ function openProductModal(product) {
   updateModalActionButtons();
   bzrPushModal();
 }
-function closeProductModalInternal() { document.getElementById('productModal').classList.add('hidden'); updateBodyScroll(); }
+function closeProductModalInternal() {
+  document.getElementById('productModal').classList.add('hidden');
+  updateBodyScroll();
+}
 function closeProductModal() { closeProductModalInternal(); bzrCloseModalUI(); }
 function updateModalActionButtons() {
   const p = { ...currentModalProduct };
-  if (selectedColorVariant) { p.selectedColor = selectedColorVariant.name; p.img_url = selectedColorVariant.image || currentModalProduct.img_url; }
+  if (selectedColorVariant) {
+    p.selectedColor = selectedColorVariant.name;
+    p.img_url = selectedColorVariant.image || currentModalProduct.img_url;
+  }
   document.getElementById('addToCartFromModal').dataset.product = JSON.stringify(p);
   document.getElementById('buyNowFromModal').dataset.product = JSON.stringify(p);
 }
 document.getElementById('closeProductModal')?.addEventListener('click', closeProductModal);
-document.getElementById('productModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('productModal')) closeProductModal(); });
+document.getElementById('productModal')?.addEventListener('click', (e) => {
+  if (e.target === document.getElementById('productModal')) closeProductModal();
+});
 document.getElementById('addToCartFromModal')?.addEventListener('click', (e) => {
   const btn = e.currentTarget;
   const p = JSON.parse(btn.dataset.product);
@@ -2245,7 +2420,10 @@ document.getElementById('addToCartFromModal')?.addEventListener('click', (e) => 
   haptic('medium');
   btn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
   btn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
-  setTimeout(() => { btn.style.background = ''; btn.innerHTML = '<i class="fas fa-shopping-bag"></i> أضف إلى السلة'; }, 1500);
+  setTimeout(() => {
+    btn.style.background = '';
+    btn.innerHTML = '<i class="fas fa-shopping-bag"></i> أضف إلى السلة';
+  }, 1500);
 });
 document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
   const p = JSON.parse(e.currentTarget.dataset.product);
@@ -2253,7 +2431,10 @@ document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
   let wa = store && store.whatsapp_number ? store.whatsapp_number : '';
   if (!wa) { showToast('رقم الواتساب غير متوفر'); return; }
   haptic('medium');
-  const msg = 'مرحباً، أريد شراء:\n\n' + p.name + '\n' + (p.selectedColor ? 'اللون: ' + p.selectedColor + '\n' : '') + 'السعر: ' + (p.price || 0).toLocaleString() + ' ج.س\n' + (p.store_name ? 'من متجر: ' + p.store_name : '');
+  const msg = 'مرحباً، أريد شراء:\n\n' + p.name + '\n'
+    + (p.selectedColor ? 'اللون: ' + p.selectedColor + '\n' : '')
+    + 'السعر: ' + (p.price || 0).toLocaleString() + ' ج.س\n'
+    + (p.store_name ? 'من متجر: ' + p.store_name : '');
   window.open('https://wa.me/' + wa.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
 });
 
@@ -2278,23 +2459,38 @@ function animateCartBounce() {
 function updateCartUI() {
   const totalItems = cart.reduce((s,i) => s + i.quantity, 0);
   const cc = document.getElementById('cartCount');
-  if (cc) { if (totalItems > 0) { cc.textContent = totalItems > 99 ? '99+' : totalItems; cc.style.display = 'flex'; } else cc.style.display = 'none'; }
+  if (cc) {
+    if (totalItems > 0) {
+      cc.textContent = totalItems > 99 ? '99+' : totalItems;
+      cc.style.display = 'flex';
+    } else cc.style.display = 'none';
+  }
   const items = document.getElementById('cartItems');
   items.innerHTML = '';
-  if (cart.length === 0) items.innerHTML = '<div style="text-align:center;color:var(--c-text-soft);padding:2.5rem 0;"><i class="fas fa-shopping-bag" style="font-size:3rem;margin-bottom:1rem;display:block;color:#CBD5E1;"></i><p style="font-weight:700;">السلة فارغة</p></div>';
-  else {
+  if (cart.length === 0) {
+    items.innerHTML = '<div style="text-align:center;color:var(--c-text-soft);padding:2.5rem 0;"><i class="fas fa-shopping-bag" style="font-size:3rem;margin-bottom:1rem;display:block;color:#CBD5E1;"></i><p style="font-weight:700;">السلة فارغة</p></div>';
+  } else {
     const frag = document.createDocumentFragment();
     cart.forEach(item => {
       const div = document.createElement('div');
       div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--c-border);';
       const itemId = item.cartItemId || item.id;
-      div.innerHTML = '<img src="' + sanitizeHTML(optimizeCloudinaryUrl(item.img_url) || 'https://via.placeholder.com/80') + '" class="cart-item-image" alt="" loading="lazy">' +
-        '<div style="flex:1;min-width:0;"><h5 style="font-weight:800;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text);margin:0;">' + sanitizeHTML(item.name) + '</h5>' +
-        (item.store_name ? '<span style="font-size:0.72rem;color:#FF7A00;font-weight:800;display:block;">' + sanitizeHTML(item.store_name) + '</span>' : '') +
-        (item.selectedColor ? '<span style="font-size:0.7rem;color:var(--c-text-soft);font-weight:700;background:var(--c-surface-2);padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px;">اللون: ' + sanitizeHTML(item.selectedColor) + '</span>' : '') +
-        '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><button class="decrease-btn" data-id="' + itemId + '" style="width:26px;height:26px;border-radius:50%;background:var(--c-surface-2);border:none;font-weight:800;cursor:pointer;color:var(--c-text);">−</button><span style="font-weight:800;color:var(--c-text);min-width:20px;text-align:center;">' + item.quantity + '</span><button class="increase-btn" data-id="' + itemId + '" style="width:26px;height:26px;border-radius:50%;background:var(--c-surface-2);border:none;font-weight:800;cursor:pointer;color:var(--c-text);">+</button></div></div>' +
-        '<div style="text-align:left;flex-shrink:0;"><div style="font-weight:900;color:#FF7A00;">' + (item.price * item.quantity).toLocaleString() + ' ج.س</div>' +
-        '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;font-size:0.85rem;"><i class="fas fa-trash"></i></button></div>';
+      div.innerHTML =
+        '<img src="' + sanitizeHTML(optimizeCloudinaryUrl(item.img_url) || 'https://via.placeholder.com/80') + '" class="cart-item-image" alt="" loading="lazy">' +
+        '<div style="flex:1;min-width:0;">' +
+          '<h5 style="font-weight:800;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text);margin:0;">' + sanitizeHTML(item.name) + '</h5>' +
+          (item.store_name ? '<span style="font-size:0.72rem;color:#FF7A00;font-weight:800;display:block;">' + sanitizeHTML(item.store_name) + '</span>' : '') +
+          (item.selectedColor ? '<span style="font-size:0.7rem;color:var(--c-text-soft);font-weight:700;background:var(--c-surface-2);padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px;">اللون: ' + sanitizeHTML(item.selectedColor) + '</span>' : '') +
+          '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;">' +
+            '<button class="decrease-btn" data-id="' + itemId + '" style="width:26px;height:26px;border-radius:50%;background:var(--c-surface-2);border:none;font-weight:800;cursor:pointer;color:var(--c-text);">−</button>' +
+            '<span style="font-weight:800;color:var(--c-text);min-width:20px;text-align:center;">' + item.quantity + '</span>' +
+            '<button class="increase-btn" data-id="' + itemId + '" style="width:26px;height:26px;border-radius:50%;background:var(--c-surface-2);border:none;font-weight:800;cursor:pointer;color:var(--c-text);">+</button>' +
+          '</div>' +
+        '</div>' +
+        '<div style="text-align:left;flex-shrink:0;">' +
+          '<div style="font-weight:900;color:#FF7A00;">' + (item.price * item.quantity).toLocaleString() + ' ج.س</div>' +
+          '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;font-size:0.85rem;"><i class="fas fa-trash"></i></button>' +
+        '</div>';
       frag.appendChild(div);
     });
     items.appendChild(frag);
@@ -2320,8 +2516,17 @@ function removeFromCart(id) {
   try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){}
   showToast('تمت الإزالة');
 }
-function openCart() { document.getElementById('cartSidebar').classList.add('open'); updateBodyScroll(); setActiveNav('cart'); bzrPushModal(); }
-function closeCartInternal() { document.getElementById('cartSidebar').classList.remove('open'); updateBodyScroll(); setActiveNav('home'); }
+function openCart() {
+  document.getElementById('cartSidebar').classList.add('open');
+  updateBodyScroll();
+  setActiveNav('cart');
+  bzrPushModal();
+}
+function closeCartInternal() {
+  document.getElementById('cartSidebar').classList.remove('open');
+  updateBodyScroll();
+  setActiveNav('home');
+}
 function closeCart() { closeCartInternal(); bzrCloseModalUI(); }
 document.getElementById('cartButton')?.addEventListener('click', () => { haptic('light'); openCart(); });
 document.getElementById('closeCart')?.addEventListener('click', closeCart);
@@ -2394,8 +2599,7 @@ async function shareStore(store) {
       await navigator.share({ title: store.name + ' | BranZar', text: shareText, url });
       haptic('medium');
       return;
-    }
-    catch(err){ if (err && err.name === 'AbortError') return; }
+    } catch(err){ if (err && err.name === 'AbortError') return; }
   }
   try {
     if (navigator.clipboard) {
@@ -2406,34 +2610,46 @@ async function shareStore(store) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ REALTIME → POLLING
+   ✅ POLLING (60 دقيقة — بدون تحديث أولي بعد 5 ثوانٍ)
    ═══════════════════════════════════════════════════════════ */
 function setupRealtimeProducts() {
   if (allProductsUnsubscribe) return;
-  const POLL_INTERVAL = 5 * 60 * 1000;
+
   const pollProducts = async () => {
     if (!isPageVisible) return;
     if (!RateLimiter.canRequest('poll_products')) return;
     try {
+      /* ✅ حد 8 وثائق فقط (بدل 30) */
       const snap = await db.collection('products')
         .orderBy('created_at', 'desc')
-        .limit(30)
+        .limit(CONFIG.PRODUCTS_PER_PAGE)
         .get();
       const fresh = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      if (fresh.length) {
-        allProductsLocal = fresh;
-        cacheManager.set('all_products_page1', { items: fresh.slice(0, CONFIG.PRODUCTS_PER_PAGE), hasMore: hasMoreProducts }, CONFIG.CACHE_TTL_PRODUCTS);
+      if (!fresh.length) return;
+
+      /* ✅ مقارنة الـ IDs فقط — لا إعادة رسم لتجنّب إزعاج المستخدم */
+      const topIds = allProductsLocal.slice(0, fresh.length).map(p => p.id).join(',');
+      const freshIds = fresh.map(p => p.id).join(',');
+      if (topIds !== freshIds) {
+        const existing = new Set(fresh.map(p => p.id));
+        allProductsLocal = fresh.concat(allProductsLocal.filter(p => !existing.has(p.id)));
       }
-    } catch(e) {
-      console.warn('[BZR] Poll products failed:', e);
-    }
+      cacheManager.set(
+        'all_products_page1',
+        { items: allProductsLocal.slice(0, CONFIG.PRODUCTS_PER_PAGE), hasMore: hasMoreProducts },
+        CONFIG.CACHE_TTL_PRODUCTS
+      );
+    } catch(e) { /* silent */ }
   };
-  setTimeout(pollProducts, 5000);
-  allProductsUnsubscribe = setInterval(pollProducts, POLL_INTERVAL);
+
+  /* 🚫 حذف setTimeout(pollProducts, 5000) القديم */
+  /* ✅ الفحص كل 60 دقيقة فقط */
+  allProductsUnsubscribe = setInterval(pollProducts, CONFIG.PRODUCTS_REFRESH_INTERVAL_MS);
 }
 function setupRealtimeStores() {
   if (storesPollInterval) return;
-  const POLL_MS = 15 * 60 * 1000;
+  const POLL_MS = CONFIG.STORES_REFRESH_INTERVAL_MS;  /* ✅ 60 دقيقة */
+
   function startPoll() {
     if (storesPollInterval) clearInterval(storesPollInterval);
     storesPollInterval = setInterval(() => {
@@ -2446,7 +2662,10 @@ function setupRealtimeStores() {
   startPoll();
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) startPoll();
-    else if (storesPollInterval) { clearInterval(storesPollInterval); storesPollInterval = null; }
+    else if (storesPollInterval) {
+      clearInterval(storesPollInterval);
+      storesPollInterval = null;
+    }
   });
 }
 
@@ -2479,8 +2698,16 @@ document.addEventListener('keydown', (e) => {
 document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) => {
   if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; }
 }, { passive: false });
-document.getElementById('prevStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: 300, behavior: 'smooth' }); });
-document.getElementById('nextStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: -300, behavior: 'smooth' }); });
+document.getElementById('prevStoresBtn')?.addEventListener('click', () => {
+  const c = document.getElementById('storesScrollContainer');
+  lastStoresInteraction = Date.now();
+  c.scrollBy({ left: 300, behavior: 'smooth' });
+});
+document.getElementById('nextStoresBtn')?.addEventListener('click', () => {
+  const c = document.getElementById('storesScrollContainer');
+  lastStoresInteraction = Date.now();
+  c.scrollBy({ left: -300, behavior: 'smooth' });
+});
 document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: -200, behavior: 'smooth' }));
 document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: 200, behavior: 'smooth' }));
 
@@ -2512,10 +2739,7 @@ function getSWVersionFromWorker(worker) {
         resolve(typeof v === 'string' ? v : null);
       };
       worker.postMessage({ type: 'GET_VERSION' }, [channel.port2]);
-    } catch(e) {
-      clearTimeout(timeout);
-      resolve(null);
-    }
+    } catch(e) { clearTimeout(timeout); resolve(null); }
   });
 }
 function showUpdateButton() {
@@ -2612,16 +2836,46 @@ if ('serviceWorker' in navigator) {
 }
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
 
+/* ═══════════════════════════════════════════════════════════
+   ✅ زر التحديث اليدوي (اختياري)
+   أضف في HTML: <button id="refreshProductsBtn">تحديث</button>
+   ═══════════════════════════════════════════════════════════ */
+document.getElementById('refreshProductsBtn')?.addEventListener('click', async (e) => {
+  const btn = e.currentTarget;
+  const icon = btn.querySelector('i');
+  if (btn.disabled) return;
+  btn.disabled = true;
+  if (icon) icon.classList.add('fa-spin');
+  haptic('light');
+  try {
+    cacheManager.remove('all_products_page1');
+    cacheManager.remove('stores_list');
+    await Promise.all([loadStores(true), loadAllProducts(true)]);
+    showToast('✅ تم تحديث البيانات');
+  } catch(err) {
+    showToast('تعذر التحديث، حاول مرة أخرى');
+  } finally {
+    if (icon) icon.classList.remove('fa-spin');
+    btn.disabled = false;
+  }
+});
+
 /* ═══ INIT ═══ */
 async function initApp() {
   initTheme();
   initViewMode();
   const ok = await ensureAuth();
   if (!ok) { window.__bzrHideSplash(); return; }
+
   updateCartUI();
   initFCM().catch(() => {});
   getDeviceFingerprint().catch(() => {});
-  await Promise.all([loadStores(), loadCategories(), loadAllProducts()]);
+
+  /* ✅ المتاجر أولاً (يستخرج الأقسام معه — 0 قراءات إضافية) */
+  await loadStores();
+  /* ✅ ثم المنتجات والأقسام بالتوازي */
+  await Promise.all([loadCategories(), loadAllProducts()]);
+
   setupRealtimeProducts();
   setupRealtimeStores();
   handleDeepLink();
@@ -2646,7 +2900,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.7.0',
+  version: '9.8.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
@@ -2655,7 +2909,12 @@ window.BranZar = {
   setTheme: applyTheme,
   setView: applyViewMode,
   getFingerprint: getDeviceFingerprint,
-  syncFollows: syncFollowedStoresFromServer
+  syncFollows: syncFollowedStoresFromServer,
+  refreshAll: async () => {
+    cacheManager.remove('all_products_page1');
+    cacheManager.remove('stores_list');
+    await Promise.all([loadStores(true), loadAllProducts(true)]);
+  }
 };
 
 })();
