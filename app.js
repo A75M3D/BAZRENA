@@ -1,6 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v9.3.0
-   ✅ Multi-Layer Device Fingerprint Anti-Cheat
+   BranZar App Core v9.7.0
+   ✅ Multi-Layer Device Fingerprint (Local Only — لا يُرسل لـ Firebase)
+   ✅ Firebase Auth UID (يُستخدم كمعرّف المستخدم في Firestore)
+   ✅ FollowGuard (Anti-Bot + Anti-Spam Rate Limiter)
    ✅ Rate Limiter (Client-Side)
    ✅ Long-Term Cache
    ✅ Polling instead of onSnapshot (saves quota)
@@ -37,7 +39,17 @@ const CONFIG = Object.freeze({
   FP_IDB_STORE: 'device_store',
   FOLLOW_COOLDOWN_MS: 1500,
   RATE_MAX_PER_MINUTE: 30,
-  RATE_MAX_PER_DAY: 2000
+  RATE_MAX_PER_DAY: 2000,
+  FOLLOW_MIN_GAP_MS: 2000,
+  FOLLOW_PER_STORE_GAP_MS: 5000,
+  FOLLOW_MAX_PER_MINUTE: 6,
+  FOLLOW_MAX_PER_HOUR: 30,
+  FOLLOW_MAX_PER_DAY: 100,
+  FOLLOW_TOGGLE_BURST_LIMIT: 3,
+  FOLLOW_TOGGLE_BURST_WINDOW_MS: 5 * 60 * 1000,
+  FOLLOW_STRIKE_THRESHOLD: 3,
+  FOLLOW_STRIKE_BLOCK_MS: 5 * 60 * 1000,
+  FOLLOW_LONG_BLOCK_MS: 30 * 60 * 1000
 });
 
 const FIREBASE_CONFIG = {
@@ -60,7 +72,8 @@ const KEYS = Object.freeze({
   FCM_TOKEN: 'branzarFcmToken',
   NOTIF_DISMISS: 'branzarNotifDismissed',
   VISITED: 'branzarVisitedBefore',
-  INSTALLED: 'branzarInstalled'
+  INSTALLED: 'branzarInstalled',
+  FOLLOW_DAILY: 'branzar_follow_daily_stats'
 });
 
 const VERIFIED_BADGE_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true"><path fill="#1877F2" d="M12 1l2.35 2.05 3.09-.41 1.13 2.92 2.92 1.13-.41 3.09L23 12l-2.05 2.35.41 3.09-2.92 1.13-1.13 2.92-3.09-.41L12 23l-2.35-2.05-3.09.41-1.13-2.92-2.92-1.13.41-3.09L1 12l2.05-2.35-.41-3.09 2.92-1.13 1.13-2.92 3.09.41L12 1z"/><path fill="#fff" d="M10.6 16.2l-3.8-3.8 1.4-1.4 2.4 2.4 6-6 1.4 1.4z"/></svg>';
@@ -131,7 +144,187 @@ const RateLimiter = {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   🛡️ DEVICE FINGERPRINT ANTI-CHEAT
+   🛡️ FOLLOW GUARD — حماية متعددة الطبقات ضد البوتات
+   ═══════════════════════════════════════════════════════════ */
+const FollowGuard = {
+  _actionHistory: [],
+  _perStoreLastAction: {},
+  _perStoreToggleCount: {},
+  _sessionCount: 0,
+  _dailyCount: 0,
+  _dailyResetDate: '',
+  _blockedUntil: 0,
+  _strikes: 0,
+
+  init() {
+    try {
+      const raw = localStorage.getItem(KEYS.FOLLOW_DAILY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      const today = new Date().toDateString();
+      if (data && data.date === today) {
+        this._dailyCount = parseInt(data.count) || 0;
+        this._dailyResetDate = today;
+      } else {
+        this._dailyCount = 0;
+        this._dailyResetDate = today;
+      }
+    } catch(e) { this._dailyCount = 0; }
+  },
+
+  _saveDailyCount() {
+    try {
+      localStorage.setItem(KEYS.FOLLOW_DAILY, JSON.stringify({
+        date: this._dailyResetDate || new Date().toDateString(),
+        count: this._dailyCount
+      }));
+    } catch(e){}
+  },
+
+  _ensureDailyReset() {
+    const today = new Date().toDateString();
+    if (this._dailyResetDate !== today) {
+      this._dailyCount = 0;
+      this._dailyResetDate = today;
+      this._saveDailyCount();
+    }
+  },
+
+  _addStrike(reason) {
+    this._strikes++;
+    console.warn('[BZR] Follow strike #' + this._strikes + ':', reason);
+
+    if (this._strikes >= CONFIG.FOLLOW_STRIKE_THRESHOLD) {
+      const blockDuration = this._strikes >= 6
+        ? CONFIG.FOLLOW_LONG_BLOCK_MS
+        : CONFIG.FOLLOW_STRIKE_BLOCK_MS;
+      this._blockedUntil = Date.now() + blockDuration;
+      this._strikes = 0;
+      console.warn('[BZR] Follow BLOCKED for', Math.round(blockDuration / 60000), 'minutes');
+    }
+  },
+
+  canFollow(storeId) {
+    const now = Date.now();
+    this._ensureDailyReset();
+
+    if (this._blockedUntil > now) {
+      const remaining = this._blockedUntil - now;
+      return {
+        allowed: false,
+        reason: 'blocked',
+        remaining: remaining,
+        message: '⛔ تم حظر المتابعة مؤقتاً — حاول بعد ' + Math.ceil(remaining / 60000) + ' دقيقة'
+      };
+    }
+
+    if (this._actionHistory.length > 0) {
+      const lastAction = this._actionHistory[this._actionHistory.length - 1];
+      if (now - lastAction < CONFIG.FOLLOW_MIN_GAP_MS) {
+        return {
+          allowed: false,
+          reason: 'too_fast',
+          remaining: CONFIG.FOLLOW_MIN_GAP_MS - (now - lastAction),
+          message: '⏳ انتظر لحظة قبل المحاولة مرة أخرى'
+        };
+      }
+    }
+
+    const lastForStore = this._perStoreLastAction[storeId] || 0;
+    if (lastForStore > 0 && now - lastForStore < CONFIG.FOLLOW_PER_STORE_GAP_MS) {
+      const remaining = CONFIG.FOLLOW_PER_STORE_GAP_MS - (now - lastForStore);
+      this._addStrike('rapid_same_store');
+      return {
+        allowed: false,
+        reason: 'same_store',
+        remaining: remaining,
+        message: '⏳ لا يمكن التبديل على نفس المتجر بسرعة'
+      };
+    }
+
+    const toggleData = this._perStoreToggleCount[storeId] || { count: 0, windowStart: now };
+    if (now - toggleData.windowStart > CONFIG.FOLLOW_TOGGLE_BURST_WINDOW_MS) {
+      toggleData.count = 0;
+      toggleData.windowStart = now;
+    }
+    if (toggleData.count >= CONFIG.FOLLOW_TOGGLE_BURST_LIMIT) {
+      this._addStrike('toggle_burst');
+      this._addStrike('toggle_burst');
+      return {
+        allowed: false,
+        reason: 'toggle_burst',
+        remaining: 0,
+        message: '🚫 محاولات متكررة على نفس المتجر'
+      };
+    }
+
+    const lastMinute = this._actionHistory.filter(t => now - t < 60000);
+    if (lastMinute.length >= CONFIG.FOLLOW_MAX_PER_MINUTE) {
+      this._addStrike('rate_minute');
+      return {
+        allowed: false,
+        reason: 'rate_minute',
+        remaining: 0,
+        message: '🚫 محاولات كثيرة جداً — انتظر قليلاً'
+      };
+    }
+
+    const lastHour = this._actionHistory.filter(t => now - t < 3600000);
+    if (lastHour.length >= CONFIG.FOLLOW_MAX_PER_HOUR) {
+      this._addStrike('rate_hour');
+      return {
+        allowed: false,
+        reason: 'rate_hour',
+        remaining: 0,
+        message: '🚫 تجاوزت الحد المسموح في الساعة'
+      };
+    }
+
+    if (this._dailyCount >= CONFIG.FOLLOW_MAX_PER_DAY) {
+      return {
+        allowed: false,
+        reason: 'daily_limit',
+        remaining: 0,
+        message: '🚫 وصلت للحد اليومي للمتابعة — حاول غداً'
+      };
+    }
+
+    return { allowed: true };
+  },
+
+  recordAction(storeId) {
+    const now = Date.now();
+
+    this._actionHistory.push(now);
+    this._actionHistory = this._actionHistory.filter(t => now - t < 3600000);
+
+    this._perStoreLastAction[storeId] = now;
+
+    const toggleData = this._perStoreToggleCount[storeId] || { count: 0, windowStart: now };
+    if (now - toggleData.windowStart > CONFIG.FOLLOW_TOGGLE_BURST_WINDOW_MS) {
+      toggleData.count = 0;
+      toggleData.windowStart = now;
+    }
+    toggleData.count++;
+    this._perStoreToggleCount[storeId] = toggleData;
+
+    this._sessionCount++;
+    this._dailyCount++;
+    this._saveDailyCount();
+  },
+
+  isSuspiciousBot() {
+    const now = Date.now();
+    const lastMinute = this._actionHistory.filter(t => now - t < 60000);
+    if (lastMinute.length >= 5) return true;
+    return false;
+  }
+};
+
+FollowGuard.init();
+
+/* ═══════════════════════════════════════════════════════════
+   🛡️ DEVICE FINGERPRINT (محلي فقط — لا يُرسل لـ Firebase)
    ═══════════════════════════════════════════════════════════ */
 function fnv1a(str) {
   let hash = 0x811c9dc5;
@@ -390,7 +583,7 @@ let storesPollInterval = null;
 let storeProductsLastDoc = null;
 let storeProductsHasMore = false;
 let currentStoreNameForProducts = null;
-let currentStoreCategoryForProducts = null; /* ✅ الفئة النشطة حالياً */
+let currentStoreCategoryForProducts = null;
 let isPageVisible = !document.hidden;
 let _followedCache = null, _favsCache = null;
 let _followedFromServer = new Set();
@@ -417,6 +610,14 @@ const authPromise = firebase.auth().signInAnonymously()
 async function ensureAuth() {
   if (authReady) return true;
   try { await authPromise; return true; } catch(e){ return false; }
+}
+
+/* ✅ معرّف المستخدم من Firebase Auth — يُستخدم في Firestore بدل بصمة الجهاز */
+function getUserIdentity() {
+  try {
+    const user = firebase.auth().currentUser;
+    return user ? user.uid : null;
+  } catch(e) { return null; }
 }
 
 /* ═══ SPLASH ═══ */
@@ -850,8 +1051,7 @@ async function registerFCMToken(reg) {
     const prev = localStorage.getItem(KEYS.FCM_TOKEN + '_saved');
     if (prev !== token) {
       await db.collection('fcm_tokens').doc(token).set({
-        token, userAgent: navigator.userAgent, platform: navigator.platform || 'unknown',
-        language: navigator.language || 'ar',
+        token,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
         active: true
@@ -1071,7 +1271,6 @@ async function fetchProductsPage(cursorDoc, silent) {
   } catch(err) { throw err; }
 }
 
-/* ✅ بدون تقييم — فقط السعر */
 function renderProductsBatch(items) {
   const grid = document.getElementById('allProductsGrid');
   if (!items.length) return;
@@ -1215,14 +1414,18 @@ async function loadCategories(force) {
 
 /* ═══════════════════════════════════════════════════════════
    🛡️ SERVER-BASED FOLLOW SYSTEM
+   ✅ يُستخدم Firebase Auth UID (بدل بصمة الجهاز)
+   ✅ localStorage أولاً + Firebase احتياطي
    ═══════════════════════════════════════════════════════════ */
 async function syncFollowedStoresFromServer() {
   try {
     const ok = await ensureAuth();
     if (!ok) return;
-    const fingerprint = await getDeviceFingerprint();
+    const userId = getUserIdentity();
+    if (!userId) return;
+
     const snap = await db.collection('store_follows')
-      .where('fingerprint', '==', fingerprint)
+      .where('fingerprint', '==', userId)
       .get();
     const serverIds = new Set();
     snap.docs.forEach(d => {
@@ -1235,7 +1438,7 @@ async function syncFollowedStoresFromServer() {
     saveFollowedStores(Array.from(merged));
     const localOnly = localList.filter(id => !serverIds.has(String(id)));
     if (localOnly.length) {
-      migrateLocalFollowsToServer(localOnly, fingerprint).catch(() => {});
+      migrateLocalFollowsToServer(localOnly, userId).catch(() => {});
     }
     renderFollowedStores();
     document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => {
@@ -1247,20 +1450,16 @@ async function syncFollowedStoresFromServer() {
     console.warn('[BZR] Sync follows failed:', err);
   }
 }
-async function migrateLocalFollowsToServer(storeIds, fingerprint) {
+async function migrateLocalFollowsToServer(storeIds, userId) {
   try {
     const batch = db.batch();
     let count = 0;
     for (const sid of storeIds) {
-      const docId = sid + '_' + fingerprint;
+      const docId = sid + '_' + userId;
       const ref = db.collection('store_follows').doc(docId);
       batch.set(ref, {
         storeId: String(sid),
-        fingerprint: fingerprint,
-        ua: navigator.userAgent.substring(0, 200),
-        lang: navigator.language || 'ar',
-        platform: navigator.platform || 'unknown',
-        tz: new Date().getTimezoneOffset(),
+        fingerprint: userId,
         migrated: true,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
@@ -1275,8 +1474,10 @@ async function migrateLocalFollowsToServer(storeIds, fingerprint) {
 async function performFollowToggle(store) {
   const storeId = String(getStoreId(store));
   await ensureAuth();
-  const fingerprint = await getDeviceFingerprint();
-  const followDocId = storeId + '_' + fingerprint;
+  const userId = getUserIdentity();
+  if (!userId) throw new Error('no_auth_identity');
+
+  const followDocId = storeId + '_' + userId;
   const followRef = db.collection('store_follows').doc(followDocId);
   const storeRef = db.collection('stores').doc(storeId);
 
@@ -1291,11 +1492,7 @@ async function performFollowToggle(store) {
     } else {
       transaction.set(followRef, {
         storeId: storeId,
-        fingerprint: fingerprint,
-        ua: navigator.userAgent.substring(0, 200),
-        lang: navigator.language || 'ar',
-        platform: navigator.platform || 'unknown',
-        tz: new Date().getTimezoneOffset(),
+        fingerprint: userId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       transaction.set(storeRef, {
@@ -1307,8 +1504,9 @@ async function performFollowToggle(store) {
 }
 async function checkFollowStatusFromServer(storeId) {
   try {
-    const fingerprint = await getDeviceFingerprint();
-    const docId = String(storeId) + '_' + fingerprint;
+    const userId = getUserIdentity();
+    if (!userId) return false;
+    const docId = String(storeId) + '_' + userId;
     const doc = await db.collection('store_follows').doc(docId).get();
     return doc.exists;
   } catch(e) { return false; }
@@ -1360,17 +1558,26 @@ function setCardFollowState(btn, following) {
 async function toggleFollowFromCard(store, btn) {
   const storeId = String(getStoreId(store));
   if (btn.disabled) return;
-  const now = Date.now();
-  if (now - _lastFollowAction < CONFIG.FOLLOW_COOLDOWN_MS) {
-    showToast('رجاء الانتظار قليلاً');
+
+  /* 🛡️ فحص الحماية أولاً */
+  const guardCheck = FollowGuard.canFollow(storeId);
+  if (!guardCheck.allowed) {
+    haptic('heavy');
+    showToast(guardCheck.message);
+    btn.classList.add('blocked-flash');
+    setTimeout(() => btn.classList.remove('blocked-flash'), 600);
     return;
   }
-  _lastFollowAction = now;
+
   btn.disabled = true;
   haptic('light');
 
   try {
     const result = await performFollowToggle(store);
+
+    /* ✅ سجّل العملية الناجحة */
+    FollowGuard.recordAction(storeId);
+
     const action = result.action;
     const wasFollowing = (action === 'unfollowed');
 
@@ -1478,7 +1685,6 @@ function highlightCategory(active) {
 /* ═══════════════════════════════════════════════════════════
    ✅ STORE CATEGORIES — نظام الفئات المتقدم
    ═══════════════════════════════════════════════════════════ */
-
 function renderStoreCategoryTabs(store) {
   const container = document.getElementById('storeCategoriesTabs');
   if (!container) return;
@@ -1496,7 +1702,6 @@ function renderStoreCategoryTabs(store) {
   }
   container.style.display = 'flex';
 
-  // 🟢 الفئة الرئيسية — مجانية
   if (mainCat) {
     const tab = document.createElement('button');
     tab.type = 'button';
@@ -1509,7 +1714,6 @@ function renderStoreCategoryTabs(store) {
     container.appendChild(tab);
   }
 
-  // 🔒 الفئات الإضافية
   additional.forEach(cat => {
     const tab = document.createElement('button');
     tab.type = 'button';
@@ -1678,12 +1882,20 @@ function updateFollowButtonUI() {
 }
 document.getElementById('storeFollowButton')?.addEventListener('click', async () => {
   if (!currentStoreId || isUpdatingFollow || !currentStore) return;
-  const now = Date.now();
-  if (now - _lastFollowAction < CONFIG.FOLLOW_COOLDOWN_MS) {
-    showToast('رجاء الانتظار قليلاً');
+
+  /* 🛡️ فحص الحماية */
+  const guardCheck = FollowGuard.canFollow(currentStoreId);
+  if (!guardCheck.allowed) {
+    haptic('heavy');
+    showToast(guardCheck.message);
+    const btn = document.getElementById('storeFollowButton');
+    if (btn) {
+      btn.classList.add('blocked-flash');
+      setTimeout(() => btn.classList.remove('blocked-flash'), 600);
+    }
     return;
   }
-  _lastFollowAction = now;
+
   isUpdatingFollow = true;
   const btn = document.getElementById('storeFollowButton');
   btn.disabled = true;
@@ -1693,6 +1905,10 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
 
   try {
     const result = await performFollowToggle(currentStore);
+
+    /* ✅ سجّل العملية الناجحة */
+    FollowGuard.recordAction(currentStoreId);
+
     const action = result.action;
     const nowFollowing = (action === 'followed');
     isFollowing = nowFollowing;
@@ -1732,12 +1948,6 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
 /* ═══════════════════════════════════════════════════════════
    ✅ STORE PRODUCTS — استعلام بسيط + فلترة على العميل
    ═══════════════════════════════════════════════════════════ */
-
-/**
- * ✅ الفلترة الذكية على العميل — متوافقة مع البيانات القديمة والجديدة
- * - الفئة الرئيسية → منتجات بدون category أو category = الرئيسية
- * - فئة إضافية → منتجات فئتها = الفئة الإضافية فقط
- */
 function filterStoreProductsByCategory(products, category) {
   if (!Array.isArray(products)) return [];
   if (!category) return products;
@@ -1746,7 +1956,6 @@ function filterStoreProductsByCategory(products, category) {
     ? String(currentStore.category).trim()
     : null;
 
-  // التبويب الرئيسي → المنتجات بدون فئة أو فئتها الرئيسية
   if (category === mainCat) {
     return products.filter(p => {
       const pc = String(p.category || '').trim();
@@ -1754,14 +1963,9 @@ function filterStoreProductsByCategory(products, category) {
     });
   }
 
-  // تبويب فئة إضافية → فقط المنتجات بهذه الفئة
   return products.filter(p => String(p.category || '').trim() === category);
 }
 
-/**
- * ✅ يستخدم استعلام بسيط بـ store_name فقط (متوافق مع البيانات القديمة)
- * ثم يفلتر على العميل حسب الفئة
- */
 async function loadStoreProducts(storeName, category) {
   const grid = document.getElementById('storeProductsGrid');
   const loadMoreBtn = document.getElementById('loadMoreStoreProductsBtn');
@@ -1772,7 +1976,6 @@ async function loadStoreProducts(storeName, category) {
   storeProductsLastDoc = null;
   storeProductsHasMore = false;
 
-  // ✅ Cache key: بالمتجر فقط (نخزّن القائمة الخام)
   const cacheKey = 'store_products_page1_' + storeName;
   const cached = cacheManager.get(cacheKey);
 
@@ -1791,7 +1994,6 @@ async function loadStoreProducts(storeName, category) {
   if (!RateLimiter.canRequest('store_products')) return;
 
   try {
-    // ✅ استعلام بسيط بـ store_name فقط — بدون composite index
     let q = db.collection('products')
       .where('store_name', '==', storeName)
       .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
@@ -1801,7 +2003,6 @@ async function loadStoreProducts(storeName, category) {
     try {
       snap = await q.get();
     } catch(innerErr) {
-      // Fallback: بدون orderBy (لو الحقل غير موجود)
       snap = await db.collection('products')
         .where('store_name', '==', storeName)
         .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
@@ -1821,7 +2022,6 @@ async function loadStoreProducts(storeName, category) {
       if (storeProductsHasMore) loadMoreBtn.classList.remove('hidden');
     }
 
-    // ✅ تخزين القائمة الخام (غير مفلترة)
     cacheManager.set(cacheKey, { items: rawList, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
 
   } catch(err) {
@@ -1830,7 +2030,6 @@ async function loadStoreProducts(storeName, category) {
   }
 }
 
-/* ✅ زر عرض المزيد — بسيط بدون فئة */
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async () => {
   const btn = document.getElementById('loadMoreStoreProductsBtn');
   if (btn.disabled || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
@@ -1863,7 +2062,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     const filtered = filterStoreProductsByCategory(rawList, currentStoreCategoryForProducts);
     if (filtered.length) renderStoreProducts(filtered, true);
 
-    // ✅ تحديث الـ Cache بالقائمة الخام
     const cacheKey = 'store_products_page1_' + currentStoreNameForProducts;
     const cached = cacheManager.get(cacheKey);
     const allItems = (cached && Array.isArray(cached.items)) ? cached.items.concat(rawList) : rawList;
@@ -1877,7 +2075,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
   btn.disabled = false;
 });
 
-/* ✅ بدون تقييم */
 function renderStoreProducts(products, append) {
   const grid = document.getElementById('storeProductsGrid');
   if (!append) grid.innerHTML = '';
@@ -2449,7 +2646,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.3.0',
+  version: '9.7.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
