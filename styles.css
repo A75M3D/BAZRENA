@@ -1,8 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.4.0 — Styles (Mobile App Optimized)
+   BranZar v9.2.0 — Styles (Mobile App Optimized)
    ✅ Store Categories Tabs (Free + Locked)
    ✅ Rating Removal
-   ✅ Premium Category Chips (UI/UX Pro Max)
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -65,8 +64,7 @@ body.theme-dark .bzr-app-bar { background: rgba(15,23,42,0.85); border-color: rg
 body.theme-dark #bzrBottomNav { background: rgba(15,23,42,0.94); border-color: rgba(255,255,255,0.06); }
 body.theme-dark .bzr-search-bar-wrap { background: rgba(15,23,42,0.9); border-color: rgba(255,255,255,0.06); }
 body.theme-dark .icon-btn { background: #334155; color: #F1F5F9; }
-body.theme-dark .chip { background: rgba(30,41,59,0.9); border-color: rgba(71,85,105,0.6); color: #CBD5E1; }
-body.theme-dark .chip::before { background: rgba(255,255,255,0.04); }
+body.theme-dark .chip { background: #1E293B; border-color: #334155; color: #CBD5E1; }
 body.theme-dark .store-card, body.theme-dark .product-card, body.theme-dark .store-product-card { background: var(--c-surface); border-color: var(--c-border); }
 body.theme-dark #cartSidebar { background: var(--c-surface); }
 body.theme-dark #cartSidebar > div { background: var(--c-surface) !important; border-color: var(--c-border) !important; }
@@ -84,6 +82,7 @@ body.theme-dark .bzr-splash-logo { background: #1E293B; }
 body.theme-dark .account-avatar { background: #1E293B; }
 body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 
+/* ✅ جديد: عناصر الفئات في الوضع الداكن */
 body.theme-dark .store-cat-tab { background: #334155; border-color: #475569; color: #CBD5E1; }
 body.theme-dark .store-cat-tab.main-tab { background: #3B2410; border-color: #FF7A00; color: #FF7A00; }
 body.theme-dark .store-cat-tab.main-tab.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; }
@@ -212,242 +211,14 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .stores-scroll-container > * { direction: rtl; }
 .stores-scroll-container::-webkit-scrollbar { height: 4px; }
 .stores-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
-
-/* ═══════════════════════════════════════════════════════════
-   ✅ PREMIUM CATEGORIES — الفئات الاحترافية
-   ═══════════════════════════════════════════════════════════ */
-.categories-scroll-container {
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-  gap: 8px;
-  padding: 6px 2px 8px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-  scroll-snap-type: x proximity;
-  position: relative;
-  /* تدرج جانبي أنيق يوحي بمزيد من الفئات */
-  -webkit-mask-image: linear-gradient(to left, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
-  mask-image: linear-gradient(to left, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
-}
+.categories-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 6px; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .categories-scroll-container::-webkit-scrollbar { display: none; }
-
-/* ═══════════════════════════════════════════════════════════
-   ✅ PREMIUM CHIP — الفئة الأنيقة (UI/UX Pro Max)
-   ═══════════════════════════════════════════════════════════ */
-.chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 9px 16px;
-  border-radius: 9999px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
-  border: 1.5px solid #E2E8F0;
-  font-family: 'Cairo', sans-serif;
-  font-weight: 800;
-  font-size: 0.82rem;
-  color: #475569;
-  white-space: nowrap;
-  cursor: pointer;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  transition:
-    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
-    border-color 0.25s ease,
-    color 0.25s ease,
-    background 0.25s ease;
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 2px 6px -2px rgba(15, 23, 42, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  overflow: hidden;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  line-height: 1;
-}
-
-/* طبقة داخلية لإشراقة زجاجية (glass sheen) */
-.chip::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 50%);
-  pointer-events: none;
-  opacity: 0.9;
-  transition: opacity 0.3s ease;
-}
-
-/* بريق يتحرك عند الـ hover (shimmer) */
-.chip::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -60%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    115deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.55) 45%,
-    rgba(255, 255, 255, 0.75) 50%,
-    rgba(255, 255, 255, 0.55) 55%,
-    transparent 100%
-  );
-  transform: skewX(-20deg);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-.chip:hover {
-  transform: translateY(-2px);
-  border-color: #FFB980;
-  color: #FF7A00;
-  background: linear-gradient(180deg, #FFFCF8 0%, #FFF7ED 100%);
-  box-shadow:
-    0 4px 10px -3px rgba(255, 122, 0, 0.22),
-    0 8px 20px -8px rgba(255, 122, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
-}
-.chip:hover::after {
-  opacity: 1;
-  animation: chipShimmer 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-@keyframes chipShimmer {
-  0%   { right: -60%; }
-  100% { right: 130%; }
-}
-
-.chip:active {
-  transform: translateY(0) scale(0.94);
-  transition-duration: 0.12s;
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.05),
-    inset 0 2px 4px rgba(255, 122, 0, 0.12);
-}
-
-.chip:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 3px rgba(255, 122, 0, 0.28),
-    0 4px 14px -4px rgba(255, 122, 0, 0.5);
-}
-
-/* ✅ حالة الفئة النشطة — تصميم فاخر */
-.chip.active {
-  color: #fff;
-  border-color: #FF7A00;
-  background: linear-gradient(135deg, #FF8A1A 0%, #FF7A00 45%, #E06B00 100%);
-  font-weight: 900;
-  letter-spacing: 0.2px;
-  transform: translateY(-1px);
-  box-shadow:
-    0 0 0 1px rgba(255, 122, 0, 0.15),
-    0 6px 14px -4px rgba(255, 122, 0, 0.55),
-    0 12px 28px -10px rgba(255, 122, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.08);
-  animation: chipActivePulse 2.4s ease-in-out infinite;
-}
-.chip.active::before {
-  background: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 55%);
-  opacity: 1;
-}
-.chip.active:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 0 0 1px rgba(255, 122, 0, 0.2),
-    0 8px 18px -4px rgba(255, 122, 0, 0.65),
-    0 16px 34px -10px rgba(255, 122, 0, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-.chip.active:active {
-  transform: translateY(0) scale(0.96);
-}
-
-@keyframes chipActivePulse {
-  0%, 100% {
-    box-shadow:
-      0 0 0 1px rgba(255, 122, 0, 0.15),
-      0 6px 14px -4px rgba(255, 122, 0, 0.55),
-      0 12px 28px -10px rgba(255, 122, 0, 0.7),
-      inset 0 1px 0 rgba(255, 255, 255, 0.35),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.08);
-  }
-  50% {
-    box-shadow:
-      0 0 0 1px rgba(255, 122, 0, 0.22),
-      0 8px 18px -4px rgba(255, 122, 0, 0.7),
-      0 18px 38px -10px rgba(255, 122, 0, 0.85),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.08);
-  }
-}
-
-/* أيقونة اختيارية داخل الشيب (اختياري) */
-.chip .chip-icon {
-  font-size: 0.78rem;
-  line-height: 1;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.chip.active .chip-icon {
-  transform: scale(1.08);
-}
-
-/* عدّاد داخل الشيب (اختياري — للاستخدام: <span class="chip-count">12</span>) */
-.chip .chip-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: 999px;
-  font-size: 0.66rem;
-  font-weight: 900;
-  background: rgba(255, 122, 0, 0.1);
-  color: #FF7A00;
-  margin-inline-start: 2px;
-  transition: all 0.28s ease;
-}
-.chip.active .chip-count {
-  background: rgba(255, 255, 255, 0.28);
-  color: #fff;
-}
-
-/* طبقة الـ ripple المحسّنة للشيب */
-.chip.ripple::after {
-  background: radial-gradient(circle at center, rgba(255, 122, 0, 0.35) 0%, transparent 65%);
-}
-.chip.active.ripple::after {
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.55) 0%, transparent 65%);
-}
-
-/* الحركة الأولى عند الدخول */
-.chip {
-  animation: chipEnter 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-}
-@keyframes chipEnter {
-  from { opacity: 0; transform: translateY(6px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* تعطيل الحركات للمستخدمين الذين يفضلون ذلك */
-@media (prefers-reduced-motion: reduce) {
-  .chip, .chip.active { animation: none !important; }
-  .chip:hover::after { animation: none !important; }
-}
-
-/* نسخة خاصة للفئات على الجوال (أصغر قليلاً، أنظف) */
-@media (max-width: 480px) {
-  .chip { padding: 8px 14px; font-size: 0.79rem; }
-  .chip .chip-count { min-width: 18px; height: 16px; font-size: 0.62rem; }
-}
+.followed-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 8px; padding: 6px 0 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.followed-scroll-container::-webkit-scrollbar { display: none; }
+.chip { padding: 0.45rem 0.9rem; border-radius: 9999px; background: var(--c-surface); border: 1.5px solid var(--c-border); font-weight: 700; font-size: 0.8rem; color: var(--c-text-soft); white-space: nowrap; cursor: pointer; transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); flex-shrink: 0; }
+.chip:hover { border-color: #FF7A00; color: #FF7A00; background: var(--c-primary-soft); transform: translateY(-1px); }
+.chip:active { transform: scale(0.95); }
+.chip.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border-color: #FF7A00; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); }
 
 /* ═══ STORE CARD ═══ */
 .store-card { width: 230px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 18px; overflow: hidden; box-shadow: 0 3px 12px rgba(15,23,42,0.05); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; flex-shrink: 0; }
@@ -460,6 +231,7 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .store-card .store-name { font-weight: 800; font-size: 0.95rem; color: var(--c-text); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
 .store-card .store-category { color: var(--c-text-soft); font-size: 0.75rem; margin-top: 2px; }
 
+/* ✅ شارة فيسبوك الأصلية */
 .verified-icon {
   display: inline-flex;
   align-items: center;
@@ -525,6 +297,7 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .product-price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem; flex-wrap: wrap; }
 .product-actions { display: flex; flex-direction: column; gap: 8px; }
 
+/* ✅ جديد: صف المتجر في Product Modal (بديل Rating) */
 .product-store-row {
   display: inline-flex;
   align-items: center;
@@ -591,7 +364,7 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .store-action-btn .icon-circle { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-size: 0.85rem; background: linear-gradient(135deg, #FF7A00, #FFA64D); }
 
 /* ═══════════════════════════════════════════════════════════
-   STORE CATEGORIES TABS
+   ✅ جديد: STORE CATEGORIES TABS — نظام الفئات المتقدم
    ═══════════════════════════════════════════════════════════ */
 .store-categories-tabs {
   display: flex;
