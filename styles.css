@@ -626,7 +626,7 @@ body.theme-dark .categories-scroll-hint {
   background: #334155;
 }
 /* ═══════════════════════════════════════════════════════════
-   ✅ زر "عرض المزيد" داخل المتجر — قاعدة قوية
+   ✅ v9.8.1 — قاعدة قوية لزر "عرض المزيد" داخل المتجر
    ═══════════════════════════════════════════════════════════ */
 #loadMoreStoreProductsBtn.hidden,
 #loadMoreStoreProductsBtn[hidden] {
@@ -636,12 +636,8 @@ body.theme-dark .categories-scroll-hint {
     pointer-events: none !important;
 }
 
-/* الزر عند ظهوره */
-#loadMoreStoreProductsBtn:not(.hidden) {
+#loadMoreStoreProductsBtn:not(.hidden):not([hidden]) {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
     animation: fadeInLoadMore 0.3s ease;
 }
 
@@ -649,9 +645,3 @@ body.theme-dark .categories-scroll-hint {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-
-#loadMoreStoreProductsBtn:disabled {
-    opacity: 0.6;
-    cursor: wait;
-}
-
