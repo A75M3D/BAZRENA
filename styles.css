@@ -1,9 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.5.0 — Styles (Mobile App Optimized)
-   ✅ Store Categories Tabs (Professional + Glow Effect)
+   BranZar v9.2.0 — Styles (Mobile App Optimized)
+   ✅ Store Categories Tabs (Free + Locked)
    ✅ Rating Removal
-   ✅ New Categories Grid Design (Card-based with images)
-   ✅ Smart Overflow Indicators for Tabs
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -84,15 +82,12 @@ body.theme-dark .bzr-splash-logo { background: #1E293B; }
 body.theme-dark .account-avatar { background: #1E293B; }
 body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 
-/* ✅ عناصر الفئات في الوضع الداكن */
+/* ✅ جديد: عناصر الفئات في الوضع الداكن */
 body.theme-dark .store-cat-tab { background: #334155; border-color: #475569; color: #CBD5E1; }
-body.theme-dark .store-cat-tab.main-tab { background: linear-gradient(135deg, #3B2410 0%, #4A2E14 100%); border-color: #FF7A00; color: #FFA64D; }
-body.theme-dark .store-cat-tab.main-tab::before { box-shadow: 0 0 0 2px #3B2410, 0 0 8px rgba(34,197,94,0.9); }
+body.theme-dark .store-cat-tab.main-tab { background: #3B2410; border-color: #FF7A00; color: #FF7A00; }
+body.theme-dark .store-cat-tab.main-tab.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; }
 body.theme-dark .store-cat-tab.locked { background: #1E293B; border-color: #334155; color: #64748B; }
-body.theme-dark .store-cat-tab.subscribed-tab { background: linear-gradient(135deg, #2E1065 0%, #3B1782 100%); border-color: #7C3AED; color: #C4B5FD; }
 body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A; color: #FFA64D; }
-body.theme-dark .store-categories-tabs-wrap::before { background: linear-gradient(to left, var(--c-surface) 10%, transparent 100%); }
-body.theme-dark .store-categories-tabs-wrap::after { background: linear-gradient(to right, var(--c-surface) 10%, transparent 100%); }
 
 /* ═══ SPLASH ═══ */
 #bzrSplash {
@@ -188,6 +183,7 @@ body.theme-dark .store-categories-tabs-wrap::after { background: linear-gradient
 
 .followed-section { padding: 8px 0; }
 .stores-section { padding: 12px 0 16px; }
+.categories-section { padding: 12px 0; }
 .products-section { padding: 16px 0 24px; }
 
 .badge-soft { font-size: 0.68rem; font-weight: 800; background: var(--c-primary-soft); color: #FF7A00; border: 1px solid #FFE0BD; padding: 0.25rem 0.6rem; border-radius: 9999px; }
@@ -215,216 +211,14 @@ body.theme-dark .store-categories-tabs-wrap::after { background: linear-gradient
 .stores-scroll-container > * { direction: rtl; }
 .stores-scroll-container::-webkit-scrollbar { height: 4px; }
 .stores-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
+.categories-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 6px; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.categories-scroll-container::-webkit-scrollbar { display: none; }
 .followed-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 8px; padding: 6px 0 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .followed-scroll-container::-webkit-scrollbar { display: none; }
 .chip { padding: 0.45rem 0.9rem; border-radius: 9999px; background: var(--c-surface); border: 1.5px solid var(--c-border); font-weight: 700; font-size: 0.8rem; color: var(--c-text-soft); white-space: nowrap; cursor: pointer; transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); flex-shrink: 0; }
 .chip:hover { border-color: #FF7A00; color: #FF7A00; background: var(--c-primary-soft); transform: translateY(-1px); }
 .chip:active { transform: scale(0.95); }
 .chip.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; border-color: #FF7A00; box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6); }
-
-/* ═══════════════════════════════════════════════════════════
-   🎨 ALL CATEGORIES — التصميم الجديد (شبكة الفئات)
-   ═══════════════════════════════════════════════════════════ */
-.categories-section-new {
-  padding: 24px 0 32px;
-  background: linear-gradient(180deg, var(--c-bg) 0%, var(--c-surface-2) 100%);
-  position: relative;
-}
-
-.cat-section-header {
-  text-align: right;
-  margin-bottom: 22px;
-  padding: 0 4px;
-}
-
-.cat-section-title {
-  font-size: clamp(1.55rem, 5vw, 1.9rem);
-  font-weight: 900;
-  color: var(--c-text);
-  margin: 0 0 6px;
-  letter-spacing: -0.6px;
-  position: relative;
-  display: inline-block;
-  line-height: 1.2;
-}
-.cat-section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -7px;
-  right: 0;
-  width: 52px;
-  height: 4px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #FF7A00, #FFA64D);
-}
-
-.cat-section-subtitle {
-  font-size: 0.88rem;
-  color: var(--c-text-soft);
-  font-weight: 600;
-  margin: 14px 0 0;
-  line-height: 1.6;
-}
-
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.category-card-new {
-  position: relative;
-  border-radius: 20px;
-  padding: 16px 14px;
-  min-height: 165px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.7);
-  box-shadow: 0 4px 18px -6px rgba(15,23,42,0.08);
-  transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: right;
-  isolation: isolate;
-  -webkit-tap-highlight-color: transparent;
-}
-.category-card-new:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 38px -12px rgba(15,23,42,0.16);
-}
-.category-card-new:active { transform: translateY(-1px) scale(0.98); }
-
-.cat-card-text {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  position: relative;
-  z-index: 3;
-  max-width: 60%;
-}
-.cat-card-title {
-  font-size: 1rem;
-  font-weight: 900;
-  color: #0F172A;
-  margin: 0;
-  line-height: 1.25;
-  letter-spacing: -0.3px;
-}
-@media (min-width: 480px) { .cat-card-title { font-size: 1.08rem; } }
-
-.cat-card-subtitle {
-  font-size: 0.72rem;
-  color: #475569;
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.45;
-  opacity: 0.9;
-}
-
-.cat-card-arrow {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 0.82rem;
-  margin-top: 12px;
-  box-shadow: 0 5px 12px -3px rgba(0,0,0,0.28);
-  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
-  flex-shrink: 0;
-  position: relative;
-  z-index: 3;
-}
-.category-card-new:hover .cat-card-arrow { transform: translateX(-4px); }
-
-.cat-card-image {
-  position: absolute;
-  top: 50%;
-  left: 4px;
-  transform: translateY(-50%);
-  width: 46%;
-  max-width: 135px;
-  height: auto;
-  max-height: 82%;
-  object-fit: contain;
-  pointer-events: none;
-  z-index: 1;
-  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  filter: drop-shadow(0 10px 18px rgba(15,23,42,0.15));
-  border-radius: 12px;
-}
-.category-card-new:hover .cat-card-image { transform: translateY(-50%) scale(1.06); }
-
-.cat-card-blue { background: linear-gradient(135deg, #E8F1FE 0%, #C7DBFB 100%); }
-.cat-card-blue .cat-card-arrow { background: linear-gradient(135deg, #60A5FA, #2563EB); }
-
-.cat-card-peach { background: linear-gradient(135deg, #FEF4E5 0%, #FCD8A4 100%); }
-.cat-card-peach .cat-card-arrow { background: linear-gradient(135deg, #FBBF24, #D97706); }
-
-.cat-card-green { background: linear-gradient(135deg, #E9F7EE 0%, #C0E8D0 100%); }
-.cat-card-green .cat-card-arrow { background: linear-gradient(135deg, #34D399, #059669); }
-
-.cat-card-pink { background: linear-gradient(135deg, #FCE9EE 0%, #F8C8D5 100%); }
-.cat-card-pink .cat-card-arrow { background: linear-gradient(135deg, #F472B6, #DB2777); }
-
-.cat-card-purple { background: linear-gradient(135deg, #F1EDFB 0%, #DACDF3 100%); }
-.cat-card-purple .cat-card-arrow { background: linear-gradient(135deg, #A78BFA, #7C3AED); }
-
-.cat-card-beige { background: linear-gradient(135deg, #FCF4E7 0%, #F1DBB5 100%); }
-.cat-card-beige .cat-card-arrow { background: linear-gradient(135deg, #D97706, #92400E); }
-
-.cat-card-gray { background: linear-gradient(135deg, #F1F5F9 0%, #D9E1EB 100%); }
-.cat-card-gray .cat-card-arrow { background: linear-gradient(135deg, #64748B, #334155); }
-
-.category-card-new.cat-card-full {
-  grid-column: 1 / -1;
-  min-height: 130px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 20px;
-}
-.category-card-new.cat-card-full .cat-card-text { max-width: 55%; }
-.category-card-new.cat-card-full .cat-card-image {
-  position: relative;
-  top: auto;
-  left: auto;
-  transform: none;
-  width: 36%;
-  max-width: 140px;
-  max-height: 100%;
-  margin-right: auto;
-}
-.category-card-new.cat-card-full:hover .cat-card-image { transform: scale(1.05); }
-
-body.theme-dark .category-card-new {
-  border-color: rgba(255,255,255,0.06);
-  box-shadow: 0 4px 18px -6px rgba(0,0,0,0.45);
-}
-body.theme-dark .cat-card-title { color: #F1F5F9; }
-body.theme-dark .cat-card-subtitle { color: #CBD5E1; opacity: 0.75; }
-
-body.theme-dark .cat-card-blue { background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%); }
-body.theme-dark .cat-card-peach { background: linear-gradient(135deg, #7C2D12 0%, #92400E 100%); }
-body.theme-dark .cat-card-green { background: linear-gradient(135deg, #064E3B 0%, #065F46 100%); }
-body.theme-dark .cat-card-pink { background: linear-gradient(135deg, #831843 0%, #9D174D 100%); }
-body.theme-dark .cat-card-purple { background: linear-gradient(135deg, #4C1D95 0%, #5B21B6 100%); }
-body.theme-dark .cat-card-beige { background: linear-gradient(135deg, #78350F 0%, #92400E 100%); }
-body.theme-dark .cat-card-gray { background: linear-gradient(135deg, #334155 0%, #475569 100%); }
-
-@media (min-width: 640px) {
-  .categories-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .category-card-new { min-height: 180px; padding: 20px 18px; border-radius: 22px; }
-  .cat-card-text { max-width: 62%; }
-}
-@media (min-width: 1024px) {
-  .categories-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .category-card-new { min-height: 195px; }
-  .cat-card-image { max-width: 150px; }
-}
 
 /* ═══ STORE CARD ═══ */
 .store-card { width: 230px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 18px; overflow: hidden; box-shadow: 0 3px 12px rgba(15,23,42,0.05); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s, border-color 0.3s; cursor: pointer; flex-shrink: 0; }
@@ -437,6 +231,7 @@ body.theme-dark .cat-card-gray { background: linear-gradient(135deg, #334155 0%,
 .store-card .store-name { font-weight: 800; font-size: 0.95rem; color: var(--c-text); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
 .store-card .store-category { color: var(--c-text-soft); font-size: 0.75rem; margin-top: 2px; }
 
+/* ✅ شارة فيسبوك الأصلية */
 .verified-icon {
   display: inline-flex;
   align-items: center;
@@ -502,6 +297,7 @@ body.theme-dark .cat-card-gray { background: linear-gradient(135deg, #334155 0%,
 .product-price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem; flex-wrap: wrap; }
 .product-actions { display: flex; flex-direction: column; gap: 8px; }
 
+/* ✅ جديد: صف المتجر في Product Modal (بديل Rating) */
 .product-store-row {
   display: inline-flex;
   align-items: center;
@@ -568,367 +364,84 @@ body.theme-dark .cat-card-gray { background: linear-gradient(135deg, #334155 0%,
 .store-action-btn .icon-circle { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-size: 0.85rem; background: linear-gradient(135deg, #FF7A00, #FFA64D); }
 
 /* ═══════════════════════════════════════════════════════════
-   ✨ STORE CATEGORIES TABS v9.5 — احترافي + ضوء كثيف
+   ✅ جديد: STORE CATEGORIES TABS — نظام الفئات المتقدم
    ═══════════════════════════════════════════════════════════ */
-
-/* 🎯 الحاوية الرئيسية مع مؤشرات التمرير */
-.store-categories-tabs-wrap {
-  position: relative;
-  margin-top: 8px;
-  padding: 0;
-  isolation: isolate;
-}
-
-/* ✅ مؤشر "فيه فئات أكتر" — يمين (بعد التمرير) */
-.store-categories-tabs-wrap::before {
-  content: '';
-  position: absolute;
-  top: 4px;
-  right: 0;
-  bottom: 4px;
-  width: 48px;
-  background: linear-gradient(to left, var(--c-surface) 20%, transparent 100%);
-  pointer-events: none;
-  z-index: 4;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  border-radius: 9999px 0 0 9999px;
-}
-/* ✅ مؤشر "فيه فئات أكتر" — يسار (بداية التمرير) */
-.store-categories-tabs-wrap::after {
-  content: '';
-  position: absolute;
-  top: 4px;
-  left: 0;
-  bottom: 4px;
-  width: 48px;
-  background: linear-gradient(to right, var(--c-surface) 20%, transparent 100%);
-  pointer-events: none;
-  z-index: 4;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  border-radius: 0 9999px 9999px 0;
-}
-.store-categories-tabs-wrap.has-overflow-right::before { opacity: 1; }
-.store-categories-tabs-wrap.has-overflow-left::after { opacity: 1; }
-
-/* 🎯 سهم متحرك يوحي بوجود المزيد */
-.store-categories-tabs-wrap.has-overflow-right .scroll-hint-arrow {
-  opacity: 1;
-  transform: translateX(0);
-}
-.scroll-hint-arrow {
-  position: absolute;
-  top: 50%;
-  right: -2px;
-  transform: translateY(-50%) translateX(6px);
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF7A00, #FFA64D);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  box-shadow: 0 6px 16px -4px rgba(255,122,0,0.85), 0 0 0 3px var(--c-surface);
-  z-index: 5;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.35s ease;
-  animation: slideHintRight 1.8s ease-in-out infinite;
-}
-@keyframes slideHintRight {
-  0%, 100% { transform: translateY(-50%) translateX(6px); }
-  50% { transform: translateY(-50%) translateX(-2px); }
-}
-
-/* 🎯 شريط التمرير الأفقي */
 .store-categories-tabs {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 8px 4px 10px;
+  padding: 14px 2px 4px;
+  margin-top: 4px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   direction: rtl;
-  position: relative;
-  z-index: 2;
 }
 .store-categories-tabs::-webkit-scrollbar { display: none; }
 .store-categories-tabs:empty { display: none; }
 
-/* ⚡ زر الفئة الأساسي — تصميم احترافي */
 .store-cat-tab {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
+  gap: 6px;
+  padding: 8px 14px;
   border-radius: 9999px;
-  background: var(--c-surface);
-  border: 2px solid var(--c-border);
+  background: var(--c-surface-2);
+  border: 1.5px solid var(--c-border);
   font-family: 'Cairo', sans-serif;
   font-weight: 800;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--c-text-soft);
   white-space: nowrap;
   cursor: pointer;
   flex-shrink: 0;
-  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
-              border-color 0.25s ease,
-              color 0.25s ease,
-              box-shadow 0.3s ease,
-              background 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative;
   line-height: 1;
-  overflow: visible;
-  isolation: isolate;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
 }
+.store-cat-tab i { font-size: 0.78rem; }
+.store-cat-tab:hover { transform: translateY(-1px); border-color: #FF7A00; color: #FF7A00; }
+.store-cat-tab:active { transform: scale(0.95); }
 
-/* 🔹 زر الفئة الرئيسية */
-.store-cat-tab.main-tab {
-  border-color: #FFB377;
-  background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-  color: #C2410C;
-  box-shadow: 0 4px 12px -4px rgba(255,122,0,0.35);
-}
-/* نقطة خضراء نابضة للفئة الرئيسية */
-.store-cat-tab.main-tab::before {
-  content: '';
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22C55E;
-  box-shadow: 0 0 0 2px var(--c-surface), 0 0 8px rgba(34,197,94,0.9);
-  z-index: 2;
-  animation: pulseDot 2s ease-in-out infinite;
-}
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.55; transform: scale(0.8); }
-}
-.store-cat-tab.main-tab:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px -6px rgba(255,122,0,0.5);
-  border-color: #FF7A00;
-}
-
-/* 🔹 أزرار الفئات الإضافية المقفلة */
-.store-cat-tab.locked {
-  background: linear-gradient(135deg, var(--c-surface-2) 0%, var(--c-surface) 100%);
-  border-style: dashed;
-  border-color: #CBD5E1;
-  color: var(--c-text-soft);
-  opacity: 0.88;
-}
-.store-cat-tab.locked:hover {
-  opacity: 1;
-  transform: translateY(-2px);
-  border-style: solid;
-  border-color: #FF7A00;
-  color: #FF7A00;
-  box-shadow: 0 8px 20px -6px rgba(255,122,0,0.4);
-}
-
-/* 🔹 أزرار الفئات الإضافية المفتوحة (مشترك) */
-.store-cat-tab.subscribed-tab {
-  background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%);
-  border-color: #C4B5FD;
-  color: #6D28D9;
-}
-.store-cat-tab.subscribed-tab:hover {
-  transform: translateY(-2px);
-  border-color: #8B5CF6;
-  box-shadow: 0 8px 20px -6px rgba(139,92,246,0.5);
-}
-
-/* 🔹 أيقونات داخل الأزرار */
-.store-cat-tab i {
-  font-size: 0.82rem;
-  flex-shrink: 0;
-  transition: transform 0.28s ease;
-}
-.store-cat-tab .lock-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  font-size: 0.72rem;
-  color: #FF7A00;
-  flex-shrink: 0;
-}
-.store-cat-tab.subscribed-tab .lock-icon,
-.store-cat-tab.subscribed-tab i.fa-crown {
-  color: #7C3AED;
-}
-
-/* 🔹 شارة "+" للفئات الإضافية المقفلة */
-.store-cat-tab.locked .lock-icon::after {
-  content: '💎';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  font-size: 0.55rem;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
-}
-
-/* ═══════════════════════════════════════════════════════════
-   💡 الحالة النشطة — ضوء كثيف جداً + تأثير احتفالي
-   ═══════════════════════════════════════════════════════════ */
 .store-cat-tab.active {
-  background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 50%, #FFB877 100%);
-  color: #fff;
-  border-color: #FF7A00;
-  transform: translateY(-3px) scale(1.04);
-  box-shadow:
-    0 0 0 3px rgba(255,122,0,0.25),
-    0 0 20px 2px rgba(255,122,0,0.75),
-    0 0 40px 8px rgba(255,166,77,0.55),
-    0 0 70px 15px rgba(255,122,0,0.35),
-    0 10px 24px -6px rgba(255,122,0,0.6);
-  animation: glowPulseActive 1.4s ease-in-out infinite;
-  z-index: 3;
-}
-.store-cat-tab.active i,
-.store-cat-tab.active .lock-icon { color: #fff; }
-.store-cat-tab.active::before { display: none; }
-
-/* نبض الضوء الكثيف */
-@keyframes glowPulseActive {
-  0%, 100% {
-    box-shadow:
-      0 0 0 3px rgba(255,122,0,0.25),
-      0 0 20px 2px rgba(255,122,0,0.75),
-      0 0 40px 8px rgba(255,166,77,0.55),
-      0 0 70px 15px rgba(255,122,0,0.35),
-      0 10px 24px -6px rgba(255,122,0,0.6);
-  }
-  50% {
-    box-shadow:
-      0 0 0 4px rgba(255,122,0,0.35),
-      0 0 28px 4px rgba(255,122,0,0.95),
-      0 0 55px 12px rgba(255,166,77,0.75),
-      0 0 90px 22px rgba(255,122,0,0.55),
-      0 14px 30px -6px rgba(255,122,0,0.75);
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   💥 تأثير الضغط — موجة ضوء تنفجر من الزر
-   ═══════════════════════════════════════════════════════════ */
-.store-cat-tab.tab-clicked {
-  animation: tabBounce 0.5s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes tabBounce {
-  0% { transform: translateY(-3px) scale(1.04); }
-  30% { transform: translateY(-5px) scale(1.1); }
-  60% { transform: translateY(-2px) scale(1.01); }
-  100% { transform: translateY(-3px) scale(1.04); }
-}
-
-/* 💡 وميض ضوئي ينفجر عند الضغط */
-.store-cat-tab.tab-clicked::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: 9999px;
-  background: radial-gradient(circle at center, rgba(255,200,120,0.85) 0%, rgba(255,166,77,0.5) 35%, transparent 70%);
-  pointer-events: none;
-  z-index: -1;
-  animation: burstGlow 0.85s ease-out;
-}
-@keyframes burstGlow {
-  0% {
-    opacity: 1;
-    transform: scale(0.7);
-    filter: blur(0px);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.4);
-    filter: blur(2px);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(2);
-    filter: blur(6px);
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   ✨ تأثير عند الضغط: حلقة ضوء ممتدة
-   ═══════════════════════════════════════════════════════════ */
-.store-cat-tab.tab-clicked .glow-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  border: 3px solid #FF7A00;
-  pointer-events: none;
-  animation: ringExpand 0.9s ease-out;
-}
-@keyframes ringExpand {
-  0% { opacity: 1; transform: scale(1); border-width: 4px; }
-  100% { opacity: 0; transform: scale(2.2); border-width: 1px; }
-}
-
-/* 🔹 شارة عدد الفئات الإضافية — تحفيزية */
-.store-cat-tab.extra-count-badge {
-  padding-left: 12px;
-}
-.store-cat-tab .count-badge-inline {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 9999px;
   background: linear-gradient(135deg, #FF7A00, #FFA64D);
   color: #fff;
-  font-size: 0.62rem;
-  font-weight: 900;
-  box-shadow: 0 2px 6px rgba(255,122,0,0.6);
-  line-height: 1;
+  border-color: #FF7A00;
+  box-shadow: 0 4px 12px -4px rgba(255,122,0,0.6);
+}
+.store-cat-tab.active .lock-icon { color: #fff; }
+
+.store-cat-tab.locked {
+  opacity: 0.72;
+  background: var(--c-surface-2);
+  color: var(--c-text-soft);
+  border-style: dashed;
+  cursor: pointer;
+}
+.store-cat-tab.locked:hover {
+  opacity: 0.9;
+  color: #FF7A00;
+  border-color: #FF7A00;
+  border-style: solid;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🌙 الوضع الداكن — ضبط الألوان
-   ═══════════════════════════════════════════════════════════ */
-body.theme-dark .store-cat-tab.main-tab {
-  background: linear-gradient(135deg, #3B2410 0%, #4A2E14 100%);
+.store-cat-tab .lock-icon {
+  color: #FF7A00;
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.store-cat-tab.main-tab {
   border-color: #FF7A00;
-  color: #FFA64D;
+  background: var(--c-primary-soft);
+  color: #FF7A00;
 }
-body.theme-dark .store-cat-tab.main-tab::before {
-  box-shadow: 0 0 0 2px #3B2410, 0 0 8px rgba(34,197,94,0.9);
-}
-body.theme-dark .store-cat-tab.locked {
-  background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
-  border-color: #475569;
-  color: #64748B;
-}
-body.theme-dark .store-cat-tab.subscribed-tab {
-  background: linear-gradient(135deg, #2E1065 0%, #3B1782 100%);
-  border-color: #7C3AED;
-  color: #C4B5FD;
-}
-body.theme-dark .store-cat-tab.active {
-  background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 50%, #FFB877 100%);
+.store-cat-tab.main-tab.active {
+  background: linear-gradient(135deg, #FF7A00, #FFA64D);
   color: #fff;
-  box-shadow:
-    0 0 0 3px rgba(255,122,0,0.35),
-    0 0 24px 4px rgba(255,122,0,0.85),
-    0 0 50px 12px rgba(255,166,77,0.6),
-    0 0 80px 20px rgba(255,122,0,0.45),
-    0 12px 28px -6px rgba(255,122,0,0.7);
 }
 
 /* ═══ STORE PRODUCTS ═══ */
