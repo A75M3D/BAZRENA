@@ -46,6 +46,23 @@ const CONFIG = Object.freeze({
   FOLLOW_LONG_BLOCK_MS: 30 * 60 * 1000
 });
 
+/* ═══ Cache Version Bump ═══ */
+(function bumpCacheVersion() {
+  const CURRENT_VERSION = 'v9.8.3';
+  const STORED_VERSION = localStorage.getItem('bzr_app_version');
+  if (STORED_VERSION !== CURRENT_VERSION) {
+    // امسح الكاش القديم عند تغيير الإصدار
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.indexOf('branzar_cache_') === 0) keys.push(k);
+    }
+    keys.forEach(k => localStorage.removeItem(k));
+    localStorage.setItem('bzr_app_version', CURRENT_VERSION);
+    console.log('[BZR] Cache cleared for version', CURRENT_VERSION);
+  }
+})();
+
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
   authDomain: "bazarena-725e4.firebaseapp.com",
