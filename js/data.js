@@ -1,7 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.8.4 — data.js
+   BranZar v9.8.5 — data.js
    Layer 2: Data Loading + Follow System + Polling + Deep Link
-   ✅ v9.8.4: إصلاح عرض منتجات الفئات (بدون composite index)
+   ✅ v9.8.5: إصلاح عرض منتجات الفئات + إخفاء زر "عرض المزيد" في الفئات
+   ✅ بدون composite index
+   ✅ مقارنة مرنة (trim)
+   ✅ Fallback ذكي
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -130,6 +133,7 @@ document.getElementById('loadMoreProductsBtn')?.addEventListener('click', async 
   btn.disabled = true;
   haptic('light');
   try {
+    // ✅ في الفئات: زر "عرض المزيد" مخفي، فلن يصل هذا الحد
     if (currentCategory) await fetchProductsByCategoryPage(lastVisibleDoc, false);
     else await fetchProductsPage(lastVisibleDoc, false);
   } catch(e){ showToast('تعذر تحميل المزيد'); }
@@ -137,7 +141,7 @@ document.getElementById('loadMoreProductsBtn')?.addEventListener('click', async 
 });
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ v9.8.4: applyProductsFilter — مُبسّط ومحسّن
+   ✅ applyProductsFilter — v9.8.5
    ═══════════════════════════════════════════════════════════ */
 async function applyProductsFilter(cat) {
   currentCategory = cat;
@@ -170,7 +174,7 @@ async function applyProductsFilter(cat) {
   allProductsLocal = [];
   lastVisibleDoc = null;
   hasMoreProducts = true;
-  loadBtn.classList.add('hidden');
+  loadBtn.classList.add('hidden');  /* ✅ مخفي دائماً في الفئات */
   emptyEl.classList.add('hidden');
 
   try {
@@ -185,11 +189,12 @@ async function applyProductsFilter(cat) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ✅ v9.8.4: fetchProductsByCategoryPage — مُصلح بالكامل
-   ✅ مقارنة trim (تتجاهل المسافات)
-   ✅ بدون orderBy (يتجنب composite index)
-   ✅ fallback ذكي (متجر بمتجر)
-   ✅ console.log للتشخيص
+   ✅ fetchProductsByCategoryPage — v9.8.5
+   ✅ عرض كامل لمنتجات الفئة
+   ✅ بدون orderBy (بدون composite index)
+   ✅ مقارنة مرنة (trim)
+   ✅ Fallback ذكي (متجر بمتجر)
+   ✅ زر "عرض المزيد" مخفي في الفئات
    ═══════════════════════════════════════════════════════════ */
 async function fetchProductsByCategoryPage(cursorDoc, silent) {
   const cat = currentCategory;
@@ -240,11 +245,14 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
   const fetched = [];
 
   /* ✅ 5. جلب بدون orderBy (يتجنب composite index) */
+  /* ✅ نرفع الحد الأقصى لنجلب كل المنتجات في جلسة واحدة */
+  const FETCH_LIMIT_PER_CHUNK = 50;
+
   for (const chunk of chunks) {
     try {
       const q = db.collection('products')
         .where('store_name', 'in', chunk)
-        .limit(CONFIG.PRODUCTS_PER_PAGE * 3);
+        .limit(FETCH_LIMIT_PER_CHUNK);
 
       const snap = await q.get();
       snap.docs.forEach(d => fetched.push(d));
@@ -257,7 +265,7 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
         try {
           const snap2 = await db.collection('products')
             .where('store_name', '==', singleStore)
-            .limit(CONFIG.PRODUCTS_PER_PAGE)
+            .limit(FETCH_LIMIT_PER_CHUNK)
             .get();
           snap2.docs.forEach(d => fetched.push(d));
           console.log('[BZR] Single store:', singleStore, '→', snap2.docs.length, 'products');
@@ -277,17 +285,12 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
     return bTime - aTime;
   });
 
-  /* ✅ 7. تحديد الدفعة الحالية */
-  const limited = fetched.slice(0, CONFIG.PRODUCTS_PER_PAGE);
-  if (limited.length > 0) {
-    lastVisibleDoc = limited[limited.length - 1];
-  }
-  hasMoreProducts = fetched.length > CONFIG.PRODUCTS_PER_PAGE;
-
-  const items = limited.map(d => ({ id: d.id, ...d.data() }));
+  /* ✅ 7. خذ كل المنتجات (بدون pagination في الفئات) */
+  const items = fetched.map(d => ({ id: d.id, ...d.data() }));
   const existingIds = new Set(allProductsLocal.map(p => p.id));
   const newItems = items.filter(p => !existingIds.has(p.id));
   allProductsLocal = allProductsLocal.concat(newItems);
+  hasMoreProducts = false;  /* ✅ لا مزيد */
 
   /* ✅ 8. عرض المنتجات */
   if (!silent && newItems.length) {
@@ -307,13 +310,8 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
     emptyEl.classList.add('hidden');
   }
 
-  /* ✅ 10. زر "عرض المزيد" */
-  const loadBtn = document.getElementById('loadMoreProductsBtn');
-  if (hasMoreProducts) {
-    loadBtn.classList.remove('hidden');
-  } else {
-    loadBtn.classList.add('hidden');
-  }
+  /* ✅ 10. إخفاء زر "عرض المزيد" دائماً في الفئات */
+  document.getElementById('loadMoreProductsBtn').classList.add('hidden');
 }
 
 async function loadCategories(force) {
@@ -501,4 +499,4 @@ async function handleDeepLink() {
   } catch(err){}
 }
 
-console.log('[BZR] data.js loaded ✅ v9.8.4');
+console.log('[BZR] data.js loaded ✅ v9.8.5');
