@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v9.8.1
+   BranZar App Core v9.9.0
    ✅ Multi-Layer Device Fingerprint (Local Only — لا يُرسل لـ Firebase)
    ✅ Firebase Auth UID (يُستخدم كمعرّف المستخدم في Firestore)
    ✅ FollowGuard (Anti-Bot + Anti-Spam Rate Limiter)
@@ -10,10 +10,13 @@
    ✅ Rating Removal
    ✅ Client-Side Category Filter (Backward Compatible)
    ✅ Manual Refresh Button Support
-   ✅ زر "عرض المزيد" داخل المتجر — مخفي افتراضياً (v9.8.1)
-   ✅ إخفاء مزدوج (classList + hidden property) لضمان عدم الظهور
+   ✅ زر "عرض المزيد" داخل المتجر — مخفي افتراضياً
+   ✅ إخفاء مزدوج (classList + hidden property)
    ✅ إعادة تعيين حالة الزر عند فتح متجر جديد
    ✅ Toast عند انتهاء جميع المنتجات
+   ✅ (v9.9.0) تمرير تلقائي موحّد للمتاجر والفئات — نفس الاتجاه العكسي
+   ✅ (v9.9.0) rAF واحد لكل حاوية — استهلاك ذاكرة أدنى
+   ✅ (v9.9.0) إيقاف/تشغيل كلا الحلقتين عند visibilitychange
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -127,9 +130,7 @@ function optimizeCloudinaryUrl(url) {
   return url.replace('/upload/', '/upload/q_auto,f_auto,w_800,c_limit/');
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ RATE LIMITER (Client-Side)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ RATE LIMITER ═══ */
 const RateLimiter = {
   _counts: {},
   _lastReset: Date.now(),
@@ -158,9 +159,7 @@ const RateLimiter = {
   }
 };
 
-/* ═══════════════════════════════════════════════════════════
-   🛡️ FOLLOW GUARD — حماية متعددة الطبقات ضد البوتات
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ FOLLOW GUARD ═══ */
 const FollowGuard = {
   _actionHistory: [],
   _perStoreLastAction: {},
@@ -186,7 +185,6 @@ const FollowGuard = {
       }
     } catch(e) { this._dailyCount = 0; }
   },
-
   _saveDailyCount() {
     try {
       localStorage.setItem(KEYS.FOLLOW_DAILY, JSON.stringify({
@@ -195,7 +193,6 @@ const FollowGuard = {
       }));
     } catch(e){}
   },
-
   _ensureDailyReset() {
     const today = new Date().toDateString();
     if (this._dailyResetDate !== today) {
@@ -204,7 +201,6 @@ const FollowGuard = {
       this._saveDailyCount();
     }
   },
-
   _addStrike(reason) {
     this._strikes++;
     console.warn('[BZR] Follow strike #' + this._strikes + ':', reason);
@@ -217,40 +213,25 @@ const FollowGuard = {
       console.warn('[BZR] Follow BLOCKED for', Math.round(blockDuration / 60000), 'minutes');
     }
   },
-
   canFollow(storeId) {
     const now = Date.now();
     this._ensureDailyReset();
-
     if (this._blockedUntil > now) {
       const remaining = this._blockedUntil - now;
-      return {
-        allowed: false, reason: 'blocked', remaining: remaining,
-        message: '⛔ تم حظر المتابعة مؤقتاً — حاول بعد ' + Math.ceil(remaining / 60000) + ' دقيقة'
-      };
+      return { allowed: false, reason: 'blocked', remaining, message: '⛔ تم حظر المتابعة مؤقتاً — حاول بعد ' + Math.ceil(remaining / 60000) + ' دقيقة' };
     }
-
     if (this._actionHistory.length > 0) {
       const lastAction = this._actionHistory[this._actionHistory.length - 1];
       if (now - lastAction < CONFIG.FOLLOW_MIN_GAP_MS) {
-        return {
-          allowed: false, reason: 'too_fast',
-          remaining: CONFIG.FOLLOW_MIN_GAP_MS - (now - lastAction),
-          message: '⏳ انتظر لحظة قبل المحاولة مرة أخرى'
-        };
+        return { allowed: false, reason: 'too_fast', remaining: CONFIG.FOLLOW_MIN_GAP_MS - (now - lastAction), message: '⏳ انتظر لحظة قبل المحاولة مرة أخرى' };
       }
     }
-
     const lastForStore = this._perStoreLastAction[storeId] || 0;
     if (lastForStore > 0 && now - lastForStore < CONFIG.FOLLOW_PER_STORE_GAP_MS) {
       const remaining = CONFIG.FOLLOW_PER_STORE_GAP_MS - (now - lastForStore);
       this._addStrike('rapid_same_store');
-      return {
-        allowed: false, reason: 'same_store', remaining: remaining,
-        message: '⏳ لا يمكن التبديل على نفس المتجر بسرعة'
-      };
+      return { allowed: false, reason: 'same_store', remaining, message: '⏳ لا يمكن التبديل على نفس المتجر بسرعة' };
     }
-
     const toggleData = this._perStoreToggleCount[storeId] || { count: 0, windowStart: now };
     if (now - toggleData.windowStart > CONFIG.FOLLOW_TOGGLE_BURST_WINDOW_MS) {
       toggleData.count = 0;
@@ -259,37 +240,28 @@ const FollowGuard = {
     if (toggleData.count >= CONFIG.FOLLOW_TOGGLE_BURST_LIMIT) {
       this._addStrike('toggle_burst');
       this._addStrike('toggle_burst');
-      return {
-        allowed: false, reason: 'toggle_burst', remaining: 0,
-        message: '🚫 محاولات متكررة على نفس المتجر'
-      };
+      return { allowed: false, reason: 'toggle_burst', remaining: 0, message: '🚫 محاولات متكررة على نفس المتجر' };
     }
-
     const lastMinute = this._actionHistory.filter(t => now - t < 60000);
     if (lastMinute.length >= CONFIG.FOLLOW_MAX_PER_MINUTE) {
       this._addStrike('rate_minute');
       return { allowed: false, reason: 'rate_minute', remaining: 0, message: '🚫 محاولات كثيرة جداً — انتظر قليلاً' };
     }
-
     const lastHour = this._actionHistory.filter(t => now - t < 3600000);
     if (lastHour.length >= CONFIG.FOLLOW_MAX_PER_HOUR) {
       this._addStrike('rate_hour');
       return { allowed: false, reason: 'rate_hour', remaining: 0, message: '🚫 تجاوزت الحد المسموح في الساعة' };
     }
-
     if (this._dailyCount >= CONFIG.FOLLOW_MAX_PER_DAY) {
       return { allowed: false, reason: 'daily_limit', remaining: 0, message: '🚫 وصلت للحد اليومي للمتابعة — حاول غداً' };
     }
-
     return { allowed: true };
   },
-
   recordAction(storeId) {
     const now = Date.now();
     this._actionHistory.push(now);
     this._actionHistory = this._actionHistory.filter(t => now - t < 3600000);
     this._perStoreLastAction[storeId] = now;
-
     const toggleData = this._perStoreToggleCount[storeId] || { count: 0, windowStart: now };
     if (now - toggleData.windowStart > CONFIG.FOLLOW_TOGGLE_BURST_WINDOW_MS) {
       toggleData.count = 0;
@@ -297,24 +269,19 @@ const FollowGuard = {
     }
     toggleData.count++;
     this._perStoreToggleCount[storeId] = toggleData;
-
     this._sessionCount++;
     this._dailyCount++;
     this._saveDailyCount();
   },
-
   isSuspiciousBot() {
     const now = Date.now();
     const lastMinute = this._actionHistory.filter(t => now - t < 60000);
     return lastMinute.length >= 5;
   }
 };
-
 FollowGuard.init();
 
-/* ═══════════════════════════════════════════════════════════
-   🛡️ DEVICE FINGERPRINT (محلي فقط)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ DEVICE FINGERPRINT ═══ */
 function fnv1a(str) {
   let hash = 0x811c9dc5;
   for (let i = 0; i < str.length; i++) {
@@ -580,7 +547,16 @@ try {
   });
 } catch(e){}
 
-document.addEventListener('visibilitychange', () => { isPageVisible = !document.hidden; }, { passive: true });
+document.addEventListener('visibilitychange', () => {
+  isPageVisible = !document.hidden;
+  if (isPageVisible) {
+    startAutoScroll();
+    startCategoriesAutoScroll();
+  } else {
+    stopAutoScroll();
+    stopCategoriesAutoScroll();
+  }
+}, { passive: true });
 
 /* ═══ AUTH ═══ */
 let authReady = false;
@@ -681,14 +657,12 @@ const cacheManager = {
 })();
 
 const _inFlightRequests = new Map();
-
 function fetchWithCache(key, fn, force, ttl) {
   if (!force) {
     const c = cacheManager.get(key);
     if (c !== null) return Promise.resolve(c);
   }
   if (_inFlightRequests.has(key)) return _inFlightRequests.get(key);
-
   const promise = (async () => {
     try {
       if (!RateLimiter.canRequest('cache_' + key)) {
@@ -703,7 +677,6 @@ function fetchWithCache(key, fn, force, ttl) {
       _inFlightRequests.delete(key);
     }
   })();
-
   _inFlightRequests.set(key, promise);
   return promise;
 }
@@ -871,16 +844,38 @@ document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setVi
 document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
 document.getElementById('accountViewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
 
-/* ═══ AUTO-SCROLL ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ AUTO-SCROLL (v9.9.0) — تمرير موحّد للمتاجر والفئات
+   ✅ كلا الحاويتين يتحركان في نفس الاتجاه (عكسي)
+   ✅ الالتفاف للنهاية عند الوصول للبداية
+   ✅ rAF واحد لكل حاوية (ذاكرة دنيا)
+   ✅ إيقاف مؤقت عند hover/touch/wheel لمدة 5 ثوان
+   ✅ إيقاف كامل عند إخفاء الصفحة
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── حالة المتاجر ─── */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
 let _lastScrollFrame = 0;
 
+/* ─── حالة الفئات ─── */
+let isHoveringCategories = false;
+let lastCategoriesInteraction = 0;
+let _catScrollRAFId = null;
+let _lastCatScrollFrame = 0;
+
+/* ─── حسابات المسافة القصوى ─── */
 function getStoresMaxScroll() {
   const c = document.getElementById('storesScrollContainer');
   return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
 }
+function getCategoriesMaxScroll() {
+  const c = document.getElementById('categoriesContainer');
+  return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
+}
+
+/* ─── حلقة تمرير المتاجر ─── */
 function _autoScrollLoop(ts) {
   const c = document.getElementById('storesScrollContainer');
   if (!c) { _scrollRAFId = null; return; }
@@ -894,8 +889,9 @@ function _autoScrollLoop(ts) {
   _lastScrollFrame = ts;
   const max = getStoresMaxScroll();
   if (max <= 0) { _scrollRAFId = null; return; }
-  if (c.scrollLeft >= max - 1) c.scrollLeft = 0;
-  else c.scrollLeft += CONFIG.SCROLL_STEP;
+  /* ✅ اتجاه عكسي: نقص، والالتفاف للنهاية عند البداية */
+  if (c.scrollLeft <= 1) c.scrollLeft = max;
+  else c.scrollLeft -= CONFIG.SCROLL_STEP;
   _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
 }
 function startAutoScroll() {
@@ -903,12 +899,46 @@ function startAutoScroll() {
   const c = document.getElementById('storesScrollContainer');
   if (!c) return;
   requestAnimationFrame(() => {
-    c.scrollLeft = 0;
+    const max = getStoresMaxScroll();
+    c.scrollLeft = max;
     _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
   });
 }
 function stopAutoScroll() {
   if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; }
+}
+
+/* ─── حلقة تمرير الفئات ─── */
+function _categoriesAutoScrollLoop(ts) {
+  const c = document.getElementById('categoriesContainer');
+  if (!c) { _catScrollRAFId = null; return; }
+  if (!isPageVisible) { _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return; }
+  if (isHoveringCategories || (Date.now() - lastCategoriesInteraction < CONFIG.AUTO_SCROLL_RESUME)) {
+    _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return;
+  }
+  if (ts - _lastCatScrollFrame < CONFIG.AUTO_SCROLL_INTERVAL) {
+    _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return;
+  }
+  _lastCatScrollFrame = ts;
+  const max = getCategoriesMaxScroll();
+  if (max <= 0) { _catScrollRAFId = null; return; }
+  /* ✅ نفس منطق المتاجر تماماً */
+  if (c.scrollLeft <= 1) c.scrollLeft = max;
+  else c.scrollLeft -= CONFIG.SCROLL_STEP;
+  _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop);
+}
+function startCategoriesAutoScroll() {
+  stopCategoriesAutoScroll();
+  const c = document.getElementById('categoriesContainer');
+  if (!c) return;
+  requestAnimationFrame(() => {
+    const max = getCategoriesMaxScroll();
+    c.scrollLeft = max;
+    _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop);
+  });
+}
+function stopCategoriesAutoScroll() {
+  if (_catScrollRAFId) { cancelAnimationFrame(_catScrollRAFId); _catScrollRAFId = null; }
 }
 
 /* ═══ BODY SCROLL LOCK ═══ */
@@ -1027,7 +1057,6 @@ async function initFCM() {
     if (!isNotificationSupported()) return;
     messaging = firebase.messaging();
     const reg = await navigator.serviceWorker.ready;
-
     messaging.onMessage((payload) => {
       const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
       const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
@@ -1048,7 +1077,6 @@ async function initFCM() {
         } catch(e){}
       }
     });
-
     if (Notification.permission === 'granted') await registerFCMToken(reg);
     else if (shouldShowNotifBanner()) setTimeout(showNotifBanner, 12000);
   } catch(err){ console.warn('FCM:', err); }
@@ -1284,10 +1312,7 @@ async function loadStores(force) {
     const result = await fetchWithCache('stores_list', async () => {
       let snap;
       try {
-        snap = await db.collection('stores')
-          .orderBy('created_at', 'desc')
-          .limit(30)
-          .get();
+        snap = await db.collection('stores').orderBy('created_at', 'desc').limit(30).get();
       } catch(e) {
         snap = await db.collection('stores').limit(30).get();
       }
@@ -1565,19 +1590,15 @@ async function loadCategories(force) {
   } catch(err){ console.error('[BZR] loadCategories:', err); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🛡️ SERVER-BASED FOLLOW SYSTEM
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ FOLLOW SYSTEM ═══ */
 async function syncFollowedStoresFromServer() {
   try {
     const ok = await ensureAuth();
     if (!ok) return;
     const userId = getUserIdentity();
     if (!userId) return;
-
     const snap = await db.collection('store_follows')
-      .where('fingerprint', '==', userId)
-      .get();
+      .where('fingerprint', '==', userId).get();
     const serverIds = new Set();
     snap.docs.forEach(d => {
       const data = d.data();
@@ -1623,11 +1644,9 @@ async function performFollowToggle(store) {
   await ensureAuth();
   const userId = getUserIdentity();
   if (!userId) throw new Error('no_auth_identity');
-
   const followDocId = storeId + '_' + userId;
   const followRef = db.collection('store_follows').doc(followDocId);
   const storeRef = db.collection('stores').doc(storeId);
-
   return await db.runTransaction(async (transaction) => {
     const followDoc = await transaction.get(followRef);
     if (followDoc.exists) {
@@ -1714,7 +1733,6 @@ function setCardFollowState(btn, following) {
 async function toggleFollowFromCard(store, btn) {
   const storeId = String(getStoreId(store));
   if (btn.disabled) return;
-
   const guardCheck = FollowGuard.canFollow(storeId);
   if (!guardCheck.allowed) {
     haptic('heavy');
@@ -1846,32 +1864,29 @@ function displayCategories() {
     frag.appendChild(btn);
   });
   c.appendChild(frag);
+  /* ✅ v9.9.0: بدء التمرير التلقائي للفئات */
+  startCategoriesAutoScroll();
 }
 function highlightCategory(active) {
   document.getElementById('categoriesContainer').querySelectorAll('button').forEach(b => b.classList.remove('active'));
   active.classList.add('active');
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ STORE CATEGORIES — نظام الفئات المتقدم
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ STORE CATEGORIES TABS ═══ */
 function renderStoreCategoryTabs(store) {
   const container = document.getElementById('storeCategoriesTabs');
   if (!container) return;
   container.innerHTML = '';
-
   const mainCat = (store.category && String(store.category).trim()) ? String(store.category).trim() : '';
   const additional = Array.isArray(store.categories)
     ? store.categories.map(c => String(c || '').trim()).filter(c => c && c !== mainCat)
     : [];
   const subscribed = store.is_subscribed === true;
-
   if (!mainCat && !additional.length) {
     container.style.display = 'none';
     return;
   }
   container.style.display = 'flex';
-
   if (mainCat) {
     const tab = document.createElement('button');
     tab.type = 'button';
@@ -1883,7 +1898,6 @@ function renderStoreCategoryTabs(store) {
     tab.addEventListener('click', () => selectStoreCategoryTab(tab, mainCat));
     container.appendChild(tab);
   }
-
   additional.forEach(cat => {
     const tab = document.createElement('button');
     tab.type = 'button';
@@ -1896,7 +1910,6 @@ function renderStoreCategoryTabs(store) {
       : '<i class="fas fa-lock lock-icon" aria-hidden="true"></i>';
     tab.innerHTML = icon + '<span>' + sanitizeHTML(cat) + '</span>';
     if (!subscribed) tab.setAttribute('aria-label', cat + ' - مقفلة، تتطلب اشتراكاً');
-
     tab.addEventListener('click', () => {
       if (!subscribed) {
         haptic('medium');
@@ -1908,7 +1921,6 @@ function renderStoreCategoryTabs(store) {
     container.appendChild(tab);
   });
 }
-
 function selectStoreCategoryTab(tab, category) {
   const container = document.getElementById('storeCategoriesTabs');
   if (container) {
@@ -1923,7 +1935,6 @@ function selectStoreCategoryTab(tab, category) {
   currentStoreCategoryForProducts = category || null;
   if (currentStore) loadStoreProducts(currentStore.name, currentStoreCategoryForProducts);
 }
-
 async function refreshStoreDataOnOpen(storeId) {
   if (!storeId) return;
   if (!RateLimiter.canRequest('store_refresh')) return;
@@ -1931,7 +1942,6 @@ async function refreshStoreDataOnOpen(storeId) {
     const doc = await db.collection('stores').doc(String(storeId)).get();
     if (!doc.exists) return;
     if (currentStoreId !== String(storeId)) return;
-
     const fresh = { id: doc.id, ...doc.data() };
     const oldMain = String(currentStore?.category || '');
     const newMain = String(fresh.category || '');
@@ -1939,7 +1949,6 @@ async function refreshStoreDataOnOpen(storeId) {
     const newList = JSON.stringify(fresh.categories || []);
     const oldSub = currentStore?.is_subscribed === true;
     const newSub = fresh.is_subscribed === true;
-
     if (oldMain !== newMain || oldList !== newList || oldSub !== newSub) {
       currentStore = { ...currentStore, ...fresh };
       const activeCat = currentStoreCategoryForProducts;
@@ -1963,17 +1972,13 @@ function openStoreModal(store) {
   currentFollowersCount = parseInt(store.followers) || 0;
   isFollowing = isStoreFollowed(currentStoreId);
   currentStoreCategoryForProducts = (store.category && String(store.category).trim()) ? String(store.category).trim() : null;
-
   document.getElementById('storeCoverImage').src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
   document.getElementById('storeLogo').src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   document.getElementById('storeDescription').textContent = store.description || 'متجر مميز';
-
   const catVal = (store.category && String(store.category).trim()) ? store.category : 'عام';
   document.getElementById('storeCategory').innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(catVal) + '</span>';
-
   updateFollowersDisplay();
   updateFollowButtonUI();
-
   if (store.is_verified) {
     const storeNameEl = document.getElementById('storeName');
     storeNameEl.innerHTML = '';
@@ -1988,23 +1993,18 @@ function openStoreModal(store) {
   } else {
     document.getElementById('storeName').textContent = store.name || '';
   }
-
   const phone = store.phone_number || '', wa = store.whatsapp_number || '';
   const callBtn = document.getElementById('storeCallButton');
   const waBtn = document.getElementById('storeWhatsAppButton');
   if (phone) { callBtn.href = 'tel:' + phone; callBtn.style.display = ''; } else callBtn.style.display = 'none';
   if (wa) { waBtn.href = 'https://wa.me/' + wa.replace(/[^0-9]/g, ''); waBtn.style.display = ''; } else waBtn.style.display = 'none';
-
   renderStoreCategoryTabs(store);
   loadStoreProducts(store.name, currentStoreCategoryForProducts);
-
   document.getElementById('storeModal').classList.remove('hidden');
   updateBodyScroll();
   document.getElementById('storeModal').querySelector('.modal-content').scrollTop = 0;
   bzrPushModal();
-
   refreshStoreDataOnOpen(currentStoreId);
-
   const storeIdSnapshot = currentStoreId;
   checkFollowStatusFromServer(storeIdSnapshot).then(serverFollowing => {
     if (currentStoreId !== storeIdSnapshot) return;
@@ -2053,7 +2053,6 @@ function updateFollowButtonUI() {
 }
 document.getElementById('storeFollowButton')?.addEventListener('click', async () => {
   if (!currentStoreId || isUpdatingFollow || !currentStore) return;
-
   const guardCheck = FollowGuard.canFollow(currentStoreId);
   if (!guardCheck.allowed) {
     haptic('heavy');
@@ -2065,14 +2064,12 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
     }
     return;
   }
-
   isUpdatingFollow = true;
   const btn = document.getElementById('storeFollowButton');
   btn.disabled = true;
   const wasFollowing = isFollowing;
   document.getElementById('storeFollowText').textContent = 'جاري...';
   haptic('light');
-
   try {
     const result = await performFollowToggle(currentStore);
     FollowGuard.recordAction(currentStoreId);
@@ -2109,9 +2106,7 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
   }
 });
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ STORE PRODUCTS (v9.8.1 — زر عرض المزيد مُحسّن)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ STORE PRODUCTS ═══ */
 function filterStoreProductsByCategory(products, category) {
   if (!Array.isArray(products)) return [];
   if (!category) return products;
@@ -2126,40 +2121,27 @@ function filterStoreProductsByCategory(products, category) {
   }
   return products.filter(p => String(p.category || '').trim() === category);
 }
-
-/* ✅ v9.8.1: إخفاء مزدوج + إعادة تعيين الحالة عند الفتح */
 async function loadStoreProducts(storeName, category) {
   const grid = document.getElementById('storeProductsGrid');
   const loadMoreBtn = document.getElementById('loadMoreStoreProductsBtn');
-  
-  /* ✅ إخفاء مزدوج + إعادة تعيين الحالة */
   loadMoreBtn.classList.add('hidden');
   loadMoreBtn.hidden = true;
   loadMoreBtn.disabled = false;
   loadMoreBtn.innerHTML = '<span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i>';
-  
   grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#FF7A00;"></i></div>';
-  
   currentStoreNameForProducts = storeName;
   currentStoreCategoryForProducts = category || null;
   storeProductsLastDoc = null;
   storeProductsHasMore = false;
-
   const cacheKey = 'store_products_page1_' + storeName + '_' + (category || 'main');
   const cached = cacheManager.get(cacheKey);
-
-  /* ═══ من الكاش ═══ */
   if (cached && Array.isArray(cached.items)) {
     const filtered = filterStoreProductsByCategory(cached.items, category);
-    
     if (!filtered.length) {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات في هذه الفئة</div>';
       return;
     }
-    
     renderStoreProducts(filtered);
-    
-    /* ✅ إظهار مزدوج فقط عند وجود المزيد */
     if (cached.hasMore === true) {
       storeProductsHasMore = true;
       loadMoreBtn.classList.remove('hidden');
@@ -2167,15 +2149,12 @@ async function loadStoreProducts(storeName, category) {
     }
     return;
   }
-
   if (!RateLimiter.canRequest('store_products')) return;
-
   try {
     let q = db.collection('products')
       .where('store_name', '==', storeName)
       .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
-
     let snap;
     try {
       snap = await q.get();
@@ -2185,63 +2164,47 @@ async function loadStoreProducts(storeName, category) {
         .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
         .get();
     }
-
     const rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
-    
-    /* ✅ الدقيق: true فقط عند الوصول للحد الأقصى */
     storeProductsHasMore = (snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE);
-
     const filtered = filterStoreProductsByCategory(rawList, category);
     if (!filtered.length) {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات في هذه الفئة</div>';
     } else {
       renderStoreProducts(filtered);
-      
-      /* ✅ إظهار مزدوج فقط عند وجود المزيد */
       if (storeProductsHasMore) {
         loadMoreBtn.classList.remove('hidden');
         loadMoreBtn.hidden = false;
       }
     }
-
     cacheManager.set(cacheKey, { items: rawList, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
   } catch(err) {
     console.error('[BZR] loadStoreProducts error:', err);
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">تعذر التحميل</div>';
   }
 }
-
-/* ✅ v9.8.1: معالج الزر — إخفاء مزدوج + Toast عند الانتهاء */
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async (e) => {
   const btn = e.currentTarget;
-  
-  /* ═══ حراسات مكثفة ═══ */
   if (btn.disabled) return;
   if (btn.classList.contains('hidden')) return;
   if (btn.hidden === true) return;
   if (!storeProductsHasMore) return;
   if (!currentStoreNameForProducts) return;
   if (!storeProductsLastDoc) return;
-  
   if (!RateLimiter.canRequest('store_products')) {
     showToast('⏳ يرجى المحاولة بعد قليل');
     return;
   }
-  
-  /* ═══ حالة التحميل ═══ */
   btn.disabled = true;
   const originalHTML = '<span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i>';
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>جاري التحميل...</span>';
   haptic('light');
-
   try {
     let q = db.collection('products')
       .where('store_name', '==', currentStoreNameForProducts)
       .startAfter(storeProductsLastDoc)
       .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
-
     let snap;
     try {
       snap = await q.get();
@@ -2252,23 +2215,15 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
         .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
         .get();
     }
-
     const rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
-    
-    /* ✅ تحديث الحالة بدقة */
     storeProductsHasMore = (snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE);
-
     const filtered = filterStoreProductsByCategory(rawList, currentStoreCategoryForProducts);
     if (filtered.length) renderStoreProducts(filtered, true);
-
-    /* ═══ تحديث الكاش ═══ */
     const cacheKey = 'store_products_page1_' + currentStoreNameForProducts + '_' + (currentStoreCategoryForProducts || 'main');
     const cached = cacheManager.get(cacheKey);
     const allItems = (cached && Array.isArray(cached.items)) ? cached.items.concat(rawList) : rawList;
     cacheManager.set(cacheKey, { items: allItems, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
-
-    /* ═══ ✅ إخفاء نهائي مزدوج عند انتهاء المنتجات ═══ */
     if (!storeProductsHasMore) {
       btn.classList.add('hidden');
       btn.hidden = true;
@@ -2285,7 +2240,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     btn.disabled = false;
   }
 });
-
 function renderStoreProducts(products, append) {
   const grid = document.getElementById('storeProductsGrid');
   if (!append) grid.innerHTML = '';
@@ -2303,7 +2257,6 @@ function renderStoreProducts(products, append) {
       category: product.category || null
     };
     const card = document.createElement('div'); card.className = 'store-product-card';
-
     const favBtn = document.createElement('button');
     favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
     favBtn.innerHTML = '<i class="' + (fav ? 'fas' : 'far') + ' fa-heart"></i>';
@@ -2314,28 +2267,23 @@ function renderStoreProducts(products, append) {
       favBtn.innerHTML = '<i class="' + (now ? 'fas' : 'far') + ' fa-heart"></i>';
       showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
     });
-
     const imgWrap = document.createElement('div'); imgWrap.className = 'store-product-img-wrap';
     const img = document.createElement('img'); img.loading = 'lazy'; img.alt = product.name || '';
     img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300';
     img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
     imgWrap.appendChild(img);
-
     const info = document.createElement('div'); info.className = 'store-product-info';
     const nameEl = document.createElement('div'); nameEl.className = 'store-product-name';
     nameEl.textContent = product.name || '';
     info.appendChild(nameEl);
-
     const priceEl = document.createElement('div'); priceEl.className = 'store-product-price';
     priceEl.textContent = price.toLocaleString() + ' ج.س';
     info.appendChild(priceEl);
-
     const viewBtn = document.createElement('button');
     viewBtn.className = 'store-product-btn ripple';
     viewBtn.innerHTML = '<span>عرض</span> <i class="fas fa-chevron-left"></i>';
     viewBtn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); openProductModal(pm); });
     info.appendChild(viewBtn);
-
     card.appendChild(favBtn);
     card.appendChild(imgWrap);
     card.appendChild(info);
@@ -2345,25 +2293,19 @@ function renderStoreProducts(products, append) {
   grid.appendChild(frag);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ PRODUCT MODAL
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ PRODUCT MODAL ═══ */
 let currentModalProduct = null, selectedColorVariant = null;
-
 function openProductModal(product) {
   currentModalProduct = product;
   selectedColorVariant = null;
-
   const defaultImg = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/600';
   const imgEl = document.getElementById('productModalImage');
   imgEl.src = defaultImg;
   imgEl.style.opacity = '1';
   imgEl.onerror = function(){ this.src = 'https://via.placeholder.com/600'; };
-
   document.getElementById('productModalName').textContent = product.name;
   document.getElementById('productModalStore').textContent = product.store_name || 'غير محدد';
   document.getElementById('productModalPrice').textContent = (product.price || 0).toLocaleString() + ' ج.س';
-
   const origEl = document.getElementById('productModalOriginalPrice');
   if (product.original_price) {
     origEl.textContent = product.original_price.toLocaleString() + ' ج.س';
@@ -2372,18 +2314,15 @@ function openProductModal(product) {
     origEl.textContent = '';
     origEl.classList.add('hidden');
   }
-
   const colorsContainer = document.getElementById('productColorsContainer');
   const swatchesContainer = document.getElementById('productColorSwatches');
   const selColorName = document.getElementById('selectedColorName');
   swatchesContainer.innerHTML = '';
-
   if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
     colorsContainer.classList.remove('hidden');
     colorsContainer.style.display = 'flex';
     selColorName.textContent = 'الأصلي';
     const frag = document.createDocumentFragment();
-
     const originalBtn = document.createElement('div');
     originalBtn.className = 'color-swatch active';
     originalBtn.title = 'الصورة الأصلية';
@@ -2404,7 +2343,6 @@ function openProductModal(product) {
       updateModalActionButtons();
     });
     frag.appendChild(originalBtn);
-
     product.colors.forEach((color) => {
       const swatch = document.createElement('div');
       const hex = safeHex(color && color.hex) || getFallbackHex(color && color.name);
@@ -2433,7 +2371,6 @@ function openProductModal(product) {
     colorsContainer.classList.add('hidden');
     colorsContainer.style.display = 'none';
   }
-
   document.getElementById('productModal').classList.remove('hidden');
   updateBodyScroll();
   updateModalActionButtons();
@@ -2577,7 +2514,7 @@ document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
 
-/* ═══ CART - WhatsApp Order ═══ */
+/* ═══ WHATSAPP ORDER ═══ */
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   if (cart.length === 0) { showToast('السلة فارغة'); return; }
   haptic('medium');
@@ -2612,7 +2549,6 @@ function updateMetaTagsForStore(store) {
     || optimizeCloudinaryUrl(store.logo_url)
     || CONFIG.DEFAULT_OG_IMAGE;
   const storeUrl = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(String(getStoreId(store)));
-
   const ogTitle = document.querySelector('meta[property="og:title"]');
   if (ogTitle) ogTitle.setAttribute('content', storeName + ' | BranZar');
   const ogDesc = document.querySelector('meta[property="og:description"]');
@@ -2621,14 +2557,12 @@ function updateMetaTagsForStore(store) {
   if (ogImage) ogImage.setAttribute('content', storeImage);
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) ogUrl.setAttribute('content', storeUrl);
-
   const twTitle = document.querySelector('meta[name="twitter:title"]');
   if (twTitle) twTitle.setAttribute('content', storeName + ' | BranZar');
   const twDesc = document.querySelector('meta[name="twitter:description"]');
   if (twDesc) twDesc.setAttribute('content', storeDesc);
   const twImage = document.querySelector('meta[name="twitter:image"]');
   if (twImage) twImage.setAttribute('content', storeImage);
-
   document.title = storeName + ' | BranZar';
 }
 document.getElementById('storeShareBtn')?.addEventListener('click', () => { if (currentStore) shareStore(currentStore); });
@@ -2653,12 +2587,9 @@ async function shareStore(store) {
   } catch(err){ showToast('تعذر النسخ'); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ POLLING (60 دقيقة)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ POLLING ═══ */
 function setupRealtimeProducts() {
   if (allProductsUnsubscribe) return;
-
   const pollProducts = async () => {
     if (!isPageVisible) return;
     if (!RateLimiter.canRequest('poll_products')) return;
@@ -2669,7 +2600,6 @@ function setupRealtimeProducts() {
         .get();
       const fresh = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       if (!fresh.length) return;
-
       const topIds = allProductsLocal.slice(0, fresh.length).map(p => p.id).join(',');
       const freshIds = fresh.map(p => p.id).join(',');
       if (topIds !== freshIds) {
@@ -2683,13 +2613,11 @@ function setupRealtimeProducts() {
       );
     } catch(e) { /* silent */ }
   };
-
   allProductsUnsubscribe = setInterval(pollProducts, CONFIG.PRODUCTS_REFRESH_INTERVAL_MS);
 }
 function setupRealtimeStores() {
   if (storesPollInterval) return;
   const POLL_MS = CONFIG.STORES_REFRESH_INTERVAL_MS;
-
   function startPoll() {
     if (storesPollInterval) clearInterval(storesPollInterval);
     storesPollInterval = setInterval(() => {
@@ -2738,6 +2666,8 @@ document.addEventListener('keydown', (e) => {
 document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) => {
   if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; }
 }, { passive: false });
+
+/* ✅ المتاجر: أزرار التمرير (معكوسة لتناسب الاتجاه الجديد) */
 document.getElementById('prevStoresBtn')?.addEventListener('click', () => {
   const c = document.getElementById('storesScrollContainer');
   lastStoresInteraction = Date.now();
@@ -2748,9 +2678,20 @@ document.getElementById('nextStoresBtn')?.addEventListener('click', () => {
   lastStoresInteraction = Date.now();
   c.scrollBy({ left: -300, behavior: 'smooth' });
 });
-document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: -200, behavior: 'smooth' }));
-document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: 200, behavior: 'smooth' }));
 
+/* ✅ v9.9.0: الفئات — أزرار التمرير */
+document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => {
+  const c = document.getElementById('categoriesContainer');
+  lastCategoriesInteraction = Date.now();
+  c.scrollBy({ left: -200, behavior: 'smooth' });
+});
+document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => {
+  const c = document.getElementById('categoriesContainer');
+  lastCategoriesInteraction = Date.now();
+  c.scrollBy({ left: 200, behavior: 'smooth' });
+});
+
+/* ✅ المتاجر — ربط أحداث التفاعل */
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
   ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
@@ -2758,6 +2699,16 @@ if (storesContainer) {
   });
   storesContainer.addEventListener('mouseenter', () => { isHoveringStores = true; }, { passive: true });
   storesContainer.addEventListener('mouseleave', () => { isHoveringStores = false; lastStoresInteraction = Date.now(); }, { passive: true });
+}
+
+/* ✅ v9.9.0: الفئات — ربط أحداث التفاعل */
+const categoriesScrollContainer = document.getElementById('categoriesContainer');
+if (categoriesScrollContainer) {
+  ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
+    categoriesScrollContainer.addEventListener(evt, () => { lastCategoriesInteraction = Date.now(); }, { passive: true });
+  });
+  categoriesScrollContainer.addEventListener('mouseenter', () => { isHoveringCategories = true; }, { passive: true });
+  categoriesScrollContainer.addEventListener('mouseleave', () => { isHoveringCategories = false; lastCategoriesInteraction = Date.now(); }, { passive: true });
 }
 
 /* ═══ SERVICE WORKER ═══ */
@@ -2876,9 +2827,7 @@ if ('serviceWorker' in navigator) {
 }
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ زر التحديث اليدوي (اختياري)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ MANUAL REFRESH ═══ */
 document.getElementById('refreshProductsBtn')?.addEventListener('click', async (e) => {
   const btn = e.currentTarget;
   const icon = btn.querySelector('i');
@@ -2925,6 +2874,7 @@ window.addEventListener('beforeunload', () => {
     if (allProductsUnsubscribe) clearInterval(allProductsUnsubscribe);
     if (storesPollInterval) clearInterval(storesPollInterval);
     stopAutoScroll();
+    stopCategoriesAutoScroll();
     if (_cacheWriteTimer) { clearTimeout(_cacheWriteTimer); _flushCacheWrites(); }
   } catch(e){}
 });
@@ -2937,7 +2887,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.8.1',
+  version: '9.9.0',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
@@ -2953,5 +2903,7 @@ window.BranZar = {
     await Promise.all([loadStores(true), loadAllProducts(true)]);
   }
 };
+
+console.log('[BZR] app.js loaded ✅ v9.9.0');
 
 })();
