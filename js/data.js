@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.8.3 — data.js
+   BranZar v9.8.4 — data.js
    Layer 2: Data Loading + Follow System + Polling + Deep Link
+   ✅ v9.8.4: إصلاح عرض منتجات الفئات (بدون composite index)
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -26,7 +27,9 @@ async function loadStores(force) {
     const cats = [];
     stores.forEach(s => {
       const c = s.category;
-      if (c && String(c).trim() && cats.indexOf(c) === -1) cats.push(c);
+      if (c && String(c).trim() && cats.indexOf(String(c).trim()) === -1) {
+        cats.push(String(c).trim());
+      }
     });
     categories = cats;
     displayCategories();
@@ -133,82 +136,184 @@ document.getElementById('loadMoreProductsBtn')?.addEventListener('click', async 
   btn.disabled = false;
 });
 
+/* ═══════════════════════════════════════════════════════════
+   ✅ v9.8.4: applyProductsFilter — مُبسّط ومحسّن
+   ═══════════════════════════════════════════════════════════ */
 async function applyProductsFilter(cat) {
   currentCategory = cat;
   const grid = document.getElementById('allProductsGrid');
   const emptyEl = document.getElementById('allProductsEmpty');
   const loadBtn = document.getElementById('loadMoreProductsBtn');
+
+  /* ─── حالة "الكل" ─── */
   if (!cat) {
-    grid.innerHTML = '';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#FF7A00;"></i></div>';
     allProductsLocal = [];
     lastVisibleDoc = null;
     hasMoreProducts = true;
-    try { await fetchProductsPage(null, false); } catch(e){}
+    loadBtn.classList.add('hidden');
+    emptyEl.classList.add('hidden');
+    try {
+      await fetchProductsPage(null, false);
+    } catch(e) {
+      console.error('[BZR] fetchProductsPage error:', e);
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:var(--c-text-soft);">' +
+        '<i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:#CBD5E1;display:block;margin-bottom:1rem;"></i>' +
+        '<p style="font-weight:800;font-size:1rem;">تعذر تحميل المنتجات</p>' +
+        '</div>';
+    }
     return;
   }
-  grid.innerHTML = '';
+
+  /* ─── حالة فئة محددة ─── */
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#FF7A00;"></i></div>';
   allProductsLocal = [];
   lastVisibleDoc = null;
   hasMoreProducts = true;
   loadBtn.classList.add('hidden');
   emptyEl.classList.add('hidden');
-  try { await fetchProductsByCategoryPage(null, false); }
-  catch(e){ emptyEl.classList.remove('hidden'); }
+
+  try {
+    await fetchProductsByCategoryPage(null, false);
+  } catch(e) {
+    console.error('[BZR] fetchProductsByCategoryPage error:', e);
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:var(--c-text-soft);">' +
+      '<i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:#CBD5E1;display:block;margin-bottom:1rem;"></i>' +
+      '<p style="font-weight:800;font-size:1rem;">تعذر تحميل المنتجات</p>' +
+      '</div>';
+  }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   ✅ v9.8.4: fetchProductsByCategoryPage — مُصلح بالكامل
+   ✅ مقارنة trim (تتجاهل المسافات)
+   ✅ بدون orderBy (يتجنب composite index)
+   ✅ fallback ذكي (متجر بمتجر)
+   ✅ console.log للتشخيص
+   ═══════════════════════════════════════════════════════════ */
 async function fetchProductsByCategoryPage(cursorDoc, silent) {
   const cat = currentCategory;
   if (!cat) return;
+
   if (!RateLimiter.canRequest('products_cat')) {
     if (!silent) throw new Error('rate_limit');
     return;
   }
-  const storeNames = stores.filter(s => s.category === cat).map(s => s.name).filter(Boolean);
+
+  /* ✅ 1. تنظيف اسم الفئة */
+  const cleanCat = String(cat || '').trim();
+  if (!cleanCat) return;
+
+  /* ✅ 2. مقارنة مرنة (trim) */
+  const matchingStores = stores.filter(s =>
+    String(s.category || '').trim() === cleanCat
+  );
+  const storeNames = matchingStores.map(s => s.name).filter(Boolean);
+
+  console.log('[BZR] fetchByCategory:', {
+    category: cleanCat,
+    matchingStores: matchingStores.length,
+    storeNames: storeNames.slice(0, 5)
+  });
+
+  /* ✅ 3. لا متاجر في هذه الفئة */
   if (!storeNames.length) {
-    if (!silent) document.getElementById('allProductsGrid').innerHTML = '';
-    document.getElementById('allProductsEmpty').classList.remove('hidden');
+    if (!silent) {
+      const grid = document.getElementById('allProductsGrid');
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:var(--c-text-soft);">' +
+        '<i class="fas fa-box-open" style="font-size:2.5rem;color:#CBD5E1;display:block;margin-bottom:1rem;"></i>' +
+        '<p style="font-weight:800;font-size:1rem;">لا توجد متاجر في فئة "' + sanitizeHTML(cleanCat) + '"</p>' +
+        '</div>';
+    }
+    document.getElementById('allProductsEmpty').classList.add('hidden');
     document.getElementById('loadMoreProductsBtn').classList.add('hidden');
     hasMoreProducts = false;
     return;
   }
+
+  /* ✅ 4. تقسيم إلى chunks (10 كحد أقصى) */
   const chunks = [];
-  for (let i = 0; i < storeNames.length; i += 10) chunks.push(storeNames.slice(i, i + 10));
+  for (let i = 0; i < storeNames.length; i += 10) {
+    chunks.push(storeNames.slice(i, i + 10));
+  }
+
   const fetched = [];
-  let newCursor = cursorDoc;
+
+  /* ✅ 5. جلب بدون orderBy (يتجنب composite index) */
   for (const chunk of chunks) {
     try {
-      let q = db.collection('products').where('store_name', 'in', chunk).limit(CONFIG.PRODUCTS_PER_PAGE);
-      if (cursorDoc) {
-        q = db.collection('products').where('store_name', 'in', chunk)
-          .startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE);
-      }
-      try { q = q.orderBy('created_at', 'desc'); } catch(e){}
+      const q = db.collection('products')
+        .where('store_name', 'in', chunk)
+        .limit(CONFIG.PRODUCTS_PER_PAGE * 3);
+
       const snap = await q.get();
       snap.docs.forEach(d => fetched.push(d));
-      if (snap.docs.length > 0) newCursor = snap.docs[snap.docs.length - 1];
-    } catch(e) {
-      try {
-        let q2 = db.collection('products').where('store_name', 'in', chunk).limit(CONFIG.PRODUCTS_PER_PAGE);
-        if (cursorDoc) q2 = q2.startAfter(cursorDoc);
-        const s2 = await q2.get();
-        s2.docs.forEach(d => fetched.push(d));
-        if (s2.docs.length > 0) newCursor = s2.docs[s2.docs.length - 1];
-      } catch(e2){}
+      console.log('[BZR] Chunk:', chunk.length, 'stores →', snap.docs.length, 'products');
+
+    } catch (err) {
+      console.warn('[BZR] Chunk failed:', err.code, '- trying single stores');
+      /* ✅ Fallback: متجر بمتجر */
+      for (const singleStore of chunk) {
+        try {
+          const snap2 = await db.collection('products')
+            .where('store_name', '==', singleStore)
+            .limit(CONFIG.PRODUCTS_PER_PAGE)
+            .get();
+          snap2.docs.forEach(d => fetched.push(d));
+          console.log('[BZR] Single store:', singleStore, '→', snap2.docs.length, 'products');
+        } catch (e2) {
+          console.error('[BZR] Single store failed:', singleStore, e2.code);
+        }
+      }
     }
   }
-  fetched.sort((a, b) => ((b.data().created_at?.seconds || 0) - (a.data().created_at?.seconds || 0)));
+
+  console.log('[BZR] Total fetched:', fetched.length);
+
+  /* ✅ 6. ترتيب حسب created_at (في JS) */
+  fetched.sort((a, b) => {
+    const aTime = a.data().created_at?.seconds || 0;
+    const bTime = b.data().created_at?.seconds || 0;
+    return bTime - aTime;
+  });
+
+  /* ✅ 7. تحديد الدفعة الحالية */
   const limited = fetched.slice(0, CONFIG.PRODUCTS_PER_PAGE);
-  if (limited.length > 0) lastVisibleDoc = limited[limited.length - 1];
-  hasMoreProducts = fetched.length >= CONFIG.PRODUCTS_PER_PAGE;
+  if (limited.length > 0) {
+    lastVisibleDoc = limited[limited.length - 1];
+  }
+  hasMoreProducts = fetched.length > CONFIG.PRODUCTS_PER_PAGE;
+
   const items = limited.map(d => ({ id: d.id, ...d.data() }));
   const existingIds = new Set(allProductsLocal.map(p => p.id));
   const newItems = items.filter(p => !existingIds.has(p.id));
   allProductsLocal = allProductsLocal.concat(newItems);
-  if (!silent) renderProductsBatch(newItems);
-  if (allProductsLocal.length === 0) document.getElementById('allProductsEmpty').classList.remove('hidden');
-  else document.getElementById('allProductsEmpty').classList.add('hidden');
+
+  /* ✅ 8. عرض المنتجات */
+  if (!silent && newItems.length) {
+    renderProductsBatch(newItems);
+  }
+
+  /* ✅ 9. رسالة عدم وجود منتجات */
+  const emptyEl = document.getElementById('allProductsEmpty');
+  if (allProductsLocal.length === 0) {
+    const grid = document.getElementById('allProductsGrid');
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:var(--c-text-soft);">' +
+      '<i class="fas fa-box-open" style="font-size:2.5rem;color:#CBD5E1;display:block;margin-bottom:1rem;"></i>' +
+      '<p style="font-weight:800;font-size:1rem;">لا توجد منتجات في فئة "' + sanitizeHTML(cleanCat) + '"</p>' +
+      '</div>';
+    emptyEl.classList.add('hidden');
+  } else {
+    emptyEl.classList.add('hidden');
+  }
+
+  /* ✅ 10. زر "عرض المزيد" */
   const loadBtn = document.getElementById('loadMoreProductsBtn');
-  if (hasMoreProducts) loadBtn.classList.remove('hidden'); else loadBtn.classList.add('hidden');
+  if (hasMoreProducts) {
+    loadBtn.classList.remove('hidden');
+  } else {
+    loadBtn.classList.add('hidden');
+  }
 }
 
 async function loadCategories(force) {
@@ -216,7 +321,9 @@ async function loadCategories(force) {
     const cats = [];
     stores.forEach(s => {
       const c = s.category;
-      if (c && String(c).trim() && cats.indexOf(c) === -1) cats.push(c);
+      if (c && String(c).trim() && cats.indexOf(String(c).trim()) === -1) {
+        cats.push(String(c).trim());
+      }
     });
     categories = cats;
     displayCategories();
@@ -230,7 +337,9 @@ async function loadCategories(force) {
     const cats = [];
     storesData.forEach(s => {
       const c = s.category;
-      if (c && String(c).trim() && cats.indexOf(c) === -1) cats.push(c);
+      if (c && String(c).trim() && cats.indexOf(String(c).trim()) === -1) {
+        cats.push(String(c).trim());
+      }
     });
     categories = cats;
     displayCategories();
@@ -392,4 +501,4 @@ async function handleDeepLink() {
   } catch(err){}
 }
 
-console.log('[BZR] data.js loaded ✅');
+console.log('[BZR] data.js loaded ✅ v9.8.4');
