@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar App Core v9.8.1
+   BranZar App Core v9.8.2
    ✅ Multi-Layer Device Fingerprint (Local Only — لا يُرسل لـ Firebase)
    ✅ Firebase Auth UID (يُستخدم كمعرّف المستخدم في Firestore)
    ✅ FollowGuard (Anti-Bot + Anti-Spam Rate Limiter)
@@ -14,6 +14,7 @@
    ✅ إخفاء مزدوج (classList + hidden property) لضمان عدم الظهور
    ✅ إعادة تعيين حالة الزر عند فتح متجر جديد
    ✅ Toast عند انتهاء جميع المنتجات
+   ✅ (v9.8.2) عكس اتجاه تمرير المتاجر + تمرير تلقائي للفئات
    ═══════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
@@ -159,7 +160,7 @@ const RateLimiter = {
 };
 
 /* ═══════════════════════════════════════════════════════════
-   🛡️ FOLLOW GUARD — حماية متعددة الطبقات ضد البوتات
+   🛡️ FOLLOW GUARD
    ═══════════════════════════════════════════════════════════ */
 const FollowGuard = {
   _actionHistory: [],
@@ -580,7 +581,17 @@ try {
   });
 } catch(e){}
 
-document.addEventListener('visibilitychange', () => { isPageVisible = !document.hidden; }, { passive: true });
+document.addEventListener('visibilitychange', () => {
+  isPageVisible = !document.hidden;
+  /* ✅ v9.8.2: إعادة تشغيل/إيقاف حلقات التمرير حسب الرؤية */
+  if (isPageVisible) {
+    startAutoScroll();
+    startCategoriesAutoScroll();
+  } else {
+    stopAutoScroll();
+    stopCategoriesAutoScroll();
+  }
+}, { passive: true });
 
 /* ═══ AUTH ═══ */
 let authReady = false;
@@ -871,16 +882,34 @@ document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setVi
 document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
 document.getElementById('accountViewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
 
-/* ═══ AUTO-SCROLL ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ AUTO-SCROLL (v9.8.2)
+   ✅ المتاجر: اتجاه معكوس (يبدأ من النهاية ويتراجع)
+   ✅ الفئات: تمرير تلقائي بنفس الاتجاه المعكوس
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── المتاجر ─── */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
 let _lastScrollFrame = 0;
 
+/* ─── الفئات ─── */
+let isHoveringCategories = false;
+let lastCategoriesInteraction = 0;
+let _catScrollRAFId = null;
+let _lastCatScrollFrame = 0;
+
 function getStoresMaxScroll() {
   const c = document.getElementById('storesScrollContainer');
   return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
 }
+function getCategoriesMaxScroll() {
+  const c = document.getElementById('categoriesContainer');
+  return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
+}
+
+/* ✅ v9.8.2: المتاجر — اتجاه معكوس */
 function _autoScrollLoop(ts) {
   const c = document.getElementById('storesScrollContainer');
   if (!c) { _scrollRAFId = null; return; }
@@ -894,21 +923,59 @@ function _autoScrollLoop(ts) {
   _lastScrollFrame = ts;
   const max = getStoresMaxScroll();
   if (max <= 0) { _scrollRAFId = null; return; }
-  if (c.scrollLeft >= max - 1) c.scrollLeft = 0;
-  else c.scrollLeft += CONFIG.SCROLL_STEP;
+  /* ✅ اتجاه معكوس: نقص بدل زيادة، والالتفاف للنهاية عند الوصول للبداية */
+  if (c.scrollLeft <= 1) c.scrollLeft = max;
+  else c.scrollLeft -= CONFIG.SCROLL_STEP;
   _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
 }
+
 function startAutoScroll() {
   stopAutoScroll();
   const c = document.getElementById('storesScrollContainer');
   if (!c) return;
   requestAnimationFrame(() => {
-    c.scrollLeft = 0;
+    /* ✅ ابدأ من النهاية (أقصى scrollLeft) */
+    const max = getStoresMaxScroll();
+    c.scrollLeft = max;
     _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
   });
 }
 function stopAutoScroll() {
   if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; }
+}
+
+/* ✅ v9.8.2: الفئات — نفس الاتجاه المعكوس */
+function _categoriesAutoScrollLoop(ts) {
+  const c = document.getElementById('categoriesContainer');
+  if (!c) { _catScrollRAFId = null; return; }
+  if (!isPageVisible) { _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return; }
+  if (isHoveringCategories || (Date.now() - lastCategoriesInteraction < CONFIG.AUTO_SCROLL_RESUME)) {
+    _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return;
+  }
+  if (ts - _lastCatScrollFrame < CONFIG.AUTO_SCROLL_INTERVAL) {
+    _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return;
+  }
+  _lastCatScrollFrame = ts;
+  const max = getCategoriesMaxScroll();
+  if (max <= 0) { _catScrollRAFId = null; return; }
+  /* ✅ نفس منطق المتاجر: نقص، والالتفاف للنهاية */
+  if (c.scrollLeft <= 1) c.scrollLeft = max;
+  else c.scrollLeft -= CONFIG.SCROLL_STEP;
+  _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop);
+}
+
+function startCategoriesAutoScroll() {
+  stopCategoriesAutoScroll();
+  const c = document.getElementById('categoriesContainer');
+  if (!c) return;
+  requestAnimationFrame(() => {
+    const max = getCategoriesMaxScroll();
+    c.scrollLeft = max;
+    _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop);
+  });
+}
+function stopCategoriesAutoScroll() {
+  if (_catScrollRAFId) { cancelAnimationFrame(_catScrollRAFId); _catScrollRAFId = null; }
 }
 
 /* ═══ BODY SCROLL LOCK ═══ */
@@ -1846,6 +1913,8 @@ function displayCategories() {
     frag.appendChild(btn);
   });
   c.appendChild(frag);
+  /* ✅ v9.8.2: بدء التمرير التلقائي للفئات */
+  startCategoriesAutoScroll();
 }
 function highlightCategory(active) {
   document.getElementById('categoriesContainer').querySelectorAll('button').forEach(b => b.classList.remove('active'));
@@ -2127,12 +2196,10 @@ function filterStoreProductsByCategory(products, category) {
   return products.filter(p => String(p.category || '').trim() === category);
 }
 
-/* ✅ v9.8.1: إخفاء مزدوج + إعادة تعيين الحالة عند الفتح */
 async function loadStoreProducts(storeName, category) {
   const grid = document.getElementById('storeProductsGrid');
   const loadMoreBtn = document.getElementById('loadMoreStoreProductsBtn');
   
-  /* ✅ إخفاء مزدوج + إعادة تعيين الحالة */
   loadMoreBtn.classList.add('hidden');
   loadMoreBtn.hidden = true;
   loadMoreBtn.disabled = false;
@@ -2148,7 +2215,6 @@ async function loadStoreProducts(storeName, category) {
   const cacheKey = 'store_products_page1_' + storeName + '_' + (category || 'main');
   const cached = cacheManager.get(cacheKey);
 
-  /* ═══ من الكاش ═══ */
   if (cached && Array.isArray(cached.items)) {
     const filtered = filterStoreProductsByCategory(cached.items, category);
     
@@ -2159,7 +2225,6 @@ async function loadStoreProducts(storeName, category) {
     
     renderStoreProducts(filtered);
     
-    /* ✅ إظهار مزدوج فقط عند وجود المزيد */
     if (cached.hasMore === true) {
       storeProductsHasMore = true;
       loadMoreBtn.classList.remove('hidden');
@@ -2189,7 +2254,6 @@ async function loadStoreProducts(storeName, category) {
     const rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
     
-    /* ✅ الدقيق: true فقط عند الوصول للحد الأقصى */
     storeProductsHasMore = (snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE);
 
     const filtered = filterStoreProductsByCategory(rawList, category);
@@ -2198,7 +2262,6 @@ async function loadStoreProducts(storeName, category) {
     } else {
       renderStoreProducts(filtered);
       
-      /* ✅ إظهار مزدوج فقط عند وجود المزيد */
       if (storeProductsHasMore) {
         loadMoreBtn.classList.remove('hidden');
         loadMoreBtn.hidden = false;
@@ -2212,11 +2275,9 @@ async function loadStoreProducts(storeName, category) {
   }
 }
 
-/* ✅ v9.8.1: معالج الزر — إخفاء مزدوج + Toast عند الانتهاء */
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async (e) => {
   const btn = e.currentTarget;
   
-  /* ═══ حراسات مكثفة ═══ */
   if (btn.disabled) return;
   if (btn.classList.contains('hidden')) return;
   if (btn.hidden === true) return;
@@ -2229,7 +2290,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     return;
   }
   
-  /* ═══ حالة التحميل ═══ */
   btn.disabled = true;
   const originalHTML = '<span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i>';
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>جاري التحميل...</span>';
@@ -2256,19 +2316,16 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     const rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
     
-    /* ✅ تحديث الحالة بدقة */
     storeProductsHasMore = (snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE);
 
     const filtered = filterStoreProductsByCategory(rawList, currentStoreCategoryForProducts);
     if (filtered.length) renderStoreProducts(filtered, true);
 
-    /* ═══ تحديث الكاش ═══ */
     const cacheKey = 'store_products_page1_' + currentStoreNameForProducts + '_' + (currentStoreCategoryForProducts || 'main');
     const cached = cacheManager.get(cacheKey);
     const allItems = (cached && Array.isArray(cached.items)) ? cached.items.concat(rawList) : rawList;
     cacheManager.set(cacheKey, { items: allItems, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
 
-    /* ═══ ✅ إخفاء نهائي مزدوج عند انتهاء المنتجات ═══ */
     if (!storeProductsHasMore) {
       btn.classList.add('hidden');
       btn.hidden = true;
@@ -2748,9 +2805,18 @@ document.getElementById('nextStoresBtn')?.addEventListener('click', () => {
   lastStoresInteraction = Date.now();
   c.scrollBy({ left: -300, behavior: 'smooth' });
 });
-document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: -200, behavior: 'smooth' }));
-document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => document.getElementById('categoriesContainer').scrollBy({ left: 200, behavior: 'smooth' }));
+document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => {
+  const c = document.getElementById('categoriesContainer');
+  lastCategoriesInteraction = Date.now();
+  c.scrollBy({ left: -200, behavior: 'smooth' });
+});
+document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => {
+  const c = document.getElementById('categoriesContainer');
+  lastCategoriesInteraction = Date.now();
+  c.scrollBy({ left: 200, behavior: 'smooth' });
+});
 
+/* ✅ المتاجر — ربط أحداث التفاعل */
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
   ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
@@ -2758,6 +2824,16 @@ if (storesContainer) {
   });
   storesContainer.addEventListener('mouseenter', () => { isHoveringStores = true; }, { passive: true });
   storesContainer.addEventListener('mouseleave', () => { isHoveringStores = false; lastStoresInteraction = Date.now(); }, { passive: true });
+}
+
+/* ✅ v9.8.2: الفئات — ربط أحداث التفاعل */
+const categoriesScrollContainer = document.getElementById('categoriesContainer');
+if (categoriesScrollContainer) {
+  ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
+    categoriesScrollContainer.addEventListener(evt, () => { lastCategoriesInteraction = Date.now(); }, { passive: true });
+  });
+  categoriesScrollContainer.addEventListener('mouseenter', () => { isHoveringCategories = true; }, { passive: true });
+  categoriesScrollContainer.addEventListener('mouseleave', () => { isHoveringCategories = false; lastCategoriesInteraction = Date.now(); }, { passive: true });
 }
 
 /* ═══ SERVICE WORKER ═══ */
@@ -2925,6 +3001,7 @@ window.addEventListener('beforeunload', () => {
     if (allProductsUnsubscribe) clearInterval(allProductsUnsubscribe);
     if (storesPollInterval) clearInterval(storesPollInterval);
     stopAutoScroll();
+    stopCategoriesAutoScroll();
     if (_cacheWriteTimer) { clearTimeout(_cacheWriteTimer); _flushCacheWrites(); }
   } catch(e){}
 });
@@ -2937,7 +3014,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.8.1',
+  version: '9.8.2',
   openStore: openStoreModal,
   openProduct: openProductModal,
   openCart,
