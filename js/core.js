@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.8.3 — core.js
-   Layer 1: Config + Utils + Security + Fingerprint + Cache + Firebase
+   BranZar v9.9.0 — core.js
+   Layer 1: Config + Utils + Security + Fingerprint + Cache + Firebase + Auth + State
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -10,27 +10,34 @@ const CONFIG = Object.freeze({
   STORE_PRODUCTS_PER_PAGE: 16,
   SEARCH_CAP: 800,
   SEARCH_DEBOUNCE_MS: 200,
+
   CACHE_TTL_STORES: 3 * 60 * 60 * 1000,
   CACHE_TTL_PRODUCTS: 30 * 60 * 1000,
   CACHE_TTL_CATEGORIES: 24 * 60 * 60 * 1000,
   CACHE_PREFIX: 'branzar_cache_',
   CACHE_MAX_KEYS: 15,
+
   AUTO_SCROLL_RESUME: 5000,
   AUTO_SCROLL_INTERVAL: 32,
   SCROLL_STEP: 0.9,
+
   PRODUCTS_REFRESH_INTERVAL_MS: 60 * 60 * 1000,
   STORES_REFRESH_INTERVAL_MS: 60 * 60 * 1000,
+
   UPDATE_CHECK_INTERVAL_MS: 30 * 60 * 1000,
   UPDATE_CHECK_THROTTLE_MS: 10 * 60 * 1000,
   NOTIF_DISMISS_DAYS: 7,
+
   HAPTIC: { light: 8, medium: 15, heavy: [20, 30, 20] },
   VAPID: "BMwiHlrJ0w3ElDwAUgza1CPpKGS2JG6uabbYEITwwdZtb17cHndUcos7s9627B1NPtcb_LAZd5hLhdrACGegdOw",
   FIXED_WHATSAPP: "249908280115",
   DEFAULT_OG_IMAGE: "https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png",
+
   FP_STORAGE_KEY: 'branzar_device_id_v2',
   FP_COOKIE_NAME: 'bzr_did_v2',
   FP_IDB_NAME: 'branzar_idb',
   FP_IDB_STORE: 'device_store',
+
   FOLLOW_COOLDOWN_MS: 1500,
   RATE_MAX_PER_MINUTE: 30,
   RATE_MAX_PER_DAY: 2000,
@@ -45,23 +52,6 @@ const CONFIG = Object.freeze({
   FOLLOW_STRIKE_BLOCK_MS: 5 * 60 * 1000,
   FOLLOW_LONG_BLOCK_MS: 30 * 60 * 1000
 });
-
-/* ═══ Cache Version Bump ═══ */
-(function bumpCacheVersion() {
-  const CURRENT_VERSION = 'v9.8.3';
-  const STORED_VERSION = localStorage.getItem('bzr_app_version');
-  if (STORED_VERSION !== CURRENT_VERSION) {
-    // امسح الكاش القديم عند تغيير الإصدار
-    const keys = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.indexOf('branzar_cache_') === 0) keys.push(k);
-    }
-    keys.forEach(k => localStorage.removeItem(k));
-    localStorage.setItem('bzr_app_version', CURRENT_VERSION);
-    console.log('[BZR] Cache cleared for version', CURRENT_VERSION);
-  }
-})();
 
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
@@ -115,6 +105,7 @@ function debounce(fn, wait) {
   };
 }
 function $$(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
+
 function optimizeCloudinaryUrl(url) {
   if (!url || typeof url !== 'string') return url;
   if (!url.includes('cloudinary.com')) return url;
@@ -161,6 +152,7 @@ const FollowGuard = {
   _dailyResetDate: '',
   _blockedUntil: 0,
   _strikes: 0,
+
   init() {
     try {
       const raw = localStorage.getItem(KEYS.FOLLOW_DAILY);
@@ -196,7 +188,9 @@ const FollowGuard = {
     this._strikes++;
     console.warn('[BZR] Follow strike #' + this._strikes + ':', reason);
     if (this._strikes >= CONFIG.FOLLOW_STRIKE_THRESHOLD) {
-      const blockDuration = this._strikes >= 6 ? CONFIG.FOLLOW_LONG_BLOCK_MS : CONFIG.FOLLOW_STRIKE_BLOCK_MS;
+      const blockDuration = this._strikes >= 6
+        ? CONFIG.FOLLOW_LONG_BLOCK_MS
+        : CONFIG.FOLLOW_STRIKE_BLOCK_MS;
       this._blockedUntil = Date.now() + blockDuration;
       this._strikes = 0;
       console.warn('[BZR] Follow BLOCKED for', Math.round(blockDuration / 60000), 'minutes');
@@ -207,7 +201,7 @@ const FollowGuard = {
     this._ensureDailyReset();
     if (this._blockedUntil > now) {
       const remaining = this._blockedUntil - now;
-      return { allowed: false, reason: 'blocked', remaining: remaining, message: '⛔ تم حظر المتابعة مؤقتاً — حاول بعد ' + Math.ceil(remaining / 60000) + ' دقيقة' };
+      return { allowed: false, reason: 'blocked', remaining, message: '⛔ تم حظر المتابعة مؤقتاً — حاول بعد ' + Math.ceil(remaining / 60000) + ' دقيقة' };
     }
     if (this._actionHistory.length > 0) {
       const lastAction = this._actionHistory[this._actionHistory.length - 1];
@@ -219,7 +213,7 @@ const FollowGuard = {
     if (lastForStore > 0 && now - lastForStore < CONFIG.FOLLOW_PER_STORE_GAP_MS) {
       const remaining = CONFIG.FOLLOW_PER_STORE_GAP_MS - (now - lastForStore);
       this._addStrike('rapid_same_store');
-      return { allowed: false, reason: 'same_store', remaining: remaining, message: '⏳ لا يمكن التبديل على نفس المتجر بسرعة' };
+      return { allowed: false, reason: 'same_store', remaining, message: '⏳ لا يمكن التبديل على نفس المتجر بسرعة' };
     }
     const toggleData = this._perStoreToggleCount[storeId] || { count: 0, windowStart: now };
     if (now - toggleData.windowStart > CONFIG.FOLLOW_TOGGLE_BURST_WINDOW_MS) {
@@ -503,7 +497,7 @@ async function getDeviceFingerprint() {
   return _fpPromise;
 }
 
-/* ═══ STATE (مشترك بين كل الملفات) ═══ */
+/* ═══ STATE ═══ */
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem(KEYS.CART)) || []; } catch(e){ cart = []; }
 let stores = [], categories = [];
@@ -528,6 +522,7 @@ let _lastFollowAction = 0;
 /* ═══ FIREBASE ═══ */
 firebase.initializeApp(FIREBASE_CONFIG);
 const db = firebase.firestore();
+
 try {
   db.enablePersistence({ synchronizeTabs: true }).catch(err => {
     if (err && err.code === 'failed-precondition') console.warn('[BZR] Persistence: multi-tab');
@@ -783,4 +778,53 @@ function getFallbackHex(colorName) {
   return result;
 }
 
-console.log('[BZR] core.js loaded ✅');
+/* ═══ THEME ═══ */
+function applyTheme(theme) {
+  document.body.classList.toggle('theme-dark', theme === 'dark');
+  const mainIcon = document.querySelector('#themeToggleBtn i');
+  if (mainIcon) mainIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  const accountSwitch = document.getElementById('accountThemeSwitch');
+  if (accountSwitch) accountSwitch.classList.toggle('on', theme === 'dark');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0F172A' : '#FF7A00');
+}
+function initTheme() {
+  const saved = localStorage.getItem(KEYS.THEME);
+  if (saved) { applyTheme(saved); return; }
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(prefersDark ? 'dark' : 'light');
+}
+function toggleTheme() {
+  const current = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem(KEYS.THEME, next);
+  haptic('light');
+}
+document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
+document.getElementById('accountThemeSwitch')?.addEventListener('click', toggleTheme);
+document.getElementById('accountThemeSwitch')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
+});
+
+/* ═══ VIEW MODE ═══ */
+function applyViewMode(mode) {
+  document.body.classList.remove('view-mobile','view-desktop');
+  document.body.classList.add('view-' + mode);
+  $$('.view-toggle-pill button').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+  localStorage.setItem(KEYS.VIEW, mode);
+}
+function initViewMode() {
+  const saved = localStorage.getItem(KEYS.VIEW);
+  if (saved) { applyViewMode(saved); return; }
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent)
+    || window.matchMedia('(max-width: 767px)').matches;
+  applyViewMode(isMobile ? 'mobile' : 'desktop');
+}
+function setView(mode) { applyViewMode(mode); haptic('light'); }
+document.getElementById('viewMobileBtn')?.addEventListener('click', () => setView('mobile'));
+document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
+document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
+document.getElementById('accountViewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
+
+console.log('[BZR] core.js loaded ✅ v9.9.0');
