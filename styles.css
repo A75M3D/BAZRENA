@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.2.0 — Styles (Mobile App Optimized)
+   BranZar v9.9.0 — Styles (Mobile App Optimized)
    ✅ Store Categories Tabs (Free + Locked)
    ✅ Rating Removal
+   ✅ v9.9.0: توحيد اتجاه التمرير للمتاجر والفئات (ltr + rtl للأبناء)
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -82,7 +83,7 @@ body.theme-dark .bzr-splash-logo { background: #1E293B; }
 body.theme-dark .account-avatar { background: #1E293B; }
 body.theme-dark .bzr-cart-badge { border-color: #1E293B; }
 
-/* ✅ جديد: عناصر الفئات في الوضع الداكن */
+/* ✅ Store category tabs في الوضع الداكن */
 body.theme-dark .store-cat-tab { background: #334155; border-color: #475569; color: #CBD5E1; }
 body.theme-dark .store-cat-tab.main-tab { background: #3B2410; border-color: #FF7A00; color: #FF7A00; }
 body.theme-dark .store-cat-tab.main-tab.active { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; }
@@ -203,18 +204,49 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .load-more-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .load-more-btn.hidden { display: none; }
 
-/* ═══ SCROLL AREAS ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ SCROLL AREAS — v9.9.0 موحّد
+   ✅ المتاجر والفئات بنفس الاتجاه (ltr للحاوية + rtl للأبناء)
+   ═══════════════════════════════════════════════════════════ */
 .scroll-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--c-surface); border: 1.5px solid var(--c-border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--c-text-soft); transition: all 0.25s; }
 .scroll-btn:hover { background: #FF7A00; color: #fff; border-color: #FF7A00; transform: scale(1.08); }
 .scroll-btn:active { transform: scale(0.92); }
-.stores-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 10px; padding-bottom: 8px; scrollbar-width: thin; direction: ltr; -webkit-overflow-scrolling: touch; scroll-behavior: auto; }
-.stores-scroll-container > * { direction: rtl; }
+
+/* ✅ حاوية المتاجر — اتجاه موحّد */
+.stores-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  gap: 10px;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  direction: ltr;                    /* ✅ إلزامي للتمرير الموحّد */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto;             /* ✅ مهم لسلاسة rAF */
+}
+.stores-scroll-container > * { direction: rtl; }   /* ✅ النصوص العربية صحيحة */
 .stores-scroll-container::-webkit-scrollbar { height: 4px; }
 .stores-scroll-container::-webkit-scrollbar-thumb { background: #FF7A00; border-radius: 4px; }
-.categories-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 6px; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+
+/* ✅ v9.9.0: حاوية الفئات — نفس الاتجاه تماماً */
+.categories-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  gap: 6px;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  direction: ltr;                    /* ✅ مطابقة للمتاجر */
+  scroll-behavior: auto;             /* ✅ مهم لسلاسة rAF */
+}
+.categories-scroll-container > * { direction: rtl; }  /* ✅ النصوص العربية صحيحة */
 .categories-scroll-container::-webkit-scrollbar { display: none; }
+
+/* ✅ حاوية المتاجر المتابَعة (بدون تغيير) */
 .followed-scroll-container { overflow-x: auto; overflow-y: hidden; display: flex; gap: 8px; padding: 6px 0 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .followed-scroll-container::-webkit-scrollbar { display: none; }
+
 .chip { padding: 0.45rem 0.9rem; border-radius: 9999px; background: var(--c-surface); border: 1.5px solid var(--c-border); font-weight: 700; font-size: 0.8rem; color: var(--c-text-soft); white-space: nowrap; cursor: pointer; transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); flex-shrink: 0; }
 .chip:hover { border-color: #FF7A00; color: #FF7A00; background: var(--c-primary-soft); transform: translateY(-1px); }
 .chip:active { transform: scale(0.95); }
@@ -297,7 +329,7 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .product-price-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.8rem; flex-wrap: wrap; }
 .product-actions { display: flex; flex-direction: column; gap: 8px; }
 
-/* ✅ جديد: صف المتجر في Product Modal (بديل Rating) */
+/* ✅ صف المتجر في Product Modal */
 .product-store-row {
   display: inline-flex;
   align-items: center;
@@ -363,9 +395,7 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 .store-action-btn.static { cursor: default; pointer-events: none; }
 .store-action-btn .icon-circle { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-size: 0.85rem; background: linear-gradient(135deg, #FF7A00, #FFA64D); }
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ جديد: STORE CATEGORIES TABS — نظام الفئات المتقدم
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ STORE CATEGORIES TABS ═══ */
 .store-categories-tabs {
   display: flex;
   gap: 8px;
@@ -587,9 +617,7 @@ body.theme-dark .product-store-row { background: #3B2410; border-color: #5C3A1A;
 /* ═══ PRINT ═══ */
 @media print { body * { display: none !important; } body::before { content: '© 2026 BranZar | المحتوى محمي'; display: block !important; font-family: 'Cairo', sans-serif; color: #FF7A00; text-align: center; padding: 3rem; direction: rtl; font-weight: 900; } }
 
-/* ═══════════════════════════════════════════════════════════
-   VIEW TOGGLE GRID OVERRIDES (Desktop vs Mobile)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ VIEW TOGGLE GRID OVERRIDES ═══ */
 body.view-mobile #allProductsGrid,
 body.view-mobile .store-products-grid {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -606,9 +634,8 @@ body.view-desktop .store-products-grid {
         grid-template-columns: repeat(3, 1fr) !important;
     }
 }
-/* ═══════════════════════════════════════════════════════════
-   💬 نص بسيط: "اسحب لمشاهدة المزيد"
-   ═══════════════════════════════════════════════════════════ */
+
+/* ═══ CATEGORIES SCROLL HINT ═══ */
 .categories-scroll-hint {
   display: inline-block;
   font-size: 0.72rem;
@@ -625,9 +652,8 @@ body.theme-dark .categories-scroll-hint {
   color: #94A3B8;
   background: #334155;
 }
-/* ═══════════════════════════════════════════════════════════
-   ✅ v9.8.1 — قاعدة قوية لزر "عرض المزيد" داخل المتجر
-   ═══════════════════════════════════════════════════════════ */
+
+/* ═══ v9.8.1 — زر "عرض المزيد" داخل المتجر ═══ */
 #loadMoreStoreProductsBtn.hidden,
 #loadMoreStoreProductsBtn[hidden] {
     display: none !important;
@@ -645,10 +671,8 @@ body.theme-dark .categories-scroll-hint {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-/* ═══════════════════════════════════════════════════════════
-   📱 PWA INSTALL BUTTON (v9.8.3 — Enhanced)
-   ═══════════════════════════════════════════════════════════ */
 
+/* ═══ PWA INSTALL BUTTON ═══ */
 #installButtonFloating {
   position: fixed;
   bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 12px);
