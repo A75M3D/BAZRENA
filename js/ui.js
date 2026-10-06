@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.9.0 — ui.js
+   BranZar v10.2 — ui.js
    Layer 3: Auto-scroll + Modals + Search + Render + PWA + SW
+   ✅ v10.2: عرض وصف المنتج في Product Modal
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -691,7 +692,6 @@ function displayCategories() {
     frag.appendChild(btn);
   });
   c.appendChild(frag);
-  /* ✅ v9.9.0: بدء التمرير التلقائي للفئات */
   startCategoriesAutoScroll();
 }
 function highlightCategory(active) {
@@ -1120,7 +1120,9 @@ function renderStoreProducts(products, append) {
   grid.appendChild(frag);
 }
 
-/* ═══ PRODUCT MODAL ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ✅ PRODUCT MODAL — v10.2 (مع عرض الوصف)
+   ═══════════════════════════════════════════════════════════ */
 let currentModalProduct = null, selectedColorVariant = null;
 function openProductModal(product) {
   currentModalProduct = product;
@@ -1141,6 +1143,22 @@ function openProductModal(product) {
     origEl.textContent = '';
     origEl.classList.add('hidden');
   }
+
+  /* ✅ v10.2: عرض وصف المنتج */
+  const descWrapper = document.getElementById('productModalDescriptionWrapper');
+  const descEl = document.getElementById('productModalDescription');
+  const descText = (product.description && String(product.description).trim()) || '';
+
+  if (descWrapper && descEl) {
+    if (descText) {
+      descEl.textContent = descText;
+      descWrapper.classList.remove('hidden');
+    } else {
+      descEl.textContent = '';
+      descWrapper.classList.add('hidden');
+    }
+  }
+
   const colorsContainer = document.getElementById('productColorsContainer');
   const swatchesContainer = document.getElementById('productColorSwatches');
   const selColorName = document.getElementById('selectedColorName');
@@ -1604,4 +1622,4 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.9.0');
+console.log('[BZR] ui.js loaded ✅ v10.2');
