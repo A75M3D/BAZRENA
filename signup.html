@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FF7A00">
+<meta name="description" content="أنشئ متجرك على منصة BranZar خلال دقيقة واحدة">
+<title>إنشاء متجر | BranZar</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --c-primary: #FF7A00;
+  --c-primary-dark: #E66900;
+  --c-primary-soft: #FFF1E0;
+  --c-primary-gradient: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+  --c-bg: #F8FAFC;
+  --c-surface: #FFFFFF;
+  --c-surface-2: #F1F5F9;
+  --c-surface-3: #E2E8F0;
+  --c-text: #0F172A;
+  --c-text-soft: #64748B;
+  --c-text-muted: #94A3B8;
+  --c-border: #E2E8F0;
+  --c-success: #10B981;
+  --c-danger: #EF4444;
+  --c-whatsapp: #25D366;
+  --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md: 0 4px 14px rgba(15,23,42,0.08);
+  --shadow-lg: 0 12px 32px rgba(15,23,42,0.12);
+  --shadow-primary: 0 8px 24px rgba(255,122,0,0.28);
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  --header-h: 64px;
+}
+body.theme-dark {
+  --c-bg: #0B1120; --c-surface: #0F172A; --c-surface-2: #1E293B; --c-surface-3: #334155;
+  --c-text: #F1F5F9; --c-text-soft: #94A3B8; --c-text-muted: #64748B;
+  --c-border: #1E293B; --c-primary-soft: #2A1E0F;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+  background: var(--c-bg); color: var(--c-text);
+  min-height: 100vh; line-height: 1.6; overflow-x: hidden;
+  transition: background-color 0.3s, color 0.3s;
+  padding-bottom: 120px;
+}
+button, input, textarea { font-family: inherit; }
+input, textarea { outline: none; }
+::selection { background: var(--c-primary); color: #fff; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: var(--c-surface-3); border-radius: 4px; }
+
+#topProgressBar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--c-primary-gradient); z-index: 9999;
+  transform-origin: right center; transform: scaleX(0); transition: transform 0.3s;
+}
+#topProgressBar.active { transform: scaleX(0.7); transition: transform 1.5s cubic-bezier(0.2,0.8,0.2,1); }
+#topProgressBar.done { transform: scaleX(1); opacity: 0; }
+
+.cs-header {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--header-h);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--c-border);
+  display: flex; align-items: center; padding: 0 16px; gap: 12px;
+}
+body.theme-dark .cs-header { background: rgba(15,23,42,0.85); }
+.cs-back-btn, .cs-theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--c-surface-2); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--c-text); font-size: 1rem; transition: all 0.2s; flex-shrink: 0;
+}
+.cs-back-btn:hover, .cs-theme-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
+.cs-logo-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.cs-logo-icon {
+  width: 38px; height: 38px; border-radius: 11px;
+  background: var(--c-primary-gradient);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-primary); flex-shrink: 0; position: relative; overflow: hidden;
+}
+.cs-logo-icon::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent 60%);
+}
+.cs-logo-icon svg { width: 22px; height: 22px; position: relative; z-index: 1; }
+.cs-logo-text b { font-size: 1.05rem; font-weight: 900; color: var(--c-text); letter-spacing: -0.02em; }
+.cs-logo-text span { font-size: 0.68rem; font-weight: 700; color: var(--c-primary); display: block; line-height: 1.1; }
+
+.cs-page { max-width: 720px; margin: 0 auto; padding: 20px 16px 40px; }
+
+.cs-hero { text-align: center; padding: 28px 12px 24px; }
+.cs-hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--c-primary-soft); color: var(--c-primary);
+  padding: 6px 14px; border-radius: var(--radius-full);
+  font-size: 0.78rem; font-weight: 800; margin-bottom: 14px;
+}
+.cs-hero h1 { font-size: 1.65rem; font-weight: 900; color: var(--c-text); margin-bottom: 10px; line-height: 1.25; letter-spacing: -0.02em; }
+.cs-hero h1 .gradient-text {
+  background: var(--c-primary-gradient);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.cs-hero p { font-size: 0.92rem; color: var(--c-text-soft); max-width: 420px; margin: 0 auto; line-height: 1.7; font-weight: 500; }
+
+.cs-card {
+  background: var(--c-surface); border-radius: var(--radius-lg);
+  border: 1px solid var(--c-border); box-shadow: var(--shadow-sm);
+  padding: 22px 18px; margin-bottom: 16px;
+  animation: fadeInUp 0.5s ease backwards;
+}
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+.cs-card-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--c-border);
+}
+.cs-card-head-icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--c-primary-soft); color: var(--c-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; flex-shrink: 0;
+}
+.cs-card-head h2 { font-size: 1rem; font-weight: 800; color: var(--c-text); flex: 1; }
+.cs-card-head .cs-card-step {
+  font-size: 0.7rem; font-weight: 800; color: var(--c-text-muted);
+  background: var(--c-surface-2); padding: 3px 9px; border-radius: var(--radius-full);
+}
+
+.cs-upload-cover {
+  position: relative; width: 100%; height: 170px;
+  border-radius: var(--radius-md); overflow: hidden;
+  background: repeating-linear-gradient(45deg, var(--c-surface-2) 0 10px, transparent 10px 20px), var(--c-surface);
+  border: 2px dashed var(--c-border); cursor: pointer; transition: all 0.25s;
+  display: flex; align-items: center; justify-content: center;
+}
+.cs-upload-cover:hover, .cs-upload-cover.dragging {
+  border-color: var(--c-primary); background-color: var(--c-primary-soft);
+}
+.cs-upload-cover img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0; transition: opacity 0.3s;
+}
+.cs-upload-cover img.loaded { opacity: 1; }
+.cs-upload-cover .ph {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--c-text-soft); text-align: center; padding: 0 16px;
+}
+.cs-upload-cover .ph i { font-size: 1.8rem; color: var(--c-primary); }
+.cs-upload-cover .ph b { font-size: 0.85rem; font-weight: 800; color: var(--c-text); }
+.cs-upload-cover .ph span { font-size: 0.72rem; font-weight: 600; }
+.cs-upload-cover .overlay-edit {
+  position: absolute; bottom: 10px; left: 10px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  padding: 6px 12px; border-radius: var(--radius-full);
+  font-size: 0.72rem; font-weight: 800;
+  display: none; align-items: center; gap: 5px; backdrop-filter: blur(6px);
+}
+.cs-upload-cover.has-image .overlay-edit { display: inline-flex; }
+
+.cs-upload-logo-wrap {
+  display: flex; align-items: center; gap: 16px;
+  margin-top: 18px; padding: 14px;
+  background: var(--c-surface-2); border-radius: var(--radius-md);
+}
+.cs-upload-logo {
+  width: 84px; height: 84px; border-radius: 50%;
+  background: var(--c-surface); border: 2px dashed var(--c-border);
+  cursor: pointer; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; transition: all 0.25s; flex-shrink: 0;
+}
+.cs-upload-logo:hover, .cs-upload-logo.dragging {
+  border-color: var(--c-primary); box-shadow: 0 0 0 4px var(--c-primary-soft);
+}
+.cs-upload-logo img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0; transition: opacity 0.3s;
+}
+.cs-upload-logo img.loaded { opacity: 1; }
+.cs-upload-logo .ph { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--c-primary); }
+.cs-upload-logo .ph i { font-size: 1.3rem; }
+.cs-upload-logo .ph span { font-size: 0.6rem; font-weight: 800; color: var(--c-text-soft); }
+.cs-upload-logo-info { flex: 1; min-width: 0; }
+.cs-upload-logo-info b { display: block; font-size: 0.85rem; font-weight: 800; color: var(--c-text); margin-bottom: 3px; }
+.cs-upload-logo-info span { font-size: 0.74rem; color: var(--c-text-soft); font-weight: 600; line-height: 1.5; }
+
+.cs-upload-progress {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.7);
+  display: none; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: 0.85rem;
+  flex-direction: column; gap: 8px; z-index: 5; backdrop-filter: blur(4px);
+}
+.cs-upload-progress.active { display: flex; }
+.cs-upload-progress .ring {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.cs-field { margin-bottom: 16px; }
+.cs-field:last-child { margin-bottom: 0; }
+.cs-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.82rem; font-weight: 800; color: var(--c-text); margin-bottom: 8px;
+}
+.cs-label i { color: var(--c-primary); font-size: 0.78rem; }
+.cs-label .required { color: var(--c-danger); font-weight: 900; font-size: 0.9rem; }
+.cs-label .hint { margin-inline-start: auto; font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); }
+
+.cs-input-wrap {
+  position: relative; display: flex; align-items: stretch;
+  background: var(--c-surface-2); border: 2px solid transparent;
+  border-radius: var(--radius-md); transition: all 0.2s; overflow: hidden;
+}
+.cs-input-wrap:focus-within {
+  background: var(--c-surface); border-color: var(--c-primary);
+  box-shadow: 0 0 0 4px var(--c-primary-soft);
+}
+.cs-input-wrap.error { border-color: var(--c-danger); background: #FEF2F2; }
+body.theme-dark .cs-input-wrap.error { background: #2A1616; }
+.cs-input-wrap.valid { border-color: var(--c-success); }
+.cs-input-icon {
+  width: 46px; display: flex; align-items: center; justify-content: center;
+  color: var(--c-text-muted); font-size: 0.95rem; flex-shrink: 0; transition: color 0.2s;
+}
+.cs-input-wrap:focus-within .cs-input-icon { color: var(--c-primary); }
+.cs-input, .cs-textarea {
+  flex: 1; border: none; background: transparent;
+  padding: 13px 14px 13px 12px;
+  font-size: 0.92rem; font-weight: 600; color: var(--c-text);
+  width: 100%; min-width: 0;
+}
+.cs-input::placeholder, .cs-textarea::placeholder { color: var(--c-text-muted); font-weight: 500; }
+.cs-textarea {
+  resize: vertical; min-height: 110px; padding: 14px; line-height: 1.7;
+  border-radius: var(--radius-md); background: var(--c-surface-2);
+  border: 2px solid transparent; transition: all 0.2s; width: 100%;
+}
+.cs-textarea:focus {
+  background: var(--c-surface); border-color: var(--c-primary);
+  box-shadow: 0 0 0 4px var(--c-primary-soft);
+}
+.cs-input-suffix {
+  display: flex; align-items: center; padding-inline-end: 14px;
+  font-size: 0.78rem; font-weight: 800; color: var(--c-text-muted);
+  flex-shrink: 0;
+}
+.cs-pwd-toggle {
+  background: none; border: none; cursor: pointer;
+  color: var(--c-text-soft); padding: 0 14px; font-size: 0.95rem;
+  display: flex; align-items: center; transition: color 0.2s;
+}
+.cs-pwd-toggle:hover { color: var(--c-primary); }
+
+.cs-error-msg {
+  display: none; align-items: center; gap: 5px;
+  font-size: 0.74rem; font-weight: 700; color: var(--c-danger);
+  margin-top: 6px; padding-inline-start: 4px;
+}
+.cs-error-msg.show { display: flex; }
+.cs-error-msg i { font-size: 0.72rem; }
+.cs-char-count {
+  text-align: left; margin-top: 6px; font-size: 0.7rem; font-weight: 700;
+  color: var(--c-text-muted); padding-inline-start: 4px;
+}
+.cs-char-count.warn { color: var(--c-primary); }
+.cs-char-count.limit { color: var(--c-danger); }
+
+.cs-wa-hint {
+  display: flex; align-items: center; gap: 6px; margin-top: 8px;
+  font-size: 0.74rem; font-weight: 700; color: var(--c-text-soft);
+}
+.cs-wa-hint button {
+  background: rgba(37,211,102,0.12); color: var(--c-whatsapp);
+  border: none; padding: 4px 10px; border-radius: var(--radius-full);
+  font-size: 0.72rem; font-weight: 800; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
+}
+.cs-wa-hint button:hover { background: rgba(37,211,102,0.2); }
+
+.cs-pwd-strength { display: none; margin-top: 10px; }
+.cs-pwd-bars { display: flex; gap: 4px; margin-bottom: 6px; }
+.cs-pwd-bar {
+  flex: 1; height: 4px; background: var(--c-surface-3);
+  border-radius: 2px; transition: all 0.3s;
+}
+.cs-pwd-strength-text { font-size: 0.72rem; font-weight: 800; color: var(--c-text-soft); }
+
+.cs-cats-wrap {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 4px 2px 6px; max-height: 260px; overflow-y: auto;
+}
+.cs-cat-chip {
+  padding: 8px 15px; background: var(--c-surface-2);
+  border: 2px solid transparent; border-radius: var(--radius-full);
+  font-size: 0.82rem; font-weight: 800; color: var(--c-text);
+  cursor: pointer; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px; user-select: none;
+}
+.cs-cat-chip:hover { background: var(--c-primary-soft); color: var(--c-primary); transform: translateY(-1px); }
+.cs-cat-chip.active {
+  background: var(--c-primary-gradient); color: #fff;
+  box-shadow: var(--shadow-primary); border-color: var(--c-primary-dark);
+}
+.cs-cat-chip.active::before { content: '✓'; font-weight: 900; margin-inline-end: 2px; }
+
+.cs-cats-empty {
+  text-align: center; padding: 18px 12px;
+  color: var(--c-text-soft); font-size: 0.82rem; font-weight: 700;
+}
+.cs-cats-empty i { font-size: 1.4rem; color: var(--c-text-muted); display: block; margin-bottom: 6px; }
+
+.cs-new-cat-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 15px; background: transparent;
+  border: 2px dashed var(--c-primary); border-radius: var(--radius-full);
+  font-size: 0.82rem; font-weight: 800; color: var(--c-primary);
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.cs-new-cat-btn:hover { background: var(--c-primary-soft); transform: translateY(-1px); }
+.cs-new-cat-input-wrap { display: none; margin-top: 12px; animation: fadeInUp 0.25s ease; }
+.cs-new-cat-input-wrap.show { display: block; }
+.cs-new-cat-actions { display: flex; gap: 8px; margin-top: 8px; }
+.cs-new-cat-actions button {
+  flex: 1; padding: 10px; border-radius: var(--radius-md);
+  font-weight: 800; font-size: 0.82rem; cursor: pointer; border: none;
+  font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px;
+  transition: all 0.2s;
+}
+.cs-new-cat-actions .save { background: var(--c-primary-gradient); color: #fff; box-shadow: var(--shadow-primary); }
+.cs-new-cat-actions .cancel { background: var(--c-surface-2); color: var(--c-text); }
+
+.cs-preview-card {
+  position: relative; background: var(--c-surface);
+  border: 1px solid var(--c-border); border-radius: var(--radius-lg);
+  overflow: hidden; box-shadow: var(--shadow-md);
+  max-width: 260px; margin: 0 auto; transition: transform 0.3s;
+}
+.cs-preview-card:hover { transform: translateY(-3px); }
+.cs-preview-cover {
+  height: 100px; background: var(--c-surface-2); position: relative;
+  background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+}
+.cs-preview-cover i { color: var(--c-text-muted); font-size: 1.6rem; }
+.cs-preview-cover.has-image i { display: none; }
+.cs-preview-logo {
+  position: absolute; bottom: -26px; right: 14px;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--c-surface); border: 3px solid var(--c-surface);
+  box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center;
+  background-size: cover; background-position: center; overflow: hidden;
+}
+.cs-preview-logo i { color: var(--c-text-muted); font-size: 1.1rem; }
+.cs-preview-logo.has-image i { display: none; }
+.cs-preview-info { padding: 34px 14px 14px; }
+.cs-preview-name {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.92rem; font-weight: 900; color: var(--c-text); margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cs-preview-cat { font-size: 0.72rem; font-weight: 700; color: var(--c-text-soft); display: inline-flex; align-items: center; gap: 4px; }
+.cs-preview-cat i { font-size: 0.65rem; color: var(--c-primary); }
+.cs-preview-stats {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--c-border);
+}
+.cs-preview-followers { font-size: 0.7rem; font-weight: 800; color: var(--c-text-soft); display: inline-flex; align-items: center; gap: 4px; }
+.cs-preview-followers i { color: var(--c-primary); }
+.cs-preview-btn {
+  background: var(--c-primary-gradient); color: #fff;
+  font-size: 0.68rem; font-weight: 900; padding: 5px 12px;
+  border-radius: var(--radius-full); border: none;
+  box-shadow: 0 4px 10px rgba(255,122,0,0.3);
+}
+
+.cs-footer {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid var(--c-border);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); z-index: 90;
+}
+body.theme-dark .cs-footer { background: rgba(15,23,42,0.92); }
+.cs-footer-inner { max-width: 720px; margin: 0 auto; }
+.cs-submit {
+  width: 100%; padding: 16px 24px;
+  background: var(--c-primary-gradient); color: #fff; border: none;
+  border-radius: var(--radius-md); font-size: 1rem; font-weight: 900;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: var(--shadow-primary); transition: all 0.25s;
+  position: relative; overflow: hidden;
+}
+.cs-submit::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent 60%); pointer-events: none;
+}
+.cs-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,122,0,0.4); }
+.cs-submit:disabled { opacity: 0.7; cursor: not-allowed; background: linear-gradient(135deg, #94A3B8, #64748B); box-shadow: none; }
+.cs-submit i, .cs-submit span { position: relative; z-index: 1; }
+.cs-footer-note { text-align: center; font-size: 0.72rem; font-weight: 700; color: var(--c-text-soft); margin-top: 8px; }
+.cs-footer-note i { color: var(--c-success); }
+
+.cs-info-note {
+  margin-top: 14px; padding: 12px;
+  background: var(--c-primary-soft); border-radius: var(--radius-md);
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.cs-info-note i { color: var(--c-primary); font-size: 0.95rem; margin-top: 2px; flex-shrink: 0; }
+.cs-info-note p { font-size: 0.75rem; font-weight: 600; color: var(--c-text-soft); line-height: 1.7; }
+.cs-info-note b { color: var(--c-text); font-weight: 800; }
+
+#csToast {
+  position: fixed; bottom: 100px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--c-text); color: var(--c-surface);
+  padding: 12px 20px; border-radius: var(--radius-full);
+  font-size: 0.85rem; font-weight: 800;
+  box-shadow: var(--shadow-lg); z-index: 9999;
+  opacity: 0; pointer-events: none; transition: all 0.3s;
+  display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px);
+}
+#csToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#csToast.error { background: var(--c-danger); }
+#csToast.success { background: var(--c-success); }
+
+@media (max-width: 480px) {
+  .cs-hero h1 { font-size: 1.4rem; }
+  .cs-card { padding: 18px 14px; }
+  .cs-upload-cover { height: 150px; }
+}
+</style>
+</head>
+<body>
+
+<div id="topProgressBar"></div>
+
+<header class="cs-header">
+  <button class="cs-back-btn" id="backBtn" aria-label="رجوع">
+    <i class="fas fa-arrow-right"></i>
+  </button>
+  <div class="cs-logo-wrap">
+    <div class="cs-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M4 8.5C4 7.11929 5.11929 6 6.5 6H17.5C18.8807 6 20 7.11929 20 8.5V10H4V8.5Z" fill="white" opacity="0.95"/>
+        <path d="M4 10H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V10Z" fill="white"/>
+        <path d="M9 6V4.5C9 3.67157 9.67157 3 10.5 3H13.5C14.3284 3 15 3.67157 15 4.5V6" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="9" cy="15" r="1.3" fill="#FF7A00"/>
+        <circle cx="15" cy="15" r="1.3" fill="#FF7A00"/>
+      </svg>
+    </div>
+    <div class="cs-logo-text">
+      <b>BranZar</b>
+      <span>منصة المتاجر السودانية</span>
+    </div>
+  </div>
+  <button class="cs-theme-btn" id="themeBtn" aria-label="تبديل المظهر">
+    <i class="fas fa-moon"></i>
+  </button>
+</header>
+
+<main class="cs-page">
+
+  <section class="cs-hero">
+    <div class="cs-hero-badge">
+      <i class="fas fa-store"></i>
+      <span>إنشاء متجر جديد</span>
+    </div>
+    <h1>ابدأ رحلتك التجارية <span class="gradient-text">مجانًا</span></h1>
+    <p>املأ البيانات التالية وسيظهر متجرك لآلاف العملاء خلال ثوانٍ</p>
+  </section>
+
+  <!-- ═══ Card 1: Images ═══ -->
+  <div class="cs-card">
+    <div class="cs-card-head">
+      <div class="cs-card-head-icon"><i class="fas fa-image"></i></div>
+      <h2>صور المتجر</h2>
+      <span class="cs-card-step">1 / 6</span>
+    </div>
+
+    <div class="cs-field">
+      <label class="cs-label">
+        <i class="fas fa-panorama"></i>
+        <span>صورة الغلاف</span>
+        <span class="required">*</span>
+        <span class="hint">مقترح 1200×600</span>
+      </label>
+      <div class="cs-upload-cover" id="coverUpload" role="button" tabindex="0">
+        <img id="coverPreview" alt="">
+        <div class="ph">
+          <i class="fas fa-cloud-arrow-up"></i>
+          <b>اضغط لرفع صورة الغلاف</b>
+          <span>JPG، PNG، WEBP • حتى 5 ميجا</span>
+        </div>
+        <div class="overlay-edit"><i class="fas fa-pen"></i> تغيير الصورة</div>
+        <div class="cs-upload-progress" id="coverProgress">
+          <div class="ring"></div><span>جاري الرفع...</span>
+        </div>
+      </div>
+      <div class="cs-error-msg" id="coverError"><i class="fas fa-exclamation-circle"></i> <span>صورة الغلاف مطلوبة</span></div>
+      <input type="file" id="coverInput" accept="image/*" hidden>
+    </div>
+
+    <div class="cs-upload-logo-wrap">
+      <div class="cs-upload-logo" id="logoUpload" role="button" tabindex="0">
+        <img id="logoPreview" alt="">
+        <div class="ph"><i class="fas fa-camera"></i><span>شعار</span></div>
+        <div class="cs-upload-progress" id="logoProgress"><div class="ring"></div></div>
+      </div>
+      <div class="cs-upload-logo-info">
+        <b>شعار / بروفايل المتجر <span style="color:var(--c-danger)">*</span></b>
+        <span>مربع 1:1 • يظهر دائريًا. يفضل 500×500</span>
+      </div>
+    </div>
+    <div class="cs-error-msg" id="logoError" style="margin-top:8px;"><i class="fas fa-exclamation-circle"></i> <span>شعار المتجر مطلوب</span></div>
+    <input type="file" id="logoInput" accept="image/*" hidden>
+  </div>
+
+  <!-- ═══ Card 2: Basic Info ═══ -->
+  <div class="cs-card">
+    <div class="cs-card-head">
+      <div class="cs-card-head-icon"><i class="fas fa-circle-info"></i></div>
+      <h2>المعلومات الأساسية</h2>
+      <span class="cs-card-step">2 / 6</span>
+    </div>
+
+    <div class="cs-field">
+      <label class="cs-label" for="storeName">
+        <i class="fas fa-store"></i>
+        <span>اسم المتجر أو الخدمة</span>
+        <span class="required">*</span>
+        <span class="hint"><span id="nameCount">0</span>/50</span>
+      </label>
+      <div class="cs-input-wrap" id="nameWrap">
+        <div class="cs-input-icon"><i class="fas fa-tag"></i></div>
+        <input class="cs-input" type="text" id="storeName" placeholder="مثال: متجر الأناقة" maxlength="50" autocomplete="off">
+      </div>
+      <div class="cs-error-msg" id="nameError"><i class="fas fa-exclamation-circle"></i> <span>الاسم يجب أن يكون بين 3 و 50 حرفًا</span></div>
+    </div>
+
+    <div class="cs-field">
+      <label class="cs-label" for="phoneNumber">
+        <i class="fas fa-phone"></i>
+        <span>رقم التواصل</span>
+        <span class="required">*</span>
+      </label>
+      <div class="cs-input-wrap" id="phoneWrap">
+        <div class="cs-input-icon"><i class="fas fa-phone"></i></div>
+        <input class="cs-input" type="tel" id="phoneNumber" placeholder="09xxxxxxxx" inputmode="numeric" maxlength="15" autocomplete="tel">
+      </div>
+      <div class="cs-error-msg" id="phoneError"><i class="fas fa-exclamation-circle"></i> <span>يرجى إدخال رقم هاتف صحيح</span></div>
+    </div>
+
+    <div class="cs-field">
+      <label class="cs-label" for="whatsappNumber">
+        <i class="fab fa-whatsapp" style="color:var(--c-whatsapp)"></i>
+        <span>رقم الواتساب</span>
+        <span class="required">*</span>
+      </label>
+      <div class="cs-input-wrap" id="waWrap">
+        <div class="cs-input-icon" style="color:var(--c-whatsapp)"><i class="fab fa-whatsapp"></i></div>
+        <input class="cs-input" type="tel" id="whatsappNumber" placeholder="09xxxxxxxx" inputmode="numeric" maxlength="15" autocomplete="tel">
+      </div>
+      <div class="cs-error-msg" id="waError"><i class="fas fa-exclamation-circle"></i> <span>يرجى إدخال رقم واتساب صحيح</span></div>
+      <div class="cs-wa-hint">
+        <i class="fas fa-circle-info"></i>
+        <span>نفس رقم الهاتف؟</span>
+        <button type="button" id="copyPhoneBtn">
+          <i class="fas fa-copy"></i>
+          <span>انسخ الرقم</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Card 3: Password ═══ -->
+  <div class="cs-card">
+    <div class="cs-card-head">
+      <div class="cs-card-head-icon"><i class="fas fa-shield-halved"></i></div>
+      <h2>حماية الحساب</h2>
+      <span class="cs-card-step">3 / 6</span>
+    </div>
+
+    <div class="cs-field">
+      <label class="cs-label" for="password">
+        <i class="fas fa-lock"></i>
+        <span>كلمة المرور</span>
+        <span class="required">*</span>
+        <span class="hint">6 أحرف على الأقل</span>
+      </label>
+      <div class="cs-input-wrap" id="pwdWrap">
+        <div class="cs-input-icon"><i class="fas fa-lock"></i></div>
+        <input class="cs-input" type="password" id="password" placeholder="••••••••" maxlength="64" autocomplete="new-password">
+        <button type="button" class="cs-pwd-toggle" id="togglePwdBtn" aria-label="إظهار">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+      <div class="cs-error-msg" id="pwdError"><i class="fas fa-exclamation-circle"></i> <span>كلمة المرور يجب أن تكون 6 أحرف على الأقل</span></div>
+
+      <div class="cs-pwd-strength" id="pwdStrength">
+        <div class="cs-pwd-bars">
+          <div class="cs-pwd-bar"></div>
+          <div class="cs-pwd-bar"></div>
+          <div class="cs-pwd-bar"></div>
+          <div class="cs-pwd-bar"></div>
+        </div>
+        <div class="cs-pwd-strength-text" id="pwdStrengthText">قوة كلمة المرور</div>
+      </div>
+    </div>
+
+    <div class="cs-field">
+      <label class="cs-label" for="confirmPassword">
+        <i class="fas fa-lock"></i>
+        <span>تأكيد كلمة المرور</span>
+        <span class="required">*</span>
+      </label>
+      <div class="cs-input-wrap" id="pwdConfirmWrap">
+        <div class="cs-input-icon"><i class="fas fa-shield-halved"></i></div>
+        <input class="cs-input" type="password" id="confirmPassword" placeholder="••••••••" maxlength="64" autocomplete="new-password">
+        <button type="button" class="cs-pwd-toggle" id="togglePwdConfirmBtn" aria-label="إظهار">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+      <div class="cs-error-msg" id="pwdConfirmError"><i class="fas fa-exclamation-circle"></i> <span>كلمتا المرور غير متطابقتين</span></div>
+    </div>
+
+    <div class="cs-info-note">
+      <i class="fas fa-circle-info"></i>
+      <p>ستستخدم <b>رقم التواصل</b> وكلمة المرور هذه لتسجيل الدخول لاحقًا وإدارة متجرك من أي جهاز.</p>
+    </div>
+  </div>
+
+  <!-- ═══ Card 4: Description ═══ -->
+  <div class="cs-card">
+    <div class="cs-card-head">
+      <div class="cs-card-head-icon"><i class="fas fa-align-right"></i></div>
+      <h2>وصف المتجر</h2>
+      <span class="cs-card-step">4 / 6</span>
+    </div>
+    <div class="cs-field">
+      <label class="cs-label" for="description">
+        <i class="fas fa-quote-right"></i>
+        <span>وصف المتجر أو الخدمة</span>
+        <span class="hint">اختياري</span>
+      </label>
+      <textarea class="cs-textarea" id="description" placeholder="اكتب وصفًا جاذبًا يعرّف العملاء بما تقدمه..." maxlength="500"></textarea>
+      <div class="cs-char-count"><span id="descCount">0</span> / 500</div>
+    </div>
+  </div>
+
+  <!-- ═══ Card 5: Category ═══ -->
+  <div class="cs-card">
+    <div class="cs-card-head">
+      <div class="cs-card-head-icon"><i class="fas fa-layer-group"></i></div>
+      <h2>الفئة</h2>
+      <span class="cs-card-step">5 / 6</span>
+    </div>
+    <div class="cs-field">
+      <label class="cs-label">
+        <i class="fas fa-tags"></i>
+        <span>اختر الفئة المناسبة</span>
+        <span class="required">*</span>
+      </label>
+      <div class="cs-cats-wrap" id="catsWrap">
+        <div class="cs-cats-empty">
+          <i class="fas fa-spinner fa-spin"></i>
+          جاري تحميل الفئات...
+        </div>
+      </div>
+      <button type="button" class="cs-new-cat-btn" id="addCatBtn" style="margin-top:8px;">
+        <i class="fas fa-plus"></i>
+        <span>إضافة فئة جديدة</span>
+      </button>
+      <div class="cs-new-cat-input-wrap" id="newCatWrap">
+        <div class="cs-input-wrap">
+          <div class="cs-input-icon"><i class="fas fa-folder-plus"></i></div>
+          <input class="cs-input" type="text" id="newCatInput" placeholder="اسم الفئة الجديدة" maxlength="30" autocomplete="off">
+        </div>
+        <div class="cs-new-cat-actions">
+          <button type="button" class="save" id="saveCatBtn"><i class="fas fa-check"></i> إضافة</button>
+          <button type="button" class="cancel" id="cancelCatBtn"><i class="fas fa-times"></i> إلغاء</button>
+        </div>
+      </div>
+      <div class="cs-error-msg" id="catError"><i class="fas fa-exclamation-circle"></i> <span>يرجى اختيار فئة</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ Card 6: Preview ═══ -->
+  <div class="cs-card">
+    <div class="cs-card-head">
+      <div class="cs-card-head-icon"><i class="fas fa-eye"></i></div>
+      <h2>معاينة مباشرة</h2>
+      <span class="cs-card-step">6 / 6</span>
+    </div>
+    <div class="cs-preview-card">
+      <div class="cs-preview-cover" id="previewCover"><i class="fas fa-image"></i></div>
+      <div class="cs-preview-logo" id="previewLogo"><i class="fas fa-store"></i></div>
+      <div class="cs-preview-info">
+        <div class="cs-preview-name" id="previewName">اسم المتجر</div>
+        <div class="cs-preview-cat">
+          <i class="fas fa-tag"></i>
+          <span id="previewCat">الفئة</span>
+        </div>
+        <div class="cs-preview-stats">
+          <span class="cs-preview-followers">
+            <i class="fas fa-users"></i>
+            <span>1 متابع</span>
+          </span>
+          <button class="cs-preview-btn" type="button" tabindex="-1">
+            <i class="fas fa-check"></i> متابَع
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="cs-footer">
+  <div class="cs-footer-inner">
+    <button class="cs-submit" id="submitBtn">
+      <i class="fas fa-rocket"></i>
+      <span>إنشاء المتجر والحساب</span>
+    </button>
+    <div class="cs-footer-note">
+      <i class="fas fa-shield-alt"></i>
+      بياناتك محمية ولا تُستخدم إلا لنشر متجرك
+    </div>
+  </div>
+</div>
+
+<div id="csToast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<script>
+'use strict';
+
+/* ═══ CONFIG — استبدلها بقيمك ═══ */
+const CONFIG = {
+  FIREBASE: {
+    apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    authDomain: "branzar.firebaseapp.com",
+    projectId: "branzar",
+    storageBucket: "branzar.appspot.com",
+    messagingSenderId: "000000000000",
+    appId: "1:000000000000:web:xxxxxxxxxxxx"
+  },
+  CLOUDINARY_CLOUD_NAME: "branzar",
+  CLOUDINARY_UPLOAD_PRESET: "branzar_unsigned",
+  MAX_IMAGE_MB: 5,
+  IMAGE_MAX_WIDTH: 1600,
+  IMAGE_QUALITY: 0.85
+};
+
+firebase.initializeApp(CONFIG.FIREBASE);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+/* ═══ Utilities ═══ */
+function haptic(type) {
+  if (!navigator.vibrate) return;
+  const p = { light: 15, medium: 30, heavy: 60 };
+  try { navigator.vibrate(p[type] || 15); } catch(e){}
+}
+let toastTimer = null;
+function showToast(msg, type) {
+  const t = document.getElementById('csToast');
+  t.className = '';
+  if (type) t.classList.add(type);
+  t.innerHTML = (type === 'success' ? '<i class="fas fa-check-circle"></i>' :
+                 type === 'error' ? '<i class="fas fa-exclamation-circle"></i>' :
+                 '<i class="fas fa-info-circle"></i>') + '<span>' + msg + '</span>';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+function sanitizeHTML(str) {
+  const d = document.createElement('div');
+  d.textContent = String(str || '');
+  return d.innerHTML;
+}
+function getUserIdentity() {
+  let fp = localStorage.getItem('branzar_fp');
+  if (!fp) {
+    fp = 'fp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 11);
+    localStorage.setItem('branzar_fp', fp);
+  }
+  return fp;
+}
+function compressImage(file, maxW, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        if (width > maxW) { height = Math.round((maxW / width) * height); width = maxW; }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(b => b ? resolve(b) : reject(new Error('compress_failed')), 'image/jpeg', quality);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+async function uploadToCloudinary(blob) {
+  const fd = new FormData();
+  fd.append('file', blob);
+  fd.append('upload_preset', CONFIG.CLOUDINARY_UPLOAD_PRESET);
+  fd.append('folder', 'branzar/stores');
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CONFIG.CLOUDINARY_CLOUD_NAME}/image/upload`,
+    { method: 'POST', body: fd }
+  );
+  if (!res.ok) throw new Error('upload_failed');
+  const data = await res.json();
+  if (!data.secure_url) throw new Error('no_url');
+  return data.secure_url;
+}
+const phoneRegex = /^(?:\+?249|0)?9[0-9]{8}$|^\+?[0-9]{8,15}$/;
+function validatePhone(v) {
+  const clean = String(v || '').replace(/[^\d+]/g, '');
+  return phoneRegex.test(clean) && clean.length >= 8;
+}
+function normalizePhone(v) { return String(v || '').replace(/[^\d+]/g, ''); }
+
+/* ═══ State ═══ */
+const state = {
+  coverFile: null, coverBlob: null, coverUrl: null,
+  logoFile: null, logoBlob: null, logoUrl: null,
+  selectedCategory: null,
+  customCategories: [],
+  existingCategories: [],
+  submitting: false
+};
+
+/* ═══ Theme ═══ */
+const themeBtn = document.getElementById('themeBtn');
+function applyTheme(t) {
+  document.body.classList.toggle('theme-dark', t === 'dark');
+  themeBtn.innerHTML = t === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', t === 'dark' ? '#0B1120' : '#FF7A00');
+}
+function initTheme() {
+  const s = localStorage.getItem('branzar_theme');
+  if (s) return applyTheme(s);
+  applyTheme(matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+}
+themeBtn.addEventListener('click', () => {
+  const cur = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
+  const next = cur === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('branzar_theme', next);
+  haptic('light');
+});
+
+/* ═══ Progress ═══ */
+const topBar = document.getElementById('topProgressBar');
+function startProgress() { topBar.classList.remove('done'); topBar.classList.add('active'); }
+function doneProgress() {
+  topBar.classList.remove('active');
+  topBar.classList.add('done');
+  setTimeout(() => { topBar.classList.remove('done'); topBar.style.transform = ''; }, 400);
+}
+
+/* ═══ Back ═══ */
+document.getElementById('backBtn').addEventListener('click', () => {
+  haptic('light');
+  if (document.referrer && document.referrer.includes(window.location.hostname)) {
+    history.back();
+  } else {
+    window.location.href = '/';
+  }
+});
+
+/* ═══ Image Upload ═══ */
+function setupImageUpload(opts) {
+  const { zoneEl, inputEl, previewEl, progressEl, onLoaded } = opts;
+  const open = () => inputEl.click();
+  zoneEl.addEventListener('click', open);
+  zoneEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+  });
+  ['dragenter','dragover'].forEach(ev => zoneEl.addEventListener(ev, e => { e.preventDefault(); zoneEl.classList.add('dragging'); }));
+  ['dragleave','drop'].forEach(ev => zoneEl.addEventListener(ev, e => { e.preventDefault(); zoneEl.classList.remove('dragging'); }));
+  zoneEl.addEventListener('drop', e => {
+    const f = e.dataTransfer?.files?.[0];
+    if (f) handle(f);
+  });
+  inputEl.addEventListener('change', e => {
+    const f = e.target.files?.[0];
+    if (f) handle(f);
+    inputEl.value = '';
+  });
+  async function handle(file) {
+    if (!file.type.startsWith('image/')) { showToast('يجب اختيار ملف صورة', 'error'); return; }
+    if (file.size > CONFIG.MAX_IMAGE_MB * 1024 * 1024) {
+      showToast(`حجم الصورة يجب أن يكون أقل من ${CONFIG.MAX_IMAGE_MB} ميجا`, 'error'); return;
+    }
+    progressEl?.classList.add('active');
+    haptic('light');
+    try {
+      const blob = await compressImage(file, CONFIG.IMAGE_MAX_WIDTH, CONFIG.IMAGE_QUALITY);
+      const url = await uploadToCloudinary(blob);
+      previewEl.src = url;
+      previewEl.onload = () => previewEl.classList.add('loaded');
+      zoneEl.classList.add('has-image');
+      onLoaded({ file, blob, url });
+      showToast('تم رفع الصورة بنجاح', 'success');
+      haptic('medium');
+    } catch (err) {
+      console.error('[Upload]', err);
+      showToast('تعذر رفع الصورة، حاول مرة أخرى', 'error');
+    } finally {
+      progressEl?.classList.remove('active');
+    }
+  }
+}
+
+setupImageUpload({
+  zoneEl: document.getElementById('coverUpload'),
+  inputEl: document.getElementById('coverInput'),
+  previewEl: document.getElementById('coverPreview'),
+  progressEl: document.getElementById('coverProgress'),
+  onLoaded: ({ file, blob, url }) => {
+    state.coverFile = file; state.coverBlob = blob; state.coverUrl = url;
+    hideError('coverError'); updatePreview();
+  }
+});
+setupImageUpload({
+  zoneEl: document.getElementById('logoUpload'),
+  inputEl: document.getElementById('logoInput'),
+  previewEl: document.getElementById('logoPreview'),
+  progressEl: document.getElementById('logoProgress'),
+  onLoaded: ({ file, blob, url }) => {
+    state.logoFile = file; state.logoBlob = blob; state.logoUrl = url;
+    hideError('logoError'); updatePreview();
+  }
+});
+
+/* ═══ Inputs ═══ */
+const nameInput = document.getElementById('storeName');
+const phoneInput = document.getElementById('phoneNumber');
+const waInput = document.getElementById('whatsappNumber');
+const descInput = document.getElementById('description');
+const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirmPassword');
+
+nameInput.addEventListener('input', e => {
+  document.getElementById('nameCount').textContent = e.target.value.length;
+  if (e.target.value.trim().length >= 3) hideError('nameError');
+  updatePreview();
+});
+phoneInput.addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/[^\d+]/g, '');
+  if (validatePhone(e.target.value)) hideError('phoneError');
+});
+waInput.addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/[^\d+]/g, '');
+  if (validatePhone(e.target.value)) hideError('waError');
+});
+descInput.addEventListener('input', e => {
+  const len = e.target.value.length;
+  const c = document.getElementById('descCount');
+  c.textContent = len;
+  c.parentElement.classList.toggle('warn', len > 400);
+  c.parentElement.classList.toggle('limit', len >= 500);
+});
+document.getElementById('copyPhoneBtn').addEventListener('click', () => {
+  const p = phoneInput.value.trim();
+  if (!p) { showToast('أدخل رقم التواصل أولاً', 'error'); return; }
+  waInput.value = p; hideError('waError'); haptic('light');
+  showToast('تم نسخ الرقم', 'success');
+});
+
+/* ═══ Password UI ═══ */
+const pwdStrengthEl = document.getElementById('pwdStrength');
+document.getElementById('togglePwdBtn').addEventListener('click', () => {
+  const isPwd = passwordInput.type === 'password';
+  passwordInput.type = isPwd ? 'text' : 'password';
+  document.querySelector('#togglePwdBtn i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
+  haptic('light');
+});
+document.getElementById('togglePwdConfirmBtn').addEventListener('click', () => {
+  const isPwd = confirmPasswordInput.type === 'password';
+  confirmPasswordInput.type = isPwd ? 'text' : 'password';
+  document.querySelector('#togglePwdConfirmBtn i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
+  haptic('light');
+});
+passwordInput.addEventListener('input', () => {
+  const pwd = passwordInput.value;
+  if (!pwd) { pwdStrengthEl.style.display = 'none'; return; }
+  pwdStrengthEl.style.display = 'block';
+  let score = 0;
+  if (pwd.length >= 6) score++;
+  if (pwd.length >= 10) score++;
+  if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+  if (/\d/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+  score = Math.min(score, 4);
+  const colors = ['#EF4444', '#F59E0B', '#F59E0B', '#10B981', '#10B981'];
+  const labels = ['ضعيفة جدًا', 'ضعيفة', 'متوسطة', 'قوية', 'قوية جدًا'];
+  document.querySelectorAll('.cs-pwd-bar').forEach((b, i) => {
+    b.style.background = i < score ? colors[score] : 'var(--c-surface-3)';
+  });
+  const txt = document.getElementById('pwdStrengthText');
+  txt.textContent = labels[score] || '';
+  txt.style.color = colors[score] || '';
+  if (pwd.length >= 6) hideError('pwdError');
+});
+confirmPasswordInput.addEventListener('input', () => {
+  if (confirmPasswordInput.value && confirmPasswordInput.value === passwordInput.value) {
+    hideError('pwdConfirmError');
+  }
+});
+
+/* ═══ Categories ═══ */
+const DEFAULT_CATEGORIES = ['أزياء', 'إلكترونيات', 'مطاعم', 'تجميل', 'منزل', 'رياضة', 'كتب', 'أطفال', 'هدايا', 'خدمات'];
+async function loadExistingCategories() {
+  const wrap = document.getElementById('catsWrap');
+  startProgress();
+  try {
+    const snap = await db.collection('stores').limit(200).get();
+    const cats = new Set();
+    snap.docs.forEach(d => {
+      const data = d.data();
+      if (data?.category && String(data.category).trim()) cats.add(String(data.category).trim());
+      if (Array.isArray(data?.categories)) {
+        data.categories.forEach(c => { if (c && String(c).trim()) cats.add(String(c).trim()); });
+      }
+    });
+    state.existingCategories = Array.from(cats).sort();
+    renderCategories();
+  } catch (err) {
+    console.warn('[Cats]', err);
+    state.existingCategories = [];
+    renderCategories();
+  } finally {
+    doneProgress();
+  }
+}
+function renderCategories() {
+  const wrap = document.getElementById('catsWrap');
+  const cats = state.existingCategories.length ? state.existingCategories : DEFAULT_CATEGORIES;
+  wrap.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  cats.forEach(cat => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'cs-cat-chip' + (state.selectedCategory === cat ? ' active' : '');
+    chip.dataset.cat = cat;
+    chip.innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(cat) + '</span>';
+    chip.addEventListener('click', () => selectCategory(cat));
+    frag.appendChild(chip);
+  });
+  wrap.appendChild(frag);
+}
+function selectCategory(cat) {
+  state.selectedCategory = cat;
+  document.querySelectorAll('.cs-cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === cat));
+  hideError('catError'); updatePreview(); haptic('light');
+}
+const addCatBtn = document.getElementById('addCatBtn');
+const newCatWrap = document.getElementById('newCatWrap');
+const newCatInput = document.getElementById('newCatInput');
+addCatBtn.addEventListener('click', () => {
+  newCatWrap.classList.add('show'); newCatInput.focus(); haptic('light');
+});
+document.getElementById('cancelCatBtn').addEventListener('click', () => {
+  newCatWrap.classList.remove('show'); newCatInput.value = '';
+});
+document.getElementById('saveCatBtn').addEventListener('click', saveCustomCategory);
+newCatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); saveCustomCategory(); }
+});
+function saveCustomCategory() {
+  const val = newCatInput.value.trim();
+  if (val.length < 2) { showToast('اسم الفئة قصير جدًا', 'error'); return; }
+  if (val.length > 30) { showToast('اسم الفئة طويل جدًا', 'error'); return; }
+  if (!state.customCategories.includes(val)) state.customCategories.push(val);
+  if (!state.existingCategories.includes(val)) state.existingCategories.unshift(val);
+  renderCategories();
+  selectCategory(val);
+  newCatWrap.classList.remove('show');
+  newCatInput.value = '';
+  showToast('تمت إضافة الفئة "' + val + '"', 'success');
+  haptic('medium');
+}
+
+/* ═══ Preview ═══ */
+function updatePreview() {
+  const pc = document.getElementById('previewCover');
+  const pl = document.getElementById('previewLogo');
+  const pn = document.getElementById('previewName');
+  const pcat = document.getElementById('previewCat');
+  if (state.coverUrl) {
+    pc.style.backgroundImage = `url(${state.coverUrl})`;
+    pc.classList.add('has-image');
+  } else {
+    pc.style.backgroundImage = ''; pc.classList.remove('has-image');
+  }
+  if (state.logoUrl) {
+    pl.style.backgroundImage = `url(${state.logoUrl})`;
+    pl.classList.add('has-image');
+  } else {
+    pl.style.backgroundImage = ''; pl.classList.remove('has-image');
+  }
+  pn.textContent = nameInput.value.trim() || 'اسم المتجر';
+  pcat.textContent = state.selectedCategory || 'الفئة';
+}
+
+/* ═══ Errors ═══ */
+function showError(id) { document.getElementById(id)?.classList.add('show'); }
+function hideError(id) { document.getElementById(id)?.classList.remove('show'); }
+function setFieldError(wrapId, hasError) {
+  const el = document.getElementById(wrapId);
+  if (!el) return;
+  el.classList.toggle('error', hasError);
+  el.classList.toggle('valid', !hasError);
+}
+
+/* ═══ Validate ═══ */
+function validateForm() {
+  let ok = true; let firstErr = null;
+
+  if (!state.coverUrl) { showError('coverError'); ok = false; firstErr = firstErr || 'coverUpload'; }
+  else hideError('coverError');
+  if (!state.logoUrl) { showError('logoError'); ok = false; firstErr = firstErr || 'logoUpload'; }
+  else hideError('logoError');
+
+  const name = nameInput.value.trim();
+  if (name.length < 3 || name.length > 50) {
+    showError('nameError'); setFieldError('nameWrap', true);
+    ok = false; firstErr = firstErr || 'storeName';
+  } else { hideError('nameError'); setFieldError('nameWrap', false); }
+
+  if (!validatePhone(phoneInput.value)) {
+    showError('phoneError'); setFieldError('phoneWrap', true);
+    ok = false; firstErr = firstErr || 'phoneNumber';
+  } else { hideError('phoneError'); setFieldError('phoneWrap', false); }
+
+  if (!validatePhone(waInput.value)) {
+    showError('waError'); setFieldError('waWrap', true);
+    ok = false; firstErr = firstErr || 'whatsappNumber';
+  } else { hideError('waError'); setFieldError('waWrap', false); }
+
+  const pwd = passwordInput.value;
+  const cpwd = confirmPasswordInput.value;
+  if (pwd.length < 6) {
+    showError('pwdError'); setFieldError('pwdWrap', true);
+    ok = false; firstErr = firstErr || 'password';
+  } else { hideError('pwdError'); setFieldError('pwdWrap', false); }
+
+  if (pwd !== cpwd || !cpwd) {
+    showError('pwdConfirmError'); setFieldError('pwdConfirmWrap', true);
+    ok = false; firstErr = firstErr || 'confirmPassword';
+  } else { hideError('pwdConfirmError'); setFieldError('pwdConfirmWrap', false); }
+
+  if (!state.selectedCategory) {
+    showError('catError');
+    ok = false; firstErr = firstErr || 'catsWrap';
+  } else hideError('catError');
+
+  if (firstErr) {
+    document.getElementById(firstErr)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    haptic('heavy');
+  }
+  return ok;
+}
+
+/* ═══ Submit ═══ */
+const submitBtn = document.getElementById('submitBtn');
+submitBtn.addEventListener('click', async () => {
+  if (state.submitting) return;
+  if (!validateForm()) {
+    showToast('يرجى تصحيح الحقول المطلوبة', 'error');
+    return;
+  }
+  state.submitting = true;
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري إنشاء المتجر والحساب...</span>';
+  startProgress(); haptic('medium');
+
+  const phoneDigits = normalizePhone(phoneInput.value).replace(/\D/g, '');
+  const syntheticEmail = phoneDigits + '@branzar.app';
+  const password = passwordInput.value;
+
+  try {
+    /* 1) Firebase Auth */
+    let authUser = null;
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(syntheticEmail, password);
+      authUser = cred.user;
+    } catch (authErr) {
+      if (authErr.code === 'auth/email-already-in-use') {
+        try {
+          const cred = await auth.signInWithEmailAndPassword(syntheticEmail, password);
+          authUser = cred.user;
+        } catch {
+          throw new Error('phone_already_registered');
+        }
+      } else if (authErr.code === 'auth/weak-password') {
+        throw new Error('weak_password');
+      } else {
+        throw authErr;
+      }
+    }
+
+    /* 2) Firestore store doc */
+    const storeData = {
+      name: nameInput.value.trim(),
+      phone_number: normalizePhone(phoneInput.value),
+      whatsapp_number: normalizePhone(waInput.value),
+      description: descInput.value.trim(),
+      category: state.selectedCategory,
+      cover_url: state.coverUrl,
+      logo_url: state.logoUrl,
+      followers: 1,
+      is_verified: false,
+      is_subscribed: false,
+      created_at: firebase.firestore.FieldValue.serverTimestamp(),
+      updated_at: firebase.firestore.FieldValue.serverTimestamp(),
+      owner_uid: authUser.uid,
+      owner_email: syntheticEmail,
+      owner_fingerprint: getUserIdentity(),
+      status: 'active'
+    };
+    const ref = await db.collection('stores').add(storeData);
+
+    /* 3) users doc */
+    try {
+      await db.collection('users').doc(authUser.uid).set({
+        uid: authUser.uid,
+        phone: phoneDigits,
+        email: syntheticEmail,
+        storeIds: firebase.firestore.FieldValue.arrayUnion(ref.id),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    } catch(e){ /* silent */ }
+
+    /* 4) auto-follow */
+    try {
+      await db.collection('store_follows').doc(ref.id + '_' + authUser.uid).set({
+        storeId: ref.id,
+        fingerprint: authUser.uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch(e){ /* silent */ }
+
+    doneProgress(); haptic('heavy');
+    showToast('🎉 تم إنشاء المتجر! جاري التحويل...', 'success');
+
+    /* 5) Sign out + redirect to a.html */
+    try { await auth.signOut(); } catch(e){}
+    try {
+      localStorage.setItem('branzar_created_phone', phoneDigits);
+      localStorage.setItem('branzar_created_store', ref.id);
+    } catch(e){}
+
+    setTimeout(() => {
+      window.location.href = '/a.html?welcome=1&phone=' + encodeURIComponent(phoneDigits);
+    }, 1200);
+
+  } catch (err) {
+    console.error('[Submit]', err);
+    doneProgress();
+    let msg = 'تعذر إنشاء المتجر، حاول مرة أخرى';
+    if (err.message === 'phone_already_registered') msg = 'هذا الرقم مسجّل بالفعل — جرّب تسجيل الدخول';
+    else if (err.message === 'weak_password') msg = 'كلمة المرور ضعيفة جدًا';
+    else if (err.code === 'auth/network-request-failed') msg = 'تحقق من اتصالك بالإنترنت';
+    showToast(msg, 'error');
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-rocket"></i><span>إنشاء المتجر والحساب</span>';
+    state.submitting = false;
+  }
+});
+
+/* ═══ Bootstrap ═══ */
+(function init() {
+  initTheme();
+  loadExistingCategories();
+  updatePreview();
+  const params = new URLSearchParams(location.search);
+  if (params.get('name')) nameInput.value = params.get('name').slice(0, 50);
+  if (params.get('phone')) phoneInput.value = params.get('phone').replace(/[^\d+]/g, '');
+  if (params.get('whatsapp')) waInput.value = params.get('whatsapp').replace(/[^\d+]/g, '');
+  if (nameInput.value) document.getElementById('nameCount').textContent = nameInput.value.length;
+  console.log('[BZR] create-store.html loaded ✅');
+})();
+</script>
+
+</body>
+</html>
