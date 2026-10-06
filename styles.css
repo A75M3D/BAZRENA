@@ -865,3 +865,65 @@ body.theme-dark .pwa-ios-steps li {
   background: #334155;
   border-color: #475569;
 }
+/* ═══════════════════════════════════════════════════════════
+   ✅ v10.2: وصف المنتج في Product Modal
+   ═══════════════════════════════════════════════════════════ */
+
+.product-description-wrapper {
+  margin: 0.8rem 0 1rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+  border: 1px solid var(--c-border);
+  border-right: 3px solid #FF7A00;
+  border-radius: 12px;
+  animation: fadeInDesc 0.3s ease;
+}
+
+@keyframes fadeInDesc {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.product-description-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #FF7A00;
+}
+
+.product-description-label i {
+  font-size: 0.72rem;
+}
+
+.product-description-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--c-text);
+  font-weight: 600;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.product-description-text::-webkit-scrollbar {
+  width: 4px;
+}
+.product-description-text::-webkit-scrollbar-thumb {
+  background: rgba(255,122,0,0.3);
+  border-radius: 4px;
+}
+
+/* الوضع الداكن */
+body.theme-dark .product-description-wrapper {
+  background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
+  border-color: #475569;
+  border-right-color: #FF7A00;
+}
+body.theme-dark .product-description-text {
+  color: #F1F5F9;
+}
