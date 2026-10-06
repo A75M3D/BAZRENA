@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.8.3 — ui.js
+   BranZar v9.9.0 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
    ═══════════════════════════════════════════════════════════ */
 'use strict';
@@ -1241,6 +1241,104 @@ function renderStoreProducts(products, append) {
   grid.appendChild(frag);
 }
 
+/* ═══════════════════════════════════════════════════════════
+   ⭐ ALL PRODUCTS RENDER — يستدعى من data.js
+   ═══════════════════════════════════════════════════════════ */
+function renderProductsBatch(products, append) {
+  const grid = document.getElementById('allProductsGrid');
+  if (!grid) return;
+  if (!Array.isArray(products) || products.length === 0) return;
+
+  /* كشف تلقائي لنمط الإضافة:
+     data.js يقوم بـ concat قبل الاستدعاء، لذا إذا كان
+     طول allProductsLocal أكبر من الدفعة الحالية فهذا Load More */
+  if (typeof append !== 'boolean') {
+    append = Array.isArray(allProductsLocal) &&
+             allProductsLocal.length > products.length;
+  }
+
+  if (!append) grid.innerHTML = '';
+
+  const frag = document.createDocumentFragment();
+  products.forEach(product => {
+    const price = parseFloat(product.price) || 0;
+    const fav = isProductFav(product.id);
+    const pm = {
+      id: product.id,
+      name: product.name,
+      img_url: product.img_url,
+      price,
+      original_price: product.original_price ? parseFloat(product.original_price) : null,
+      store_name: product.store_name,
+      description: product.description || '',
+      colors: product.colors || null,
+      category: product.category || null
+    };
+
+    const card = document.createElement('div');
+    card.className = 'store-product-card';
+
+    /* زر المفضلة */
+    const favBtn = document.createElement('button');
+    favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
+    favBtn.innerHTML = '<i class="' + (fav ? 'fas' : 'far') + ' fa-heart"></i>';
+    favBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); haptic('light');
+      const now = toggleProductFav(product.id);
+      favBtn.classList.toggle('active', now);
+      favBtn.innerHTML = '<i class="' + (now ? 'fas' : 'far') + ' fa-heart"></i>';
+      showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
+    });
+
+    /* صورة المنتج */
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'store-product-img-wrap';
+    const img = document.createElement('img');
+    img.loading = 'lazy';
+    img.alt = product.name || '';
+    img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300';
+    img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
+    imgWrap.appendChild(img);
+
+    /* معلومات المنتج */
+    const info = document.createElement('div');
+    info.className = 'store-product-info';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'store-product-name';
+    nameEl.textContent = product.name || '';
+    info.appendChild(nameEl);
+
+    if (product.store_name) {
+      const storeEl = document.createElement('div');
+      storeEl.style.cssText = 'font-size:0.68rem;color:var(--c-text-soft);font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+      storeEl.textContent = product.store_name;
+      info.appendChild(storeEl);
+    }
+
+    const priceEl = document.createElement('div');
+    priceEl.className = 'store-product-price';
+    priceEl.textContent = price.toLocaleString() + ' ج.س';
+    info.appendChild(priceEl);
+
+    const viewBtn = document.createElement('button');
+    viewBtn.className = 'store-product-btn ripple';
+    viewBtn.innerHTML = '<span>عرض</span> <i class="fas fa-chevron-left"></i>';
+    viewBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); haptic('light'); openProductModal(pm);
+    });
+    info.appendChild(viewBtn);
+
+    card.appendChild(favBtn);
+    card.appendChild(imgWrap);
+    card.appendChild(info);
+    card.addEventListener('click', () => { haptic('light'); openProductModal(pm); });
+    frag.appendChild(card);
+  });
+
+  grid.appendChild(frag);
+}
+
 /* ═══ PRODUCT MODAL ═══ */
 let currentModalProduct = null, selectedColorVariant = null;
 function openProductModal(product) {
@@ -1720,4 +1818,4 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   }
 });
 
-console.log('[BZR] ui.js loaded ✅');
+console.log('[BZR] ui.js loaded ✅ v9.9.0');
