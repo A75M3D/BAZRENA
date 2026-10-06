@@ -134,7 +134,7 @@
       </div>
       <div id="storesEmpty" class="empty-state hidden">
         <i class="fas fa-store-slash" aria-hidden="true"></i>
-        <p id="storesErrorMessage">لا توجد متاجر</p>
+        <p id="storesErrorMessage">خطأ في الشبكة الرجاء اعادة المحاولة⚠️</p>
         <button id="retryStoresBtn" class="btn-primary ripple">إعادة المحاولة</button>
       </div>
     </div>
@@ -188,7 +188,6 @@
         <div class="store-header-info">
           <h3 id="storeName" class="store-header-name"></h3>
           <div class="store-header-meta">
-            <!-- ✅ تم حذف التقييم (store-meta-rating) نهائياً -->
             <span class="store-meta-category" id="storeCategory"><i class="fas fa-tag" aria-hidden="true"></i><span>عام</span></span>
           </div>
         </div>
@@ -201,7 +200,6 @@
         <a id="storeCallButton" href="#" class="store-action-btn ripple"><span class="icon-circle"><i class="fas fa-phone" aria-hidden="true"></i></span><span>اتصال</span></a>
       </div>
 
-      <!-- ✅ جديد: شريط فئات المتجر (يُعبأ ديناميكياً) -->
       <div id="storeCategoriesTabs" class="store-categories-tabs" role="tablist" aria-label="فئات المتجر"></div>
     </div>
     <div class="divider-strip"></div>
@@ -235,7 +233,6 @@
       </div>
       <div class="product-modal-right">
         <h2 id="productModalName"></h2>
-        <!-- ✅ تم استبدال صف التقييم بصف بسيط يحتوي على اسم المتجر فقط -->
         <div class="product-store-row">
           <i class="fas fa-store" aria-hidden="true"></i>
           <span id="productModalStore">—</span>
@@ -289,16 +286,18 @@
       <div class="account-brand">بران زار <span>- BranZar</span></div>
     </div>
     <div class="account-actions">
+      <!-- ✅ تسجيل الدخول → a.html -->
       <a href="a.html" class="account-action-btn primary ripple">
         <div class="action-icon"><i class="fas fa-sign-in-alt" aria-hidden="true"></i></div>
         <div class="action-info"><strong>تسجيل الدخول</strong><span>ادخل لإدارة منتجاتك ومتجرك</span></div>
         <i class="fas fa-chevron-left action-arrow" aria-hidden="true"></i>
       </a>
-      <button id="openCreateStoreBtn" class="account-action-btn ripple">
+      <!-- ✅ إنشاء متجر → signup.html (بدل بطاقة واتساب القديمة) -->
+      <a href="signup.html" class="account-action-btn ripple">
         <div class="action-icon secondary"><i class="fas fa-store" aria-hidden="true"></i></div>
         <div class="action-info"><strong>إنشاء متجر خاص</strong><span>انضم كتاجر أو صاحب براند</span></div>
         <i class="fas fa-chevron-left action-arrow" aria-hidden="true"></i>
-      </button>
+      </a>
     </div>
     <div class="account-section">
       <div class="account-section-title">الإعدادات والتفضيلات</div>
@@ -317,23 +316,11 @@
   </div>
 </div>
 
-<!-- CREATE STORE MODAL -->
-<div id="createStoreModal" class="hidden" role="dialog" aria-modal="true">
-  <div class="create-store-box">
-    <div class="create-store-icon"><i class="fas fa-crown" aria-hidden="true"></i></div>
-    <h3 class="create-store-title">هل تملك <span>براند خاص بك؟</span></h3>
-    <p class="create-store-desc">للحصول على متجر احترافي بإسم البراند الخاص بك، تواصل مباشرة مع إدارة BranZar عبر واتساب وسنقوم بتفعيل متجرك في دقائق.</p>
-    <div class="create-store-features">
-      <span><i class="fas fa-check-circle" aria-hidden="true"></i> متجر احترافي</span>
-      <span><i class="fas fa-bolt" aria-hidden="true"></i> تفعيل فوري</span>
-      <span><i class="fas fa-headset" aria-hidden="true"></i> دعم متواصل</span>
-      <span><i class="fas fa-chart-line" aria-hidden="true"></i> آلاف العملاء</span>
-      <span><i class="fas fa-gift" aria-hidden="true"></i> مجاناً</span>
-    </div>
-    <a id="createStoreWaBtn" href="https://wa.me/249908280115?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D9%86%D8%B6%D9%85%D8%A7%D9%85%20%D9%83%D8%A8%D8%A7%D8%A6%D8%B9%20%D9%85%D8%AA%D8%AC%D8%B1%20%D9%81%D9%8A%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%A8%D8%B1%D8%A7%D9%86%D8%B2%D8%A7%D8%B1" target="_blank" rel="noopener noreferrer" class="create-store-wa-btn ripple"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>تواصل مع الإدارة عبر واتساب</span></a>
-    <button id="cancelCreateStore" class="create-store-cancel">إلغاء</button>
-  </div>
-</div>
+<!-- ═══════════════════════════════════════════════════════════
+     Placeholder مطلوب لتوافق ui.js (لمنع crash)
+     البطاقة القديمة (WhatsApp) تمت إزالتها — الزر يوجّه الآن لـ signup.html
+     ═══════════════════════════════════════════════════════════ -->
+<div id="createStoreModal" class="hidden" style="display:none;" aria-hidden="true"></div>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
