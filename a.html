@@ -267,13 +267,30 @@
             .color-image-preview { display: none !important; }
         }
 
-        /* 🏷️ عرض الفئات الإضافية */
         .extra-cats-display { display: flex; flex-wrap: wrap; gap: 8px; padding: 0.75rem; background: #F9FAFB; border-radius: 0.9rem; border: 1.5px solid #E5E7EB; min-height: 50px; }
         .extra-cat-chip { display: inline-flex; align-items: center; gap: 5px; padding: 0.35rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.78rem; white-space: nowrap; }
         .extra-cat-chip.subscribed { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); color: #059669; border: 1.5px solid #A7F3D0; }
         .extra-cat-chip.locked { background: linear-gradient(135deg, #F3F4F6, #E5E7EB); color: #6B7280; border: 1.5px solid #D1D5DB; }
         .extra-cat-chip i { font-size: 0.7rem; }
         .no-extra-cats { color: #9CA3AF; font-size: 0.8rem; font-weight: 700; padding: 0.3rem; }
+
+        /* 🛡️ شريط حالة Rate Limit */
+        .rate-limit-bar {
+            background: linear-gradient(135deg, #FEF2F2, #FEE2E2);
+            border: 1.5px solid #FECACA;
+            border-radius: 0.9rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #991B1B;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.6;
+        }
+        .rate-limit-bar.show { display: flex; }
+        .rate-limit-bar i { color: #DC2626; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -288,13 +305,20 @@
             سجّل دخولك باسم المستخدم وكلمة المرور<br>
             التي استلمتها من إدارة برانزار
         </p>
+
+        <!-- 🛡️ شريط Rate Limit -->
+        <div id="rateLimitBar" class="rate-limit-bar">
+            <i class="fas fa-lock"></i>
+            <span id="rateLimitText">—</span>
+        </div>
+
         <form id="loginForm" autocomplete="off">
             <div class="login-field">
-                <input type="text" id="loginStoreName" class="login-input" placeholder="اسم المستخدم" required autocomplete="off" spellcheck="false">
+                <input type="text" id="loginStoreName" class="login-input" placeholder="اسم المستخدم" required autocomplete="off" spellcheck="false" maxlength="100">
                 <i class="fas fa-store login-field-icon"></i>
             </div>
             <div class="login-field">
-                <input type="password" id="loginPassword" class="login-input has-toggle" placeholder="كلمة المرور" required autocomplete="off">
+                <input type="password" id="loginPassword" class="login-input has-toggle" placeholder="كلمة المرور" required autocomplete="off" maxlength="128">
                 <i class="fas fa-lock login-field-icon"></i>
                 <button type="button" id="loginPasswordToggle" class="password-toggle-btn" aria-label="إظهار كلمة المرور">
                     <i class="fas fa-eye" id="loginPasswordToggleIcon"></i>
@@ -405,17 +429,16 @@
                                     <span class="req">*</span>
                                 </label>
                                 <div class="input-with-toggle">
-                                    <input type="password" id="store_login_password" class="form-input" required placeholder="كلمة المرور" minlength="4" autocomplete="off">
+                                    <input type="password" id="store_login_password" class="form-input" required placeholder="كلمة المرور" minlength="6" autocomplete="off">
                                     <button type="button" id="storePasswordToggle" class="input-toggle-btn" aria-label="إظهار كلمة المرور">
                                         <i class="fas fa-eye" id="storePasswordToggleIcon"></i>
                                     </button>
                                 </div>
-                                <div class="form-hint">
-                                    <i class="fas fa-info-circle"></i> احفظها في مكان آمن — ستحتاجها للدخول لاحقاً
+                                <div class="form-hint" id="passwordStrengthHint">
+                                    <i class="fas fa-shield-alt"></i> 6 أحرف على الأقل، تحتوي على أرقام وحروف
                                 </div>
                             </div>
 
-                            <!-- 🏷️ عرض الفئات -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-tag"></i>
@@ -534,7 +557,7 @@
                                         <span>اسم المنتج</span>
                                         <span class="req">*</span>
                                     </label>
-                                    <input type="text" id="product_name" class="form-input" required placeholder="مثال: هاتف ذكي">
+                                    <input type="text" id="product_name" class="form-input" required placeholder="مثال: هاتف ذكي" maxlength="150">
                                 </div>
 
                                 <div class="form-group">
@@ -656,6 +679,209 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════
+   🛡️ SECURITY MODULE v2.0 — طبقات حماية متعددة
+   ═══════════════════════════════════════════════════════════════ */
+const SEC = {
+    MAX_ATTEMPTS: 5,
+    SOFT_LIMIT: 3,
+    SOFT_COOLDOWN_MS: 3 * 60 * 1000,
+    HARD_COOLDOWN_MS: 30 * 60 * 1000,
+    ATTEMPT_WINDOW_MS: 60 * 60 * 1000,
+    MIN_LOGIN_RESPONSE_MS: 900,
+    SESSION_TTL_MS: 12 * 60 * 60 * 1000,
+    RL_KEY: 'bzr_rl_v2',
+    SESSION_KEY_V2: 'bzr_store_session_v2'
+};
+
+/* تشويش التخزين المحلي */
+const _mask = {
+    enc(str) {
+        try {
+            const bytes = new TextEncoder().encode(str);
+            let bin = '';
+            bytes.forEach(b => bin += String.fromCharCode(b));
+            return btoa(bin).split('').reverse().join('');
+        } catch { return ''; }
+    },
+    dec(str) {
+        try {
+            const b64 = str.split('').reverse().join('');
+            const bin = atob(b64);
+            const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+            return new TextDecoder().decode(bytes);
+        } catch { return ''; }
+    }
+};
+
+/* بصمة الجهاز */
+function getDeviceFingerprint() {
+    try {
+        const raw = [
+            navigator.userAgent,
+            navigator.language,
+            navigator.platform || '',
+            screen.width + 'x' + screen.height,
+            screen.colorDepth || 0,
+            new Date().getTimezoneOffset(),
+            navigator.hardwareConcurrency || 0,
+            navigator.maxTouchPoints || 0
+        ].join('|');
+        let h = 0x811c9dc5;
+        for (let i = 0; i < raw.length; i++) {
+            h ^= raw.charCodeAt(i);
+            h = Math.imul(h, 0x01000193);
+        }
+        return 'fp_' + (h >>> 0).toString(36);
+    } catch { return 'fp_unknown'; }
+}
+const DEVICE_FP = getDeviceFingerprint();
+
+/* مقارنة ثابتة الزمن */
+function timingSafeEqual(a, b) {
+    a = String(a == null ? '' : a);
+    b = String(b == null ? '' : b);
+    const lenA = a.length, lenB = b.length;
+    const maxLen = Math.max(lenA, lenB, 1);
+    let diff = lenA ^ lenB;
+    for (let i = 0; i < maxLen; i++) {
+        diff |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+    }
+    return diff === 0;
+}
+
+/* فحص قوة كلمة المرور */
+const WEAK_PASSWORDS = new Set([
+    '1234','12345','123456','1234567','12345678','password','pass','admin',
+    'test','0000','1111','2222','123123','qwerty','abc123','store','branzar'
+]);
+function checkPasswordStrength(pwd) {
+    if (!pwd || typeof pwd !== 'string') return { ok: false, msg: 'كلمة المرور مطلوبة' };
+    if (pwd.length < 6) return { ok: false, msg: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' };
+    if (pwd.length > 128) return { ok: false, msg: 'كلمة المرور طويلة جداً' };
+    if (WEAK_PASSWORDS.has(pwd.toLowerCase())) return { ok: false, msg: 'كلمة المرور ضعيفة جداً — اختر كلمة أقوى' };
+    const hasDigit = /\d/.test(pwd);
+    const hasLetter = /[a-zA-Z\u0600-\u06FF]/.test(pwd);
+    if (!hasDigit || !hasLetter) return { ok: false, msg: 'استخدم أرقاماً وحروفاً معاً' };
+    return { ok: true };
+}
+
+/* Rate Limiter */
+const RateLimiter = {
+    _read() {
+        try {
+            const raw = localStorage.getItem(SEC.RL_KEY);
+            if (!raw) return {};
+            const parsed = JSON.parse(_mask.dec(raw) || '{}');
+            return (parsed && typeof parsed === 'object') ? parsed : {};
+        } catch { return {}; }
+    },
+    _write(data) {
+        try { localStorage.setItem(SEC.RL_KEY, _mask.enc(JSON.stringify(data))); } catch {}
+    },
+    _key(username) {
+        const norm = String(username || '').trim().toLowerCase().slice(0, 80);
+        return norm + '@' + DEVICE_FP;
+    },
+    getStatus(username) {
+        const data = this._read();
+        const rec = data[this._key(username)];
+        if (!rec) return { locked: false, remainingMs: 0, attempts: 0, lockType: null };
+        const now = Date.now();
+        if (rec.lockUntil && now < rec.lockUntil) {
+            return { locked: true, remainingMs: rec.lockUntil - now, attempts: rec.attempts || 0, lockType: rec.lockType };
+        }
+        if (rec.lockUntil && now >= rec.lockUntil) {
+            delete data[this._key(username)];
+            this._write(data);
+            return { locked: false, remainingMs: 0, attempts: 0, lockType: null };
+        }
+        return { locked: false, remainingMs: 0, attempts: rec.attempts || 0, lockType: null };
+    },
+    recordFailure(username) {
+        const data = this._read();
+        const key = this._key(username);
+        const now = Date.now();
+        const rec = data[key] || { attempts: 0, firstAttempt: now };
+        if (rec.lastAttempt && (now - rec.lastAttempt) > SEC.ATTEMPT_WINDOW_MS) {
+            rec.attempts = 0;
+            rec.firstAttempt = now;
+        }
+        rec.attempts++;
+        rec.lastAttempt = now;
+        let lockUntil = 0, lockType = null;
+        if (rec.attempts >= SEC.MAX_ATTEMPTS) {
+            lockUntil = now + SEC.HARD_COOLDOWN_MS;
+            lockType = 'hard';
+        } else if (rec.attempts >= SEC.SOFT_LIMIT) {
+            lockUntil = now + SEC.SOFT_COOLDOWN_MS;
+            lockType = 'soft';
+        }
+        if (lockUntil) { rec.lockUntil = lockUntil; rec.lockType = lockType; }
+        data[key] = rec;
+        this._write(data);
+        return { attempts: rec.attempts, lockUntil, lockType };
+    },
+    recordSuccess(username) {
+        const data = this._read();
+        delete data[this._key(username)];
+        this._write(data);
+    }
+};
+
+function formatRemainingTime(ms) {
+    const s = Math.ceil(ms / 1000);
+    if (s < 60) return s + ' ثانية';
+    const m = Math.ceil(s / 60);
+    if (m < 60) return m + ' دقيقة';
+    const h = Math.floor(m / 60), rm = m % 60;
+    return h + ' ساعة' + (rm > 0 ? ' و' + rm + ' دقيقة' : '');
+}
+
+/* كشف الأتمتة */
+const _submitTimes = [];
+function detectRapidSubmits() {
+    const now = Date.now();
+    while (_submitTimes.length && (now - _submitTimes[0]) > 5000) _submitTimes.shift();
+    _submitTimes.push(now);
+    return _submitTimes.length > 3;
+}
+
+/* الجلسة الآمنة */
+const SecureSession = {
+    save(store) {
+        const payload = {
+            id: store.id,
+            name: store.name,
+            fp: DEVICE_FP,
+            issuedAt: Date.now(),
+            expiresAt: Date.now() + SEC.SESSION_TTL_MS,
+            nonce: Array.from(crypto.getRandomValues(new Uint32Array(2))).join('-')
+        };
+        try { sessionStorage.setItem(SEC.SESSION_KEY_V2, _mask.enc(JSON.stringify(payload))); } catch {}
+    },
+    read() {
+        try {
+            const raw = sessionStorage.getItem(SEC.SESSION_KEY_V2);
+            if (!raw) return null;
+            const data = JSON.parse(_mask.dec(raw) || 'null');
+            if (!data || !data.id || !data.expiresAt) return null;
+            if (Date.now() > data.expiresAt) { this.clear(); return null; }
+            if (data.fp !== DEVICE_FP) { this.clear(); return null; }
+            return data;
+        } catch { return null; }
+    },
+    clear() {
+        try {
+            sessionStorage.removeItem(SEC.SESSION_KEY_V2);
+            sessionStorage.removeItem('bzr_store_session');
+        } catch {}
+    }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   ⚙️ الإعدادات
+   ═══════════════════════════════════════════════════════════════ */
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
@@ -674,8 +900,7 @@ const db = firebase.firestore();
 
 const storesTableName = 'stores';
 const productsTableName = 'products';
-const SESSION_KEY = 'bzr_store_session';
-const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.pn';
+const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.png'; /* ✅ إصلاح الامتداد */
 
 const CACHE_DURATION = 72 * 60 * 60 * 1000;
 const CACHE_PREFIX = 'bazrena_cache_';
@@ -708,6 +933,7 @@ let productsUnsubscribe = null;
 let storeUnsubscribe = null;
 let isFirstProductsSnapshot = true;
 let lastProductsFingerprint = '';
+let _rateLimitTicker = null;
 
 const $ = id => document.getElementById(id);
 
@@ -740,8 +966,30 @@ function updateConnectionStatus(success, message) {
     else { dot.className = 'connection-dot dot-red'; txt.textContent = 'فشل الاتصال ' + (message ? '• ' + message : ''); }
 }
 
+/* 🛡️ عرض حالة Rate Limit */
+function updateRateLimitUI() {
+    const bar = $('rateLimitBar');
+    const txt = $('rateLimitText');
+    if (!bar || !txt) return;
+    const username = sanitizeInput($('loginStoreName').value);
+    if (!username) { bar.classList.remove('show'); return; }
+    const st = RateLimiter.getStatus(username);
+    if (st.locked) {
+        bar.classList.add('show');
+        const label = st.lockType === 'hard' ? '30 دقيقة' : '3 دقائق';
+        txt.textContent = `🔒 الحساب مقفل (${label}) — المتبقي: ${formatRemainingTime(st.remainingMs)}`;
+    } else {
+        bar.classList.remove('show');
+    }
+}
+function startRateLimitTicker() {
+    if (_rateLimitTicker) clearInterval(_rateLimitTicker);
+    _rateLimitTicker = setInterval(updateRateLimitUI, 1000);
+}
+startRateLimitTicker();
+
 /* ═══════════════════════════════════════════════════════════════
-   📂 إدارة فئات المتجر — نسخة مطابقة للأدمن
+   📂 إدارة فئات المتجر
    ═══════════════════════════════════════════════════════════════ */
 function getStoreMainCategory() {
     if (!currentStore) return '';
@@ -752,24 +1000,18 @@ function getStoreExtraCategories() {
     if (!currentStore) return [];
     const mainCat = getStoreMainCategory();
     const extras = Array.isArray(currentStore.categories) ? currentStore.categories : [];
-
     const filtered = extras
         .map(c => String(c || '').trim())
         .filter(c => c && c.toLowerCase() !== mainCat.toLowerCase());
-
-    // إزالة التكرارات
     return filtered.filter((c, i, arr) => arr.findIndex(x => x.toLowerCase() === c.toLowerCase()) === i);
 }
 
-function isStoreSubscribed() {
-    return !!(currentStore && currentStore.is_subscribed === true);
-}
+function isStoreSubscribed() { return !!(currentStore && currentStore.is_subscribed === true); }
 
 function renderExtraCategoriesDisplay() {
     const display = $('extraCatsDisplay');
     const hint = $('subscriptionHint');
     if (!display) return;
-
     const extras = getStoreExtraCategories();
 
     if (extras.length === 0) {
@@ -835,7 +1077,6 @@ function populateProductCategories(preserveValue) {
     placeholder.disabled = true;
     select.appendChild(placeholder);
 
-    // 🟢 الفئة الرئيسية
     if (mainCat) {
         const opt = document.createElement('option');
         opt.value = mainCat;
@@ -843,7 +1084,6 @@ function populateProductCategories(preserveValue) {
         select.appendChild(opt);
     }
 
-    // ⭐/🔒 الفئات الإضافية
     extras.forEach(cat => {
         const opt = document.createElement('option');
         opt.value = cat;
@@ -1035,55 +1275,108 @@ function sortColorsByFamily(colors) {
     });
 }
 
-function getSession() { try { const r = sessionStorage.getItem(SESSION_KEY); return r ? JSON.parse(r) : null; } catch { return null; } }
-function saveSession(store) { sessionStorage.setItem(SESSION_KEY, JSON.stringify({ id: store.id, name: store.name, loggedAt: Date.now() })); }
-function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
+/* ═══════════════════════════════════════════════════════════════
+   🔐 إدارة الجلسة
+   ═══════════════════════════════════════════════════════════════ */
+function getSession() { return SecureSession.read(); }
+function saveSession(store) { SecureSession.save(store); }
+function clearSession() { SecureSession.clear(); }
 
 /* ═══════════════════════════════════════════════════════════════
-   🔐 تسجيل الدخول
+   🔐 تسجيل الدخول (محمي بـ Rate Limiting)
    ═══════════════════════════════════════════════════════════════ */
+$('loginStoreName').addEventListener('input', updateRateLimitUI);
+
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const enteredName = sanitizeInput($('loginStoreName').value);
-    const enteredPass = $('loginPassword').value;
+
+    /* 🛡️ طبقة 1: منع الإرسال السريع */
+    if (detectRapidSubmits()) {
+        const errEl = $('loginError');
+        errEl.textContent = '⚠️ محاولات سريعة مشبوهة — تم إيقاف الإرسال مؤقتاً';
+        errEl.classList.add('show');
+        return;
+    }
+
+    const enteredName = sanitizeInput($('loginStoreName').value).slice(0, 100);
+    const enteredPass = String($('loginPassword').value).slice(0, 128);
     const errEl = $('loginError');
     errEl.classList.remove('show');
 
     if (!enteredName) { errEl.textContent = '⚠️ الرجاء إدخال اسم المتجر'; errEl.classList.add('show'); return; }
     if (!enteredPass) { errEl.textContent = '⚠️ الرجاء إدخال كلمة المرور'; errEl.classList.add('show'); return; }
 
+    /* 🛡️ طبقة 2: فحص Rate Limit */
+    const rl = RateLimiter.getStatus(enteredName);
+    if (rl.locked) {
+        errEl.textContent = `🔒 الحساب مقفل — حاول بعد ${formatRemainingTime(rl.remainingMs)}`;
+        errEl.classList.add('show');
+        updateRateLimitUI();
+        return;
+    }
+
     setButtonLoading($('loginSubmitBtn'), true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
+    const startTime = performance.now();
 
     try {
-        let storesData = cacheManager.get('stores_list');
         let foundStore = null;
-        let verifiedFromCache = false;
 
-        if (storesData) {
-            storesData.forEach(s => { if (s.name && s.name.trim().toLowerCase() === enteredName.toLowerCase()) foundStore = s; });
-            if (foundStore && foundStore.login_password === enteredPass) { verifiedFromCache = true; }
+        /* 🛡️ طبقة 3: بحث مباشر (بدون تخزين كلمات المرور محلياً) */
+        let snap = await db.collection(storesTableName).where('name', '==', enteredName).limit(1).get();
+        if (snap.empty) {
+            const allSnap = await db.collection(storesTableName).limit(500).get();
+            const lower = enteredName.toLowerCase();
+            const match = allSnap.docs.find(d => String(d.data().name || '').trim().toLowerCase() === lower);
+            if (match) foundStore = { ...match.data(), id: match.id };
+        } else {
+            foundStore = { ...snap.docs[0].data(), id: snap.docs[0].id };
         }
 
-        if (!verifiedFromCache) {
-            const snap = await db.collection(storesTableName).get();
-            const fresh = snap.docs.map(d => ({ ...d.data(), id: d.id }));
-            cacheManager.set('stores_list', fresh);
-            foundStore = null;
-            fresh.forEach(s => { if (s.name && s.name.trim().toLowerCase() === enteredName.toLowerCase()) foundStore = s; });
-            if (!foundStore) throw new Error('لم يتم العثور على متجر بهذا الاسم');
-            if (!foundStore.login_password) throw new Error('لم يتم تعيين كلمة مرور');
-            if (foundStore.login_password !== enteredPass) throw new Error('كلمة المرور غير صحيحة');
+        /* 🛡️ طبقة 4: مقارنة ثابتة الزمن */
+        const storedPass = foundStore && typeof foundStore.login_password === 'string' ? foundStore.login_password : '';
+        const passOk = timingSafeEqual(storedPass, enteredPass);
+
+        /* 🛡️ طبقة 5: تأخير أدنى ثابت */
+        const elapsed = performance.now() - startTime;
+        if (elapsed < SEC.MIN_LOGIN_RESPONSE_MS) {
+            await new Promise(r => setTimeout(r, SEC.MIN_LOGIN_RESPONSE_MS - elapsed));
         }
 
-        cacheManager.set(`store_${foundStore.id}`, foundStore);
-        currentStore = foundStore;
-        saveSession(foundStore);
+        /* 🛡️ طبقة 6: رسالة موحدة */
+        if (!foundStore || !passOk || !storedPass) {
+            const res = RateLimiter.recordFailure(enteredName);
+            const remaining = Math.max(0, SEC.MAX_ATTEMPTS - res.attempts);
+            let msg = '❌ اسم المتجر أو كلمة المرور غير صحيحة';
+            if (res.lockType === 'hard') {
+                msg = '🔒 تم قفل الحساب لمدة 30 دقيقة بعد 5 محاولات فاشلة';
+            } else if (res.lockType === 'soft') {
+                msg = `⚠️ 3 محاولات فاشلة — الحساب مقفل 3 دقائق`;
+            } else if (remaining <= 2) {
+                msg += ` — تحذير: ${remaining} محاولة متبقية قبل القفل`;
+            }
+            errEl.textContent = msg;
+            errEl.classList.add('show');
+            $('loginPassword').value = '';
+            updateRateLimitUI();
+            return;
+        }
+
+        /* ✅ نجاح */
+        RateLimiter.recordSuccess(enteredName);
+
+        /* 🛡️ لا نخزّن كلمة المرور محلياً أبداً */
+        const safeStore = { ...foundStore };
+        delete safeStore.login_password;
+        currentStore = foundStore; // النسخة الكاملة في الذاكرة فقط
+        saveSession(safeStore);
+        cacheManager.set(`store_${foundStore.id}`, safeStore);
+        $('rateLimitBar').classList.remove('show');
+
         showToast(`مرحباً بك يا ${foundStore.name} ✅`);
         await enterDashboard();
     } catch (err) {
-        errEl.textContent = '❌ ' + (err.message || 'حدث خطأ');
+        errEl.textContent = '❌ تعذر الاتصال — حاول لاحقاً';
         errEl.classList.add('show');
-        $('loginPassword').value = '';
     } finally {
         setButtonLoading($('loginSubmitBtn'), false, '', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     }
@@ -1102,15 +1395,13 @@ async function enterDashboard() {
     $('product_store_name').value = currentStore.name;
     $('product_store_name_display').value = currentStore.name;
 
-    // 🔄 مراقبة حية لتغييرات المتجر (الفئات من الأدمن)
     setupRealtimeStoreListener();
-
     await loadMyProducts();
     updateConnectionStatus(true, currentStore.name);
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   📡 مراقبة حية للمتجر (لتحديث الفئات فوراً)
+   📡 مراقبة حية للمتجر
    ═══════════════════════════════════════════════════════════════ */
 function setupRealtimeStoreListener() {
     if (!currentStore || storeUnsubscribe) return;
@@ -1119,25 +1410,24 @@ function setupRealtimeStoreListener() {
         .onSnapshot((doc) => {
             if (!doc.exists) return;
             const freshStore = { ...doc.data(), id: doc.id };
-
-            // تحقق من تغيير الفئات أو الاشتراك
             const catChanged = (freshStore.category || '') !== (currentStore.category || '');
             const extrasChanged = JSON.stringify(freshStore.categories || []) !== JSON.stringify(currentStore.categories || []);
             const subChanged = (freshStore.is_subscribed === true) !== (currentStore.is_subscribed === true);
 
             currentStore = freshStore;
-            cacheManager.set(`store_${currentStore.id}`, currentStore);
 
-            // تحديث القوائم المعروضة
+            /* 🛡️ تخزين نسخة آمنة بدون كلمة المرور */
+            const safe = { ...freshStore };
+            delete safe.login_password;
+            cacheManager.set(`store_${currentStore.id}`, safe);
+
             if (catChanged || extrasChanged || subChanged) {
                 renderExtraCategoriesDisplay();
                 populateProductCategories();
                 fillStoreForm(currentStore);
-
                 if (subChanged) {
-                    if (freshStore.is_subscribed) showToast('🎉 تم تفعيل اشتراكك — الفئات الإضافية مفتوحة الآن!');
-                    else showToast('⚠️ تم إيقاف اشتراكك — الفئات الإضافية أصبحت مقفلة', 'warning');
-                } else if (catChanged || extrasChanged) {
+                    showToast(freshStore.is_subscribed ? '🎉 تم تفعيل اشتراكك — الفئات الإضافية مفتوحة!' : '⚠️ تم إيقاف اشتراكك', freshStore.is_subscribed ? 'success' : 'warning');
+                } else {
                     showToast('📂 تم تحديث فئات متجرك');
                 }
             }
@@ -1194,7 +1484,11 @@ $('storeForm').addEventListener('submit', async (e) => {
     const phone = cleanPhone($('store_phone').value);
 
     if (!newName || newName.length < 2) { showToast('اسم المتجر مطلوب', 'error'); return; }
-    if (!newPassword || newPassword.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
+
+    /* 🛡️ فحص قوة كلمة المرور */
+    const pwdCheck = checkPasswordStrength(newPassword);
+    if (!pwdCheck.ok) { showToast('⚠️ ' + pwdCheck.msg, 'error'); return; }
+
     if (!whatsapp || whatsapp.length < 10) { showToast('رقم الواتساب مطلوب', 'error'); return; }
 
     const oldName = currentStore.name;
@@ -1205,7 +1499,6 @@ $('storeForm').addEventListener('submit', async (e) => {
         if (!confirmChange) return;
     }
 
-    // ⚠️ ملاحظة: لا نُرسل category لأنها تُدار من الأدمن فقط
     const updateData = {
         name: newName,
         login_password: newPassword,
@@ -1230,13 +1523,11 @@ $('storeForm').addEventListener('submit', async (e) => {
 
             cacheManager.remove(`store_products_${oldName}`);
             cacheManager.remove(`store_products_${newName}`);
-            cacheManager.remove('stores_list');
 
             if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
             isFirstProductsSnapshot = true;
             lastProductsFingerprint = '';
 
-            saveSession({ id: storeId, name: newName, loggedAt: Date.now() });
             $('welcomeStoreName').textContent = newName;
             $('product_store_name').value = newName;
             $('product_store_name_display').value = newName;
@@ -1246,7 +1537,14 @@ $('storeForm').addEventListener('submit', async (e) => {
         }
 
         currentStore = { ...currentStore, ...updateData };
-        cacheManager.set(`store_${storeId}`, currentStore);
+
+        /* 🛡️ تخزين نسخة آمنة بدون كلمة المرور */
+        const safeStore = { ...currentStore };
+        delete safeStore.login_password;
+        cacheManager.set(`store_${storeId}`, safeStore);
+
+        /* 🛡️ تحديث الجلسة */
+        saveSession(safeStore);
 
         if (nameChanged) setupRealtimeMyProductsListener();
     } catch (err) {
@@ -1553,7 +1851,8 @@ async function updateMyStoreProductsCount() {
         $('ro_products_count').textContent = newCount;
         $('productsCount').textContent = newCount;
         $('productsCountBadge').textContent = newCount;
-        cacheManager.set(`store_${currentStore.id}`, currentStore);
+        const safe = { ...currentStore }; delete safe.login_password;
+        cacheManager.set(`store_${currentStore.id}`, safe);
     } catch (err) {}
 }
 
@@ -1594,6 +1893,7 @@ $('product_img_url').addEventListener('input', (e) => {
 async function init() {
     const session = getSession();
     if (!session || !session.id) {
+        SecureSession.clear();
         $('loginOverlay').classList.remove('hidden');
         $('dashboard').classList.add('hidden');
         setTimeout(() => $('loginStoreName').focus(), 200);
@@ -1604,13 +1904,22 @@ async function init() {
         const cachedStore = cacheManager.get(`store_${session.id}`);
         if (cachedStore) {
             currentStore = cachedStore;
+            /* 🛡️ نستعيد كلمة المرور من Firestore (لا نخزّنها أبداً) */
+            try {
+                const fresh = await db.collection(storesTableName).doc(session.id).get();
+                if (fresh.exists) {
+                    currentStore = { ...fresh.data(), id: fresh.id };
+                    const safe = { ...currentStore }; delete safe.login_password;
+                    cacheManager.set(`store_${session.id}`, safe);
+                }
+            } catch (e) {}
             await enterDashboard();
 
-            // تحديث خلفي
             db.collection(storesTableName).doc(session.id).get().then(snap => {
                 if (snap.exists) {
                     const freshStore = { ...snap.data(), id: snap.id };
-                    cacheManager.set(`store_${session.id}`, freshStore);
+                    const safe = { ...freshStore }; delete safe.login_password;
+                    cacheManager.set(`store_${session.id}`, safe);
                     if (JSON.stringify(freshStore) !== JSON.stringify(cachedStore)) {
                         currentStore = freshStore;
                         fillStoreForm(currentStore);
@@ -1630,7 +1939,8 @@ async function init() {
             return;
         }
         currentStore = { ...snap.data(), id: snap.id };
-        cacheManager.set(`store_${session.id}`, currentStore);
+        const safe = { ...currentStore }; delete safe.login_password;
+        cacheManager.set(`store_${session.id}`, safe);
         await enterDashboard();
     } catch (err) {
         clearSession();
