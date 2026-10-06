@@ -274,7 +274,6 @@
         .extra-cat-chip i { font-size: 0.7rem; }
         .no-extra-cats { color: #9CA3AF; font-size: 0.8rem; font-weight: 700; padding: 0.3rem; }
 
-        /* 🛡️ شريط حالة Rate Limit */
         .rate-limit-bar {
             background: linear-gradient(135deg, #FEF2F2, #FEE2E2);
             border: 1.5px solid #FECACA;
@@ -306,7 +305,6 @@
             التي استلمتها من إدارة برانزار
         </p>
 
-        <!-- 🛡️ شريط Rate Limit -->
         <div id="rateLimitBar" class="rate-limit-bar">
             <i class="fas fa-lock"></i>
             <span id="rateLimitText">—</span>
@@ -541,6 +539,9 @@
             </div>
 
             <div id="productsSection" class="tab-content hidden">
+                <!-- ✅ v10.1: عداد حدود الفئات -->
+                <div id="categoryLimitsInfo" style="margin-bottom: 1rem;"></div>
+
                 <div class="products-layout">
                     <div class="card">
                         <div class="card-body">
@@ -641,12 +642,19 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; gap: 10px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; gap: 10px; flex-wrap: wrap;">
                                 <div class="card-title" style="margin-bottom: 0;">
                                     <div class="card-title-icon"><i class="fas fa-boxes"></i></div>
                                     <span>منتجاتي</span>
                                 </div>
-                                <span id="productsCount" style="background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 900;">0</span>
+                                <!-- ✅ v10.1: عرض الحد -->
+                                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                                    <span id="productsCount" style="background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 900;">0</span>
+                                    <span id="mainLimitBadge" style="background: #EFF6FF; color: #1E40AF; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 900; border: 1px solid #BFDBFE; display:none; align-items:center; gap:5px;">
+                                        <i class="fas fa-tag" style="font-size:0.65rem;"></i>
+                                        <span id="mainLimitText">0/20</span>
+                                    </span>
+                                </div>
                             </div>
                             <div id="productsList" class="products-list"></div>
                         </div>
@@ -694,7 +702,6 @@ const SEC = {
     SESSION_KEY_V2: 'bzr_store_session_v2'
 };
 
-/* تشويش التخزين المحلي */
 const _mask = {
     enc(str) {
         try {
@@ -714,7 +721,6 @@ const _mask = {
     }
 };
 
-/* بصمة الجهاز */
 function getDeviceFingerprint() {
     try {
         const raw = [
@@ -737,7 +743,6 @@ function getDeviceFingerprint() {
 }
 const DEVICE_FP = getDeviceFingerprint();
 
-/* مقارنة ثابتة الزمن */
 function timingSafeEqual(a, b) {
     a = String(a == null ? '' : a);
     b = String(b == null ? '' : b);
@@ -750,7 +755,6 @@ function timingSafeEqual(a, b) {
     return diff === 0;
 }
 
-/* فحص قوة كلمة المرور */
 const WEAK_PASSWORDS = new Set([
     '1234','12345','123456','1234567','12345678','password','pass','admin',
     'test','0000','1111','2222','123123','qwerty','abc123','store','branzar'
@@ -766,7 +770,6 @@ function checkPasswordStrength(pwd) {
     return { ok: true };
 }
 
-/* Rate Limiter */
 const RateLimiter = {
     _read() {
         try {
@@ -838,7 +841,6 @@ function formatRemainingTime(ms) {
     return h + ' ساعة' + (rm > 0 ? ' و' + rm + ' دقيقة' : '');
 }
 
-/* كشف الأتمتة */
 const _submitTimes = [];
 function detectRapidSubmits() {
     const now = Date.now();
@@ -847,7 +849,6 @@ function detectRapidSubmits() {
     return _submitTimes.length > 3;
 }
 
-/* الجلسة الآمنة */
 const SecureSession = {
     save(store) {
         const payload = {
@@ -900,7 +901,14 @@ const db = firebase.firestore();
 
 const storesTableName = 'stores';
 const productsTableName = 'products';
-const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.png'; /* ✅ إصلاح الامتداد */
+const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.png';
+
+/* ✅ v10.1: حدود إضافة المنتجات لكل فئة */
+const PRODUCT_LIMITS = Object.freeze({
+    MAIN_CATEGORY_MAX: 20,
+    ADDITIONAL_CATEGORY_MAX: 50,
+    WARN_THRESHOLD: 3
+});
 
 const CACHE_DURATION = 72 * 60 * 60 * 1000;
 const CACHE_PREFIX = 'bazrena_cache_';
@@ -950,7 +958,10 @@ function showToast(msg, type = 'success') {
     const t = $('toast');
     t.textContent = msg;
     t.className = 'toast show';
-    t.style.background = type === 'error' ? 'linear-gradient(135deg, #EF4444, #DC2626)' : type === 'warning' ? 'linear-gradient(135deg, #F59E0B, #D97706)' : 'linear-gradient(135deg, #10B981, #059669)';
+    t.style.background = type === 'error' ? 'linear-gradient(135deg, #EF4444, #DC2626)' 
+                       : type === 'warning' ? 'linear-gradient(135deg, #F59E0B, #D97706)' 
+                       : type === 'info' ? 'linear-gradient(135deg, #3B82F6, #2563EB)' 
+                       : 'linear-gradient(135deg, #10B981, #059669)';
     clearTimeout(window._toastT);
     window._toastT = setTimeout(() => t.classList.remove('show'), 4000);
 }
@@ -966,7 +977,6 @@ function updateConnectionStatus(success, message) {
     else { dot.className = 'connection-dot dot-red'; txt.textContent = 'فشل الاتصال ' + (message ? '• ' + message : ''); }
 }
 
-/* 🛡️ عرض حالة Rate Limit */
 function updateRateLimitUI() {
     const bar = $('rateLimitBar');
     const txt = $('rateLimitText');
@@ -1007,6 +1017,75 @@ function getStoreExtraCategories() {
 }
 
 function isStoreSubscribed() { return !!(currentStore && currentStore.is_subscribed === true); }
+
+/* ═══════════════════════════════════════════════════════════════
+   ✅ v10.1: حساب عدد المنتجات لكل فئة
+   ═══════════════════════════════════════════════════════════════ */
+function getMainCategoryProductsCount() {
+    if (!currentStore || !Array.isArray(productsData)) return 0;
+    const mainCat = getStoreMainCategory();
+    if (!mainCat) return 0;
+    return productsData.filter(p => {
+        const pCat = String(p.category || '').trim();
+        return !pCat || pCat === mainCat;
+    }).length;
+}
+
+function getAdditionalCategoryProductsCount(category) {
+    if (!currentStore || !Array.isArray(productsData) || !category) return 0;
+    const cat = String(category).trim();
+    return productsData.filter(p => String(p.category || '').trim() === cat).length;
+}
+
+function canAddProductToCategory(category, excludeId) {
+    if (!currentStore) {
+        return { allowed: false, reason: 'no_store', message: '❌ يجب تسجيل الدخول أولاً' };
+    }
+    
+    const mainCat = getStoreMainCategory();
+    const targetCat = String(category || '').trim();
+    const isMainCategory = !targetCat || targetCat === mainCat;
+    
+    const limit = isMainCategory 
+        ? PRODUCT_LIMITS.MAIN_CATEGORY_MAX 
+        : PRODUCT_LIMITS.ADDITIONAL_CATEGORY_MAX;
+    
+    let currentCount = 0;
+    if (Array.isArray(productsData)) {
+        if (isMainCategory) {
+            currentCount = productsData.filter(p => {
+                if (excludeId && p.id === excludeId) return false;
+                const pCat = String(p.category || '').trim();
+                return !pCat || pCat === mainCat;
+            }).length;
+        } else {
+            currentCount = productsData.filter(p => {
+                if (excludeId && p.id === excludeId) return false;
+                return String(p.category || '').trim() === targetCat;
+            }).length;
+        }
+    }
+    
+    if (currentCount >= limit) {
+        const label = isMainCategory ? 'الفئة الرئيسية' : `فئة "${targetCat}"`;
+        return {
+            allowed: false,
+            reason: 'limit_reached',
+            current: currentCount,
+            limit: limit,
+            remaining: 0,
+            message: `🚫 وصلت للحد الأقصى في ${label} (${limit} منتج) — احذف منتجاً أولاً`
+        };
+    }
+    
+    return {
+        allowed: true,
+        isMainCategory: isMainCategory,
+        current: currentCount,
+        limit: limit,
+        remaining: limit - currentCount
+    };
+}
 
 function renderExtraCategoriesDisplay() {
     const display = $('extraCatsDisplay');
@@ -1103,6 +1182,27 @@ function populateProductCategories(preserveValue) {
     } else {
         select.value = '';
     }
+
+    /* ✅ v10.1: تعطيل الخيارات المكتملة */
+    const editingId = $('product_id').value;
+    Array.from(select.options).forEach(opt => {
+        if (!opt.value || opt.disabled) return;
+        
+        const optMainCat = getStoreMainCategory();
+        const isMain = !opt.value || opt.value === optMainCat;
+        const limit = isMain ? PRODUCT_LIMITS.MAIN_CATEGORY_MAX : PRODUCT_LIMITS.ADDITIONAL_CATEGORY_MAX;
+        
+        const currentCount = isMain
+            ? getMainCategoryProductsCount()
+            : getAdditionalCategoryProductsCount(opt.value);
+        
+        if (editingId && select.value === opt.value) return;
+        
+        if (currentCount >= limit) {
+            opt.disabled = true;
+            opt.textContent = `🔒 ${opt.value} (مكتمل ${limit}/${limit})`;
+        }
+    });
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1283,14 +1383,13 @@ function saveSession(store) { SecureSession.save(store); }
 function clearSession() { SecureSession.clear(); }
 
 /* ═══════════════════════════════════════════════════════════════
-   🔐 تسجيل الدخول (محمي بـ Rate Limiting)
+   🔐 تسجيل الدخول
    ═══════════════════════════════════════════════════════════════ */
 $('loginStoreName').addEventListener('input', updateRateLimitUI);
 
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    /* 🛡️ طبقة 1: منع الإرسال السريع */
     if (detectRapidSubmits()) {
         const errEl = $('loginError');
         errEl.textContent = '⚠️ محاولات سريعة مشبوهة — تم إيقاف الإرسال مؤقتاً';
@@ -1306,7 +1405,6 @@ $('loginForm').addEventListener('submit', async (e) => {
     if (!enteredName) { errEl.textContent = '⚠️ الرجاء إدخال اسم المتجر'; errEl.classList.add('show'); return; }
     if (!enteredPass) { errEl.textContent = '⚠️ الرجاء إدخال كلمة المرور'; errEl.classList.add('show'); return; }
 
-    /* 🛡️ طبقة 2: فحص Rate Limit */
     const rl = RateLimiter.getStatus(enteredName);
     if (rl.locked) {
         errEl.textContent = `🔒 الحساب مقفل — حاول بعد ${formatRemainingTime(rl.remainingMs)}`;
@@ -1321,7 +1419,6 @@ $('loginForm').addEventListener('submit', async (e) => {
     try {
         let foundStore = null;
 
-        /* 🛡️ طبقة 3: بحث مباشر (بدون تخزين كلمات المرور محلياً) */
         let snap = await db.collection(storesTableName).where('name', '==', enteredName).limit(1).get();
         if (snap.empty) {
             const allSnap = await db.collection(storesTableName).limit(500).get();
@@ -1332,17 +1429,14 @@ $('loginForm').addEventListener('submit', async (e) => {
             foundStore = { ...snap.docs[0].data(), id: snap.docs[0].id };
         }
 
-        /* 🛡️ طبقة 4: مقارنة ثابتة الزمن */
         const storedPass = foundStore && typeof foundStore.login_password === 'string' ? foundStore.login_password : '';
         const passOk = timingSafeEqual(storedPass, enteredPass);
 
-        /* 🛡️ طبقة 5: تأخير أدنى ثابت */
         const elapsed = performance.now() - startTime;
         if (elapsed < SEC.MIN_LOGIN_RESPONSE_MS) {
             await new Promise(r => setTimeout(r, SEC.MIN_LOGIN_RESPONSE_MS - elapsed));
         }
 
-        /* 🛡️ طبقة 6: رسالة موحدة */
         if (!foundStore || !passOk || !storedPass) {
             const res = RateLimiter.recordFailure(enteredName);
             const remaining = Math.max(0, SEC.MAX_ATTEMPTS - res.attempts);
@@ -1361,13 +1455,11 @@ $('loginForm').addEventListener('submit', async (e) => {
             return;
         }
 
-        /* ✅ نجاح */
         RateLimiter.recordSuccess(enteredName);
 
-        /* 🛡️ لا نخزّن كلمة المرور محلياً أبداً */
         const safeStore = { ...foundStore };
         delete safeStore.login_password;
-        currentStore = foundStore; // النسخة الكاملة في الذاكرة فقط
+        currentStore = foundStore;
         saveSession(safeStore);
         cacheManager.set(`store_${foundStore.id}`, safeStore);
         $('rateLimitBar').classList.remove('show');
@@ -1416,7 +1508,6 @@ function setupRealtimeStoreListener() {
 
             currentStore = freshStore;
 
-            /* 🛡️ تخزين نسخة آمنة بدون كلمة المرور */
             const safe = { ...freshStore };
             delete safe.login_password;
             cacheManager.set(`store_${currentStore.id}`, safe);
@@ -1485,7 +1576,6 @@ $('storeForm').addEventListener('submit', async (e) => {
 
     if (!newName || newName.length < 2) { showToast('اسم المتجر مطلوب', 'error'); return; }
 
-    /* 🛡️ فحص قوة كلمة المرور */
     const pwdCheck = checkPasswordStrength(newPassword);
     if (!pwdCheck.ok) { showToast('⚠️ ' + pwdCheck.msg, 'error'); return; }
 
@@ -1538,12 +1628,10 @@ $('storeForm').addEventListener('submit', async (e) => {
 
         currentStore = { ...currentStore, ...updateData };
 
-        /* 🛡️ تخزين نسخة آمنة بدون كلمة المرور */
         const safeStore = { ...currentStore };
         delete safeStore.login_password;
         cacheManager.set(`store_${storeId}`, safeStore);
 
-        /* 🛡️ تحديث الجلسة */
         saveSession(safeStore);
 
         if (nameChanged) setupRealtimeMyProductsListener();
@@ -1621,7 +1709,131 @@ function updateProductsUI() {
     $('productsCount').textContent = productsData.length;
     $('productsCountBadge').textContent = productsData.length;
     $('ro_products_count').textContent = productsData.length;
+
+    /* ✅ v10.1: تحديث عدادات الحدود */
+    updateCategoryLimitsUI();
+    updateMainLimitBadge();
+
     renderMyProductsList(productsData);
+
+    /* ✅ إعادة تحديث select لإظهار الحد */
+    if (!$('productsSection').classList.contains('hidden')) {
+        const currentVal = $('product_category').value;
+        populateProductCategories(currentVal);
+    }
+}
+
+/* ✅ v10.1: عرض حالة الحدود لكل فئة */
+function updateCategoryLimitsUI() {
+    const container = $('categoryLimitsInfo');
+    if (!container || !currentStore) return;
+
+    const mainCat = getStoreMainCategory();
+    const mainCount = getMainCategoryProductsCount();
+    const mainLimit = PRODUCT_LIMITS.MAIN_CATEGORY_MAX;
+    const mainRemaining = Math.max(0, mainLimit - mainCount);
+    const mainPercent = Math.min(100, Math.round((mainCount / mainLimit) * 100));
+
+    let mainColor = '#10B981';
+    let mainIcon = 'fa-check-circle';
+    let mainText = `${mainCount} / ${mainLimit}`;
+
+    if (mainCount >= mainLimit) {
+        mainColor = '#EF4444';
+        mainIcon = 'fa-ban';
+        mainText = `مكتمل (${mainLimit}/${mainLimit})`;
+    } else if (mainCount >= (mainLimit - PRODUCT_LIMITS.WARN_THRESHOLD)) {
+        mainColor = '#F59E0B';
+        mainIcon = 'fa-exclamation-triangle';
+        mainText = `${mainCount} / ${mainLimit} — متبقي ${mainRemaining}`;
+    } else {
+        mainText = `${mainCount} / ${mainLimit} — متبقي ${mainRemaining}`;
+    }
+
+    let html = `
+        <div style="background:#fff;border:1.5px solid #E5E7EB;border-radius:0.9rem;padding:0.85rem;margin-bottom:0.75rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <i class="fas ${mainIcon}" style="color:${mainColor};font-size:1rem;"></i>
+                    <strong style="font-size:0.85rem;color:#1A1A1A;">${escapeHtml(mainCat || 'الفئة الرئيسية')}</strong>
+                </div>
+                <span style="font-size:0.78rem;font-weight:900;color:${mainColor};">${mainText}</span>
+            </div>
+            <div style="background:#F3F4F6;height:6px;border-radius:6px;overflow:hidden;">
+                <div style="background:${mainColor};height:100%;width:${mainPercent}%;transition:width 0.4s ease;border-radius:6px;"></div>
+            </div>
+        </div>
+    `;
+
+    const extras = getStoreExtraCategories();
+    if (extras.length > 0) {
+        const isSubscribed = isStoreSubscribed();
+        extras.forEach(cat => {
+            const count = getAdditionalCategoryProductsCount(cat);
+            const limit = PRODUCT_LIMITS.ADDITIONAL_CATEGORY_MAX;
+            const percent = Math.min(100, Math.round((count / limit) * 100));
+
+            let color = '#8B5CF6';
+            if (!isSubscribed) {
+                color = '#9CA3AF';
+            } else if (count >= limit) {
+                color = '#EF4444';
+            }
+
+            const lockIcon = isSubscribed ? 'fa-tag' : 'fa-lock';
+
+            html += `
+                <div style="background:#FAFAFA;border:1px solid #E5E7EB;border-radius:0.75rem;padding:0.65rem 0.85rem;margin-bottom:0.5rem;opacity:${isSubscribed ? 1 : 0.6};">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <i class="fas ${lockIcon}" style="color:${color};font-size:0.8rem;"></i>
+                            <span style="font-size:0.8rem;font-weight:800;color:#374151;">${escapeHtml(cat)}</span>
+                        </div>
+                        <span style="font-size:0.72rem;font-weight:900;color:${color};">${count} / ${limit}</span>
+                    </div>
+                    <div style="background:#F3F4F6;height:4px;border-radius:4px;overflow:hidden;">
+                        <div style="background:${color};height:100%;width:${percent}%;transition:width 0.4s ease;border-radius:4px;"></div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    container.innerHTML = html;
+}
+
+/* ✅ v10.1: تحديث شارة الحد في العنوان */
+function updateMainLimitBadge() {
+    const mainLimitBadge = $('mainLimitBadge');
+    const mainLimitText = $('mainLimitText');
+    if (!mainLimitBadge || !mainLimitText) return;
+
+    const mainCat = getStoreMainCategory();
+    if (!mainCat) {
+        mainLimitBadge.style.display = 'none';
+        return;
+    }
+
+    const count = getMainCategoryProductsCount();
+    const limit = PRODUCT_LIMITS.MAIN_CATEGORY_MAX;
+    mainLimitText.textContent = `${count}/${limit}`;
+    mainLimitBadge.style.display = 'inline-flex';
+    mainLimitBadge.style.alignItems = 'center';
+    mainLimitBadge.style.gap = '5px';
+
+    if (count >= limit) {
+        mainLimitBadge.style.background = '#FEF2F2';
+        mainLimitBadge.style.color = '#DC2626';
+        mainLimitBadge.style.borderColor = '#FECACA';
+    } else if (count >= (limit - PRODUCT_LIMITS.WARN_THRESHOLD)) {
+        mainLimitBadge.style.background = '#FEF3C7';
+        mainLimitBadge.style.color = '#92400E';
+        mainLimitBadge.style.borderColor = '#FCD34D';
+    } else {
+        mainLimitBadge.style.background = '#EFF6FF';
+        mainLimitBadge.style.color = '#1E40AF';
+        mainLimitBadge.style.borderColor = '#BFDBFE';
+    }
 }
 
 function renderMyProductsList(products) {
@@ -1630,6 +1842,8 @@ function renderMyProductsList(products) {
         return;
     }
 
+    const mainCat = getStoreMainCategory();
+
     let html = '';
     products.forEach(p => {
         const price = parseFloat(p.price || 0);
@@ -1637,7 +1851,14 @@ function renderMyProductsList(products) {
             ? `<img src="${escapeHtml(p.img_url)}" class="product-thumb" alt="" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
             : `<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
-        const catBadge = p.category ? `<span class="product-category-badge"><i class="fas fa-tag" style="font-size:0.6rem;"></i> ${escapeHtml(p.category)}</span>` : '';
+        /* ✅ v10.1: تمييز الفئة الرئيسية */
+        const isMainCat = !p.category || String(p.category).trim() === mainCat;
+        let catBadge = '';
+        if (isMainCat) {
+            catBadge = `<span class="product-category-badge" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);color:#059669;border-color:#A7F3D0;"><i class="fas fa-star" style="font-size:0.6rem;"></i> ${escapeHtml(mainCat || 'رئيسية')}</span>`;
+        } else if (p.category) {
+            catBadge = `<span class="product-category-badge"><i class="fas fa-tag" style="font-size:0.6rem;"></i> ${escapeHtml(p.category)}</span>`;
+        }
 
         let colorDots = '';
         if (p.colors && Array.isArray(p.colors) && p.colors.length > 0) {
@@ -1725,6 +1946,9 @@ function addColorRow(name = '', image = '') {
 
 document.getElementById('addColorBtn').addEventListener('click', () => addColorRow());
 
+/* ═══════════════════════════════════════════════════════════════
+   ✅ v10.1: حفظ المنتج مع التحقق من الحد
+   ═══════════════════════════════════════════════════════════════ */
 $('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingProduct || !currentStore) return;
@@ -1737,6 +1961,42 @@ $('productForm').addEventListener('submit', async (e) => {
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (!category) { showToast('⚠️ اختر فئة المنتج', 'error'); return; }
     if (price <= 0) { showToast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
+
+    /* ✅ v10.1: التحقق من الحد قبل الإضافة/التعديل */
+    const limitCheck = canAddProductToCategory(category, id || null);
+
+    if (!limitCheck.allowed) {
+        showToast(limitCheck.message, 'error');
+
+        const select = $('product_category');
+        select.style.borderColor = '#EF4444';
+        select.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.15)';
+        setTimeout(() => {
+            select.style.borderColor = '';
+            select.style.boxShadow = '';
+        }, 2500);
+
+        select.animate(
+            [
+                { transform: 'translateX(0)' },
+                { transform: 'translateX(-8px)' },
+                { transform: 'translateX(8px)' },
+                { transform: 'translateX(-4px)' },
+                { transform: 'translateX(4px)' },
+                { transform: 'translateX(0)' }
+            ],
+            { duration: 500, easing: 'ease-in-out' }
+        );
+
+        return;
+    }
+
+    /* ✅ تحذير عند الاقتراب من الحد */
+    if (limitCheck.remaining === 1) {
+        showToast(`⚠️ تنبيه: هذا آخر منتج يمكن إضافته للفئة`, 'warning');
+    } else if (limitCheck.remaining === 2) {
+        showToast(`ℹ️ متبقي ${limitCheck.remaining} منتجات في هذه الفئة`, 'info');
+    }
 
     const colorRows = document.querySelectorAll('#productColorsContainer .color-row');
     const colors = [];
@@ -1872,6 +2132,8 @@ $('tabProducts').addEventListener('click', () => {
     $('storeSection').classList.add('hidden');
     populateProductCategories();
     loadMyProducts();
+    updateCategoryLimitsUI();
+    updateMainLimitBadge();
 });
 
 $('store_logo').addEventListener('input', (e) => {
@@ -1904,7 +2166,6 @@ async function init() {
         const cachedStore = cacheManager.get(`store_${session.id}`);
         if (cachedStore) {
             currentStore = cachedStore;
-            /* 🛡️ نستعيد كلمة المرور من Firestore (لا نخزّنها أبداً) */
             try {
                 const fresh = await db.collection(storesTableName).doc(session.id).get();
                 if (fresh.exists) {
