@@ -1,25 +1,69 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v10.2 — ui.js
-   Layer 3: Auto-scroll + Modals + Search + Render + PWA + SW
-   ✅ v10.2: عرض وصف المنتج في Product Modal
+   BranZar v9.8.3 — ui.js
+   Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
-/* ═══ AUTO-SCROLL (v9.9.0) ═══ */
+/* ═══ THEME ═══ */
+function applyTheme(theme) {
+  document.body.classList.toggle('theme-dark', theme === 'dark');
+  const mainIcon = document.querySelector('#themeToggleBtn i');
+  if (mainIcon) mainIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  const accountSwitch = document.getElementById('accountThemeSwitch');
+  if (accountSwitch) accountSwitch.classList.toggle('on', theme === 'dark');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0F172A' : '#FF7A00');
+}
+function initTheme() {
+  const saved = localStorage.getItem(KEYS.THEME);
+  if (saved) { applyTheme(saved); return; }
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(prefersDark ? 'dark' : 'light');
+}
+function toggleTheme() {
+  const current = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem(KEYS.THEME, next);
+  haptic('light');
+}
+document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
+document.getElementById('accountThemeSwitch')?.addEventListener('click', toggleTheme);
+document.getElementById('accountThemeSwitch')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
+});
 
-/* ─── حالة المتاجر ─── */
+/* ═══ VIEW MODE ═══ */
+function applyViewMode(mode) {
+  document.body.classList.remove('view-mobile','view-desktop');
+  document.body.classList.add('view-' + mode);
+  $$('.view-toggle-pill button').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+  localStorage.setItem(KEYS.VIEW, mode);
+}
+function initViewMode() {
+  const saved = localStorage.getItem(KEYS.VIEW);
+  if (saved) { applyViewMode(saved); return; }
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent)
+    || window.matchMedia('(max-width: 767px)').matches;
+  applyViewMode(isMobile ? 'mobile' : 'desktop');
+}
+function setView(mode) { applyViewMode(mode); haptic('light'); }
+document.getElementById('viewMobileBtn')?.addEventListener('click', () => setView('mobile'));
+document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
+document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
+document.getElementById('accountViewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
+
+/* ═══ AUTO-SCROLL ═══ */
 let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
 let _lastScrollFrame = 0;
 
-/* ─── حالة الفئات ─── */
 let isHoveringCategories = false;
 let lastCategoriesInteraction = 0;
 let _catScrollRAFId = null;
 let _lastCatScrollFrame = 0;
 
-/* ─── حسابات المسافة القصوى ─── */
 function getStoresMaxScroll() {
   const c = document.getElementById('storesScrollContainer');
   return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
@@ -28,8 +72,6 @@ function getCategoriesMaxScroll() {
   const c = document.getElementById('categoriesContainer');
   return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0;
 }
-
-/* ─── حلقة تمرير المتاجر ─── */
 function _autoScrollLoop(ts) {
   const c = document.getElementById('storesScrollContainer');
   if (!c) { _scrollRAFId = null; return; }
@@ -60,8 +102,6 @@ function startAutoScroll() {
 function stopAutoScroll() {
   if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; }
 }
-
-/* ─── حلقة تمرير الفئات ─── */
 function _categoriesAutoScrollLoop(ts) {
   const c = document.getElementById('categoriesContainer');
   if (!c) { _catScrollRAFId = null; return; }
@@ -166,38 +206,171 @@ document.getElementById('cancelCreateStore')?.addEventListener('click', () => { 
 createStoreModal?.addEventListener('click', (e) => {
   if (e.target === createStoreModal) { createStoreModal.classList.add('hidden'); updateBodyScroll(); bzrCloseModalUI(); }
 });
-
 document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
-/* ═══ PWA INSTALL ═══ */
+/* ═══════════════════════════════════════════════════════════
+   📱 PWA INSTALL — Enhanced Multi-Platform
+   ═══════════════════════════════════════════════════════════ */
 let deferredPrompt = null;
-function isAppInstalled() {
+const INSTALL_DISMISS_KEY = 'branzar_install_dismissed_v2';
+const INSTALL_DISMISS_DAYS = 3;
+
+function isStandaloneMode() {
   return window.matchMedia('(display-mode: standalone)').matches
     || window.navigator.standalone === true
-    || localStorage.getItem(KEYS.INSTALLED) === 'true';
+    || document.referrer.indexOf('android-app://') === 0;
 }
-const installBtn = document.getElementById('installButtonFloating');
+function isIOS() {
+  const ua = navigator.userAgent || '';
+  const isIPad = /iPad/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  return /iPhone|iPod/i.test(ua) || isIPad;
+}
+function isFirefox() { return /Firefox/i.test(navigator.userAgent); }
+function wasInstallDismissed() {
+  try {
+    const dismissed = parseInt(localStorage.getItem(INSTALL_DISMISS_KEY) || '0');
+    if (!dismissed) return false;
+    const daysPassed = (Date.now() - dismissed) / (1000 * 60 * 60 * 24);
+    return daysPassed < INSTALL_DISMISS_DAYS;
+  } catch(e) { return false; }
+}
+function markInstallDismissed() { try { localStorage.setItem(INSTALL_DISMISS_KEY, Date.now().toString()); } catch(e){} }
+function clearInstallDismissed() { try { localStorage.removeItem(INSTALL_DISMISS_KEY); } catch(e){} }
+function isAppInstalled() { return isStandaloneMode() || localStorage.getItem(KEYS.INSTALLED) === 'true'; }
+function showInstallButton() {
+  const btn = document.getElementById('installButtonFloating');
+  if (!btn) return;
+  btn.classList.remove('hidden');
+  requestAnimationFrame(() => btn.classList.add('show'));
+}
+function hideInstallButton() {
+  const btn = document.getElementById('installButtonFloating');
+  if (!btn) return;
+  btn.classList.remove('show');
+  setTimeout(() => btn.classList.add('hidden'), 350);
+}
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  if (!isAppInstalled()) installBtn.classList.add('show');
+  if (isStandaloneMode()) return;
+  if (localStorage.getItem(KEYS.INSTALLED) === 'true') return;
+  if (wasInstallDismissed()) return;
+  showInstallButton();
 });
 window.addEventListener('appinstalled', () => {
-  localStorage.setItem(KEYS.INSTALLED, 'true');
-  installBtn.classList.remove('show');
+  try { localStorage.setItem(KEYS.INSTALLED, 'true'); } catch(e){}
+  clearInstallDismissed();
+  hideInstallButton();
   deferredPrompt = null;
-  showToast('تم تثبيت التطبيق بنجاح!');
+  showToast('✅ تم تثبيت التطبيق بنجاح!');
   haptic('heavy');
 });
-installBtn?.addEventListener('click', async () => {
-  if (!deferredPrompt) { showToast('التطبيق مثبت بالفعل'); return; }
+function showIOSInstallInstructions() {
+  let modal = document.getElementById('iosInstallModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'iosInstallModal';
+    modal.className = 'pwa-ios-modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.innerHTML =
+      '<div class="pwa-ios-overlay"></div>' +
+      '<div class="pwa-ios-sheet">' +
+        '<div class="pwa-ios-handle"></div>' +
+        '<h3 class="pwa-ios-title">📱 تثبيت التطبيق على iPhone</h3>' +
+        '<p class="pwa-ios-desc">لتثبيت BranZar كتطبيق على جهازك، اتبع الخطوات التالية:</p>' +
+        '<ol class="pwa-ios-steps">' +
+          '<li>' +
+            '<span class="pwa-ios-step-num">1</span>' +
+            '<div>' +
+              '<strong>اضغط زر المشاركة</strong>' +
+              '<span>في شريط Safari السفلي</span>' +
+            '</div>' +
+            '<i class="fas fa-share-square" style="font-size:1.3rem;color:#007AFF;"></i>' +
+          '</li>' +
+          '<li>' +
+            '<span class="pwa-ios-step-num">2</span>' +
+            '<div>' +
+              '<strong>اختر "إضافة إلى الشاشة الرئيسية"</strong>' +
+              '<span>Add to Home Screen</span>' +
+            '</div>' +
+            '<i class="fas fa-plus-square" style="font-size:1.3rem;color:#FF7A00;"></i>' +
+          '</li>' +
+          '<li>' +
+            '<span class="pwa-ios-step-num">3</span>' +
+            '<div>' +
+              '<strong>اضغط "إضافة"</strong>' +
+              '<span>سيظهر التطبيق على شاشتك الرئيسية</span>' +
+            '</div>' +
+            '<i class="fas fa-check-circle" style="font-size:1.3rem;color:#10B981;"></i>' +
+          '</li>' +
+        '</ol>' +
+        '<button id="pwaIosCloseBtn" class="pwa-ios-close">فهمت، شكراً</button>' +
+      '</div>';
+    document.body.appendChild(modal);
+    modal.querySelector('.pwa-ios-overlay').addEventListener('click', closeIOSInstructions);
+    document.getElementById('pwaIosCloseBtn').addEventListener('click', closeIOSInstructions);
+  }
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
   haptic('medium');
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') { localStorage.setItem(KEYS.INSTALLED, 'true'); installBtn.classList.remove('show'); }
-  deferredPrompt = null;
+}
+function closeIOSInstructions() {
+  const modal = document.getElementById('iosInstallModal');
+  if (!modal) return;
+  modal.classList.remove('show');
+  document.body.style.overflow = '';
+  markInstallDismissed();
+  hideInstallButton();
+}
+document.getElementById('installButtonFloating')?.addEventListener('click', async () => {
+  haptic('medium');
+  if (isStandaloneMode()) {
+    showToast('✅ التطبيق مثبت بالفعل');
+    hideInstallButton();
+    return;
+  }
+  if (isIOS() && !deferredPrompt) {
+    showIOSInstallInstructions();
+    return;
+  }
+  if (deferredPrompt) {
+    try {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        try { localStorage.setItem(KEYS.INSTALLED, 'true'); } catch(e){}
+        showToast('🎉 جاري تثبيت التطبيق...');
+        hideInstallButton();
+      } else {
+        markInstallDismissed();
+        hideInstallButton();
+        showToast('يمكنك التثبيت لاحقاً من القائمة');
+      }
+      deferredPrompt = null;
+    } catch(err) {
+      console.warn('[BZR] Install prompt error:', err);
+      showToast('تعذر بدء التثبيت، حاول مرة أخرى');
+    }
+    return;
+  }
+  if (isFirefox()) {
+    showToast('لتثبيت التطبيق، استخدم Chrome أو Edge');
+    return;
+  }
+  showToast('التثبيت غير متاح على هذا المتصفح');
 });
-if (isAppInstalled()) installBtn.classList.remove('show');
+function maybeShowIOSButton() {
+  if (isStandaloneMode()) return;
+  if (!isIOS()) return;
+  if (wasInstallDismissed()) return;
+  if (localStorage.getItem(KEYS.INSTALLED) === 'true') return;
+  setTimeout(() => { if (!isStandaloneMode()) showInstallButton(); }, 8000);
+}
+if (isStandaloneMode()) {
+  try { localStorage.setItem(KEYS.INSTALLED, 'true'); } catch(e){}
+  hideInstallButton();
+}
 
 /* ═══ NOTIFICATIONS (FCM) ═══ */
 let messaging = null;
@@ -317,7 +490,6 @@ searchClearBtn?.addEventListener('click', () => {
 document.addEventListener('click', (e) => {
   if (!searchResults.contains(e.target) && !searchWrapper.contains(e.target)) searchResults.classList.remove('show');
 });
-
 function performSearch(query) {
   query = (query || '').trim().toLowerCase().slice(0, 100);
   if (!query) { searchResults.classList.remove('show'); return; }
@@ -449,57 +621,6 @@ function goToCategory(cat) {
   applyProductsFilter(cat);
   const s = document.getElementById('stores');
   if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-/* ═══ RENDER PRODUCTS ═══ */
-function renderProductsBatch(items) {
-  const grid = document.getElementById('allProductsGrid');
-  if (!items.length) return;
-  const frag = document.createDocumentFragment();
-  items.forEach(product => {
-    const price = parseFloat(product.price) || 0;
-    const originalPrice = product.original_price ? parseFloat(product.original_price) : null;
-    const card = document.createElement('div'); card.className = 'product-card';
-    const pm = {
-      id: product.id, name: product.name, img_url: product.img_url,
-      price, original_price: originalPrice,
-      store_name: product.store_name,
-      description: product.description || '',
-      colors: product.colors || null,
-      category: product.category || null
-    };
-    let colorDots = '';
-    if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
-      const dots = product.colors.slice(0, 4).map(c => {
-        const hex = safeHex(c && c.hex) || getFallbackHex(c && c.name);
-        const name = sanitizeHTML((c && c.name) || '');
-        return '<div class="card-color-dot" style="background-color:' + hex + '" title="' + name + '"></div>';
-      }).join('');
-      const extra = product.colors.length > 4
-        ? '<span style="font-size:10px;color:var(--c-text-soft);font-weight:800;align-self:center;">+' + (product.colors.length - 4) + '</span>'
-        : '';
-      colorDots = '<div style="display:flex;gap:4px;margin-bottom:6px;justify-content:flex-end;">' + dots + extra + '</div>';
-    }
-    card.innerHTML =
-      '<div class="product-image-container">' +
-        '<img src="' + sanitizeHTML(optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300') + '" loading="lazy" alt="' + sanitizeHTML(product.name) + '">' +
-        (originalPrice ? '<span style="position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:9999px;box-shadow:0 3px 8px rgba(255,122,0,0.4);">خصم</span>' : '') +
-      '</div>' +
-      '<div style="padding:0.75rem;display:flex;flex-direction:column;gap:5px;flex:1;">' +
-        '<h5 style="font-weight:800;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text);margin:0;">' + sanitizeHTML(product.name) + '</h5>' +
-        (product.store_name ? '<p style="font-size:0.72rem;color:#FF7A00;font-weight:800;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + sanitizeHTML(product.store_name) + '</p>' : '') +
-        '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
-          '<span style="font-weight:900;color:#FF7A00;font-size:0.9rem;">' + price.toLocaleString() + ' ج.س</span>' +
-          (originalPrice ? '<span style="font-size:0.75rem;text-decoration:line-through;color:var(--c-text-soft);font-weight:700;">' + originalPrice.toLocaleString() + ' ج.س</span>' : '') +
-        '</div>' + colorDots +
-        '<button class="open-product-btn ripple" style="width:100%;background:linear-gradient(135deg,#FF7A00,#FFA64D);color:#fff;padding:0.6rem;border-radius:12px;font-size:0.82rem;font-weight:800;border:none;cursor:pointer;margin-top:auto;box-shadow:0 4px 12px -4px rgba(255,122,0,0.5);">عرض المنتج</button>' +
-      '</div>';
-    frag.appendChild(card);
-    const btn = card.querySelector('.open-product-btn');
-    btn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); openProductModal(pm); });
-    card.addEventListener('click', (e) => { if (e.target === btn) return; haptic('light'); openProductModal(pm); });
-  });
-  grid.appendChild(frag);
 }
 
 /* ═══ RENDER STORES ═══ */
@@ -1120,9 +1241,7 @@ function renderStoreProducts(products, append) {
   grid.appendChild(frag);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ PRODUCT MODAL — v10.2 (مع عرض الوصف)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ PRODUCT MODAL ═══ */
 let currentModalProduct = null, selectedColorVariant = null;
 function openProductModal(product) {
   currentModalProduct = product;
@@ -1143,22 +1262,6 @@ function openProductModal(product) {
     origEl.textContent = '';
     origEl.classList.add('hidden');
   }
-
-  /* ✅ v10.2: عرض وصف المنتج */
-  const descWrapper = document.getElementById('productModalDescriptionWrapper');
-  const descEl = document.getElementById('productModalDescription');
-  const descText = (product.description && String(product.description).trim()) || '';
-
-  if (descWrapper && descEl) {
-    if (descText) {
-      descEl.textContent = descText;
-      descWrapper.classList.remove('hidden');
-    } else {
-      descEl.textContent = '';
-      descWrapper.classList.add('hidden');
-    }
-  }
-
   const colorsContainer = document.getElementById('productColorsContainer');
   const swatchesContainer = document.getElementById('productColorSwatches');
   const selColorName = document.getElementById('selectedColorName');
@@ -1444,7 +1547,6 @@ document.addEventListener('keydown', (e) => {
 document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) => {
   if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; }
 }, { passive: false });
-
 document.getElementById('prevStoresBtn')?.addEventListener('click', () => {
   const c = document.getElementById('storesScrollContainer');
   lastStoresInteraction = Date.now();
@@ -1455,7 +1557,6 @@ document.getElementById('nextStoresBtn')?.addEventListener('click', () => {
   lastStoresInteraction = Date.now();
   c.scrollBy({ left: -300, behavior: 'smooth' });
 });
-
 document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => {
   const c = document.getElementById('categoriesContainer');
   lastCategoriesInteraction = Date.now();
@@ -1466,7 +1567,6 @@ document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => {
   lastCategoriesInteraction = Date.now();
   c.scrollBy({ left: 200, behavior: 'smooth' });
 });
-
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
   ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
@@ -1475,7 +1575,6 @@ if (storesContainer) {
   storesContainer.addEventListener('mouseenter', () => { isHoveringStores = true; }, { passive: true });
   storesContainer.addEventListener('mouseleave', () => { isHoveringStores = false; lastStoresInteraction = Date.now(); }, { passive: true });
 }
-
 const categoriesScrollContainer = document.getElementById('categoriesContainer');
 if (categoriesScrollContainer) {
   ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => {
@@ -1491,7 +1590,6 @@ let isReloading = false;
 let updateCheckInterval = null;
 let _updateButtonShownThisLoad = false;
 let _lastUpdateCheck = 0;
-
 function getSWVersionFromWorker(worker) {
   return new Promise((resolve) => {
     if (!worker) return resolve(null);
@@ -1601,7 +1699,7 @@ if ('serviceWorker' in navigator) {
 }
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
 
-/* ═══ MANUAL REFRESH ═══ */
+/* ═══ MANUAL REFRESH BUTTON ═══ */
 document.getElementById('refreshProductsBtn')?.addEventListener('click', async (e) => {
   const btn = e.currentTarget;
   const icon = btn.querySelector('i');
@@ -1622,4 +1720,4 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v10.2');
+console.log('[BZR] ui.js loaded ✅');
