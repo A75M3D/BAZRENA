@@ -65,6 +65,7 @@ input, textarea, select { outline: none; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--c-surface-3); border-radius: 4px; }
 
+/* ═══ Gates ═══ */
 .gate-overlay {
   position: fixed; inset: 0; z-index: 99999;
   background:
@@ -123,7 +124,6 @@ input, textarea, select { outline: none; }
   font-weight: 500;
 }
 .gate-text strong { color: var(--c-primary); font-weight: 800; }
-
 .gate-store-card {
   background: rgba(255,122,0,0.06);
   border: 1px solid rgba(255,122,0,0.2);
@@ -149,7 +149,6 @@ input, textarea, select { outline: none; }
   font-size: 1rem; color: #fff; font-weight: 900;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-
 .gate-spinner {
   width: 40px; height: 40px; margin: 0 auto;
   border: 3px solid rgba(255,255,255,0.15);
@@ -180,6 +179,7 @@ input, textarea, select { outline: none; }
 }
 .gate-btn-secondary:hover { background: rgba(255,255,255,0.1); }
 
+/* ═══ Header ═══ */
 .bzr-header {
   position: sticky; top: 0; z-index: 100;
   height: var(--header-h);
@@ -223,8 +223,8 @@ input, textarea, select { outline: none; }
   flex-shrink: 0;
 }
 
+/* ═══ Page ═══ */
 .bzr-page { max-width: 780px; margin: 0 auto; padding: 20px 16px 40px; }
-
 .hero { text-align: center; padding: 24px 12px 28px; position: relative; }
 .hero::before {
   content: ''; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
@@ -271,6 +271,7 @@ input, textarea, select { outline: none; }
 }
 .hero-feature i { color: var(--c-primary); font-size: 0.68rem; }
 
+/* ═══ Cards ═══ */
 .bzr-card {
   background: var(--c-surface);
   border-radius: var(--radius-lg);
@@ -302,6 +303,7 @@ input, textarea, select { outline: none; }
   border-radius: var(--radius-full);
 }
 
+/* ═══ Form ═══ */
 .form-field { margin-bottom: 18px; }
 .form-field:last-child { margin-bottom: 0; }
 .form-label {
@@ -341,7 +343,6 @@ input, textarea, select { outline: none; }
 }
 .input-wrap.error { border-color: var(--c-danger); background: #FEF2F2; }
 .input-wrap.valid { border-color: var(--c-success); background: #F0FDF4; }
-
 .input-icon {
   width: 48px; display: flex; align-items: center; justify-content: center;
   color: var(--c-text-muted); font-size: 1rem; flex-shrink: 0;
@@ -360,7 +361,6 @@ input, textarea, select { outline: none; }
   color: var(--c-success); background: #DCFCE7;
   border-inline-end-color: var(--c-success);
 }
-
 .input {
   flex: 1; border: none; background: transparent;
   padding: 14px 16px;
@@ -372,7 +372,6 @@ input, textarea, select { outline: none; }
   font-size: 0.9rem;
 }
 .input:disabled { color: var(--c-text-soft); cursor: not-allowed; }
-
 .input-suffix {
   display: flex; align-items: center;
   padding-inline-end: 8px; gap: 4px; flex-shrink: 0;
@@ -423,12 +422,14 @@ input, textarea, select { outline: none; }
   pointer-events: none !important;
 }
 
+/* ═══ Password Strength ═══ */
 .pwd-strength { display: none; margin-top: 10px; }
 .pwd-strength.show { display: block; }
 .pwd-bars { display: flex; gap: 4px; margin-bottom: 6px; }
 .pwd-bar { flex: 1; height: 4px; background: var(--c-surface-3); border-radius: 2px; transition: all 0.3s; }
 .pwd-strength-text { font-size: 0.74rem; font-weight: 800; color: var(--c-text-soft); }
 
+/* ═══ Categories ═══ */
 .cat-loading {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   padding: 22px 16px; color: var(--c-text-soft);
@@ -441,6 +442,23 @@ input, textarea, select { outline: none; }
   border-top-color: var(--c-primary);
   border-radius: 50%; animation: spin 0.8s linear infinite;
 }
+
+/* ⭐ Empty state — لا توجد فئات */
+.cat-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 28px 20px; text-align: center;
+  background: var(--c-surface-2); border-radius: var(--radius-md);
+  border: 2px dashed var(--c-border);
+}
+.cat-empty-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--c-primary-soft); color: var(--c-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+}
+.cat-empty-title { font-size: 0.9rem; font-weight: 800; color: var(--c-text); }
+.cat-empty-text { font-size: 0.78rem; font-weight: 600; color: var(--c-text-soft); line-height: 1.6; max-width: 320px; }
+
 .cats-grid {
   display: flex; flex-wrap: wrap; gap: 8px;
   padding: 4px 0; max-height: 300px; overflow-y: auto;
@@ -465,6 +483,17 @@ input, textarea, select { outline: none; }
   content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
   font-size: 0.7rem; margin-inline-start: 4px;
 }
+.cat-chip.custom {
+  border-style: dashed;
+  border-color: var(--c-primary);
+  color: var(--c-primary);
+  background: transparent;
+}
+.cat-chip.custom.active {
+  background: var(--c-primary-gradient);
+  color: #fff;
+  border-style: solid;
+}
 .new-cat-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 10px 18px; background: transparent;
@@ -487,6 +516,7 @@ input, textarea, select { outline: none; }
 .btn-cancel-cat { background: var(--c-surface-2); color: var(--c-text); }
 .btn-cancel-cat:hover { background: var(--c-surface-3); }
 
+/* ═══ Image Upload ═══ */
 .upload-cover {
   position: relative; width: 100%; height: 180px;
   border-radius: var(--radius-md); overflow: hidden;
@@ -548,6 +578,7 @@ input, textarea, select { outline: none; }
   animation: spin 0.85s linear infinite;
 }
 
+/* ═══ Preview ═══ */
 .preview-wrap { display: flex; justify-content: center; padding: 8px 0 4px; }
 .preview-card {
   width: 100%; max-width: 300px;
@@ -604,6 +635,7 @@ input, textarea, select { outline: none; }
   border: none; box-shadow: 0 4px 10px rgba(255,122,0,0.3);
 }
 
+/* ═══ Footer ═══ */
 .bzr-footer {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: rgba(255,255,255,0.94);
@@ -644,6 +676,7 @@ input, textarea, select { outline: none; }
 }
 .footer-note i { color: var(--c-success); font-size: 0.7rem; }
 
+/* ═══ Terms ═══ */
 .terms-wrap {
   display: flex; align-items: flex-start; gap: 10px;
   padding: 16px 18px;
@@ -663,6 +696,7 @@ input, textarea, select { outline: none; }
 }
 .terms-text a { color: var(--c-primary-dark); text-decoration: underline; font-weight: 800; }
 
+/* ═══ Toast ═══ */
 #toast {
   position: fixed; bottom: 110px; left: 50%;
   transform: translateX(-50%) translateY(20px);
@@ -794,7 +828,7 @@ input, textarea, select { outline: none; }
         </div>
         <div class="bzr-brand-text">
           <b>BranZar</b>
-          <span> اشهر البراندات والمتاجر في مكان واحد </span>
+          <span>اشهر البراندات والمتاجر في مكان واحد</span>
         </div>
       </div>
       <div class="bzr-secure-pill">
@@ -861,6 +895,11 @@ input, textarea, select { outline: none; }
             <span>جارٍ تحميل الفئات...</span>
           </div>
           <div id="catsGrid" class="cats-grid" style="display:none;"></div>
+          <div id="catsEmpty" class="cat-empty" style="display:none;">
+            <div class="cat-empty-icon"><i class="fas fa-tags"></i></div>
+            <div class="cat-empty-title">لا توجد فئات متاحة بعد</div>
+            <div class="cat-empty-text">كن أول من ينشئ فئة على المنصة — أضف فئة جديدة من الزر أدناه</div>
+          </div>
           <div class="error-msg" id="catError">
             <i class="fas fa-exclamation-circle"></i>
             <span>يرجى اختيار فئة</span>
@@ -1168,7 +1207,7 @@ const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 /* ═══════════════════════════════════════════════════════════
-   ⭐ Aggressive Caching Config
+   Cache Config
    ═══════════════════════════════════════════════════════════ */
 const DID_KEY = 'bzr_device_id_v2';
 const DID_COOKIE = 'bzr_did';
@@ -1176,10 +1215,10 @@ const DID_IDB_NAME = 'bzr_guard_v2';
 const DID_IDB_STORE = 'ids';
 const DID_CACHE = 'bzr-guard-v2';
 
-const REG_CACHE_KEY = 'bzr_reg_status_v1';        // مفتاح حالة التسجيل
-const REG_CACHE_COOKIE = 'bzr_reg_v1';            // cookie منفصل
-const CHECK_COOLDOWN_MS = 24 * 60 * 60 * 1000;    // فحص واحد كل 24 ساعة فقط
-const REG_CACHE_TTL_MS = 365 * 24 * 60 * 60 * 1000; // صلاحية الكاش سنة كاملة
+const REG_CACHE_KEY = 'bzr_reg_status_v1';
+const REG_CACHE_COOKIE = 'bzr_reg_v1';
+const CHECK_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+const REG_CACHE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 
 const SUBMIT_LOCK_KEY = 'bzr_submit_lock';
 const RATE_LIMIT_MS = 60 * 1000;
@@ -1192,7 +1231,8 @@ const state = {
   persistentId: null,
   anonUid: null,
   selectedCategory: null,
-  categoriesList: [],
+  categoriesList: [],       // ⭐ فئات من Firestore فقط
+  customCategories: [],     // ⭐ فئات أضافها المستخدم محليًا
   coverUrl: null,
   logoUrl: null,
   coverFile: null,
@@ -1388,9 +1428,7 @@ async function getOrCreatePersistentId() {
   return newId;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ⭐ Registration Status Cache (4 Layers)
-   ═══════════════════════════════════════════════════════════ */
+/* Registration Status Cache */
 async function saveRegStatus(registered, store) {
   const data = {
     registered: !!registered,
@@ -1407,7 +1445,6 @@ async function saveRegStatus(registered, store) {
 }
 
 async function readRegStatus() {
-  // Layer 1: localStorage (fastest)
   try {
     const raw = localStorage.getItem(REG_CACHE_KEY);
     if (raw) {
@@ -1415,21 +1452,16 @@ async function readRegStatus() {
       if (data && (Date.now() - (data.checkedAt || 0)) < REG_CACHE_TTL_MS) return data;
     }
   } catch(e){}
-
-  // Layer 2: Cookie
   try {
     const raw = getCookie(REG_CACHE_COOKIE);
     if (raw) {
       const data = JSON.parse(raw);
       if (data && (Date.now() - (data.checkedAt || 0)) < REG_CACHE_TTL_MS) {
-        // Hydrate other layers
         try { localStorage.setItem(REG_CACHE_KEY, raw); } catch(e){}
         return data;
       }
     }
   } catch(e){}
-
-  // Layer 3: IndexedDB
   try {
     const data = await idbGet(REG_CACHE_KEY);
     if (data && typeof data === 'object' && (Date.now() - (data.checkedAt || 0)) < REG_CACHE_TTL_MS) {
@@ -1437,8 +1469,6 @@ async function readRegStatus() {
       return data;
     }
   } catch(e){}
-
-  // Layer 4: Cache Storage
   try {
     const raw = await cacheGet(REG_CACHE_KEY);
     if (raw) {
@@ -1449,7 +1479,6 @@ async function readRegStatus() {
       }
     }
   } catch(e){}
-
   return null;
 }
 
@@ -1733,80 +1762,142 @@ function updatePreview() {
   $('previewCat').textContent = state.selectedCategory || 'الفئة';
 }
 
-const DEFAULT_CATEGORIES = [
-  'أزياء وموضة', 'إلكترونيات', 'هواتف وأجهزة', 'مطاعم ومقاهي',
-  'تجميل وعناية', 'منزل ومفروشات', 'رياضة ولياقة', 'كتب وقرطاسية',
-  'أطفال ومستلزماتهم', 'هدايا وتحف', 'عطور وبخور', 'مواد غذائية',
-  'خدمات عامة', 'عقارات', 'سيارات وقطع غيار', 'صيدليات ومستلزمات طبية'
-];
+/* ═══════════════════════════════════════════════════════════
+   ⭐ Categories — Firestore Only (No Local Defaults)
+   ═══════════════════════════════════════════════════════════ */
 async function loadCategories() {
-  const loader = $('catsLoader'), grid = $('catsGrid');
+  const loader = $('catsLoader');
+  const grid = $('catsGrid');
+  const empty = $('catsEmpty');
+
   try {
     startProgress();
     const snap = await db.collection(STORES_COLLECTION).limit(500).get();
     const cats = new Set();
+
     snap.docs.forEach(d => {
       const data = d.data();
-      if (data.category && String(data.category).trim()) cats.add(sanitize(String(data.category).trim(), 40));
-      if (Array.isArray(data.categories)) {
-        data.categories.forEach(cc => { if (cc && String(cc).trim()) cats.add(sanitize(String(cc).trim(), 40)); });
+      // ⭐ الفئة الرئيسية فقط — لا نقرأ categories الإضافية
+      if (data.category && String(data.category).trim()) {
+        const clean = sanitize(String(data.category).trim(), 40);
+        if (clean) cats.add(clean);
       }
     });
+
     state.categoriesList = Array.from(cats).filter(Boolean).sort();
-    DEFAULT_CATEGORIES.forEach(c => { if (!state.categoriesList.includes(c)) state.categoriesList.push(c); });
+    state.customCategories = [];
+
   } catch (err) {
-    state.categoriesList = DEFAULT_CATEGORIES.slice();
+    console.warn('[Categories] Failed to load:', err);
+    // ⭐ في حال الفشل لا نضيف أي فئات افتراضية
+    state.categoriesList = [];
+    state.customCategories = [];
   } finally {
     doneProgress();
     loader.style.display = 'none';
-    grid.style.display = 'flex';
-    renderCategories();
+
+    if (state.categoriesList.length === 0) {
+      // لا توجد فئات في قاعدة البيانات
+      grid.style.display = 'none';
+      empty.style.display = 'flex';
+    } else {
+      grid.style.display = 'flex';
+      empty.style.display = 'none';
+      renderCategories();
+    }
   }
 }
+
 function renderCategories() {
   const grid = $('catsGrid');
+  const empty = $('catsEmpty');
   grid.innerHTML = '';
   const frag = document.createDocumentFragment();
-  state.categoriesList.forEach(cat => {
+
+  const allCats = [...state.categoriesList, ...state.customCategories];
+
+  allCats.forEach(cat => {
+    const isCustom = state.customCategories.includes(cat);
     const chip = document.createElement('button');
     chip.type = 'button';
-    chip.className = 'cat-chip' + (state.selectedCategory === cat ? ' active' : '');
+    chip.className = 'cat-chip' + (isCustom ? ' custom' : '') + (state.selectedCategory === cat ? ' active' : '');
     chip.dataset.cat = cat;
-    chip.innerHTML = '<i class="fas fa-tag"></i><span>' + escapeHtml(cat) + '</span>';
+    chip.innerHTML = (isCustom ? '<i class="fas fa-star"></i>' : '<i class="fas fa-tag"></i>') + '<span>' + escapeHtml(cat) + '</span>';
     chip.addEventListener('click', () => selectCategory(cat));
     frag.appendChild(chip);
   });
+
   grid.appendChild(frag);
+
+  // إظهار/إخفاء حسب الحالة
+  if (allCats.length === 0) {
+    grid.style.display = 'none';
+    empty.style.display = 'flex';
+  } else {
+    grid.style.display = 'flex';
+    empty.style.display = 'none';
+  }
 }
+
 function selectCategory(cat) {
   state.selectedCategory = cat;
-  document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === cat));
+  document.querySelectorAll('.cat-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.cat === cat);
+  });
   hideError('catError');
   updatePreview();
   haptic('light');
 }
-$('addCatBtn')?.addEventListener('click', () => { $('newCatWrap').classList.add('show'); $('newCatInput').focus(); haptic('light'); });
-$('cancelCatBtn')?.addEventListener('click', () => { $('newCatWrap').classList.remove('show'); $('newCatInput').value = ''; });
+
+$('addCatBtn')?.addEventListener('click', () => {
+  $('newCatWrap').classList.add('show');
+  $('newCatInput').focus();
+  haptic('light');
+});
+$('cancelCatBtn')?.addEventListener('click', () => {
+  $('newCatWrap').classList.remove('show');
+  $('newCatInput').value = '';
+});
 $('saveCatBtn')?.addEventListener('click', saveCustomCategory);
-$('newCatInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); saveCustomCategory(); } });
+$('newCatInput')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); saveCustomCategory(); }
+});
+
 function saveCustomCategory() {
   const val = sanitize($('newCatInput').value, 40);
   if (val.length < 2) { showToast('اسم الفئة قصير جدًا', 'error'); return; }
   if (!NAME_REGEX.test(val)) { showToast('يحتوي على رموز غير مسموحة', 'error'); return; }
-  const exists = state.categoriesList.some(c => c.toLowerCase() === val.toLowerCase());
-  if (exists) {
+
+  // التحقق من عدم التكرار في فئات Firestore أو المخصصة
+  const existsInFirestore = state.categoriesList.some(c => c.toLowerCase() === val.toLowerCase());
+  const existsInCustom = state.customCategories.some(c => c.toLowerCase() === val.toLowerCase());
+
+  if (existsInFirestore) {
     selectCategory(state.categoriesList.find(c => c.toLowerCase() === val.toLowerCase()));
-    $('newCatWrap').classList.remove('show'); $('newCatInput').value = '';
+    $('newCatWrap').classList.remove('show');
+    $('newCatInput').value = '';
+    showToast('هذه الفئة موجودة بالفعل', 'warning');
     return;
   }
-  state.categoriesList.unshift(val);
+
+  if (existsInCustom) {
+    selectCategory(state.customCategories.find(c => c.toLowerCase() === val.toLowerCase()));
+    $('newCatWrap').classList.remove('show');
+    $('newCatInput').value = '';
+    showToast('هذه الفئة مضافة بالفعل', 'warning');
+    return;
+  }
+
+  state.customCategories.unshift(val);
   renderCategories();
   selectCategory(val);
-  $('newCatWrap').classList.remove('show'); $('newCatInput').value = '';
+  $('newCatWrap').classList.remove('show');
+  $('newCatInput').value = '';
   showToast('✅ تمت إضافة الفئة', 'success');
   haptic('medium');
 }
 
+/* Form handlers */
 const nameInput = $('storeName');
 const waInput = $('whatsapp');
 const phoneInput = $('phone');
@@ -1949,11 +2040,7 @@ function setRateLimit() { try { localStorage.setItem(SUBMIT_LOCK_KEY, Date.now()
 const submitBtn = $('submitBtn');
 
 submitBtn?.addEventListener('click', async () => {
-  // ⛔ Defensive: if already registered, block immediately
-  if (state.alreadyRegistered) {
-    showToast('لديك متجر بالفعل', 'warning');
-    return;
-  }
+  if (state.alreadyRegistered) { showToast('لديك متجر بالفعل', 'warning'); return; }
   if (state.submitting) return;
   if (isRateLimited()) return;
   if ($('website').value) return;
@@ -1984,7 +2071,7 @@ submitBtn?.addEventListener('click', async () => {
     const now = Date.now();
     const storeData = {
       name: sanitize(nameInput.value, 60),
-      login_username: sanitize(nameInput.value, 60),  // ⭐ مفتاح تسجيل الدخول
+      login_username: sanitize(nameInput.value, 60),
       login_password: pwdInput.value,
       category: sanitize(state.selectedCategory, 40),
       categories: [],
@@ -2017,7 +2104,6 @@ submitBtn?.addEventListener('click', async () => {
       });
     } catch (e) {}
 
-    /* ⭐ Save registration status — subsequent visits = instant block */
     await saveRegStatus(true, { id: ref.id, name: storeData.name });
 
     doneProgress();
@@ -2061,9 +2147,7 @@ submitBtn?.addEventListener('click', async () => {
   }
 });
 
-/* ═══════════════════════════════════════════════════════════
-   Gates
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ Gates ═══ */
 function showGate(gateId) {
   ['gateCheck', 'gateBlocked', 'gateError', 'appContainer'].forEach(id => {
     const el = $(id);
@@ -2087,19 +2171,14 @@ function updateGateStep(text) {
   if (el) { el.style.opacity = '0'; setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 150); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Bootstrap — Cache-First Strategy
-   ═══════════════════════════════════════════════════════════ */
 async function bootstrap() {
   try {
     updateGateStep('تحضير...');
     await new Promise(r => setTimeout(r, 150));
 
-    /* ⚡ STEP 1: Check cache first — NO DB QUERY */
     const cached = await readRegStatus();
 
     if (cached && cached.registered) {
-      // ⛔ User already has a store — block instantly without any DB read
       console.log('[Cache] Registered user blocked without DB query');
       updateGateStep('جارٍ فتح لوحة الإدارة...');
       await new Promise(r => setTimeout(r, 400));
@@ -2107,7 +2186,6 @@ async function bootstrap() {
       return;
     }
 
-    /* ⚡ STEP 2: Recently checked & not registered → allow without DB query */
     if (cached && !cached.registered && cached.checkedAt) {
       const elapsed = Date.now() - cached.checkedAt;
       if (elapsed < CHECK_COOLDOWN_MS) {
@@ -2122,7 +2200,6 @@ async function bootstrap() {
       }
     }
 
-    /* ⚡ STEP 3: Full check (first visit or cooldown expired) */
     updateGateStep('جارٍ التحقق من حسابك...');
     const { fingerprint, persistentId } = await buildFingerprint();
     const check = await checkDeviceAlreadyRegistered(fingerprint, persistentId);
@@ -2135,7 +2212,6 @@ async function bootstrap() {
       return;
     }
 
-    // Not registered → cache this
     await saveRegStatus(false, null);
     updateGateStep('✅ يمكنك المتابعة');
     await new Promise(r => setTimeout(r, 300));
@@ -2167,7 +2243,7 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup.html loaded ✅ v2.3.0 — Cache-First + Rate-Limited');
+console.log('[BZR] signup.html loaded ✅ v2.4.0 — Firestore-Only Categories');
 </script>
 
 </body>
