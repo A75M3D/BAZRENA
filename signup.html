@@ -65,9 +65,6 @@ input, textarea, select { outline: none; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--c-surface-3); border-radius: 4px; }
 
-/* ═══════════════════════════════════════════════
-   Gate Overlay (Redesigned — Professional & Respectful)
-   ═══════════════════════════════════════════════ */
 .gate-overlay {
   position: fixed; inset: 0; z-index: 99999;
   background:
@@ -127,7 +124,6 @@ input, textarea, select { outline: none; }
 }
 .gate-text strong { color: var(--c-primary); font-weight: 800; }
 
-/* ─── Store info card (used in the "already registered" gate) ─── */
 .gate-store-card {
   background: rgba(255,122,0,0.06);
   border: 1px solid rgba(255,122,0,0.2);
@@ -184,9 +180,6 @@ input, textarea, select { outline: none; }
 }
 .gate-btn-secondary:hover { background: rgba(255,255,255,0.1); }
 
-/* ═══════════════════════════════════════════════
-   Header
-   ═══════════════════════════════════════════════ */
 .bzr-header {
   position: sticky; top: 0; z-index: 100;
   height: var(--header-h);
@@ -230,9 +223,6 @@ input, textarea, select { outline: none; }
   flex-shrink: 0;
 }
 
-/* ═══════════════════════════════════════════════
-   Page
-   ═══════════════════════════════════════════════ */
 .bzr-page { max-width: 780px; margin: 0 auto; padding: 20px 16px 40px; }
 
 .hero { text-align: center; padding: 24px 12px 28px; position: relative; }
@@ -281,9 +271,6 @@ input, textarea, select { outline: none; }
 }
 .hero-feature i { color: var(--c-primary); font-size: 0.68rem; }
 
-/* ═══════════════════════════════════════════════
-   Cards
-   ═══════════════════════════════════════════════ */
 .bzr-card {
   background: var(--c-surface);
   border-radius: var(--radius-lg);
@@ -315,9 +302,6 @@ input, textarea, select { outline: none; }
   border-radius: var(--radius-full);
 }
 
-/* ═══════════════════════════════════════════════
-   Form Fields — Professional Data Entry Style
-   ═══════════════════════════════════════════════ */
 .form-field { margin-bottom: 18px; }
 .form-field:last-child { margin-bottom: 0; }
 .form-label {
@@ -342,7 +326,6 @@ input, textarea, select { outline: none; }
   padding: 2px 8px; border-radius: var(--radius-full);
 }
 
-/* ─── Input wrap ─── */
 .input-wrap {
   position: relative; display: flex; align-items: stretch;
   background: var(--c-surface);
@@ -403,7 +386,6 @@ input, textarea, select { outline: none; }
 }
 .input-icon-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
 
-/* ─── Textarea ─── */
 .textarea {
   width: 100%; min-height: 120px; padding: 16px;
   border: 2px solid var(--c-border); border-radius: var(--radius-md);
@@ -441,14 +423,12 @@ input, textarea, select { outline: none; }
   pointer-events: none !important;
 }
 
-/* ─── Password strength ─── */
 .pwd-strength { display: none; margin-top: 10px; }
 .pwd-strength.show { display: block; }
 .pwd-bars { display: flex; gap: 4px; margin-bottom: 6px; }
 .pwd-bar { flex: 1; height: 4px; background: var(--c-surface-3); border-radius: 2px; transition: all 0.3s; }
 .pwd-strength-text { font-size: 0.74rem; font-weight: 800; color: var(--c-text-soft); }
 
-/* ─── Categories ─── */
 .cat-loading {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   padding: 22px 16px; color: var(--c-text-soft);
@@ -507,7 +487,6 @@ input, textarea, select { outline: none; }
 .btn-cancel-cat { background: var(--c-surface-2); color: var(--c-text); }
 .btn-cancel-cat:hover { background: var(--c-surface-3); }
 
-/* ─── Image Upload ─── */
 .upload-cover {
   position: relative; width: 100%; height: 180px;
   border-radius: var(--radius-md); overflow: hidden;
@@ -569,7 +548,6 @@ input, textarea, select { outline: none; }
   animation: spin 0.85s linear infinite;
 }
 
-/* ─── Live preview ─── */
 .preview-wrap { display: flex; justify-content: center; padding: 8px 0 4px; }
 .preview-card {
   width: 100%; max-width: 300px;
@@ -626,7 +604,6 @@ input, textarea, select { outline: none; }
   border: none; box-shadow: 0 4px 10px rgba(255,122,0,0.3);
 }
 
-/* ─── Footer ─── */
 .bzr-footer {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: rgba(255,255,255,0.94);
@@ -655,7 +632,7 @@ input, textarea, select { outline: none; }
 }
 .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-primary-lg); }
 .submit-btn:disabled {
-  opacity: 0.7; cursor: not-allowed;
+  opacity: 0.55; cursor: not-allowed;
   background: linear-gradient(135deg, #94A3B8, #64748B);
   box-shadow: none;
 }
@@ -667,7 +644,6 @@ input, textarea, select { outline: none; }
 }
 .footer-note i { color: var(--c-success); font-size: 0.7rem; }
 
-/* ─── Terms ─── */
 .terms-wrap {
   display: flex; align-items: flex-start; gap: 10px;
   padding: 16px 18px;
@@ -687,7 +663,6 @@ input, textarea, select { outline: none; }
 }
 .terms-text a { color: var(--c-primary-dark); text-decoration: underline; font-weight: 800; }
 
-/* ─── Toast ─── */
 #toast {
   position: fixed; bottom: 110px; left: 50%;
   transform: translateX(-50%) translateY(20px);
@@ -735,9 +710,7 @@ input, textarea, select { outline: none; }
 
 <div id="topProgressBar"></div>
 
-<!-- ═══════════════════════════════════════════════
-     GATE 1: Loading check
-     ═══════════════════════════════════════════════ -->
+<!-- GATE 1: Loading -->
 <div id="gateCheck" class="gate-overlay">
   <div class="gate-card">
     <div class="gate-icon"><i class="fas fa-shield-halved"></i></div>
@@ -751,16 +724,14 @@ input, textarea, select { outline: none; }
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     GATE 2: Already registered — REDESIGNED (professional & respectful)
-     ═══════════════════════════════════════════════ -->
+<!-- GATE 2: Already registered -->
 <div id="gateBlocked" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon info"><i class="fas fa-store"></i></div>
     <h2 class="gate-title">لديك متجر بالفعل</h2>
     <p class="gate-text">
-      يبدو أنك أنشأت متجرًا مسبقًا على BranZar     
-      يمكنك إدارة متجرك الحالي بكل سهولة.<br>
+      يبدو أنك أنشأت متجرًا مسبقًا على BranZar<br>
+      يمكنك إدارة متجرك الحالي بكل سهولة.
     </p>
 
     <div class="gate-store-card" id="blockedStoreCard" style="display:none;">
@@ -784,9 +755,7 @@ input, textarea, select { outline: none; }
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     GATE 3: Error
-     ═══════════════════════════════════════════════ -->
+<!-- GATE 3: Error -->
 <div id="gateError" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon danger"><i class="fas fa-exclamation-triangle"></i></div>
@@ -805,9 +774,7 @@ input, textarea, select { outline: none; }
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MAIN APP
-     ═══════════════════════════════════════════════ -->
+<!-- MAIN APP -->
 <div id="appContainer" class="hidden">
 
   <header class="bzr-header">
@@ -856,7 +823,6 @@ input, textarea, select { outline: none; }
 
     <form id="signupForm" novalidate autocomplete="off">
 
-      <!-- CARD 1: Store Info -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-store"></i></div>
@@ -933,7 +899,6 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
-      <!-- CARD 2: Contact -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-address-book"></i></div>
@@ -980,7 +945,6 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
-      <!-- CARD 3: Images -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-image"></i></div>
@@ -1038,7 +1002,6 @@ input, textarea, select { outline: none; }
         <input type="file" id="logoInput" accept="image/*" hidden>
       </div>
 
-      <!-- CARD 4: Password -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-lock"></i></div>
@@ -1103,12 +1066,11 @@ input, textarea, select { outline: none; }
         <div style="padding:14px 16px;background:var(--c-primary-soft);border-radius:var(--radius-md);display:flex;gap:10px;align-items:flex-start;">
           <i class="fas fa-circle-info" style="color:var(--c-primary);font-size:0.95rem;margin-top:2px;flex-shrink:0;"></i>
           <p style="font-size:0.78rem;font-weight:600;color:#7c4a15;line-height:1.7;">
-            احفظ <b style="color:#5a3310;">رقم الواتساب وكلمة المرور</b> — ستستخدمهما للدخول وإدارة متجرك في أي وقت.
+            ستسجّل الدخول بـ <b style="color:#5a3310;">اسم متجرك + كلمة المرور</b> — احتفظ بهما في مكان آمن.
           </p>
         </div>
       </div>
 
-      <!-- CARD 5: Preview + Terms -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-eye"></i></div>
@@ -1178,7 +1140,6 @@ input, textarea, select { outline: none; }
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
@@ -1186,9 +1147,6 @@ input, textarea, select { outline: none; }
 <script>
 'use strict';
 
-/* ═══════════════════════════════════════════════════════════
-   Firebase Config
-   ═══════════════════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
   authDomain: "bazarena-725e4.firebaseapp.com",
@@ -1206,20 +1164,23 @@ db.settings({ ignoreUndefinedProperties: true });
 const STORES_COLLECTION = 'stores';
 const DEVICES_COLLECTION = 'device_registry';
 
-/* ═══════════════════════════════════════════════════════════
-   Cloudinary
-   ═══════════════════════════════════════════════════════════ */
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 /* ═══════════════════════════════════════════════════════════
-   Constants
+   ⭐ Aggressive Caching Config
    ═══════════════════════════════════════════════════════════ */
 const DID_KEY = 'bzr_device_id_v2';
 const DID_COOKIE = 'bzr_did';
 const DID_IDB_NAME = 'bzr_guard_v2';
 const DID_IDB_STORE = 'ids';
 const DID_CACHE = 'bzr-guard-v2';
+
+const REG_CACHE_KEY = 'bzr_reg_status_v1';        // مفتاح حالة التسجيل
+const REG_CACHE_COOKIE = 'bzr_reg_v1';            // cookie منفصل
+const CHECK_COOLDOWN_MS = 24 * 60 * 60 * 1000;    // فحص واحد كل 24 ساعة فقط
+const REG_CACHE_TTL_MS = 365 * 24 * 60 * 60 * 1000; // صلاحية الكاش سنة كاملة
+
 const SUBMIT_LOCK_KEY = 'bzr_submit_lock';
 const RATE_LIMIT_MS = 60 * 1000;
 
@@ -1237,7 +1198,8 @@ const state = {
   coverFile: null,
   logoFile: null,
   submitting: false,
-  checkPassed: false
+  checkPassed: false,
+  alreadyRegistered: false
 };
 
 function $(id) { return document.getElementById(id); }
@@ -1330,6 +1292,10 @@ function getCookie(name) {
     return match ? decodeURIComponent(match[2]) : null;
   } catch (e) { return null; }
 }
+function deleteCookie(name) {
+  try { document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; } catch(e){}
+}
+
 function openIDB() {
   return new Promise((resolve, reject) => {
     try {
@@ -1359,7 +1325,9 @@ async function idbSet(key, value) {
     const db = await openIDB();
     return new Promise(resolve => {
       const tx = db.transaction(DID_IDB_STORE, 'readwrite');
-      tx.objectStore(DID_IDB_STORE).put(value, key);
+      const store = tx.objectStore(DID_IDB_STORE);
+      if (value === null) store.delete(key);
+      else store.put(value, key);
       tx.oncomplete = () => resolve(true);
       tx.onerror = () => resolve(false);
     });
@@ -1381,6 +1349,15 @@ async function cacheSet(key, value) {
     return true;
   } catch (e) { return false; }
 }
+async function cacheDelete(key) {
+  try {
+    if (!('caches' in window)) return false;
+    const cache = await caches.open(DID_CACHE);
+    await cache.delete('/__' + key);
+    return true;
+  } catch (e) { return false; }
+}
+
 async function getOrCreatePersistentId() {
   try {
     const id = localStorage.getItem(DID_KEY);
@@ -1411,7 +1388,79 @@ async function getOrCreatePersistentId() {
   return newId;
 }
 
-/* Fingerprint collectors (silent, no user-facing mention) */
+/* ═══════════════════════════════════════════════════════════
+   ⭐ Registration Status Cache (4 Layers)
+   ═══════════════════════════════════════════════════════════ */
+async function saveRegStatus(registered, store) {
+  const data = {
+    registered: !!registered,
+    storeId: store?.id || null,
+    storeName: store?.name || null,
+    checkedAt: Date.now(),
+    v: 1
+  };
+  const json = JSON.stringify(data);
+  try { localStorage.setItem(REG_CACHE_KEY, json); } catch(e){}
+  try { setCookie(REG_CACHE_COOKIE, json, 365); } catch(e){}
+  try { await idbSet(REG_CACHE_KEY, data); } catch(e){}
+  try { await cacheSet(REG_CACHE_KEY, json); } catch(e){}
+}
+
+async function readRegStatus() {
+  // Layer 1: localStorage (fastest)
+  try {
+    const raw = localStorage.getItem(REG_CACHE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && (Date.now() - (data.checkedAt || 0)) < REG_CACHE_TTL_MS) return data;
+    }
+  } catch(e){}
+
+  // Layer 2: Cookie
+  try {
+    const raw = getCookie(REG_CACHE_COOKIE);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && (Date.now() - (data.checkedAt || 0)) < REG_CACHE_TTL_MS) {
+        // Hydrate other layers
+        try { localStorage.setItem(REG_CACHE_KEY, raw); } catch(e){}
+        return data;
+      }
+    }
+  } catch(e){}
+
+  // Layer 3: IndexedDB
+  try {
+    const data = await idbGet(REG_CACHE_KEY);
+    if (data && typeof data === 'object' && (Date.now() - (data.checkedAt || 0)) < REG_CACHE_TTL_MS) {
+      try { localStorage.setItem(REG_CACHE_KEY, JSON.stringify(data)); } catch(e){}
+      return data;
+    }
+  } catch(e){}
+
+  // Layer 4: Cache Storage
+  try {
+    const raw = await cacheGet(REG_CACHE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && (Date.now() - (data.checkedAt || 0)) < REG_CACHE_TTL_MS) {
+        try { localStorage.setItem(REG_CACHE_KEY, raw); } catch(e){}
+        return data;
+      }
+    }
+  } catch(e){}
+
+  return null;
+}
+
+async function clearRegStatus() {
+  try { localStorage.removeItem(REG_CACHE_KEY); } catch(e){}
+  try { deleteCookie(REG_CACHE_COOKIE); } catch(e){}
+  try { await idbSet(REG_CACHE_KEY, null); } catch(e){}
+  try { await cacheDelete(REG_CACHE_KEY); } catch(e){}
+}
+
+/* Fingerprint collectors */
 function getCanvasFingerprint() {
   try {
     const canvas = document.createElement('canvas');
@@ -1900,6 +1949,11 @@ function setRateLimit() { try { localStorage.setItem(SUBMIT_LOCK_KEY, Date.now()
 const submitBtn = $('submitBtn');
 
 submitBtn?.addEventListener('click', async () => {
+  // ⛔ Defensive: if already registered, block immediately
+  if (state.alreadyRegistered) {
+    showToast('لديك متجر بالفعل', 'warning');
+    return;
+  }
   if (state.submitting) return;
   if (isRateLimited()) return;
   if ($('website').value) return;
@@ -1930,6 +1984,7 @@ submitBtn?.addEventListener('click', async () => {
     const now = Date.now();
     const storeData = {
       name: sanitize(nameInput.value, 60),
+      login_username: sanitize(nameInput.value, 60),  // ⭐ مفتاح تسجيل الدخول
       login_password: pwdInput.value,
       category: sanitize(state.selectedCategory, 40),
       categories: [],
@@ -1962,6 +2017,9 @@ submitBtn?.addEventListener('click', async () => {
       });
     } catch (e) {}
 
+    /* ⭐ Save registration status — subsequent visits = instant block */
+    await saveRegStatus(true, { id: ref.id, name: storeData.name });
+
     doneProgress();
     haptic('heavy');
     showToast('🎉 تم إنشاء متجرك بنجاح!', 'success');
@@ -1969,11 +2027,11 @@ submitBtn?.addEventListener('click', async () => {
     try {
       localStorage.setItem('branzar_onboarding_seen', 'true');
       localStorage.setItem('branzar_created_store', ref.id);
-      localStorage.setItem('branzar_created_whatsapp', normalizePhone(waInput.value));
+      localStorage.setItem('branzar_created_username', storeData.name);
     } catch (e) {}
 
     setTimeout(() => {
-      window.location.href = '/a.html?welcome=1&phone=' + encodeURIComponent(normalizePhone(waInput.value));
+      window.location.href = '/a.html?welcome=1&username=' + encodeURIComponent(storeData.name);
     }, 1400);
 
   } catch (err) {
@@ -1991,6 +2049,8 @@ submitBtn?.addEventListener('click', async () => {
     if (err.message === 'device_already_registered') {
       setTimeout(async () => {
         const check = await checkDeviceAlreadyRegistered(state.deviceFingerprint, state.persistentId);
+        if (check.existingStore) await saveRegStatus(true, check.existingStore);
+        state.alreadyRegistered = true;
         showGateBlocked(check.existingStore);
       }, 800);
     }
@@ -2011,6 +2071,7 @@ function showGate(gateId) {
   });
 }
 function showGateBlocked(existingStore) {
+  state.alreadyRegistered = true;
   const card = $('blockedStoreCard');
   const nameEl = $('blockedStoreName');
   if (existingStore && existingStore.name && nameEl && card) {
@@ -2026,28 +2087,59 @@ function updateGateStep(text) {
   if (el) { el.style.opacity = '0'; setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 150); }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Bootstrap — Cache-First Strategy
+   ═══════════════════════════════════════════════════════════ */
 async function bootstrap() {
   try {
-    updateGateStep('تحضير البيئة الآمنة...');
-    await new Promise(r => setTimeout(r, 200));
+    updateGateStep('تحضير...');
+    await new Promise(r => setTimeout(r, 150));
 
-    const { fingerprint, persistentId } = await buildFingerprint();
+    /* ⚡ STEP 1: Check cache first — NO DB QUERY */
+    const cached = await readRegStatus();
+
+    if (cached && cached.registered) {
+      // ⛔ User already has a store — block instantly without any DB read
+      console.log('[Cache] Registered user blocked without DB query');
+      updateGateStep('جارٍ فتح لوحة الإدارة...');
+      await new Promise(r => setTimeout(r, 400));
+      showGateBlocked({ id: cached.storeId, name: cached.storeName });
+      return;
+    }
+
+    /* ⚡ STEP 2: Recently checked & not registered → allow without DB query */
+    if (cached && !cached.registered && cached.checkedAt) {
+      const elapsed = Date.now() - cached.checkedAt;
+      if (elapsed < CHECK_COOLDOWN_MS) {
+        console.log('[Cache] Skipping DB check (cooldown active)');
+        updateGateStep('✅ يمكنك المتابعة');
+        await new Promise(r => setTimeout(r, 300));
+        showGate('appContainer');
+        state.checkPassed = true;
+        loadCategories();
+        updatePreview();
+        return;
+      }
+    }
+
+    /* ⚡ STEP 3: Full check (first visit or cooldown expired) */
     updateGateStep('جارٍ التحقق من حسابك...');
-    await new Promise(r => setTimeout(r, 250));
-
+    const { fingerprint, persistentId } = await buildFingerprint();
     const check = await checkDeviceAlreadyRegistered(fingerprint, persistentId);
 
     if (check.blocked) {
+      await saveRegStatus(true, check.existingStore);
       updateGateStep('جارٍ فتح لوحة الإدارة...');
       await new Promise(r => setTimeout(r, 500));
       showGateBlocked(check.existingStore);
       return;
     }
 
+    // Not registered → cache this
+    await saveRegStatus(false, null);
     updateGateStep('✅ يمكنك المتابعة');
-    await new Promise(r => setTimeout(r, 400));
+    await new Promise(r => setTimeout(r, 300));
     showGate('appContainer');
-
     state.checkPassed = true;
     loadCategories();
     updatePreview();
@@ -2075,7 +2167,7 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup.html loaded ✅ v2.2.0 — Professional UI');
+console.log('[BZR] signup.html loaded ✅ v2.3.0 — Cache-First + Rate-Limited');
 </script>
 
 </body>
