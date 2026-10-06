@@ -2,15 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
 <meta name="theme-color" content="#FF7A00">
-<meta name="description" content="أنشئ متجرك على منصة BranZar خلال دقيقة واحدة">
-<title>إنشاء متجر | BranZar</title>
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="أنشئ متجرك على منصة BranZar في دقيقة واحدة">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=()">
+<title>إنشاء متجر | BranZar بران زار</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://api.cloudinary.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 
 <style>
 :root {
@@ -28,780 +35,1444 @@
   --c-border: #E2E8F0;
   --c-success: #10B981;
   --c-danger: #EF4444;
+  --c-warning: #F59E0B;
+  --c-info: #3B82F6;
   --c-whatsapp: #25D366;
   --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
   --shadow-md: 0 4px 14px rgba(15,23,42,0.08);
   --shadow-lg: 0 12px 32px rgba(15,23,42,0.12);
+  --shadow-xl: 0 24px 56px -12px rgba(15,23,42,0.18);
   --shadow-primary: 0 8px 24px rgba(255,122,0,0.28);
+  --shadow-primary-lg: 0 16px 40px -10px rgba(255,122,0,0.55);
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-xl: 28px;
   --radius-full: 9999px;
   --header-h: 64px;
-}
-body.theme-dark {
-  --c-bg: #0B1120; --c-surface: #0F172A; --c-surface-2: #1E293B; --c-surface-3: #334155;
-  --c-text: #F1F5F9; --c-text-soft: #94A3B8; --c-text-muted: #64748B;
-  --c-border: #1E293B; --c-primary-soft: #2A1E0F;
+  --transition: cubic-bezier(0.4, 0, 0.2, 1);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
 body {
   font-family: 'Cairo', system-ui, -apple-system, sans-serif;
   background: var(--c-bg); color: var(--c-text);
   min-height: 100vh; line-height: 1.6; overflow-x: hidden;
-  transition: background-color 0.3s, color 0.3s;
-  padding-bottom: 120px;
+  padding-bottom: 140px;
+  -webkit-font-smoothing: antialiased;
 }
-button, input, textarea { font-family: inherit; }
-input, textarea { outline: none; }
+button, input, textarea, select { font-family: inherit; }
+input, textarea, select { outline: none; }
 ::selection { background: var(--c-primary); color: #fff; }
-::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--c-surface-3); border-radius: 4px; }
 
-#topProgressBar {
-  position: fixed; top: 0; left: 0; right: 0; height: 3px;
-  background: var(--c-primary-gradient); z-index: 9999;
-  transform-origin: right center; transform: scaleX(0); transition: transform 0.3s;
+/* ═══ Gate Overlays ═══ */
+.gate-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  background:
+    radial-gradient(ellipse at top right, rgba(255,122,0,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom left, rgba(255,166,77,0.14) 0%, transparent 55%),
+    linear-gradient(150deg, #1a1a1a 0%, #0a0a0a 100%);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; overflow-y: auto;
 }
-#topProgressBar.active { transform: scaleX(0.7); transition: transform 1.5s cubic-bezier(0.2,0.8,0.2,1); }
-#topProgressBar.done { transform: scaleX(1); opacity: 0; }
+.gate-overlay.hidden { display: none; }
+.gate-card {
+  background: rgba(26,26,26,0.95);
+  backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255,122,0,0.28);
+  border-radius: var(--radius-xl);
+  padding: 40px 28px 32px;
+  max-width: 460px; width: 100%;
+  text-align: center;
+  box-shadow: 0 30px 80px -25px rgba(255,122,0,0.55), 0 10px 40px rgba(0,0,0,0.5);
+  animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes cardIn {
+  from { transform: translateY(40px) scale(0.92); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+.gate-icon {
+  width: 92px; height: 92px; border-radius: 50%;
+  background: var(--c-primary-gradient);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 2.3rem;
+  margin: 0 auto 22px;
+  box-shadow: var(--shadow-primary-lg), 0 0 0 8px rgba(255,122,0,0.08);
+  animation: pulseIcon 2.5s ease-in-out infinite;
+}
+.gate-icon.danger { background: linear-gradient(135deg, #EF4444, #DC2626); box-shadow: 0 16px 44px -12px rgba(239,68,68,0.85), 0 0 0 8px rgba(239,68,68,0.08); }
+@keyframes pulseIcon {
+  0%, 100% { box-shadow: var(--shadow-primary-lg), 0 0 0 8px rgba(255,122,0,0.08); }
+  50% { box-shadow: 0 20px 55px -12px rgba(255,122,0,1), 0 0 0 16px rgba(255,122,0,0.04); }
+}
+.gate-title { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 12px; letter-spacing: -0.3px; line-height: 1.3; }
+.gate-text { color: #9ca3af; font-size: 0.9rem; margin-bottom: 26px; line-height: 1.8; font-weight: 500; }
+.gate-text strong { color: var(--c-primary); font-weight: 800; }
+.gate-spinner {
+  width: 40px; height: 40px; margin: 0 auto;
+  border: 3px solid rgba(255,255,255,0.15);
+  border-top-color: var(--c-primary);
+  border-radius: 50%;
+  animation: spin 0.85s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.gate-steps { color: #6b7280; font-size: 0.78rem; font-weight: 700; margin-top: 20px; min-height: 20px; transition: opacity 0.3s; }
+.gate-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 24px; border-radius: var(--radius-md);
+  font-weight: 800; font-size: 0.92rem; cursor: pointer;
+  border: none; text-decoration: none; font-family: inherit;
+  transition: all 0.25s; width: 100%;
+}
+.gate-btn-primary { background: var(--c-primary-gradient); color: #fff; box-shadow: var(--shadow-primary); }
+.gate-btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-primary-lg); }
+.gate-btn-secondary { background: rgba(255,255,255,0.06); color: #d1d5db; border: 1.5px solid rgba(255,255,255,0.12); margin-top: 10px; }
+.gate-btn-secondary:hover { background: rgba(255,255,255,0.1); }
+.gate-meta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,122,0,0.08); border: 1px solid rgba(255,122,0,0.25);
+  padding: 8px 14px; border-radius: var(--radius-full);
+  color: #fbbf24; font-size: 0.75rem; font-weight: 800;
+  margin-top: 18px;
+}
 
-.cs-header {
+/* ═══ Header ═══ */
+.bzr-header {
   position: sticky; top: 0; z-index: 100;
   height: var(--header-h);
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.88);
   backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--c-border);
-  display: flex; align-items: center; padding: 0 16px; gap: 12px;
+  display: flex; align-items: center;
+  padding: 0 16px; gap: 12px;
 }
-body.theme-dark .cs-header { background: rgba(15,23,42,0.85); }
-.cs-back-btn, .cs-theme-btn {
+.bzr-header-inner { max-width: 780px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 12px; }
+.bzr-back-btn {
   width: 40px; height: 40px; border-radius: 50%;
   background: var(--c-surface-2); border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   color: var(--c-text); font-size: 1rem; transition: all 0.2s; flex-shrink: 0;
 }
-.cs-back-btn:hover, .cs-theme-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
-.cs-logo-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-.cs-logo-icon {
-  width: 38px; height: 38px; border-radius: 11px;
+.bzr-back-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
+.bzr-logo-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.bzr-logo-mark {
+  width: 40px; height: 40px; border-radius: 12px;
   background: var(--c-primary-gradient);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--shadow-primary); flex-shrink: 0; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-primary); flex-shrink: 0;
+  position: relative; overflow: hidden;
 }
-.cs-logo-icon::before {
+.bzr-logo-mark::before {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent 60%);
 }
-.cs-logo-icon svg { width: 22px; height: 22px; position: relative; z-index: 1; }
-.cs-logo-text b { font-size: 1.05rem; font-weight: 900; color: var(--c-text); letter-spacing: -0.02em; }
-.cs-logo-text span { font-size: 0.68rem; font-weight: 700; color: var(--c-primary); display: block; line-height: 1.1; }
+.bzr-logo-mark svg { width: 24px; height: 24px; position: relative; z-index: 1; }
+.bzr-brand-text { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
+.bzr-brand-text b { font-size: 1.05rem; font-weight: 900; color: var(--c-text); letter-spacing: -0.02em; }
+.bzr-brand-text span { font-size: 0.68rem; font-weight: 700; color: var(--c-primary); }
+.bzr-secure-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(16,185,129,0.1); color: var(--c-success);
+  padding: 5px 11px; border-radius: var(--radius-full);
+  font-size: 0.7rem; font-weight: 800;
+  border: 1px solid rgba(16,185,129,0.25);
+  flex-shrink: 0;
+}
 
-.cs-page { max-width: 720px; margin: 0 auto; padding: 20px 16px 40px; }
-
-.cs-hero { text-align: center; padding: 28px 12px 24px; }
-.cs-hero-badge {
+/* ═══ Page ═══ */
+.bzr-page { max-width: 780px; margin: 0 auto; padding: 20px 16px 40px; }
+.hero { text-align: center; padding: 24px 12px 28px; position: relative; }
+.hero::before {
+  content: ''; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(255,122,0,0.1), transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+.hero-badge {
   display: inline-flex; align-items: center; gap: 6px;
   background: var(--c-primary-soft); color: var(--c-primary);
-  padding: 6px 14px; border-radius: var(--radius-full);
-  font-size: 0.78rem; font-weight: 800; margin-bottom: 14px;
+  padding: 7px 16px; border-radius: var(--radius-full);
+  font-size: 0.78rem; font-weight: 800; margin-bottom: 16px;
+  border: 1px solid rgba(255,122,0,0.15);
+  position: relative; z-index: 1;
 }
-.cs-hero h1 { font-size: 1.65rem; font-weight: 900; color: var(--c-text); margin-bottom: 10px; line-height: 1.25; letter-spacing: -0.02em; }
-.cs-hero h1 .gradient-text {
+.hero h1 {
+  font-size: 1.75rem; font-weight: 900;
+  color: var(--c-text); margin-bottom: 12px;
+  line-height: 1.25; letter-spacing: -0.02em;
+  position: relative; z-index: 1;
+}
+.hero h1 .gradient-text {
   background: var(--c-primary-gradient);
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.cs-hero p { font-size: 0.92rem; color: var(--c-text-soft); max-width: 420px; margin: 0 auto; line-height: 1.7; font-weight: 500; }
+.hero p {
+  font-size: 0.92rem; color: var(--c-text-soft);
+  max-width: 440px; margin: 0 auto;
+  line-height: 1.75; font-weight: 500;
+  position: relative; z-index: 1;
+}
+.hero-features {
+  display: flex; justify-content: center; gap: 8px;
+  flex-wrap: wrap; margin-top: 20px;
+  position: relative; z-index: 1;
+}
+.hero-feature {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--c-border);
+  padding: 6px 12px; border-radius: var(--radius-full);
+  font-size: 0.72rem; font-weight: 800; color: var(--c-text-soft);
+}
+.hero-feature i { color: var(--c-primary); font-size: 0.68rem; }
 
-.cs-card {
-  background: var(--c-surface); border-radius: var(--radius-lg);
-  border: 1px solid var(--c-border); box-shadow: var(--shadow-sm);
+.bzr-card {
+  background: var(--c-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-border);
+  box-shadow: var(--shadow-sm);
   padding: 22px 18px; margin-bottom: 16px;
-  animation: fadeInUp 0.5s ease backwards;
+  animation: fadeInUp 0.5s var(--transition) backwards;
 }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-
-.cs-card-head {
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.bzr-card-head {
   display: flex; align-items: center; gap: 10px;
-  margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--c-border);
+  margin-bottom: 18px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--c-border);
 }
-.cs-card-head-icon {
-  width: 34px; height: 34px; border-radius: 10px;
+.bzr-card-head-icon {
+  width: 36px; height: 36px; border-radius: 10px;
   background: var(--c-primary-soft); color: var(--c-primary);
   display: flex; align-items: center; justify-content: center;
   font-size: 0.95rem; flex-shrink: 0;
 }
-.cs-card-head h2 { font-size: 1rem; font-weight: 800; color: var(--c-text); flex: 1; }
-.cs-card-head .cs-card-step {
+.bzr-card-head h2 { font-size: 1rem; font-weight: 800; color: var(--c-text); flex: 1; }
+.bzr-card-step {
   font-size: 0.7rem; font-weight: 800; color: var(--c-text-muted);
-  background: var(--c-surface-2); padding: 3px 9px; border-radius: var(--radius-full);
+  background: var(--c-surface-2); padding: 3px 10px;
+  border-radius: var(--radius-full);
 }
 
-.cs-upload-cover {
-  position: relative; width: 100%; height: 170px;
-  border-radius: var(--radius-md); overflow: hidden;
-  background: repeating-linear-gradient(45deg, var(--c-surface-2) 0 10px, transparent 10px 20px), var(--c-surface);
-  border: 2px dashed var(--c-border); cursor: pointer; transition: all 0.25s;
-  display: flex; align-items: center; justify-content: center;
-}
-.cs-upload-cover:hover, .cs-upload-cover.dragging {
-  border-color: var(--c-primary); background-color: var(--c-primary-soft);
-}
-.cs-upload-cover img {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; opacity: 0; transition: opacity 0.3s;
-}
-.cs-upload-cover img.loaded { opacity: 1; }
-.cs-upload-cover .ph {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  color: var(--c-text-soft); text-align: center; padding: 0 16px;
-}
-.cs-upload-cover .ph i { font-size: 1.8rem; color: var(--c-primary); }
-.cs-upload-cover .ph b { font-size: 0.85rem; font-weight: 800; color: var(--c-text); }
-.cs-upload-cover .ph span { font-size: 0.72rem; font-weight: 600; }
-.cs-upload-cover .overlay-edit {
-  position: absolute; bottom: 10px; left: 10px;
-  background: rgba(0,0,0,0.65); color: #fff;
-  padding: 6px 12px; border-radius: var(--radius-full);
-  font-size: 0.72rem; font-weight: 800;
-  display: none; align-items: center; gap: 5px; backdrop-filter: blur(6px);
-}
-.cs-upload-cover.has-image .overlay-edit { display: inline-flex; }
-
-.cs-upload-logo-wrap {
-  display: flex; align-items: center; gap: 16px;
-  margin-top: 18px; padding: 14px;
-  background: var(--c-surface-2); border-radius: var(--radius-md);
-}
-.cs-upload-logo {
-  width: 84px; height: 84px; border-radius: 50%;
-  background: var(--c-surface); border: 2px dashed var(--c-border);
-  cursor: pointer; position: relative;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden; transition: all 0.25s; flex-shrink: 0;
-}
-.cs-upload-logo:hover, .cs-upload-logo.dragging {
-  border-color: var(--c-primary); box-shadow: 0 0 0 4px var(--c-primary-soft);
-}
-.cs-upload-logo img {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; opacity: 0; transition: opacity 0.3s;
-}
-.cs-upload-logo img.loaded { opacity: 1; }
-.cs-upload-logo .ph { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--c-primary); }
-.cs-upload-logo .ph i { font-size: 1.3rem; }
-.cs-upload-logo .ph span { font-size: 0.6rem; font-weight: 800; color: var(--c-text-soft); }
-.cs-upload-logo-info { flex: 1; min-width: 0; }
-.cs-upload-logo-info b { display: block; font-size: 0.85rem; font-weight: 800; color: var(--c-text); margin-bottom: 3px; }
-.cs-upload-logo-info span { font-size: 0.74rem; color: var(--c-text-soft); font-weight: 600; line-height: 1.5; }
-
-.cs-upload-progress {
-  position: absolute; inset: 0; background: rgba(0,0,0,0.7);
-  display: none; align-items: center; justify-content: center;
-  color: #fff; font-weight: 800; font-size: 0.85rem;
-  flex-direction: column; gap: 8px; z-index: 5; backdrop-filter: blur(4px);
-}
-.cs-upload-progress.active { display: flex; }
-.cs-upload-progress .ring {
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.cs-field { margin-bottom: 16px; }
-.cs-field:last-child { margin-bottom: 0; }
-.cs-label {
+.form-field { margin-bottom: 16px; }
+.form-field:last-child { margin-bottom: 0; }
+.form-label {
   display: flex; align-items: center; gap: 6px;
-  font-size: 0.82rem; font-weight: 800; color: var(--c-text); margin-bottom: 8px;
+  font-size: 0.82rem; font-weight: 800; color: var(--c-text);
+  margin-bottom: 8px;
 }
-.cs-label i { color: var(--c-primary); font-size: 0.78rem; }
-.cs-label .required { color: var(--c-danger); font-weight: 900; font-size: 0.9rem; }
-.cs-label .hint { margin-inline-start: auto; font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); }
+.form-label i { color: var(--c-primary); font-size: 0.78rem; }
+.form-label .required { color: var(--c-danger); font-weight: 900; font-size: 0.95rem; }
+.form-label .hint { margin-inline-start: auto; font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); }
 
-.cs-input-wrap {
+.input-wrap {
   position: relative; display: flex; align-items: stretch;
-  background: var(--c-surface-2); border: 2px solid transparent;
-  border-radius: var(--radius-md); transition: all 0.2s; overflow: hidden;
+  background: var(--c-surface-2);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  transition: all 0.2s; overflow: hidden;
 }
-.cs-input-wrap:focus-within {
+.input-wrap:focus-within {
   background: var(--c-surface); border-color: var(--c-primary);
   box-shadow: 0 0 0 4px var(--c-primary-soft);
 }
-.cs-input-wrap.error { border-color: var(--c-danger); background: #FEF2F2; }
-body.theme-dark .cs-input-wrap.error { background: #2A1616; }
-.cs-input-wrap.valid { border-color: var(--c-success); }
-.cs-input-icon {
+.input-wrap.error { border-color: var(--c-danger); background: #FEF2F2; }
+.input-wrap.valid { border-color: var(--c-success); }
+.input-icon {
   width: 46px; display: flex; align-items: center; justify-content: center;
-  color: var(--c-text-muted); font-size: 0.95rem; flex-shrink: 0; transition: color 0.2s;
+  color: var(--c-text-muted); font-size: 0.95rem; flex-shrink: 0;
 }
-.cs-input-wrap:focus-within .cs-input-icon { color: var(--c-primary); }
-.cs-input, .cs-textarea {
+.input-wrap:focus-within .input-icon { color: var(--c-primary); }
+.input-wrap.error .input-icon { color: var(--c-danger); }
+.input {
   flex: 1; border: none; background: transparent;
   padding: 13px 14px 13px 12px;
   font-size: 0.92rem; font-weight: 600; color: var(--c-text);
   width: 100%; min-width: 0;
 }
-.cs-input::placeholder, .cs-textarea::placeholder { color: var(--c-text-muted); font-weight: 500; }
-.cs-textarea {
-  resize: vertical; min-height: 110px; padding: 14px; line-height: 1.7;
-  border-radius: var(--radius-md); background: var(--c-surface-2);
-  border: 2px solid transparent; transition: all 0.2s; width: 100%;
+.input::placeholder { color: var(--c-text-muted); font-weight: 500; }
+.input-suffix { display: flex; align-items: center; padding-inline-end: 8px; gap: 4px; flex-shrink: 0; }
+.input-icon-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--c-text-soft); font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
 }
-.cs-textarea:focus {
+.input-icon-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
+
+.textarea {
+  width: 100%; min-height: 110px; padding: 14px;
+  border: 2px solid transparent; border-radius: var(--radius-md);
+  background: var(--c-surface-2);
+  font-size: 0.92rem; font-weight: 600; color: var(--c-text);
+  line-height: 1.7; resize: vertical; transition: all 0.2s;
+}
+.textarea:focus {
   background: var(--c-surface); border-color: var(--c-primary);
   box-shadow: 0 0 0 4px var(--c-primary-soft);
 }
-.cs-input-suffix {
-  display: flex; align-items: center; padding-inline-end: 14px;
-  font-size: 0.78rem; font-weight: 800; color: var(--c-text-muted);
-  flex-shrink: 0;
-}
-.cs-pwd-toggle {
-  background: none; border: none; cursor: pointer;
-  color: var(--c-text-soft); padding: 0 14px; font-size: 0.95rem;
-  display: flex; align-items: center; transition: color 0.2s;
-}
-.cs-pwd-toggle:hover { color: var(--c-primary); }
+.textarea::placeholder { color: var(--c-text-muted); font-weight: 500; }
 
-.cs-error-msg {
+.error-msg {
   display: none; align-items: center; gap: 5px;
-  font-size: 0.74rem; font-weight: 700; color: var(--c-danger);
-  margin-top: 6px; padding-inline-start: 4px;
+  font-size: 0.74rem; font-weight: 700;
+  color: var(--c-danger); margin-top: 6px;
+  padding-inline-start: 4px;
 }
-.cs-error-msg.show { display: flex; }
-.cs-error-msg i { font-size: 0.72rem; }
-.cs-char-count {
+.error-msg.show { display: flex; }
+.char-counter {
   text-align: left; margin-top: 6px; font-size: 0.7rem; font-weight: 700;
   color: var(--c-text-muted); padding-inline-start: 4px;
+  font-variant-numeric: tabular-nums;
 }
-.cs-char-count.warn { color: var(--c-primary); }
-.cs-char-count.limit { color: var(--c-danger); }
+.char-counter.warn { color: var(--c-primary); }
+.char-counter.limit { color: var(--c-danger); }
+.form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 560px) { .form-row { grid-template-columns: 1fr 1fr; } }
 
-.cs-wa-hint {
-  display: flex; align-items: center; gap: 6px; margin-top: 8px;
-  font-size: 0.74rem; font-weight: 700; color: var(--c-text-soft);
+.honeypot {
+  position: absolute !important; left: -9999px !important; top: -9999px !important;
+  width: 1px !important; height: 1px !important; opacity: 0 !important;
+  pointer-events: none !important;
 }
-.cs-wa-hint button {
-  background: rgba(37,211,102,0.12); color: var(--c-whatsapp);
-  border: none; padding: 4px 10px; border-radius: var(--radius-full);
-  font-size: 0.72rem; font-weight: 800; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
-}
-.cs-wa-hint button:hover { background: rgba(37,211,102,0.2); }
 
-.cs-pwd-strength { display: none; margin-top: 10px; }
-.cs-pwd-bars { display: flex; gap: 4px; margin-bottom: 6px; }
-.cs-pwd-bar {
-  flex: 1; height: 4px; background: var(--c-surface-3);
-  border-radius: 2px; transition: all 0.3s;
-}
-.cs-pwd-strength-text { font-size: 0.72rem; font-weight: 800; color: var(--c-text-soft); }
+.pwd-strength { display: none; margin-top: 10px; }
+.pwd-strength.show { display: block; }
+.pwd-bars { display: flex; gap: 4px; margin-bottom: 6px; }
+.pwd-bar { flex: 1; height: 4px; background: var(--c-surface-3); border-radius: 2px; transition: all 0.3s; }
+.pwd-strength-text { font-size: 0.72rem; font-weight: 800; color: var(--c-text-soft); }
 
-.cs-cats-wrap {
+.cat-loading {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 22px 16px; color: var(--c-text-soft);
+  font-size: 0.85rem; font-weight: 700;
+  background: var(--c-surface-2); border-radius: var(--radius-md);
+}
+.cat-loading .spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid var(--c-surface-3);
+  border-top-color: var(--c-primary);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+.cats-grid {
   display: flex; flex-wrap: wrap; gap: 8px;
-  padding: 4px 2px 6px; max-height: 260px; overflow-y: auto;
+  padding: 4px 0; max-height: 300px; overflow-y: auto;
 }
-.cs-cat-chip {
-  padding: 8px 15px; background: var(--c-surface-2);
+.cat-chip {
+  padding: 9px 16px; background: var(--c-surface-2);
   border: 2px solid transparent; border-radius: var(--radius-full);
-  font-size: 0.82rem; font-weight: 800; color: var(--c-text);
+  font-size: 0.84rem; font-weight: 800; color: var(--c-text);
   cursor: pointer; transition: all 0.2s;
-  display: inline-flex; align-items: center; gap: 6px; user-select: none;
+  display: inline-flex; align-items: center; gap: 7px;
+  user-select: none; position: relative;
 }
-.cs-cat-chip:hover { background: var(--c-primary-soft); color: var(--c-primary); transform: translateY(-1px); }
-.cs-cat-chip.active {
+.cat-chip:hover { background: var(--c-primary-soft); color: var(--c-primary); transform: translateY(-1px); }
+.cat-chip.active {
   background: var(--c-primary-gradient); color: #fff;
   box-shadow: var(--shadow-primary); border-color: var(--c-primary-dark);
 }
-.cs-cat-chip.active::before { content: '✓'; font-weight: 900; margin-inline-end: 2px; }
-
-.cs-cats-empty {
-  text-align: center; padding: 18px 12px;
-  color: var(--c-text-soft); font-size: 0.82rem; font-weight: 700;
+.cat-chip.active::after {
+  content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+  font-size: 0.7rem; margin-inline-start: 4px;
 }
-.cs-cats-empty i { font-size: 1.4rem; color: var(--c-text-muted); display: block; margin-bottom: 6px; }
-
-.cs-new-cat-btn {
+.new-cat-btn {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 15px; background: transparent;
+  padding: 9px 16px; background: transparent;
   border: 2px dashed var(--c-primary); border-radius: var(--radius-full);
-  font-size: 0.82rem; font-weight: 800; color: var(--c-primary);
+  font-size: 0.84rem; font-weight: 800; color: var(--c-primary);
   cursor: pointer; transition: all 0.2s; font-family: inherit;
 }
-.cs-new-cat-btn:hover { background: var(--c-primary-soft); transform: translateY(-1px); }
-.cs-new-cat-input-wrap { display: none; margin-top: 12px; animation: fadeInUp 0.25s ease; }
-.cs-new-cat-input-wrap.show { display: block; }
-.cs-new-cat-actions { display: flex; gap: 8px; margin-top: 8px; }
-.cs-new-cat-actions button {
-  flex: 1; padding: 10px; border-radius: var(--radius-md);
-  font-weight: 800; font-size: 0.82rem; cursor: pointer; border: none;
-  font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 5px;
+.new-cat-btn:hover { background: var(--c-primary-soft); transform: translateY(-1px); }
+.new-cat-wrap { display: none; margin-top: 12px; animation: fadeInUp 0.25s ease; }
+.new-cat-wrap.show { display: block; }
+.new-cat-actions { display: flex; gap: 8px; margin-top: 8px; }
+.new-cat-actions button {
+  flex: 1; padding: 11px; border-radius: var(--radius-md);
+  font-weight: 800; font-size: 0.84rem; cursor: pointer;
+  border: none; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
   transition: all 0.2s;
 }
-.cs-new-cat-actions .save { background: var(--c-primary-gradient); color: #fff; box-shadow: var(--shadow-primary); }
-.cs-new-cat-actions .cancel { background: var(--c-surface-2); color: var(--c-text); }
+.btn-save-cat { background: var(--c-primary-gradient); color: #fff; box-shadow: var(--shadow-primary); }
+.btn-cancel-cat { background: var(--c-surface-2); color: var(--c-text); }
 
-.cs-preview-card {
-  position: relative; background: var(--c-surface);
-  border: 1px solid var(--c-border); border-radius: var(--radius-lg);
-  overflow: hidden; box-shadow: var(--shadow-md);
-  max-width: 260px; margin: 0 auto; transition: transform 0.3s;
-}
-.cs-preview-card:hover { transform: translateY(-3px); }
-.cs-preview-cover {
-  height: 100px; background: var(--c-surface-2); position: relative;
-  background-size: cover; background-position: center;
+.upload-cover {
+  position: relative; width: 100%; height: 180px;
+  border-radius: var(--radius-md); overflow: hidden;
+  background: repeating-linear-gradient(45deg, var(--c-surface-2) 0 10px, transparent 10px 20px), var(--c-surface);
+  border: 2px dashed var(--c-border);
+  cursor: pointer; transition: all 0.25s;
   display: flex; align-items: center; justify-content: center;
 }
-.cs-preview-cover i { color: var(--c-text-muted); font-size: 1.6rem; }
-.cs-preview-cover.has-image i { display: none; }
-.cs-preview-logo {
-  position: absolute; bottom: -26px; right: 14px;
-  width: 56px; height: 56px; border-radius: 50%;
-  background: var(--c-surface); border: 3px solid var(--c-surface);
-  box-shadow: var(--shadow-md); display: flex; align-items: center; justify-content: center;
-  background-size: cover; background-position: center; overflow: hidden;
+.upload-cover:hover, .upload-cover.dragging { border-color: var(--c-primary); background-color: var(--c-primary-soft); }
+.upload-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; }
+.upload-cover img.loaded { opacity: 1; }
+.upload-cover .ph { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--c-text-soft); text-align: center; padding: 0 16px; }
+.upload-cover .ph i { font-size: 2rem; color: var(--c-primary); }
+.upload-cover .ph b { font-size: 0.88rem; font-weight: 800; color: var(--c-text); }
+.upload-cover .ph span { font-size: 0.72rem; font-weight: 600; }
+.upload-cover .edit-overlay {
+  position: absolute; bottom: 10px; left: 10px;
+  background: rgba(0,0,0,0.7); color: #fff;
+  padding: 6px 14px; border-radius: var(--radius-full);
+  font-size: 0.72rem; font-weight: 800;
+  display: none; align-items: center; gap: 6px;
+  backdrop-filter: blur(6px);
 }
-.cs-preview-logo i { color: var(--c-text-muted); font-size: 1.1rem; }
-.cs-preview-logo.has-image i { display: none; }
-.cs-preview-info { padding: 34px 14px 14px; }
-.cs-preview-name {
-  display: flex; align-items: center; gap: 4px;
-  font-size: 0.92rem; font-weight: 900; color: var(--c-text); margin-bottom: 2px;
+.upload-cover.has-image .edit-overlay { display: inline-flex; }
+.upload-logo-wrap {
+  display: flex; align-items: center; gap: 16px;
+  margin-top: 18px; padding: 14px;
+  background: var(--c-surface-2); border-radius: var(--radius-md);
+}
+.upload-logo {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: var(--c-surface); border: 2px dashed var(--c-border);
+  cursor: pointer; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; transition: all 0.25s; flex-shrink: 0;
+}
+.upload-logo:hover, .upload-logo.dragging { border-color: var(--c-primary); box-shadow: 0 0 0 4px var(--c-primary-soft); }
+.upload-logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; }
+.upload-logo img.loaded { opacity: 1; }
+.upload-logo .ph { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--c-primary); text-align: center; }
+.upload-logo .ph i { font-size: 1.4rem; }
+.upload-logo .ph span { font-size: 0.6rem; font-weight: 800; color: var(--c-text-soft); }
+.upload-logo-info { flex: 1; min-width: 0; }
+.upload-logo-info b { display: block; font-size: 0.88rem; font-weight: 800; color: var(--c-text); margin-bottom: 3px; }
+.upload-logo-info span { font-size: 0.75rem; color: var(--c-text-soft); font-weight: 600; line-height: 1.55; }
+.upload-progress {
+  position: absolute; inset: 0;
+  background: rgba(15,23,42,0.85);
+  display: none; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: 0.82rem;
+  flex-direction: column; gap: 8px; z-index: 5;
+  backdrop-filter: blur(4px);
+}
+.upload-progress.active { display: flex; }
+.upload-progress .ring {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.25);
+  border-top-color: #fff;
+  animation: spin 0.85s linear infinite;
+}
+
+.preview-wrap { display: flex; justify-content: center; padding: 8px 0 4px; }
+.preview-card {
+  width: 100%; max-width: 300px;
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-md); transition: transform 0.3s;
+}
+.preview-card:hover { transform: translateY(-3px); }
+.preview-cover {
+  height: 110px; background: var(--c-surface-2);
+  background-size: cover; background-position: center;
+  position: relative; display: flex; align-items: center; justify-content: center;
+}
+.preview-cover i { color: var(--c-text-muted); font-size: 1.6rem; }
+.preview-cover.has-image i { display: none; }
+.preview-logo {
+  position: absolute; bottom: -28px; right: 16px;
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--c-surface); border: 3px solid var(--c-surface);
+  box-shadow: var(--shadow-md);
+  background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.preview-logo i { color: var(--c-text-muted); font-size: 1.15rem; }
+.preview-logo.has-image i { display: none; }
+.preview-info { padding: 36px 16px 16px; }
+.preview-name {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.95rem; font-weight: 900;
+  color: var(--c-text); margin-bottom: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.cs-preview-cat { font-size: 0.72rem; font-weight: 700; color: var(--c-text-soft); display: inline-flex; align-items: center; gap: 4px; }
-.cs-preview-cat i { font-size: 0.65rem; color: var(--c-primary); }
-.cs-preview-stats {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--c-border);
+.preview-cat {
+  font-size: 0.74rem; font-weight: 700;
+  color: var(--c-text-soft);
+  display: inline-flex; align-items: center; gap: 4px;
 }
-.cs-preview-followers { font-size: 0.7rem; font-weight: 800; color: var(--c-text-soft); display: inline-flex; align-items: center; gap: 4px; }
-.cs-preview-followers i { color: var(--c-primary); }
-.cs-preview-btn {
+.preview-cat i { font-size: 0.65rem; color: var(--c-primary); }
+.preview-stats {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px dashed var(--c-border);
+}
+.preview-followers {
+  font-size: 0.72rem; font-weight: 800; color: var(--c-text-soft);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.preview-followers i { color: var(--c-primary); }
+.preview-btn {
   background: var(--c-primary-gradient); color: #fff;
-  font-size: 0.68rem; font-weight: 900; padding: 5px 12px;
-  border-radius: var(--radius-full); border: none;
-  box-shadow: 0 4px 10px rgba(255,122,0,0.3);
+  font-size: 0.68rem; font-weight: 900;
+  padding: 6px 14px; border-radius: var(--radius-full);
+  border: none; box-shadow: 0 4px 10px rgba(255,122,0,0.3);
 }
 
-.cs-footer {
+.bzr-footer {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.94);
   backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-top: 1px solid var(--c-border);
-  padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); z-index: 90;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  z-index: 90;
 }
-body.theme-dark .cs-footer { background: rgba(15,23,42,0.92); }
-.cs-footer-inner { max-width: 720px; margin: 0 auto; }
-.cs-submit {
-  width: 100%; padding: 16px 24px;
-  background: var(--c-primary-gradient); color: #fff; border: none;
-  border-radius: var(--radius-md); font-size: 1rem; font-weight: 900;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-  box-shadow: var(--shadow-primary); transition: all 0.25s;
+.bzr-footer-inner { max-width: 780px; margin: 0 auto; }
+.submit-btn {
+  width: 100%; padding: 17px 24px;
+  background: var(--c-primary-gradient); color: #fff;
+  border: none; border-radius: var(--radius-md);
+  font-size: 1rem; font-weight: 900;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: var(--shadow-primary);
+  transition: all 0.25s;
   position: relative; overflow: hidden;
 }
-.cs-submit::before {
+.submit-btn::before {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent 60%); pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent 60%);
+  pointer-events: none;
 }
-.cs-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,122,0,0.4); }
-.cs-submit:disabled { opacity: 0.7; cursor: not-allowed; background: linear-gradient(135deg, #94A3B8, #64748B); box-shadow: none; }
-.cs-submit i, .cs-submit span { position: relative; z-index: 1; }
-.cs-footer-note { text-align: center; font-size: 0.72rem; font-weight: 700; color: var(--c-text-soft); margin-top: 8px; }
-.cs-footer-note i { color: var(--c-success); }
-
-.cs-info-note {
-  margin-top: 14px; padding: 12px;
-  background: var(--c-primary-soft); border-radius: var(--radius-md);
-  display: flex; gap: 10px; align-items: flex-start;
+.submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-primary-lg); }
+.submit-btn:disabled {
+  opacity: 0.7; cursor: not-allowed;
+  background: linear-gradient(135deg, #94A3B8, #64748B);
+  box-shadow: none;
 }
-.cs-info-note i { color: var(--c-primary); font-size: 0.95rem; margin-top: 2px; flex-shrink: 0; }
-.cs-info-note p { font-size: 0.75rem; font-weight: 600; color: var(--c-text-soft); line-height: 1.7; }
-.cs-info-note b { color: var(--c-text); font-weight: 800; }
+.submit-btn i, .submit-btn span { position: relative; z-index: 1; }
+.footer-note {
+  text-align: center; font-size: 0.72rem; font-weight: 700;
+  color: var(--c-text-soft); margin-top: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.footer-note i { color: var(--c-success); font-size: 0.7rem; }
 
-#csToast {
-  position: fixed; bottom: 100px; left: 50%;
+.terms-wrap {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 14px 16px;
+  background: var(--c-primary-soft);
+  border: 1.5px solid rgba(255,122,0,0.2);
+  border-radius: var(--radius-md);
+  cursor: pointer; transition: all 0.2s;
+}
+.terms-wrap:hover { background: #FFE9D1; }
+.terms-wrap input[type="checkbox"] {
+  width: 20px; height: 20px; flex-shrink: 0;
+  margin-top: 2px; cursor: pointer; accent-color: var(--c-primary);
+}
+.terms-text {
+  font-size: 0.8rem; font-weight: 700;
+  color: #92400E; line-height: 1.65;
+}
+.terms-text a { color: var(--c-primary-dark); text-decoration: underline; font-weight: 800; }
+
+#toast {
+  position: fixed; bottom: 110px; left: 50%;
   transform: translateX(-50%) translateY(20px);
   background: var(--c-text); color: var(--c-surface);
-  padding: 12px 20px; border-radius: var(--radius-full);
+  padding: 13px 22px; border-radius: var(--radius-full);
   font-size: 0.85rem; font-weight: 800;
-  box-shadow: var(--shadow-lg); z-index: 9999;
-  opacity: 0; pointer-events: none; transition: all 0.3s;
-  display: flex; align-items: center; gap: 8px; max-width: calc(100vw - 32px);
+  box-shadow: var(--shadow-xl);
+  z-index: 9999; opacity: 0; pointer-events: none;
+  transition: all 0.3s var(--transition);
+  display: flex; align-items: center; gap: 8px;
+  max-width: calc(100vw - 32px);
 }
-#csToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-#csToast.error { background: var(--c-danger); }
-#csToast.success { background: var(--c-success); }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.error { background: var(--c-danger); }
+#toast.success { background: var(--c-success); }
+#toast.warning { background: var(--c-warning); }
+#toast i { font-size: 0.95rem; }
 
 @media (max-width: 480px) {
-  .cs-hero h1 { font-size: 1.4rem; }
-  .cs-card { padding: 18px 14px; }
-  .cs-upload-cover { height: 150px; }
+  .hero h1 { font-size: 1.45rem; }
+  .hero p { font-size: 0.86rem; }
+  .bzr-card { padding: 18px 14px; }
+  .upload-cover { height: 155px; }
+  .bzr-secure-pill span { display: none; }
 }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+#topProgressBar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--c-primary-gradient);
+  z-index: 9999; transform-origin: right center;
+  transform: scaleX(0); transition: transform 0.3s;
+}
+#topProgressBar.active { transform: scaleX(0.75); transition: transform 1.5s cubic-bezier(0.2,0.8,0.2,1); }
+#topProgressBar.done { transform: scaleX(1); transition: transform 0.2s; opacity: 0; }
 </style>
 </head>
 <body>
 
 <div id="topProgressBar"></div>
 
-<header class="cs-header">
-  <button class="cs-back-btn" id="backBtn" aria-label="رجوع">
-    <i class="fas fa-arrow-right"></i>
-  </button>
-  <div class="cs-logo-wrap">
-    <div class="cs-logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M4 8.5C4 7.11929 5.11929 6 6.5 6H17.5C18.8807 6 20 7.11929 20 8.5V10H4V8.5Z" fill="white" opacity="0.95"/>
-        <path d="M4 10H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V10Z" fill="white"/>
-        <path d="M9 6V4.5C9 3.67157 9.67157 3 10.5 3H13.5C14.3284 3 15 3.67157 15 4.5V6" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-        <circle cx="9" cy="15" r="1.3" fill="#FF7A00"/>
-        <circle cx="15" cy="15" r="1.3" fill="#FF7A00"/>
-      </svg>
-    </div>
-    <div class="cs-logo-text">
-      <b>BranZar</b>
-      <span>منصة المتاجر السودانية</span>
-    </div>
+<!-- GATE 1: Device Check -->
+<div id="gateCheck" class="gate-overlay">
+  <div class="gate-card">
+    <div class="gate-icon"><i class="fas fa-shield-halved"></i></div>
+    <h2 class="gate-title">جاري فحص الجهاز</h2>
+    <p class="gate-text">
+      نتحقق من سلامة جهازك لضمان بيئة تسجيل آمنة<br>
+      <strong>لا توجد مخاوف من الخصوصية</strong> — الفحص محلي بالكامل
+    </p>
+    <div class="gate-spinner"></div>
+    <div class="gate-steps" id="gateSteps">تحضير نظام التحقق...</div>
   </div>
-  <button class="cs-theme-btn" id="themeBtn" aria-label="تبديل المظهر">
-    <i class="fas fa-moon"></i>
-  </button>
-</header>
+</div>
 
-<main class="cs-page">
-
-  <section class="cs-hero">
-    <div class="cs-hero-badge">
-      <i class="fas fa-store"></i>
-      <span>إنشاء متجر جديد</span>
-    </div>
-    <h1>ابدأ رحلتك التجارية <span class="gradient-text">مجانًا</span></h1>
-    <p>املأ البيانات التالية وسيظهر متجرك لآلاف العملاء خلال ثوانٍ</p>
-  </section>
-
-  <!-- ═══ Card 1: Images ═══ -->
-  <div class="cs-card">
-    <div class="cs-card-head">
-      <div class="cs-card-head-icon"><i class="fas fa-image"></i></div>
-      <h2>صور المتجر</h2>
-      <span class="cs-card-step">1 / 6</span>
-    </div>
-
-    <div class="cs-field">
-      <label class="cs-label">
-        <i class="fas fa-panorama"></i>
-        <span>صورة الغلاف</span>
-        <span class="required">*</span>
-        <span class="hint">مقترح 1200×600</span>
-      </label>
-      <div class="cs-upload-cover" id="coverUpload" role="button" tabindex="0">
-        <img id="coverPreview" alt="">
-        <div class="ph">
-          <i class="fas fa-cloud-arrow-up"></i>
-          <b>اضغط لرفع صورة الغلاف</b>
-          <span>JPG، PNG، WEBP • حتى 5 ميجا</span>
-        </div>
-        <div class="overlay-edit"><i class="fas fa-pen"></i> تغيير الصورة</div>
-        <div class="cs-upload-progress" id="coverProgress">
-          <div class="ring"></div><span>جاري الرفع...</span>
-        </div>
-      </div>
-      <div class="cs-error-msg" id="coverError"><i class="fas fa-exclamation-circle"></i> <span>صورة الغلاف مطلوبة</span></div>
-      <input type="file" id="coverInput" accept="image/*" hidden>
-    </div>
-
-    <div class="cs-upload-logo-wrap">
-      <div class="cs-upload-logo" id="logoUpload" role="button" tabindex="0">
-        <img id="logoPreview" alt="">
-        <div class="ph"><i class="fas fa-camera"></i><span>شعار</span></div>
-        <div class="cs-upload-progress" id="logoProgress"><div class="ring"></div></div>
-      </div>
-      <div class="cs-upload-logo-info">
-        <b>شعار / بروفايل المتجر <span style="color:var(--c-danger)">*</span></b>
-        <span>مربع 1:1 • يظهر دائريًا. يفضل 500×500</span>
-      </div>
-    </div>
-    <div class="cs-error-msg" id="logoError" style="margin-top:8px;"><i class="fas fa-exclamation-circle"></i> <span>شعار المتجر مطلوب</span></div>
-    <input type="file" id="logoInput" accept="image/*" hidden>
-  </div>
-
-  <!-- ═══ Card 2: Basic Info ═══ -->
-  <div class="cs-card">
-    <div class="cs-card-head">
-      <div class="cs-card-head-icon"><i class="fas fa-circle-info"></i></div>
-      <h2>المعلومات الأساسية</h2>
-      <span class="cs-card-step">2 / 6</span>
-    </div>
-
-    <div class="cs-field">
-      <label class="cs-label" for="storeName">
-        <i class="fas fa-store"></i>
-        <span>اسم المتجر أو الخدمة</span>
-        <span class="required">*</span>
-        <span class="hint"><span id="nameCount">0</span>/50</span>
-      </label>
-      <div class="cs-input-wrap" id="nameWrap">
-        <div class="cs-input-icon"><i class="fas fa-tag"></i></div>
-        <input class="cs-input" type="text" id="storeName" placeholder="مثال: متجر الأناقة" maxlength="50" autocomplete="off">
-      </div>
-      <div class="cs-error-msg" id="nameError"><i class="fas fa-exclamation-circle"></i> <span>الاسم يجب أن يكون بين 3 و 50 حرفًا</span></div>
-    </div>
-
-    <div class="cs-field">
-      <label class="cs-label" for="phoneNumber">
-        <i class="fas fa-phone"></i>
-        <span>رقم التواصل</span>
-        <span class="required">*</span>
-      </label>
-      <div class="cs-input-wrap" id="phoneWrap">
-        <div class="cs-input-icon"><i class="fas fa-phone"></i></div>
-        <input class="cs-input" type="tel" id="phoneNumber" placeholder="09xxxxxxxx" inputmode="numeric" maxlength="15" autocomplete="tel">
-      </div>
-      <div class="cs-error-msg" id="phoneError"><i class="fas fa-exclamation-circle"></i> <span>يرجى إدخال رقم هاتف صحيح</span></div>
-    </div>
-
-    <div class="cs-field">
-      <label class="cs-label" for="whatsappNumber">
-        <i class="fab fa-whatsapp" style="color:var(--c-whatsapp)"></i>
-        <span>رقم الواتساب</span>
-        <span class="required">*</span>
-      </label>
-      <div class="cs-input-wrap" id="waWrap">
-        <div class="cs-input-icon" style="color:var(--c-whatsapp)"><i class="fab fa-whatsapp"></i></div>
-        <input class="cs-input" type="tel" id="whatsappNumber" placeholder="09xxxxxxxx" inputmode="numeric" maxlength="15" autocomplete="tel">
-      </div>
-      <div class="cs-error-msg" id="waError"><i class="fas fa-exclamation-circle"></i> <span>يرجى إدخال رقم واتساب صحيح</span></div>
-      <div class="cs-wa-hint">
-        <i class="fas fa-circle-info"></i>
-        <span>نفس رقم الهاتف؟</span>
-        <button type="button" id="copyPhoneBtn">
-          <i class="fas fa-copy"></i>
-          <span>انسخ الرقم</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ Card 3: Password ═══ -->
-  <div class="cs-card">
-    <div class="cs-card-head">
-      <div class="cs-card-head-icon"><i class="fas fa-shield-halved"></i></div>
-      <h2>حماية الحساب</h2>
-      <span class="cs-card-step">3 / 6</span>
-    </div>
-
-    <div class="cs-field">
-      <label class="cs-label" for="password">
-        <i class="fas fa-lock"></i>
-        <span>كلمة المرور</span>
-        <span class="required">*</span>
-        <span class="hint">6 أحرف على الأقل</span>
-      </label>
-      <div class="cs-input-wrap" id="pwdWrap">
-        <div class="cs-input-icon"><i class="fas fa-lock"></i></div>
-        <input class="cs-input" type="password" id="password" placeholder="••••••••" maxlength="64" autocomplete="new-password">
-        <button type="button" class="cs-pwd-toggle" id="togglePwdBtn" aria-label="إظهار">
-          <i class="fas fa-eye"></i>
-        </button>
-      </div>
-      <div class="cs-error-msg" id="pwdError"><i class="fas fa-exclamation-circle"></i> <span>كلمة المرور يجب أن تكون 6 أحرف على الأقل</span></div>
-
-      <div class="cs-pwd-strength" id="pwdStrength">
-        <div class="cs-pwd-bars">
-          <div class="cs-pwd-bar"></div>
-          <div class="cs-pwd-bar"></div>
-          <div class="cs-pwd-bar"></div>
-          <div class="cs-pwd-bar"></div>
-        </div>
-        <div class="cs-pwd-strength-text" id="pwdStrengthText">قوة كلمة المرور</div>
-      </div>
-    </div>
-
-    <div class="cs-field">
-      <label class="cs-label" for="confirmPassword">
-        <i class="fas fa-lock"></i>
-        <span>تأكيد كلمة المرور</span>
-        <span class="required">*</span>
-      </label>
-      <div class="cs-input-wrap" id="pwdConfirmWrap">
-        <div class="cs-input-icon"><i class="fas fa-shield-halved"></i></div>
-        <input class="cs-input" type="password" id="confirmPassword" placeholder="••••••••" maxlength="64" autocomplete="new-password">
-        <button type="button" class="cs-pwd-toggle" id="togglePwdConfirmBtn" aria-label="إظهار">
-          <i class="fas fa-eye"></i>
-        </button>
-      </div>
-      <div class="cs-error-msg" id="pwdConfirmError"><i class="fas fa-exclamation-circle"></i> <span>كلمتا المرور غير متطابقتين</span></div>
-    </div>
-
-    <div class="cs-info-note">
-      <i class="fas fa-circle-info"></i>
-      <p>ستستخدم <b>رقم التواصل</b> وكلمة المرور هذه لتسجيل الدخول لاحقًا وإدارة متجرك من أي جهاز.</p>
-    </div>
-  </div>
-
-  <!-- ═══ Card 4: Description ═══ -->
-  <div class="cs-card">
-    <div class="cs-card-head">
-      <div class="cs-card-head-icon"><i class="fas fa-align-right"></i></div>
-      <h2>وصف المتجر</h2>
-      <span class="cs-card-step">4 / 6</span>
-    </div>
-    <div class="cs-field">
-      <label class="cs-label" for="description">
-        <i class="fas fa-quote-right"></i>
-        <span>وصف المتجر أو الخدمة</span>
-        <span class="hint">اختياري</span>
-      </label>
-      <textarea class="cs-textarea" id="description" placeholder="اكتب وصفًا جاذبًا يعرّف العملاء بما تقدمه..." maxlength="500"></textarea>
-      <div class="cs-char-count"><span id="descCount">0</span> / 500</div>
-    </div>
-  </div>
-
-  <!-- ═══ Card 5: Category ═══ -->
-  <div class="cs-card">
-    <div class="cs-card-head">
-      <div class="cs-card-head-icon"><i class="fas fa-layer-group"></i></div>
-      <h2>الفئة</h2>
-      <span class="cs-card-step">5 / 6</span>
-    </div>
-    <div class="cs-field">
-      <label class="cs-label">
-        <i class="fas fa-tags"></i>
-        <span>اختر الفئة المناسبة</span>
-        <span class="required">*</span>
-      </label>
-      <div class="cs-cats-wrap" id="catsWrap">
-        <div class="cs-cats-empty">
-          <i class="fas fa-spinner fa-spin"></i>
-          جاري تحميل الفئات...
-        </div>
-      </div>
-      <button type="button" class="cs-new-cat-btn" id="addCatBtn" style="margin-top:8px;">
-        <i class="fas fa-plus"></i>
-        <span>إضافة فئة جديدة</span>
-      </button>
-      <div class="cs-new-cat-input-wrap" id="newCatWrap">
-        <div class="cs-input-wrap">
-          <div class="cs-input-icon"><i class="fas fa-folder-plus"></i></div>
-          <input class="cs-input" type="text" id="newCatInput" placeholder="اسم الفئة الجديدة" maxlength="30" autocomplete="off">
-        </div>
-        <div class="cs-new-cat-actions">
-          <button type="button" class="save" id="saveCatBtn"><i class="fas fa-check"></i> إضافة</button>
-          <button type="button" class="cancel" id="cancelCatBtn"><i class="fas fa-times"></i> إلغاء</button>
-        </div>
-      </div>
-      <div class="cs-error-msg" id="catError"><i class="fas fa-exclamation-circle"></i> <span>يرجى اختيار فئة</span></div>
-    </div>
-  </div>
-
-  <!-- ═══ Card 6: Preview ═══ -->
-  <div class="cs-card">
-    <div class="cs-card-head">
-      <div class="cs-card-head-icon"><i class="fas fa-eye"></i></div>
-      <h2>معاينة مباشرة</h2>
-      <span class="cs-card-step">6 / 6</span>
-    </div>
-    <div class="cs-preview-card">
-      <div class="cs-preview-cover" id="previewCover"><i class="fas fa-image"></i></div>
-      <div class="cs-preview-logo" id="previewLogo"><i class="fas fa-store"></i></div>
-      <div class="cs-preview-info">
-        <div class="cs-preview-name" id="previewName">اسم المتجر</div>
-        <div class="cs-preview-cat">
-          <i class="fas fa-tag"></i>
-          <span id="previewCat">الفئة</span>
-        </div>
-        <div class="cs-preview-stats">
-          <span class="cs-preview-followers">
-            <i class="fas fa-users"></i>
-            <span>1 متابع</span>
-          </span>
-          <button class="cs-preview-btn" type="button" tabindex="-1">
-            <i class="fas fa-check"></i> متابَع
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<div class="cs-footer">
-  <div class="cs-footer-inner">
-    <button class="cs-submit" id="submitBtn">
-      <i class="fas fa-rocket"></i>
-      <span>إنشاء المتجر والحساب</span>
-    </button>
-    <div class="cs-footer-note">
-      <i class="fas fa-shield-alt"></i>
-      بياناتك محمية ولا تُستخدم إلا لنشر متجرك
+<!-- GATE 2: Already Registered -->
+<div id="gateBlocked" class="gate-overlay hidden">
+  <div class="gate-card">
+    <div class="gate-icon danger"><i class="fas fa-ban"></i></div>
+    <h2 class="gate-title">هذا الجهاز مسجّل مسبقًا</h2>
+    <p class="gate-text" id="blockedReason">
+      عذرًا، لا يمكن إنشاء أكثر من متجر واحد من نفس الجهاز.<br>
+      <strong>يُمنع منعًا باتًا التحايل على هذا القيد.</strong>
+    </p>
+    <a href="a.html" class="gate-btn gate-btn-primary">
+      <i class="fas fa-sign-in-alt"></i>
+      <span>تسجيل الدخول لمتجري الحالي</span>
+    </a>
+    <a href="index.html" class="gate-btn gate-btn-secondary">
+      <i class="fas fa-home"></i>
+      <span>العودة للصفحة الرئيسية</span>
+    </a>
+    <div class="gate-meta">
+      <i class="fas fa-lock"></i>
+      <span>حماية ببصمة الجهاز متعددة الطبقات</span>
     </div>
   </div>
 </div>
 
-<div id="csToast"></div>
+<!-- GATE 3: Fatal Error -->
+<div id="gateError" class="gate-overlay hidden">
+  <div class="gate-card">
+    <div class="gate-icon danger"><i class="fas fa-exclamation-triangle"></i></div>
+    <h2 class="gate-title">تعذر التحقق من الجهاز</h2>
+    <p class="gate-text" id="errorReason">حدث خطأ أثناء فحص الجهاز.</p>
+    <button id="retryCheckBtn" class="gate-btn gate-btn-primary">
+      <i class="fas fa-redo"></i>
+      <span>إعادة المحاولة</span>
+    </button>
+    <a href="index.html" class="gate-btn gate-btn-secondary">
+      <i class="fas fa-home"></i>
+      <span>العودة للصفحة الرئيسية</span>
+    </a>
+  </div>
+</div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<!-- MAIN APP -->
+<div id="appContainer" class="hidden">
+
+  <header class="bzr-header">
+    <div class="bzr-header-inner">
+      <button class="bzr-back-btn" id="backBtn" aria-label="رجوع">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+      <div class="bzr-logo-wrap">
+        <div class="bzr-logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4 8.5C4 7.11929 5.11929 6 6.5 6H17.5C18.8807 6 20 7.11929 20 8.5V10H4V8.5Z" fill="white" opacity="0.95"/>
+            <path d="M4 10H20V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V10Z" fill="white"/>
+            <path d="M9 6V4.5C9 3.67157 9.67157 3 10.5 3H13.5C14.3284 3 15 3.67157 15 4.5V6" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="9" cy="15" r="1.3" fill="#FF7A00"/>
+            <circle cx="15" cy="15" r="1.3" fill="#FF7A00"/>
+          </svg>
+        </div>
+        <div class="bzr-brand-text">
+          <b>BranZar</b>
+          <span>منصة المتاجر السودانية</span>
+        </div>
+      </div>
+      <div class="bzr-secure-pill">
+        <i class="fas fa-shield-halved"></i>
+        <span>اتصال آمن</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="bzr-page">
+
+    <section class="hero">
+      <div class="hero-badge">
+        <i class="fas fa-store"></i>
+        <span>إنشاء متجر جديد</span>
+      </div>
+      <h1>ابدأ رحلتك التجارية <span class="gradient-text">مجانًا</span></h1>
+      <p>انضم إلى آلاف التجار على منصة BranZar وسيظهر متجرك للمستخدمين خلال ثوانٍ</p>
+      <div class="hero-features">
+        <span class="hero-feature"><i class="fas fa-bolt"></i> تفعيل فوري</span>
+        <span class="hero-feature"><i class="fas fa-infinity"></i> مجاني للأبد</span>
+        <span class="hero-feature"><i class="fas fa-user-shield"></i> حماية متقدمة</span>
+        <span class="hero-feature"><i class="fas fa-chart-line"></i> آلاف العملاء</span>
+      </div>
+    </section>
+
+    <form id="signupForm" novalidate autocomplete="off">
+
+      <!-- CARD 1 -->
+      <div class="bzr-card">
+        <div class="bzr-card-head">
+          <div class="bzr-card-head-icon"><i class="fas fa-store"></i></div>
+          <h2>المعلومات الأساسية</h2>
+          <span class="bzr-card-step">1 / 5</span>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="storeName">
+            <i class="fas fa-tag"></i>
+            <span>اسم المتجر أو الخدمة</span>
+            <span class="required">*</span>
+            <span class="hint"><span id="nameCount">0</span>/60</span>
+          </label>
+          <div class="input-wrap" id="nameWrap">
+            <div class="input-icon"><i class="fas fa-store"></i></div>
+            <input class="input" type="text" id="storeName" placeholder="مثال: متجر الأناقة"
+              maxlength="60" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="error-msg" id="nameError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>الاسم يجب أن يكون بين 3 و 60 حرفًا</span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">
+            <i class="fas fa-tags"></i>
+            <span>الفئة الرئيسية</span>
+            <span class="required">*</span>
+          </label>
+          <div id="catsLoader" class="cat-loading">
+            <div class="spinner"></div>
+            <span>جاري تحميل الفئات المتاحة...</span>
+          </div>
+          <div id="catsGrid" class="cats-grid" style="display:none;"></div>
+          <div class="error-msg" id="catError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>يرجى اختيار فئة واحدة على الأقل</span>
+          </div>
+          <button type="button" class="new-cat-btn" id="addCatBtn" style="margin-top:10px;">
+            <i class="fas fa-plus"></i>
+            <span>إضافة فئة مخصصة</span>
+          </button>
+          <div class="new-cat-wrap" id="newCatWrap">
+            <div class="input-wrap">
+              <div class="input-icon"><i class="fas fa-folder-plus"></i></div>
+              <input class="input" type="text" id="newCatInput"
+                placeholder="اسم الفئة الجديدة" maxlength="40" autocomplete="off">
+            </div>
+            <div class="new-cat-actions">
+              <button type="button" class="btn-save-cat" id="saveCatBtn">
+                <i class="fas fa-check"></i> إضافة
+              </button>
+              <button type="button" class="btn-cancel-cat" id="cancelCatBtn">
+                <i class="fas fa-times"></i> إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="storeDescription">
+            <i class="fas fa-align-right"></i>
+            <span>وصف المتجر أو الخدمة</span>
+            <span class="hint">اختياري</span>
+          </label>
+          <textarea class="textarea" id="storeDescription"
+            placeholder="اكتب وصفًا جاذبًا يعرّف العملاء بما تقدمه..."
+            maxlength="500"></textarea>
+          <div class="char-counter"><span id="descCount">0</span> / 500</div>
+        </div>
+      </div>
+
+      <!-- CARD 2: Contact -->
+      <div class="bzr-card">
+        <div class="bzr-card-head">
+          <div class="bzr-card-head-icon"><i class="fas fa-address-book"></i></div>
+          <h2>بيانات التواصل</h2>
+          <span class="bzr-card-step">2 / 5</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="whatsapp">
+              <i class="fab fa-whatsapp" style="color:#25D366;"></i>
+              <span>رقم الواتساب</span>
+              <span class="required">*</span>
+            </label>
+            <div class="input-wrap" id="waWrap">
+              <div class="input-icon" style="color:#25D366;"><i class="fab fa-whatsapp"></i></div>
+              <input class="input" type="tel" id="whatsapp" placeholder="09xxxxxxxx"
+                inputmode="numeric" maxlength="15" dir="ltr" style="text-align:left;">
+            </div>
+            <div class="error-msg" id="waError">
+              <i class="fas fa-exclamation-circle"></i>
+              <span>رقم واتساب غير صحيح</span>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="phone">
+              <i class="fas fa-phone" style="color:#3B82F6;"></i>
+              <span>رقم الهاتف</span>
+              <span class="hint">اختياري</span>
+            </label>
+            <div class="input-wrap" id="phoneWrap">
+              <div class="input-icon"><i class="fas fa-phone"></i></div>
+              <input class="input" type="tel" id="phone" placeholder="09xxxxxxxx"
+                inputmode="numeric" maxlength="15" dir="ltr" style="text-align:left;">
+            </div>
+            <div class="error-msg" id="phoneError">
+              <i class="fas fa-exclamation-circle"></i>
+              <span>رقم هاتف غير صحيح</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: Images -->
+      <div class="bzr-card">
+        <div class="bzr-card-head">
+          <div class="bzr-card-head-icon"><i class="fas fa-image"></i></div>
+          <h2>صور المتجر</h2>
+          <span class="bzr-card-step">3 / 5</span>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label">
+            <i class="fas fa-panorama"></i>
+            <span>صورة الغلاف</span>
+            <span class="required">*</span>
+            <span class="hint">1200×600</span>
+          </label>
+          <div class="upload-cover" id="coverUpload" role="button" tabindex="0">
+            <img id="coverPreview" alt="">
+            <div class="ph">
+              <i class="fas fa-cloud-arrow-up"></i>
+              <b>اضغط لرفع صورة الغلاف</b>
+              <span>JPG، PNG، WEBP • حتى 8 ميجا</span>
+            </div>
+            <div class="edit-overlay"><i class="fas fa-pen"></i> تغيير</div>
+            <div class="upload-progress" id="coverProgress">
+              <div class="ring"></div>
+              <span>جاري الرفع...</span>
+            </div>
+          </div>
+          <div class="error-msg" id="coverError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>صورة الغلاف مطلوبة</span>
+          </div>
+          <input type="file" id="coverInput" accept="image/*" hidden>
+        </div>
+
+        <div class="upload-logo-wrap">
+          <div class="upload-logo" id="logoUpload" role="button" tabindex="0">
+            <img id="logoPreview" alt="">
+            <div class="ph">
+              <i class="fas fa-camera"></i>
+              <span>شعار</span>
+            </div>
+            <div class="upload-progress" id="logoProgress">
+              <div class="ring"></div>
+            </div>
+          </div>
+          <div class="upload-logo-info">
+            <b>شعار المتجر <span style="color:var(--c-danger)">*</span></b>
+            <span>مربع 1:1 • يظهر دائريًا. يفضل 500×500 بكسل</span>
+          </div>
+        </div>
+        <div class="error-msg" id="logoError" style="margin-top:8px;">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>شعار المتجر مطلوب</span>
+        </div>
+        <input type="file" id="logoInput" accept="image/*" hidden>
+      </div>
+
+      <!-- CARD 4: Password -->
+      <div class="bzr-card">
+        <div class="bzr-card-head">
+          <div class="bzr-card-head-icon"><i class="fas fa-lock"></i></div>
+          <h2>حماية الحساب</h2>
+          <span class="bzr-card-step">4 / 5</span>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="password">
+            <i class="fas fa-key"></i>
+            <span>كلمة مرور الدخول</span>
+            <span class="required">*</span>
+            <span class="hint">6 أحرف على الأقل</span>
+          </label>
+          <div class="input-wrap" id="pwdWrap">
+            <div class="input-icon"><i class="fas fa-lock"></i></div>
+            <input class="input" type="password" id="password"
+              placeholder="••••••••" maxlength="64" autocomplete="new-password">
+            <div class="input-suffix">
+              <button type="button" class="input-icon-btn" id="togglePwd">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="error-msg" id="pwdError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>كلمة المرور يجب أن تكون 6 أحرف على الأقل</span>
+          </div>
+          <div class="pwd-strength" id="pwdStrength">
+            <div class="pwd-bars">
+              <div class="pwd-bar"></div>
+              <div class="pwd-bar"></div>
+              <div class="pwd-bar"></div>
+              <div class="pwd-bar"></div>
+            </div>
+            <div class="pwd-strength-text" id="pwdStrengthText">قوة كلمة المرور</div>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="confirmPassword">
+            <i class="fas fa-shield-halved"></i>
+            <span>تأكيد كلمة المرور</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrap" id="pwdConfirmWrap">
+            <div class="input-icon"><i class="fas fa-shield-halved"></i></div>
+            <input class="input" type="password" id="confirmPassword"
+              placeholder="••••••••" maxlength="64" autocomplete="new-password">
+            <div class="input-suffix">
+              <button type="button" class="input-icon-btn" id="togglePwdConfirm">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="error-msg" id="pwdConfirmError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>كلمتا المرور غير متطابقتين</span>
+          </div>
+        </div>
+
+        <div style="padding:12px 14px;background:var(--c-primary-soft);border-radius:var(--radius-md);display:flex;gap:10px;align-items:flex-start;">
+          <i class="fas fa-circle-info" style="color:var(--c-primary);font-size:0.95rem;margin-top:2px;flex-shrink:0;"></i>
+          <p style="font-size:0.75rem;font-weight:600;color:var(--c-text-soft);line-height:1.7;">
+            ستستخدم <b style="color:var(--c-text);">رقم الواتساب</b> وكلمة المرور هذه لتسجيل الدخول وإدارة متجرك.
+          </p>
+        </div>
+      </div>
+
+      <!-- CARD 5: Preview + Terms -->
+      <div class="bzr-card">
+        <div class="bzr-card-head">
+          <div class="bzr-card-head-icon"><i class="fas fa-eye"></i></div>
+          <h2>معاينة مباشرة</h2>
+          <span class="bzr-card-step">5 / 5</span>
+        </div>
+
+        <div class="preview-wrap">
+          <div class="preview-card">
+            <div class="preview-cover" id="previewCover">
+              <i class="fas fa-image"></i>
+            </div>
+            <div class="preview-logo" id="previewLogo">
+              <i class="fas fa-store"></i>
+            </div>
+            <div class="preview-info">
+              <div class="preview-name" id="previewName">اسم متجرك</div>
+              <div class="preview-cat">
+                <i class="fas fa-tag"></i>
+                <span id="previewCat">الفئة</span>
+              </div>
+              <div class="preview-stats">
+                <span class="preview-followers">
+                  <i class="fas fa-users"></i>
+                  <span>1 متابع</span>
+                </span>
+                <button class="preview-btn" type="button" tabindex="-1">
+                  <i class="fas fa-check"></i> متابَع
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;">
+          <label class="terms-wrap">
+            <input type="checkbox" id="termsCheck">
+            <span class="terms-text">
+              أُقر بأنني اطّلعت على <a href="#" onclick="event.preventDefault(); alert('الشروط والأحكام:\n\n1. يجب أن تكون جميع البيانات صحيحة\n2. يمنع استخدام المنصة لأي غرض غير قانوني\n3. نحتفظ بحق إيقاف أي متجر يخالف السياسات')">الشروط والأحكام</a>
+              وأوافق على سياسة الخصوصية، وأتحمل كامل المسؤولية عن صحة البيانات المدخلة.
+            </span>
+          </label>
+          <div class="error-msg" id="termsError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>يجب الموافقة على الشروط والأحكام</span>
+          </div>
+        </div>
+      </div>
+
+      <input type="text" class="honeypot" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    </form>
+
+  </main>
+
+  <div class="bzr-footer">
+    <div class="bzr-footer-inner">
+      <button type="button" class="submit-btn" id="submitBtn">
+        <i class="fas fa-rocket"></i>
+        <span>إنشاء المتجر الآن</span>
+      </button>
+      <div class="footer-note">
+        <i class="fas fa-shield-alt"></i>
+        <span>بياناتك مشفّرة ومحمية بأحدث معايير الأمان</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ═══ Firebase SDKs ═══ -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
 
 <script>
 'use strict';
 
-/* ═══ CONFIG — استبدلها بقيمك ═══ */
-const CONFIG = {
-  FIREBASE: {
-    apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    authDomain: "branzar.firebaseapp.com",
-    projectId: "branzar",
-    storageBucket: "branzar.appspot.com",
-    messagingSenderId: "000000000000",
-    appId: "1:000000000000:web:xxxxxxxxxxxx"
-  },
-  CLOUDINARY_CLOUD_NAME: "branzar",
-  CLOUDINARY_UPLOAD_PRESET: "branzar_unsigned",
-  MAX_IMAGE_MB: 5,
-  IMAGE_MAX_WIDTH: 1600,
-  IMAGE_QUALITY: 0.85
+/* ═══════════════════════════════════════════════════════════
+   Firebase Config
+   ═══════════════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
+  authDomain: "bazarena-725e4.firebaseapp.com",
+  databaseURL: "https://bazarena-725e4-default-rtdb.firebaseio.com",
+  projectId: "bazarena-725e4",
+  storageBucket: "bazarena-725e4.firebasestorage.app",
+  messagingSenderId: "977750898059",
+  appId: "1:977750898059:web:247e8513b48490ed622b8e"
 };
-
-firebase.initializeApp(CONFIG.FIREBASE);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
+db.settings({ ignoreUndefinedProperties: true });
 
-/* ═══ Utilities ═══ */
+const STORES_COLLECTION = 'stores';
+const DEVICES_COLLECTION = 'device_registry';
+
+/* ═══════════════════════════════════════════════════════════
+   Cloudinary
+   ═══════════════════════════════════════════════════════════ */
+const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
+const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
+
+/* ═══════════════════════════════════════════════════════════
+   Constants
+   ═══════════════════════════════════════════════════════════ */
+const DID_KEY = 'bzr_device_id_v2';
+const DID_COOKIE = 'bzr_did';
+const DID_IDB_NAME = 'bzr_guard_v2';
+const DID_IDB_STORE = 'ids';
+const DID_CACHE = 'bzr-guard-v2';
+const SUBMIT_LOCK_KEY = 'bzr_submit_lock';
+const RATE_LIMIT_MS = 60 * 1000;
+
+const PHONE_REGEX = /^(?:0?9\d{8}|0?1\d{8}|\+?249\d{9}|\+?\d{8,15})$/;
+const NAME_REGEX = /^[\u0600-\u06FFa-zA-Z0-9\s\-_.'&()]+$/;
+
+/* ═══════════════════════════════════════════════════════════
+   Global State
+   ═══════════════════════════════════════════════════════════ */
+const state = {
+  deviceFingerprint: null,
+  persistentId: null,
+  anonUid: null,
+  selectedCategory: null,
+  categoriesList: [],
+  coverUrl: null,
+  logoUrl: null,
+  coverFile: null,
+  logoFile: null,
+  submitting: false,
+  checkPassed: false
+};
+
+/* ═══════════════════════════════════════════════════════════
+   Utilities
+   ═══════════════════════════════════════════════════════════ */
+function $(id) { return document.getElementById(id); }
 function haptic(type) {
   if (!navigator.vibrate) return;
   const p = { light: 15, medium: 30, heavy: 60 };
   try { navigator.vibrate(p[type] || 15); } catch(e){}
 }
 let toastTimer = null;
-function showToast(msg, type) {
-  const t = document.getElementById('csToast');
+function showToast(msg, type = 'info') {
+  const t = $('toast');
+  if (!t) return;
+  const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
   t.className = '';
-  if (type) t.classList.add(type);
-  t.innerHTML = (type === 'success' ? '<i class="fas fa-check-circle"></i>' :
-                 type === 'error' ? '<i class="fas fa-exclamation-circle"></i>' :
-                 '<i class="fas fa-info-circle"></i>') + '<span>' + msg + '</span>';
+  if (type !== 'info') t.classList.add(type);
+  t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${escapeHtml(msg)}</span>`;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
-function sanitizeHTML(str) {
-  const d = document.createElement('div');
-  d.textContent = String(str || '');
-  return d.innerHTML;
+function escapeHtml(str) {
+  if (str == null) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
 }
-function getUserIdentity() {
-  let fp = localStorage.getItem('branzar_fp');
-  if (!fp) {
-    fp = 'fp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 11);
-    localStorage.setItem('branzar_fp', fp);
+function sanitize(str, maxLen = 500) {
+  if (!str) return '';
+  return String(str)
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/[<>"`]/g, '')
+    .trim()
+    .slice(0, maxLen);
+}
+function cleanPhone(v) { return String(v || '').replace(/[^0-9+]/g, ''); }
+function normalizePhone(v) {
+  let p = cleanPhone(v);
+  if (p.startsWith('+')) p = p.slice(1);
+  if (p.startsWith('249')) p = '0' + p.slice(3);
+  return p;
+}
+function isValidPhone(v) {
+  const clean = normalizePhone(v);
+  return PHONE_REGEX.test(clean) && clean.length >= 9;
+}
+async function sha256(str) {
+  try {
+    const buf = new TextEncoder().encode(str);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch (e) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+    return 'fb_' + Math.abs(h).toString(36) + '_' + str.length;
   }
-  return fp;
 }
+function uuid() {
+  if (crypto.randomUUID) { try { return crypto.randomUUID(); } catch(e){} }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : ((r & 0x3) | 0x8)).toString(16);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Anonymous Authentication
+   ═══════════════════════════════════════════════════════════ */
+async function ensureAnonymousAuth() {
+  // If already signed in (including existing anon session), reuse
+  if (auth.currentUser) {
+    state.anonUid = auth.currentUser.uid;
+    return auth.currentUser;
+  }
+  try {
+    const cred = await auth.signInAnonymously();
+    state.anonUid = cred.user.uid;
+    console.log('[Auth] Anonymous UID:', cred.user.uid);
+    return cred.user;
+  } catch (err) {
+    console.error('[Auth] Anonymous sign-in failed:', err);
+    throw new Error('auth_failed:' + (err.code || 'unknown'));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Storage Helpers
+   ═══════════════════════════════════════════════════════════ */
+function setCookie(name, value, days) {
+  try {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    const secure = location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax${secure}`;
+  } catch (e) {}
+}
+function getCookie(name) {
+  try {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  } catch (e) { return null; }
+}
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    try {
+      const req = indexedDB.open(DID_IDB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(DID_IDB_STORE)) db.createObjectStore(DID_IDB_STORE);
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    } catch (e) { reject(e); }
+  });
+}
+async function idbGet(key) {
+  try {
+    const db = await openIDB();
+    return new Promise(resolve => {
+      const tx = db.transaction(DID_IDB_STORE, 'readonly');
+      const req = tx.objectStore(DID_IDB_STORE).get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) { return null; }
+}
+async function idbSet(key, value) {
+  try {
+    const db = await openIDB();
+    return new Promise(resolve => {
+      const tx = db.transaction(DID_IDB_STORE, 'readwrite');
+      tx.objectStore(DID_IDB_STORE).put(value, key);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  } catch (e) { return false; }
+}
+async function cacheGet(key) {
+  try {
+    if (!('caches' in window)) return null;
+    const cache = await caches.open(DID_CACHE);
+    const resp = await cache.match('/__' + key);
+    return resp ? await resp.text() : null;
+  } catch (e) { return null; }
+}
+async function cacheSet(key, value) {
+  try {
+    if (!('caches' in window)) return false;
+    const cache = await caches.open(DID_CACHE);
+    await cache.put('/__' + key, new Response(value));
+    return true;
+  } catch (e) { return false; }
+}
+async function getOrCreatePersistentId() {
+  try {
+    const id = localStorage.getItem(DID_KEY);
+    if (id) { setCookie(DID_COOKIE, id, 3650); idbSet(DID_KEY, id); cacheSet(DID_KEY, id); return id; }
+  } catch (e) {}
+  const cookieId = getCookie(DID_COOKIE);
+  if (cookieId) {
+    try { localStorage.setItem(DID_KEY, cookieId); } catch(e){}
+    idbSet(DID_KEY, cookieId); cacheSet(DID_KEY, cookieId);
+    return cookieId;
+  }
+  const idbId = await idbGet(DID_KEY);
+  if (idbId) {
+    try { localStorage.setItem(DID_KEY, idbId); } catch(e){}
+    setCookie(DID_COOKIE, idbId, 3650); cacheSet(DID_KEY, idbId);
+    return idbId;
+  }
+  const cacheId = await cacheGet(DID_KEY);
+  if (cacheId) {
+    try { localStorage.setItem(DID_KEY, cacheId); } catch(e){}
+    setCookie(DID_COOKIE, cacheId, 3650); idbSet(DID_KEY, cacheId);
+    return cacheId;
+  }
+  const newId = 'did_' + uuid() + '_' + Date.now().toString(36);
+  try { localStorage.setItem(DID_KEY, newId); } catch(e){}
+  setCookie(DID_COOKIE, newId, 3650);
+  idbSet(DID_KEY, newId); cacheSet(DID_KEY, newId);
+  return newId;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Fingerprint (12 layers)
+   ═══════════════════════════════════════════════════════════ */
+function getCanvasFingerprint() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 240; canvas.height = 80;
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = '14px "Arial"';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = '#f60'; ctx.fillRect(125, 1, 62, 20);
+    ctx.fillStyle = '#069'; ctx.fillText('BranZar 🎨,١٢٣', 2, 15);
+    ctx.fillStyle = 'rgba(102, 204, 0, 0.7)'; ctx.fillText('BranZar 🎨,١٢٣', 4, 17);
+    ctx.font = '16px "Cairo", sans-serif';
+    ctx.fillStyle = '#FF7A00'; ctx.fillText('بران زار', 60, 45);
+    ctx.beginPath(); ctx.arc(50, 50, 20, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255,122,0,0.5)'; ctx.stroke();
+    return canvas.toDataURL();
+  } catch (e) { return 'no_canvas'; }
+}
+function getWebGLFingerprint() {
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return 'no_webgl';
+    const dbgInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    const vendor = dbgInfo ? gl.getParameter(dbgInfo.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
+    const renderer = dbgInfo ? gl.getParameter(dbgInfo.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    return [vendor, renderer, gl.getParameter(gl.VERSION), gl.getParameter(gl.MAX_TEXTURE_SIZE)].join('|');
+  } catch (e) { return 'no_webgl'; }
+}
+async function getAudioFingerprint() {
+  try {
+    const AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!AC) return 'no_audio';
+    const ctx = new AC(1, 44100, 44100);
+    const osc = ctx.createOscillator();
+    osc.type = 'triangle'; osc.frequency.value = 10000;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -50; comp.knee.value = 40; comp.ratio.value = 12;
+    comp.attack.value = 0; comp.release.value = 0.25;
+    osc.connect(comp); comp.connect(ctx.destination); osc.start(0);
+    const buffer = await ctx.startRendering();
+    const data = buffer.getChannelData(0);
+    let sum = 0;
+    for (let i = 4500; i < 5000; i++) sum += Math.abs(data[i]);
+    return sum.toString();
+  } catch (e) { return 'no_audio'; }
+}
+function getHardwareFingerprint() {
+  return [
+    navigator.hardwareConcurrency || 0,
+    navigator.deviceMemory || 0,
+    navigator.maxTouchPoints || 0,
+    navigator.platform || '',
+    navigator.vendor || ''
+  ].join('|');
+}
+function getScreenFingerprint() {
+  return [
+    screen.width + 'x' + screen.height,
+    screen.availWidth + 'x' + screen.availHeight,
+    screen.colorDepth, screen.pixelDepth,
+    window.devicePixelRatio || 1,
+    window.innerWidth + 'x' + window.innerHeight
+  ].join('|');
+}
+function getLocaleFingerprint() {
+  let tz = '';
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch(e){}
+  return [navigator.language || '', (navigator.languages || []).slice(0,3).join(','), new Date().getTimezoneOffset(), tz].join('|');
+}
+function getFontsFingerprint() {
+  const testFonts = ['Arial','Cairo','Tahoma','Verdana','Georgia','Palatino','Times New Roman','Courier New','Comic Sans MS','Trebuchet MS','Impact','Lucida Console','Segoe UI','Roboto','Helvetica Neue','Noto Naskh Arabic','Noto Sans Arabic','Amiri'];
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const baseFonts = ['monospace','sans-serif','serif'];
+  const testString = 'mmmmmmmmmmlli';
+  const testSize = '72px';
+  const baseSizes = {};
+  baseFonts.forEach(bf => { ctx.font = testSize + ' ' + bf; baseSizes[bf] = ctx.measureText(testString).width; });
+  const detected = [];
+  testFonts.forEach(font => {
+    let d = false;
+    baseFonts.forEach(bf => {
+      ctx.font = testSize + ' "' + font + '", ' + bf;
+      if (ctx.measureText(testString).width !== baseSizes[bf]) d = true;
+    });
+    if (d) detected.push(font);
+  });
+  return detected.join(',');
+}
+function getMiscFingerprint() {
+  return [
+    navigator.cookieEnabled ? '1' : '0',
+    navigator.doNotTrack || '0',
+    'ontouchstart' in window ? '1' : '0',
+    typeof Notification !== 'undefined' ? Notification.permission : 'na',
+    navigator.pdfViewerEnabled ? '1' : '0',
+    navigator.webdriver ? 'WD' : 'OK'
+  ].join('|');
+}
+async function buildFingerprint() {
+  const pId = await getOrCreatePersistentId();
+  state.persistentId = pId;
+  const composite = [
+    'v2', pId,
+    getCanvasFingerprint(),
+    getWebGLFingerprint(),
+    await getAudioFingerprint(),
+    getHardwareFingerprint(),
+    getScreenFingerprint(),
+    getLocaleFingerprint(),
+    getFontsFingerprint(),
+    getMiscFingerprint()
+  ].join('::');
+  const hash = await sha256(composite);
+  state.deviceFingerprint = hash;
+  return { fingerprint: hash, persistentId: pId };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Device Registration Check
+   ═══════════════════════════════════════════════════════════ */
+async function checkDeviceAlreadyRegistered(fp, pId) {
+  const results = { blocked: false, existingStore: null, reason: null };
+  try {
+    const byFp = await db.collection(STORES_COLLECTION).where('device_fingerprint', '==', fp).limit(1).get();
+    if (!byFp.empty) {
+      results.blocked = true;
+      results.existingStore = { id: byFp.docs[0].id, ...byFp.docs[0].data() };
+      results.reason = 'fingerprint_match';
+      return results;
+    }
+    const byDid = await db.collection(STORES_COLLECTION).where('device_id', '==', pId).limit(1).get();
+    if (!byDid.empty) {
+      results.blocked = true;
+      results.existingStore = { id: byDid.docs[0].id, ...byDid.docs[0].data() };
+      results.reason = 'persistent_id_match';
+      return results;
+    }
+    const byReg = await db.collection(DEVICES_COLLECTION).doc(fp).get();
+    if (byReg.exists && byReg.data().storeId) {
+      results.blocked = true;
+      results.reason = 'registry_match';
+    }
+    return results;
+  } catch (err) {
+    console.error('[DeviceGuard]', err);
+    throw err;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UI Helpers
+   ═══════════════════════════════════════════════════════════ */
+function showError(id) { $(id)?.classList.add('show'); }
+function hideError(id) { $(id)?.classList.remove('show'); }
+function setFieldState(wrapId, s) {
+  const el = $(wrapId);
+  if (!el) return;
+  el.classList.remove('error', 'valid');
+  if (s === 'error') el.classList.add('error');
+  else if (s === 'valid') el.classList.add('valid');
+}
+function startProgress() { const b = $('topProgressBar'); if (b) { b.classList.remove('done'); b.classList.add('active'); } }
+function doneProgress() {
+  const b = $('topProgressBar');
+  if (!b) return;
+  b.classList.remove('active'); b.classList.add('done');
+  setTimeout(() => { b.classList.remove('done'); b.style.transform = ''; }, 400);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Image Compression & Upload
+   ═══════════════════════════════════════════════════════════ */
 function compressImage(file, maxW, quality) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -814,6 +1485,7 @@ function compressImage(file, maxW, quality) {
         canvas.width = width; canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingQuality = 'high';
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, width, height);
         ctx.drawImage(img, 0, 0, width, height);
         canvas.toBlob(b => b ? resolve(b) : reject(new Error('compress_failed')), 'image/jpeg', quality);
       };
@@ -827,192 +1499,214 @@ function compressImage(file, maxW, quality) {
 async function uploadToCloudinary(blob) {
   const fd = new FormData();
   fd.append('file', blob);
-  fd.append('upload_preset', CONFIG.CLOUDINARY_UPLOAD_PRESET);
+  fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
   fd.append('folder', 'branzar/stores');
   const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${CONFIG.CLOUDINARY_CLOUD_NAME}/image/upload`,
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
     { method: 'POST', body: fd }
   );
-  if (!res.ok) throw new Error('upload_failed');
+  if (!res.ok) throw new Error('upload_http_' + res.status);
   const data = await res.json();
   if (!data.secure_url) throw new Error('no_url');
   return data.secure_url;
 }
-const phoneRegex = /^(?:\+?249|0)?9[0-9]{8}$|^\+?[0-9]{8,15}$/;
-function validatePhone(v) {
-  const clean = String(v || '').replace(/[^\d+]/g, '');
-  return phoneRegex.test(clean) && clean.length >= 8;
+function readHeader(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(new Uint8Array(e.target.result));
+    reader.onerror = () => resolve(new Uint8Array());
+    reader.readAsArrayBuffer(file.slice(0, 12));
+  });
 }
-function normalizePhone(v) { return String(v || '').replace(/[^\d+]/g, ''); }
-
-/* ═══ State ═══ */
-const state = {
-  coverFile: null, coverBlob: null, coverUrl: null,
-  logoFile: null, logoBlob: null, logoUrl: null,
-  selectedCategory: null,
-  customCategories: [],
-  existingCategories: [],
-  submitting: false
-};
-
-/* ═══ Theme ═══ */
-const themeBtn = document.getElementById('themeBtn');
-function applyTheme(t) {
-  document.body.classList.toggle('theme-dark', t === 'dark');
-  themeBtn.innerHTML = t === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', t === 'dark' ? '#0B1120' : '#FF7A00');
+function isValidImageHeader(bytes) {
+  if (bytes.length < 4) return false;
+  if (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) return true;
+  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) return true;
+  if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) return true;
+  if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46
+      && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) return true;
+  return false;
 }
-function initTheme() {
-  const s = localStorage.getItem('branzar_theme');
-  if (s) return applyTheme(s);
-  applyTheme(matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-}
-themeBtn.addEventListener('click', () => {
-  const cur = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
-  const next = cur === 'dark' ? 'light' : 'dark';
-  applyTheme(next);
-  localStorage.setItem('branzar_theme', next);
-  haptic('light');
-});
-
-/* ═══ Progress ═══ */
-const topBar = document.getElementById('topProgressBar');
-function startProgress() { topBar.classList.remove('done'); topBar.classList.add('active'); }
-function doneProgress() {
-  topBar.classList.remove('active');
-  topBar.classList.add('done');
-  setTimeout(() => { topBar.classList.remove('done'); topBar.style.transform = ''; }, 400);
-}
-
-/* ═══ Back ═══ */
-document.getElementById('backBtn').addEventListener('click', () => {
-  haptic('light');
-  if (document.referrer && document.referrer.includes(window.location.hostname)) {
-    history.back();
-  } else {
-    window.location.href = '/';
-  }
-});
-
-/* ═══ Image Upload ═══ */
 function setupImageUpload(opts) {
-  const { zoneEl, inputEl, previewEl, progressEl, onLoaded } = opts;
+  const { zoneEl, inputEl, previewEl, progressEl, onLoaded, isLogo } = opts;
+  if (!zoneEl || !inputEl) return;
   const open = () => inputEl.click();
   zoneEl.addEventListener('click', open);
-  zoneEl.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
-  });
+  zoneEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
   ['dragenter','dragover'].forEach(ev => zoneEl.addEventListener(ev, e => { e.preventDefault(); zoneEl.classList.add('dragging'); }));
   ['dragleave','drop'].forEach(ev => zoneEl.addEventListener(ev, e => { e.preventDefault(); zoneEl.classList.remove('dragging'); }));
-  zoneEl.addEventListener('drop', e => {
-    const f = e.dataTransfer?.files?.[0];
-    if (f) handle(f);
-  });
-  inputEl.addEventListener('change', e => {
-    const f = e.target.files?.[0];
-    if (f) handle(f);
-    inputEl.value = '';
-  });
+  zoneEl.addEventListener('drop', e => { const f = e.dataTransfer?.files?.[0]; if (f) handle(f); });
+  inputEl.addEventListener('change', e => { const f = e.target.files?.[0]; if (f) handle(f); inputEl.value = ''; });
+
   async function handle(file) {
-    if (!file.type.startsWith('image/')) { showToast('يجب اختيار ملف صورة', 'error'); return; }
-    if (file.size > CONFIG.MAX_IMAGE_MB * 1024 * 1024) {
-      showToast(`حجم الصورة يجب أن يكون أقل من ${CONFIG.MAX_IMAGE_MB} ميجا`, 'error'); return;
-    }
+    if (!file.type || !file.type.startsWith('image/')) { showToast('يجب اختيار ملف صورة', 'error'); return; }
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowed.includes(file.type)) { showToast('الصيغة غير مدعومة', 'error'); return; }
+    if (file.size > 8 * 1024 * 1024) { showToast('الحجم أكبر من 8 ميجا', 'error'); return; }
+    const header = await readHeader(file);
+    if (!isValidImageHeader(header)) { showToast('الملف ليس صورة صالحة', 'error'); return; }
+
     progressEl?.classList.add('active');
     haptic('light');
     try {
-      const blob = await compressImage(file, CONFIG.IMAGE_MAX_WIDTH, CONFIG.IMAGE_QUALITY);
+      const maxW = isLogo ? 800 : 1600;
+      const quality = isLogo ? 0.88 : 0.85;
+      const blob = await compressImage(file, maxW, quality);
       const url = await uploadToCloudinary(blob);
       previewEl.src = url;
       previewEl.onload = () => previewEl.classList.add('loaded');
       zoneEl.classList.add('has-image');
       onLoaded({ file, blob, url });
-      showToast('تم رفع الصورة بنجاح', 'success');
+      showToast('✅ تم رفع الصورة', 'success');
       haptic('medium');
     } catch (err) {
       console.error('[Upload]', err);
-      showToast('تعذر رفع الصورة، حاول مرة أخرى', 'error');
+      showToast('تعذر رفع الصورة', 'error');
     } finally {
       progressEl?.classList.remove('active');
     }
   }
 }
 
-setupImageUpload({
-  zoneEl: document.getElementById('coverUpload'),
-  inputEl: document.getElementById('coverInput'),
-  previewEl: document.getElementById('coverPreview'),
-  progressEl: document.getElementById('coverProgress'),
-  onLoaded: ({ file, blob, url }) => {
-    state.coverFile = file; state.coverBlob = blob; state.coverUrl = url;
-    hideError('coverError'); updatePreview();
-  }
-});
-setupImageUpload({
-  zoneEl: document.getElementById('logoUpload'),
-  inputEl: document.getElementById('logoInput'),
-  previewEl: document.getElementById('logoPreview'),
-  progressEl: document.getElementById('logoProgress'),
-  onLoaded: ({ file, blob, url }) => {
-    state.logoFile = file; state.logoBlob = blob; state.logoUrl = url;
-    hideError('logoError'); updatePreview();
-  }
-});
+/* ═══════════════════════════════════════════════════════════
+   Live Preview
+   ═══════════════════════════════════════════════════════════ */
+function updatePreview() {
+  const pc = $('previewCover'), pl = $('previewLogo');
+  if (state.coverUrl) { pc.style.backgroundImage = `url(${state.coverUrl})`; pc.classList.add('has-image'); }
+  else { pc.style.backgroundImage = ''; pc.classList.remove('has-image'); }
+  if (state.logoUrl) { pl.style.backgroundImage = `url(${state.logoUrl})`; pl.classList.add('has-image'); }
+  else { pl.style.backgroundImage = ''; pl.classList.remove('has-image'); }
+  $('previewName').textContent = $('storeName').value.trim() || 'اسم متجرك';
+  $('previewCat').textContent = state.selectedCategory || 'الفئة';
+}
 
-/* ═══ Inputs ═══ */
-const nameInput = document.getElementById('storeName');
-const phoneInput = document.getElementById('phoneNumber');
-const waInput = document.getElementById('whatsappNumber');
-const descInput = document.getElementById('description');
-const passwordInput = document.getElementById('password');
-const confirmPasswordInput = document.getElementById('confirmPassword');
+/* ═══════════════════════════════════════════════════════════
+   Categories
+   ═══════════════════════════════════════════════════════════ */
+const DEFAULT_CATEGORIES = [
+  'أزياء وموضة', 'إلكترونيات', 'هواتف وأجهزة', 'مطاعم ومقاهي',
+  'تجميل وعناية', 'منزل ومفروشات', 'رياضة ولياقة', 'كتب وقرطاسية',
+  'أطفال ومستلزماتهم', 'هدايا وتحف', 'عطور وبخور', 'مواد غذائية',
+  'خدمات عامة', 'عقارات', 'سيارات وقطع غيار', 'صيدليات ومستلزمات طبية'
+];
+async function loadCategories() {
+  const loader = $('catsLoader'), grid = $('catsGrid');
+  try {
+    startProgress();
+    const snap = await db.collection(STORES_COLLECTION).limit(500).get();
+    const cats = new Set();
+    snap.docs.forEach(d => {
+      const data = d.data();
+      if (data.category && String(data.category).trim()) cats.add(sanitize(String(data.category).trim(), 40));
+      if (Array.isArray(data.categories)) {
+        data.categories.forEach(cc => { if (cc && String(cc).trim()) cats.add(sanitize(String(cc).trim(), 40)); });
+      }
+    });
+    state.categoriesList = Array.from(cats).filter(Boolean).sort();
+    DEFAULT_CATEGORIES.forEach(c => { if (!state.categoriesList.includes(c)) state.categoriesList.push(c); });
+  } catch (err) {
+    console.warn('[Categories] Fallback:', err);
+    state.categoriesList = DEFAULT_CATEGORIES.slice();
+  } finally {
+    doneProgress();
+    loader.style.display = 'none';
+    grid.style.display = 'flex';
+    renderCategories();
+  }
+}
+function renderCategories() {
+  const grid = $('catsGrid');
+  grid.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  state.categoriesList.forEach(cat => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'cat-chip' + (state.selectedCategory === cat ? ' active' : '');
+    chip.dataset.cat = cat;
+    chip.innerHTML = '<i class="fas fa-tag"></i><span>' + escapeHtml(cat) + '</span>';
+    chip.addEventListener('click', () => selectCategory(cat));
+    frag.appendChild(chip);
+  });
+  grid.appendChild(frag);
+}
+function selectCategory(cat) {
+  state.selectedCategory = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === cat));
+  hideError('catError');
+  updatePreview();
+  haptic('light');
+}
+$('addCatBtn')?.addEventListener('click', () => { $('newCatWrap').classList.add('show'); $('newCatInput').focus(); haptic('light'); });
+$('cancelCatBtn')?.addEventListener('click', () => { $('newCatWrap').classList.remove('show'); $('newCatInput').value = ''; });
+$('saveCatBtn')?.addEventListener('click', saveCustomCategory);
+$('newCatInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); saveCustomCategory(); } });
+function saveCustomCategory() {
+  const val = sanitize($('newCatInput').value, 40);
+  if (val.length < 2) { showToast('اسم الفئة قصير جدًا', 'error'); return; }
+  if (!NAME_REGEX.test(val)) { showToast('يحتوي على رموز غير مسموحة', 'error'); return; }
+  const exists = state.categoriesList.some(c => c.toLowerCase() === val.toLowerCase());
+  if (exists) {
+    selectCategory(state.categoriesList.find(c => c.toLowerCase() === val.toLowerCase()));
+    $('newCatWrap').classList.remove('show'); $('newCatInput').value = '';
+    return;
+  }
+  state.categoriesList.unshift(val);
+  renderCategories();
+  selectCategory(val);
+  $('newCatWrap').classList.remove('show'); $('newCatInput').value = '';
+  showToast('✅ تمت إضافة الفئة', 'success');
+  haptic('medium');
+}
 
-nameInput.addEventListener('input', e => {
-  document.getElementById('nameCount').textContent = e.target.value.length;
-  if (e.target.value.trim().length >= 3) hideError('nameError');
+/* ═══════════════════════════════════════════════════════════
+   Form Field Handlers
+   ═══════════════════════════════════════════════════════════ */
+const nameInput = $('storeName');
+const waInput = $('whatsapp');
+const phoneInput = $('phone');
+const descInput = $('storeDescription');
+const pwdInput = $('password');
+const pwdConfirmInput = $('confirmPassword');
+
+nameInput?.addEventListener('input', (e) => {
+  const val = e.target.value;
+  const clean = val.replace(/[<>"`\\]/g, '');
+  if (val !== clean) e.target.value = clean;
+  $('nameCount').textContent = clean.length;
+  if (clean.trim().length >= 3) { hideError('nameError'); setFieldState('nameWrap', 'valid'); }
   updatePreview();
 });
-phoneInput.addEventListener('input', e => {
-  e.target.value = e.target.value.replace(/[^\d+]/g, '');
-  if (validatePhone(e.target.value)) hideError('phoneError');
-});
-waInput.addEventListener('input', e => {
-  e.target.value = e.target.value.replace(/[^\d+]/g, '');
-  if (validatePhone(e.target.value)) hideError('waError');
-});
-descInput.addEventListener('input', e => {
+descInput?.addEventListener('input', (e) => {
   const len = e.target.value.length;
-  const c = document.getElementById('descCount');
-  c.textContent = len;
-  c.parentElement.classList.toggle('warn', len > 400);
-  c.parentElement.classList.toggle('limit', len >= 500);
+  $('descCount').textContent = len;
+  const c = $('descCount').parentElement;
+  c.classList.toggle('warn', len > 400);
+  c.classList.toggle('limit', len >= 500);
 });
-document.getElementById('copyPhoneBtn').addEventListener('click', () => {
-  const p = phoneInput.value.trim();
-  if (!p) { showToast('أدخل رقم التواصل أولاً', 'error'); return; }
-  waInput.value = p; hideError('waError'); haptic('light');
-  showToast('تم نسخ الرقم', 'success');
+[waInput, phoneInput].forEach(inp => {
+  inp?.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/[^\d+]/g, '');
+    const wrap = inp === waInput ? 'waWrap' : 'phoneWrap';
+    const err = inp === waInput ? 'waError' : 'phoneError';
+    if (inp.value && isValidPhone(inp.value)) { hideError(err); setFieldState(wrap, 'valid'); }
+  });
 });
-
-/* ═══ Password UI ═══ */
-const pwdStrengthEl = document.getElementById('pwdStrength');
-document.getElementById('togglePwdBtn').addEventListener('click', () => {
-  const isPwd = passwordInput.type === 'password';
-  passwordInput.type = isPwd ? 'text' : 'password';
-  document.querySelector('#togglePwdBtn i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
-  haptic('light');
+$('togglePwd')?.addEventListener('click', () => {
+  const isPwd = pwdInput.type === 'password';
+  pwdInput.type = isPwd ? 'text' : 'password';
+  document.querySelector('#togglePwd i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
 });
-document.getElementById('togglePwdConfirmBtn').addEventListener('click', () => {
-  const isPwd = confirmPasswordInput.type === 'password';
-  confirmPasswordInput.type = isPwd ? 'text' : 'password';
-  document.querySelector('#togglePwdConfirmBtn i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
-  haptic('light');
+$('togglePwdConfirm')?.addEventListener('click', () => {
+  const isPwd = pwdConfirmInput.type === 'password';
+  pwdConfirmInput.type = isPwd ? 'text' : 'password';
+  document.querySelector('#togglePwdConfirm i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
 });
-passwordInput.addEventListener('input', () => {
-  const pwd = passwordInput.value;
-  if (!pwd) { pwdStrengthEl.style.display = 'none'; return; }
-  pwdStrengthEl.style.display = 'block';
+pwdInput?.addEventListener('input', () => {
+  const pwd = pwdInput.value;
+  const el = $('pwdStrength');
+  if (!pwd) { el.classList.remove('show'); return; }
+  el.classList.add('show');
   let score = 0;
   if (pwd.length >= 6) score++;
   if (pwd.length >= 10) score++;
@@ -1020,295 +1714,297 @@ passwordInput.addEventListener('input', () => {
   if (/\d/.test(pwd)) score++;
   if (/[^A-Za-z0-9]/.test(pwd)) score++;
   score = Math.min(score, 4);
-  const colors = ['#EF4444', '#F59E0B', '#F59E0B', '#10B981', '#10B981'];
-  const labels = ['ضعيفة جدًا', 'ضعيفة', 'متوسطة', 'قوية', 'قوية جدًا'];
-  document.querySelectorAll('.cs-pwd-bar').forEach((b, i) => {
+  const colors = ['#EF4444','#F59E0B','#F59E0B','#10B981','#10B981'];
+  const labels = ['ضعيفة جدًا','ضعيفة','متوسطة','قوية','قوية جدًا'];
+  document.querySelectorAll('.pwd-bar').forEach((b, i) => {
     b.style.background = i < score ? colors[score] : 'var(--c-surface-3)';
   });
-  const txt = document.getElementById('pwdStrengthText');
+  const txt = $('pwdStrengthText');
   txt.textContent = labels[score] || '';
   txt.style.color = colors[score] || '';
-  if (pwd.length >= 6) hideError('pwdError');
+  if (pwd.length >= 6) { hideError('pwdError'); setFieldState('pwdWrap', 'valid'); }
 });
-confirmPasswordInput.addEventListener('input', () => {
-  if (confirmPasswordInput.value && confirmPasswordInput.value === passwordInput.value) {
-    hideError('pwdConfirmError');
+pwdConfirmInput?.addEventListener('input', () => {
+  if (pwdConfirmInput.value && pwdConfirmInput.value === pwdInput.value) {
+    hideError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid');
   }
 });
+$('termsCheck')?.addEventListener('change', () => { if ($('termsCheck').checked) hideError('termsError'); });
 
-/* ═══ Categories ═══ */
-const DEFAULT_CATEGORIES = ['أزياء', 'إلكترونيات', 'مطاعم', 'تجميل', 'منزل', 'رياضة', 'كتب', 'أطفال', 'هدايا', 'خدمات'];
-async function loadExistingCategories() {
-  const wrap = document.getElementById('catsWrap');
-  startProgress();
-  try {
-    const snap = await db.collection('stores').limit(200).get();
-    const cats = new Set();
-    snap.docs.forEach(d => {
-      const data = d.data();
-      if (data?.category && String(data.category).trim()) cats.add(String(data.category).trim());
-      if (Array.isArray(data?.categories)) {
-        data.categories.forEach(c => { if (c && String(c).trim()) cats.add(String(c).trim()); });
-      }
-    });
-    state.existingCategories = Array.from(cats).sort();
-    renderCategories();
-  } catch (err) {
-    console.warn('[Cats]', err);
-    state.existingCategories = [];
-    renderCategories();
-  } finally {
-    doneProgress();
-  }
-}
-function renderCategories() {
-  const wrap = document.getElementById('catsWrap');
-  const cats = state.existingCategories.length ? state.existingCategories : DEFAULT_CATEGORIES;
-  wrap.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  cats.forEach(cat => {
-    const chip = document.createElement('button');
-    chip.type = 'button';
-    chip.className = 'cs-cat-chip' + (state.selectedCategory === cat ? ' active' : '');
-    chip.dataset.cat = cat;
-    chip.innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(cat) + '</span>';
-    chip.addEventListener('click', () => selectCategory(cat));
-    frag.appendChild(chip);
-  });
-  wrap.appendChild(frag);
-}
-function selectCategory(cat) {
-  state.selectedCategory = cat;
-  document.querySelectorAll('.cs-cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === cat));
-  hideError('catError'); updatePreview(); haptic('light');
-}
-const addCatBtn = document.getElementById('addCatBtn');
-const newCatWrap = document.getElementById('newCatWrap');
-const newCatInput = document.getElementById('newCatInput');
-addCatBtn.addEventListener('click', () => {
-  newCatWrap.classList.add('show'); newCatInput.focus(); haptic('light');
+/* ═══════════════════════════════════════════════════════════
+   Image Upload Setup
+   ═══════════════════════════════════════════════════════════ */
+setupImageUpload({
+  zoneEl: $('coverUpload'), inputEl: $('coverInput'),
+  previewEl: $('coverPreview'), progressEl: $('coverProgress'),
+  onLoaded: ({ file, url }) => { state.coverFile = file; state.coverUrl = url; hideError('coverError'); updatePreview(); },
+  isLogo: false
 });
-document.getElementById('cancelCatBtn').addEventListener('click', () => {
-  newCatWrap.classList.remove('show'); newCatInput.value = '';
+setupImageUpload({
+  zoneEl: $('logoUpload'), inputEl: $('logoInput'),
+  previewEl: $('logoPreview'), progressEl: $('logoProgress'),
+  onLoaded: ({ file, url }) => { state.logoFile = file; state.logoUrl = url; hideError('logoError'); updatePreview(); },
+  isLogo: true
 });
-document.getElementById('saveCatBtn').addEventListener('click', saveCustomCategory);
-newCatInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); saveCustomCategory(); }
-});
-function saveCustomCategory() {
-  const val = newCatInput.value.trim();
-  if (val.length < 2) { showToast('اسم الفئة قصير جدًا', 'error'); return; }
-  if (val.length > 30) { showToast('اسم الفئة طويل جدًا', 'error'); return; }
-  if (!state.customCategories.includes(val)) state.customCategories.push(val);
-  if (!state.existingCategories.includes(val)) state.existingCategories.unshift(val);
-  renderCategories();
-  selectCategory(val);
-  newCatWrap.classList.remove('show');
-  newCatInput.value = '';
-  showToast('تمت إضافة الفئة "' + val + '"', 'success');
-  haptic('medium');
-}
 
-/* ═══ Preview ═══ */
-function updatePreview() {
-  const pc = document.getElementById('previewCover');
-  const pl = document.getElementById('previewLogo');
-  const pn = document.getElementById('previewName');
-  const pcat = document.getElementById('previewCat');
-  if (state.coverUrl) {
-    pc.style.backgroundImage = `url(${state.coverUrl})`;
-    pc.classList.add('has-image');
-  } else {
-    pc.style.backgroundImage = ''; pc.classList.remove('has-image');
-  }
-  if (state.logoUrl) {
-    pl.style.backgroundImage = `url(${state.logoUrl})`;
-    pl.classList.add('has-image');
-  } else {
-    pl.style.backgroundImage = ''; pl.classList.remove('has-image');
-  }
-  pn.textContent = nameInput.value.trim() || 'اسم المتجر';
-  pcat.textContent = state.selectedCategory || 'الفئة';
-}
-
-/* ═══ Errors ═══ */
-function showError(id) { document.getElementById(id)?.classList.add('show'); }
-function hideError(id) { document.getElementById(id)?.classList.remove('show'); }
-function setFieldError(wrapId, hasError) {
-  const el = document.getElementById(wrapId);
-  if (!el) return;
-  el.classList.toggle('error', hasError);
-  el.classList.toggle('valid', !hasError);
-}
-
-/* ═══ Validate ═══ */
+/* ═══════════════════════════════════════════════════════════
+   Form Validation
+   ═══════════════════════════════════════════════════════════ */
 function validateForm() {
-  let ok = true; let firstErr = null;
-
-  if (!state.coverUrl) { showError('coverError'); ok = false; firstErr = firstErr || 'coverUpload'; }
-  else hideError('coverError');
-  if (!state.logoUrl) { showError('logoError'); ok = false; firstErr = firstErr || 'logoUpload'; }
-  else hideError('logoError');
-
-  const name = nameInput.value.trim();
-  if (name.length < 3 || name.length > 50) {
-    showError('nameError'); setFieldError('nameWrap', true);
-    ok = false; firstErr = firstErr || 'storeName';
-  } else { hideError('nameError'); setFieldError('nameWrap', false); }
-
-  if (!validatePhone(phoneInput.value)) {
-    showError('phoneError'); setFieldError('phoneWrap', true);
-    ok = false; firstErr = firstErr || 'phoneNumber';
-  } else { hideError('phoneError'); setFieldError('phoneWrap', false); }
-
-  if (!validatePhone(waInput.value)) {
-    showError('waError'); setFieldError('waWrap', true);
-    ok = false; firstErr = firstErr || 'whatsappNumber';
-  } else { hideError('waError'); setFieldError('waWrap', false); }
-
-  const pwd = passwordInput.value;
-  const cpwd = confirmPasswordInput.value;
-  if (pwd.length < 6) {
-    showError('pwdError'); setFieldError('pwdWrap', true);
-    ok = false; firstErr = firstErr || 'password';
-  } else { hideError('pwdError'); setFieldError('pwdWrap', false); }
-
-  if (pwd !== cpwd || !cpwd) {
-    showError('pwdConfirmError'); setFieldError('pwdConfirmWrap', true);
-    ok = false; firstErr = firstErr || 'confirmPassword';
-  } else { hideError('pwdConfirmError'); setFieldError('pwdConfirmWrap', false); }
+  let ok = true, firstError = null;
+  const name = sanitize(nameInput.value, 60);
+  if (name.length < 3 || name.length > 60 || !NAME_REGEX.test(name)) {
+    showError('nameError'); setFieldState('nameWrap', 'error');
+    ok = false; firstError = firstError || 'storeName';
+  } else { hideError('nameError'); setFieldState('nameWrap', 'valid'); }
 
   if (!state.selectedCategory) {
-    showError('catError');
-    ok = false; firstErr = firstErr || 'catsWrap';
+    showError('catError'); ok = false; firstError = firstError || 'catsGrid';
   } else hideError('catError');
 
-  if (firstErr) {
-    document.getElementById(firstErr)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (!isValidPhone(waInput.value)) {
+    showError('waError'); setFieldState('waWrap', 'error');
+    ok = false; firstError = firstError || 'whatsapp';
+  } else { hideError('waError'); setFieldState('waWrap', 'valid'); }
+
+  if (phoneInput.value && !isValidPhone(phoneInput.value)) {
+    showError('phoneError'); setFieldState('phoneWrap', 'error');
+    ok = false; firstError = firstError || 'phone';
+  } else if (phoneInput.value) { hideError('phoneError'); setFieldState('phoneWrap', 'valid'); }
+
+  if (!state.coverUrl) { showError('coverError'); ok = false; firstError = firstError || 'coverUpload'; }
+  else hideError('coverError');
+  if (!state.logoUrl) { showError('logoError'); ok = false; firstError = firstError || 'logoUpload'; }
+  else hideError('logoError');
+
+  const pwd = pwdInput.value;
+  if (pwd.length < 6 || pwd.length > 64) {
+    showError('pwdError'); setFieldState('pwdWrap', 'error');
+    ok = false; firstError = firstError || 'password';
+  } else { hideError('pwdError'); setFieldState('pwdWrap', 'valid'); }
+
+  if (pwd !== pwdConfirmInput.value || !pwdConfirmInput.value) {
+    showError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'error');
+    ok = false; firstError = firstError || 'confirmPassword';
+  } else { hideError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid'); }
+
+  if (!$('termsCheck').checked) {
+    showError('termsError'); ok = false; firstError = firstError || 'termsCheck';
+  } else hideError('termsError');
+
+  if (firstError) {
+    const el = $(firstError);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     haptic('heavy');
   }
   return ok;
 }
 
-/* ═══ Submit ═══ */
-const submitBtn = document.getElementById('submitBtn');
-submitBtn.addEventListener('click', async () => {
+/* ═══════════════════════════════════════════════════════════
+   Rate Limit
+   ═══════════════════════════════════════════════════════════ */
+function isRateLimited() {
+  try {
+    const last = parseInt(localStorage.getItem(SUBMIT_LOCK_KEY) || '0');
+    if (!last) return false;
+    const elapsed = Date.now() - last;
+    if (elapsed < RATE_LIMIT_MS) {
+      const remain = Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
+      showToast(`انتظر ${remain} ثانية قبل المحاولة مجددًا`, 'warning');
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+function setRateLimit() {
+  try { localStorage.setItem(SUBMIT_LOCK_KEY, Date.now().toString()); } catch (e) {}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Submit Handler
+   ═══════════════════════════════════════════════════════════ */
+const submitBtn = $('submitBtn');
+
+submitBtn?.addEventListener('click', async () => {
   if (state.submitting) return;
-  if (!validateForm()) {
-    showToast('يرجى تصحيح الحقول المطلوبة', 'error');
-    return;
-  }
+  if (isRateLimited()) return;
+  if ($('website').value) return; // honeypot
+  if (!validateForm()) { showToast('يرجى تصحيح الحقول المطلوبة', 'error'); return; }
+
   state.submitting = true;
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري إنشاء المتجر والحساب...</span>';
-  startProgress(); haptic('medium');
-
-  const phoneDigits = normalizePhone(phoneInput.value).replace(/\D/g, '');
-  const syntheticEmail = phoneDigits + '@branzar.app';
-  const password = passwordInput.value;
+  submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري التحقق من الهوية...</span>';
+  startProgress();
+  haptic('medium');
 
   try {
-    /* 1) Firebase Auth */
-    let authUser = null;
-    try {
-      const cred = await auth.createUserWithEmailAndPassword(syntheticEmail, password);
-      authUser = cred.user;
-    } catch (authErr) {
-      if (authErr.code === 'auth/email-already-in-use') {
-        try {
-          const cred = await auth.signInWithEmailAndPassword(syntheticEmail, password);
-          authUser = cred.user;
-        } catch {
-          throw new Error('phone_already_registered');
-        }
-      } else if (authErr.code === 'auth/weak-password') {
-        throw new Error('weak_password');
-      } else {
-        throw authErr;
-      }
-    }
+    /* ─── 1) Sign in anonymously ─── */
+    const user = await ensureAnonymousAuth();
+    const uid = user.uid;
 
-    /* 2) Firestore store doc */
+    submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري إنشاء المتجر...</span>';
+
+    /* ─── 2) Final device re-check ─── */
+    const finalCheck = await checkDeviceAlreadyRegistered(state.deviceFingerprint, state.persistentId);
+    if (finalCheck.blocked) throw new Error('device_already_registered');
+
+    /* ─── 3) Duplicate name ─── */
+    const nameCheck = await db.collection(STORES_COLLECTION)
+      .where('name', '==', sanitize(nameInput.value, 60)).limit(1).get();
+    if (!nameCheck.empty) throw new Error('store_name_exists');
+
+    /* ─── 4) Duplicate whatsapp ─── */
+    const waCheck = await db.collection(STORES_COLLECTION)
+      .where('whatsapp_number', '==', normalizePhone(waInput.value)).limit(1).get();
+    if (!waCheck.empty) throw new Error('whatsapp_exists');
+
+    /* ─── 5) Prepare store data ─── */
+    const now = Date.now();
     const storeData = {
-      name: nameInput.value.trim(),
-      phone_number: normalizePhone(phoneInput.value),
+      name: sanitize(nameInput.value, 60),
+      login_password: pwdInput.value,
+      category: sanitize(state.selectedCategory, 40),
+      categories: [],
+      description: sanitize(descInput.value, 500),
       whatsapp_number: normalizePhone(waInput.value),
-      description: descInput.value.trim(),
-      category: state.selectedCategory,
-      cover_url: state.coverUrl,
+      phone_number: phoneInput.value ? normalizePhone(phoneInput.value) : null,
       logo_url: state.logoUrl,
+      cover_url: state.coverUrl,
       followers: 1,
       is_verified: false,
       is_subscribed: false,
-      created_at: firebase.firestore.FieldValue.serverTimestamp(),
-      updated_at: firebase.firestore.FieldValue.serverTimestamp(),
-      owner_uid: authUser.uid,
-      owner_email: syntheticEmail,
-      owner_fingerprint: getUserIdentity(),
-      status: 'active'
+      products_count: 0,
+      device_fingerprint: state.deviceFingerprint,
+      device_id: state.persistentId,
+      owner_uid: uid,                    // ⭐ UID للـ Anonymous Auth
+      user_agent_short: (navigator.userAgent || '').slice(0, 120),
+      created_at: now,
+      updated_at: now
     };
-    const ref = await db.collection('stores').add(storeData);
 
-    /* 3) users doc */
-    try {
-      await db.collection('users').doc(authUser.uid).set({
-        uid: authUser.uid,
-        phone: phoneDigits,
-        email: syntheticEmail,
-        storeIds: firebase.firestore.FieldValue.arrayUnion(ref.id),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-    } catch(e){ /* silent */ }
+    /* ─── 6) Create store ─── */
+    const ref = await db.collection(STORES_COLLECTION).add(storeData);
 
-    /* 4) auto-follow */
+    /* ─── 7) Register device (atomic guard) ─── */
     try {
-      await db.collection('store_follows').doc(ref.id + '_' + authUser.uid).set({
+      await db.collection(DEVICES_COLLECTION).doc(state.deviceFingerprint).set({
         storeId: ref.id,
-        fingerprint: authUser.uid,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        deviceId: state.persistentId,
+        owner_uid: uid,
+        registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
+        fingerprint: state.deviceFingerprint
       });
-    } catch(e){ /* silent */ }
+    } catch (e) { console.warn('[DeviceRegister]', e); }
 
-    doneProgress(); haptic('heavy');
-    showToast('🎉 تم إنشاء المتجر! جاري التحويل...', 'success');
+    /* ─── 8) Success ─── */
+    doneProgress();
+    haptic('heavy');
+    showToast('🎉 تم إنشاء متجرك بنجاح!', 'success');
 
-    /* 5) Sign out + redirect to a.html */
-    try { await auth.signOut(); } catch(e){}
     try {
-      localStorage.setItem('branzar_created_phone', phoneDigits);
+      localStorage.setItem('branzar_onboarding_seen', 'true');
       localStorage.setItem('branzar_created_store', ref.id);
-    } catch(e){}
+      localStorage.setItem('branzar_created_whatsapp', normalizePhone(waInput.value));
+    } catch (e) {}
 
     setTimeout(() => {
-      window.location.href = '/a.html?welcome=1&phone=' + encodeURIComponent(phoneDigits);
-    }, 1200);
+      window.location.href = '/a.html?welcome=1&phone=' + encodeURIComponent(normalizePhone(waInput.value));
+    }, 1400);
 
   } catch (err) {
     console.error('[Submit]', err);
     doneProgress();
-    let msg = 'تعذر إنشاء المتجر، حاول مرة أخرى';
-    if (err.message === 'phone_already_registered') msg = 'هذا الرقم مسجّل بالفعل — جرّب تسجيل الدخول';
-    else if (err.message === 'weak_password') msg = 'كلمة المرور ضعيفة جدًا';
-    else if (err.code === 'auth/network-request-failed') msg = 'تحقق من اتصالك بالإنترنت';
+    let msg = 'تعذر إنشاء المتجر — حاول مرة أخرى';
+    if (err.message === 'device_already_registered') msg = 'هذا الجهاز مسجّل مسبقًا';
+    else if (err.message === 'store_name_exists') msg = 'اسم المتجر مستخدم بالفعل';
+    else if (err.message === 'whatsapp_exists') msg = 'رقم الواتساب مستخدم بالفعل';
+    else if (err.message.startsWith('auth_failed')) msg = 'تعذر إنشاء جلسة آمنة — تحقق من اتصالك';
+    else if (err.code === 'permission-denied') msg = 'لا تملك صلاحية الإنشاء — راجع قواعد Firestore';
+    else if (err.code === 'unavailable' || err.code === 'network-request-failed') msg = 'تحقق من اتصالك بالإنترنت';
+
     showToast(msg, 'error');
+    if (err.message === 'device_already_registered') setTimeout(() => showGate('gateBlocked'), 800);
+
     submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fas fa-rocket"></i><span>إنشاء المتجر والحساب</span>';
+    submitBtn.innerHTML = '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>';
     state.submitting = false;
   }
 });
 
-/* ═══ Bootstrap ═══ */
-(function init() {
-  initTheme();
-  loadExistingCategories();
-  updatePreview();
-  const params = new URLSearchParams(location.search);
-  if (params.get('name')) nameInput.value = params.get('name').slice(0, 50);
-  if (params.get('phone')) phoneInput.value = params.get('phone').replace(/[^\d+]/g, '');
-  if (params.get('whatsapp')) waInput.value = params.get('whatsapp').replace(/[^\d+]/g, '');
-  if (nameInput.value) document.getElementById('nameCount').textContent = nameInput.value.length;
-  console.log('[BZR] create-store.html loaded ✅');
-})();
+/* ═══════════════════════════════════════════════════════════
+   Gate Display
+   ═══════════════════════════════════════════════════════════ */
+function showGate(gateId) {
+  ['gateCheck', 'gateBlocked', 'gateError', 'appContainer'].forEach(id => {
+    const el = $(id);
+    if (el) el.classList.toggle('hidden', id !== gateId);
+  });
+}
+function updateGateStep(text) {
+  const el = $('gateSteps');
+  if (el) { el.style.opacity = '0'; setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 150); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Bootstrap
+   ═══════════════════════════════════════════════════════════ */
+async function bootstrap() {
+  try {
+    updateGateStep('جمع بيانات التوقيع الرقمي...');
+    await new Promise(r => setTimeout(r, 200));
+
+    const { fingerprint, persistentId } = await buildFingerprint();
+    updateGateStep('جاري تحليل البصمة الفريدة...');
+    await new Promise(r => setTimeout(r, 250));
+
+    updateGateStep('فحص قاعدة بيانات الأجهزة...');
+    const check = await checkDeviceAlreadyRegistered(fingerprint, persistentId);
+
+    if (check.blocked) {
+      const reasonEl = $('blockedReason');
+      if (reasonEl && check.existingStore && check.existingStore.name) {
+        reasonEl.innerHTML = `عذرًا، لا يمكن إنشاء أكثر من متجر واحد من نفس الجهاز.<br>
+          لديك متجر مسجّل بالفعل باسم <strong>"${escapeHtml(check.existingStore.name)}"</strong>.<br>
+          <span style="color:#ef4444;font-weight:800;">يُمنع التحايل على هذا القيد نهائيًا.</span>`;
+      }
+      updateGateStep('❌ الجهاز مسجّل مسبقًا');
+      await new Promise(r => setTimeout(r, 700));
+      showGate('gateBlocked');
+      return;
+    }
+
+    updateGateStep('✅ التحقق نجح — يمكنك المتابعة');
+    await new Promise(r => setTimeout(r, 400));
+    showGate('appContainer');
+
+    state.checkPassed = true;
+    loadCategories();
+    updatePreview();
+
+  } catch (err) {
+    console.error('[Bootstrap]', err);
+    const reasonEl = $('errorReason');
+    if (reasonEl) reasonEl.textContent = 'تعذر التحقق من الجهاز: ' + (err.message || 'خطأ غير معروف');
+    showGate('gateError');
+  }
+}
+
+$('retryCheckBtn')?.addEventListener('click', () => { showGate('gateCheck'); setTimeout(bootstrap, 400); });
+$('backBtn')?.addEventListener('click', () => {
+  haptic('light');
+  if (document.referrer && document.referrer.includes(location.hostname)) history.back();
+  else window.location.href = 'index.html';
+});
+$('signupForm')?.addEventListener('submit', (e) => { e.preventDefault(); submitBtn?.click(); });
+$('signupForm')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+});
+window.addEventListener('beforeunload', (e) => {
+  if (state.submitting) { e.preventDefault(); e.returnValue = ''; }
+});
+
+document.addEventListener('DOMContentLoaded', bootstrap);
+console.log('[BZR] signup.html loaded ✅ v2.1.0 — Anonymous Auth enabled');
 </script>
 
 </body>
