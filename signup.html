@@ -9,7 +9,6 @@
 <meta name="description" content="أنشئ متجرك على منصة BranZar في دقيقة واحدة">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="DENY">
-<meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=()">
 <title>إنشاء متجر | BranZar بران زار</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
@@ -66,7 +65,9 @@ input, textarea, select { outline: none; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--c-surface-3); border-radius: 4px; }
 
-/* ═══ Gate Overlays ═══ */
+/* ═══════════════════════════════════════════════
+   Gate Overlay (Redesigned — Professional & Respectful)
+   ═══════════════════════════════════════════════ */
 .gate-overlay {
   position: fixed; inset: 0; z-index: 99999;
   background:
@@ -80,12 +81,12 @@ input, textarea, select { outline: none; }
 .gate-card {
   background: rgba(26,26,26,0.95);
   backdrop-filter: blur(24px);
-  border: 1.5px solid rgba(255,122,0,0.28);
+  border: 1.5px solid rgba(255,122,0,0.22);
   border-radius: var(--radius-xl);
-  padding: 40px 28px 32px;
-  max-width: 460px; width: 100%;
+  padding: 44px 28px 34px;
+  max-width: 440px; width: 100%;
   text-align: center;
-  box-shadow: 0 30px 80px -25px rgba(255,122,0,0.55), 0 10px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 30px 80px -25px rgba(255,122,0,0.45), 0 10px 40px rgba(0,0,0,0.5);
   animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
 }
 @keyframes cardIn {
@@ -93,22 +94,66 @@ input, textarea, select { outline: none; }
   to { transform: translateY(0) scale(1); opacity: 1; }
 }
 .gate-icon {
-  width: 92px; height: 92px; border-radius: 50%;
+  width: 88px; height: 88px; border-radius: 50%;
   background: var(--c-primary-gradient);
   display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 2.3rem;
-  margin: 0 auto 22px;
+  color: #fff; font-size: 2.2rem;
+  margin: 0 auto 24px;
   box-shadow: var(--shadow-primary-lg), 0 0 0 8px rgba(255,122,0,0.08);
   animation: pulseIcon 2.5s ease-in-out infinite;
 }
-.gate-icon.danger { background: linear-gradient(135deg, #EF4444, #DC2626); box-shadow: 0 16px 44px -12px rgba(239,68,68,0.85), 0 0 0 8px rgba(239,68,68,0.08); }
+.gate-icon.info {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  box-shadow: 0 16px 44px -12px rgba(59,130,246,0.7), 0 0 0 8px rgba(59,130,246,0.08);
+  animation: none;
+}
+.gate-icon.danger {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  box-shadow: 0 16px 44px -12px rgba(239,68,68,0.85), 0 0 0 8px rgba(239,68,68,0.08);
+}
 @keyframes pulseIcon {
   0%, 100% { box-shadow: var(--shadow-primary-lg), 0 0 0 8px rgba(255,122,0,0.08); }
   50% { box-shadow: 0 20px 55px -12px rgba(255,122,0,1), 0 0 0 16px rgba(255,122,0,0.04); }
 }
-.gate-title { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 12px; letter-spacing: -0.3px; line-height: 1.3; }
-.gate-text { color: #9ca3af; font-size: 0.9rem; margin-bottom: 26px; line-height: 1.8; font-weight: 500; }
+.gate-title {
+  font-size: 1.45rem; font-weight: 900;
+  color: #fff; margin-bottom: 14px;
+  letter-spacing: -0.3px; line-height: 1.3;
+}
+.gate-text {
+  color: #a1a1aa; font-size: 0.92rem;
+  margin-bottom: 22px; line-height: 1.9;
+  font-weight: 500;
+}
 .gate-text strong { color: var(--c-primary); font-weight: 800; }
+
+/* ─── Store info card (used in the "already registered" gate) ─── */
+.gate-store-card {
+  background: rgba(255,122,0,0.06);
+  border: 1px solid rgba(255,122,0,0.2);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 26px;
+  display: flex; align-items: center; gap: 12px;
+  text-align: right;
+}
+.gate-store-card-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--c-primary-gradient);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.15rem; flex-shrink: 0;
+  box-shadow: 0 6px 16px -4px rgba(255,122,0,0.5);
+}
+.gate-store-card-info { flex: 1; min-width: 0; }
+.gate-store-card-label {
+  font-size: 0.72rem; color: #9ca3af; font-weight: 700;
+  margin-bottom: 2px;
+}
+.gate-store-card-name {
+  font-size: 1rem; color: #fff; font-weight: 900;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
 .gate-spinner {
   width: 40px; height: 40px; margin: 0 auto;
   border: 3px solid rgba(255,255,255,0.15);
@@ -117,7 +162,10 @@ input, textarea, select { outline: none; }
   animation: spin 0.85s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.gate-steps { color: #6b7280; font-size: 0.78rem; font-weight: 700; margin-top: 20px; min-height: 20px; transition: opacity 0.3s; }
+.gate-steps {
+  color: #6b7280; font-size: 0.78rem; font-weight: 700;
+  margin-top: 20px; min-height: 20px; transition: opacity 0.3s;
+}
 .gate-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 14px 24px; border-radius: var(--radius-md);
@@ -125,19 +173,20 @@ input, textarea, select { outline: none; }
   border: none; text-decoration: none; font-family: inherit;
   transition: all 0.25s; width: 100%;
 }
-.gate-btn-primary { background: var(--c-primary-gradient); color: #fff; box-shadow: var(--shadow-primary); }
-.gate-btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-primary-lg); }
-.gate-btn-secondary { background: rgba(255,255,255,0.06); color: #d1d5db; border: 1.5px solid rgba(255,255,255,0.12); margin-top: 10px; }
-.gate-btn-secondary:hover { background: rgba(255,255,255,0.1); }
-.gate-meta {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(255,122,0,0.08); border: 1px solid rgba(255,122,0,0.25);
-  padding: 8px 14px; border-radius: var(--radius-full);
-  color: #fbbf24; font-size: 0.75rem; font-weight: 800;
-  margin-top: 18px;
+.gate-btn-primary {
+  background: var(--c-primary-gradient); color: #fff;
+  box-shadow: var(--shadow-primary);
 }
+.gate-btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-primary-lg); }
+.gate-btn-secondary {
+  background: rgba(255,255,255,0.06); color: #d1d5db;
+  border: 1.5px solid rgba(255,255,255,0.12); margin-top: 10px;
+}
+.gate-btn-secondary:hover { background: rgba(255,255,255,0.1); }
 
-/* ═══ Header ═══ */
+/* ═══════════════════════════════════════════════
+   Header
+   ═══════════════════════════════════════════════ */
 .bzr-header {
   position: sticky; top: 0; z-index: 100;
   height: var(--header-h);
@@ -181,8 +230,11 @@ input, textarea, select { outline: none; }
   flex-shrink: 0;
 }
 
-/* ═══ Page ═══ */
+/* ═══════════════════════════════════════════════
+   Page
+   ═══════════════════════════════════════════════ */
 .bzr-page { max-width: 780px; margin: 0 auto; padding: 20px 16px 40px; }
+
 .hero { text-align: center; padding: 24px 12px 28px; position: relative; }
 .hero::before {
   content: ''; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
@@ -229,12 +281,16 @@ input, textarea, select { outline: none; }
 }
 .hero-feature i { color: var(--c-primary); font-size: 0.68rem; }
 
+/* ═══════════════════════════════════════════════
+   Cards
+   ═══════════════════════════════════════════════ */
 .bzr-card {
   background: var(--c-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--c-border);
   box-shadow: var(--shadow-sm);
-  padding: 22px 18px; margin-bottom: 16px;
+  padding: 24px 20px;
+  margin-bottom: 16px;
   animation: fadeInUp 0.5s var(--transition) backwards;
 }
 @keyframes fadeInUp {
@@ -242,98 +298,141 @@ input, textarea, select { outline: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 .bzr-card-head {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 18px; padding-bottom: 14px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 16px;
   border-bottom: 1px solid var(--c-border);
 }
 .bzr-card-head-icon {
-  width: 36px; height: 36px; border-radius: 10px;
+  width: 38px; height: 38px; border-radius: 11px;
   background: var(--c-primary-soft); color: var(--c-primary);
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.95rem; flex-shrink: 0;
+  font-size: 1rem; flex-shrink: 0;
 }
-.bzr-card-head h2 { font-size: 1rem; font-weight: 800; color: var(--c-text); flex: 1; }
+.bzr-card-head h2 { font-size: 1.02rem; font-weight: 800; color: var(--c-text); flex: 1; }
 .bzr-card-step {
   font-size: 0.7rem; font-weight: 800; color: var(--c-text-muted);
-  background: var(--c-surface-2); padding: 3px 10px;
+  background: var(--c-surface-2); padding: 4px 11px;
   border-radius: var(--radius-full);
 }
 
-.form-field { margin-bottom: 16px; }
+/* ═══════════════════════════════════════════════
+   Form Fields — Professional Data Entry Style
+   ═══════════════════════════════════════════════ */
+.form-field { margin-bottom: 18px; }
 .form-field:last-child { margin-bottom: 0; }
 .form-label {
   display: flex; align-items: center; gap: 6px;
-  font-size: 0.82rem; font-weight: 800; color: var(--c-text);
-  margin-bottom: 8px;
+  font-size: 0.84rem; font-weight: 800; color: var(--c-text);
+  margin-bottom: 9px;
+  letter-spacing: -0.005em;
 }
-.form-label i { color: var(--c-primary); font-size: 0.78rem; }
-.form-label .required { color: var(--c-danger); font-weight: 900; font-size: 0.95rem; }
-.form-label .hint { margin-inline-start: auto; font-size: 0.7rem; font-weight: 700; color: var(--c-text-muted); }
+.form-label .label-icon {
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--c-primary); font-size: 0.78rem;
+}
+.form-label .required {
+  color: var(--c-danger); font-weight: 900;
+  font-size: 1rem; line-height: 1;
+}
+.form-label .hint {
+  margin-inline-start: auto; font-size: 0.7rem; font-weight: 700;
+  color: var(--c-text-muted);
+  background: var(--c-surface-2);
+  padding: 2px 8px; border-radius: var(--radius-full);
+}
 
+/* ─── Input wrap ─── */
 .input-wrap {
   position: relative; display: flex; align-items: stretch;
-  background: var(--c-surface-2);
-  border: 2px solid transparent;
+  background: var(--c-surface);
+  border: 2px solid var(--c-border);
   border-radius: var(--radius-md);
-  transition: all 0.2s; overflow: hidden;
+  transition: all 0.2s var(--transition);
+  overflow: hidden;
 }
+.input-wrap:hover { border-color: #cbd5e1; }
 .input-wrap:focus-within {
-  background: var(--c-surface); border-color: var(--c-primary);
+  border-color: var(--c-primary);
   box-shadow: 0 0 0 4px var(--c-primary-soft);
 }
 .input-wrap.error { border-color: var(--c-danger); background: #FEF2F2; }
-.input-wrap.valid { border-color: var(--c-success); }
+.input-wrap.valid { border-color: var(--c-success); background: #F0FDF4; }
+
 .input-icon {
-  width: 46px; display: flex; align-items: center; justify-content: center;
-  color: var(--c-text-muted); font-size: 0.95rem; flex-shrink: 0;
+  width: 48px; display: flex; align-items: center; justify-content: center;
+  color: var(--c-text-muted); font-size: 1rem; flex-shrink: 0;
+  transition: color 0.2s; background: var(--c-surface-2);
+  border-inline-end: 1px solid var(--c-border);
 }
-.input-wrap:focus-within .input-icon { color: var(--c-primary); }
-.input-wrap.error .input-icon { color: var(--c-danger); }
+.input-wrap:focus-within .input-icon {
+  color: var(--c-primary); background: var(--c-primary-soft);
+  border-inline-end-color: var(--c-primary);
+}
+.input-wrap.error .input-icon {
+  color: var(--c-danger); background: #FEE2E2;
+  border-inline-end-color: var(--c-danger);
+}
+.input-wrap.valid .input-icon {
+  color: var(--c-success); background: #DCFCE7;
+  border-inline-end-color: var(--c-success);
+}
+
 .input {
   flex: 1; border: none; background: transparent;
-  padding: 13px 14px 13px 12px;
-  font-size: 0.92rem; font-weight: 600; color: var(--c-text);
+  padding: 14px 16px;
+  font-size: 0.95rem; font-weight: 600; color: var(--c-text);
   width: 100%; min-width: 0;
 }
-.input::placeholder { color: var(--c-text-muted); font-weight: 500; }
-.input-suffix { display: flex; align-items: center; padding-inline-end: 8px; gap: 4px; flex-shrink: 0; }
+.input::placeholder {
+  color: var(--c-text-muted); font-weight: 500;
+  font-size: 0.9rem;
+}
+.input:disabled { color: var(--c-text-soft); cursor: not-allowed; }
+
+.input-suffix {
+  display: flex; align-items: center;
+  padding-inline-end: 8px; gap: 4px; flex-shrink: 0;
+}
 .input-icon-btn {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 34px; height: 34px; border-radius: 50%;
   background: transparent; border: none; cursor: pointer;
-  color: var(--c-text-soft); font-size: 0.85rem;
+  color: var(--c-text-soft); font-size: 0.88rem;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.2s;
 }
 .input-icon-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
 
+/* ─── Textarea ─── */
 .textarea {
-  width: 100%; min-height: 110px; padding: 14px;
-  border: 2px solid transparent; border-radius: var(--radius-md);
-  background: var(--c-surface-2);
-  font-size: 0.92rem; font-weight: 600; color: var(--c-text);
-  line-height: 1.7; resize: vertical; transition: all 0.2s;
+  width: 100%; min-height: 120px; padding: 16px;
+  border: 2px solid var(--c-border); border-radius: var(--radius-md);
+  background: var(--c-surface);
+  font-size: 0.95rem; font-weight: 600; color: var(--c-text);
+  line-height: 1.7; resize: vertical; transition: all 0.2s var(--transition);
 }
+.textarea:hover { border-color: #cbd5e1; }
 .textarea:focus {
-  background: var(--c-surface); border-color: var(--c-primary);
+  border-color: var(--c-primary);
   box-shadow: 0 0 0 4px var(--c-primary-soft);
 }
 .textarea::placeholder { color: var(--c-text-muted); font-weight: 500; }
 
 .error-msg {
   display: none; align-items: center; gap: 5px;
-  font-size: 0.74rem; font-weight: 700;
-  color: var(--c-danger); margin-top: 6px;
+  font-size: 0.76rem; font-weight: 700;
+  color: var(--c-danger); margin-top: 7px;
   padding-inline-start: 4px;
 }
 .error-msg.show { display: flex; }
 .char-counter {
-  text-align: left; margin-top: 6px; font-size: 0.7rem; font-weight: 700;
+  text-align: left; margin-top: 7px; font-size: 0.72rem; font-weight: 700;
   color: var(--c-text-muted); padding-inline-start: 4px;
   font-variant-numeric: tabular-nums;
 }
 .char-counter.warn { color: var(--c-primary); }
 .char-counter.limit { color: var(--c-danger); }
-.form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.form-row { display: grid; grid-template-columns: 1fr; gap: 14px; }
 @media (min-width: 560px) { .form-row { grid-template-columns: 1fr 1fr; } }
 
 .honeypot {
@@ -342,12 +441,14 @@ input, textarea, select { outline: none; }
   pointer-events: none !important;
 }
 
+/* ─── Password strength ─── */
 .pwd-strength { display: none; margin-top: 10px; }
 .pwd-strength.show { display: block; }
 .pwd-bars { display: flex; gap: 4px; margin-bottom: 6px; }
 .pwd-bar { flex: 1; height: 4px; background: var(--c-surface-3); border-radius: 2px; transition: all 0.3s; }
-.pwd-strength-text { font-size: 0.72rem; font-weight: 800; color: var(--c-text-soft); }
+.pwd-strength-text { font-size: 0.74rem; font-weight: 800; color: var(--c-text-soft); }
 
+/* ─── Categories ─── */
 .cat-loading {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   padding: 22px 16px; color: var(--c-text-soft);
@@ -365,14 +466,17 @@ input, textarea, select { outline: none; }
   padding: 4px 0; max-height: 300px; overflow-y: auto;
 }
 .cat-chip {
-  padding: 9px 16px; background: var(--c-surface-2);
-  border: 2px solid transparent; border-radius: var(--radius-full);
-  font-size: 0.84rem; font-weight: 800; color: var(--c-text);
+  padding: 10px 18px; background: var(--c-surface);
+  border: 2px solid var(--c-border); border-radius: var(--radius-full);
+  font-size: 0.85rem; font-weight: 800; color: var(--c-text);
   cursor: pointer; transition: all 0.2s;
   display: inline-flex; align-items: center; gap: 7px;
   user-select: none; position: relative;
 }
-.cat-chip:hover { background: var(--c-primary-soft); color: var(--c-primary); transform: translateY(-1px); }
+.cat-chip:hover {
+  background: var(--c-primary-soft); color: var(--c-primary);
+  border-color: var(--c-primary); transform: translateY(-1px);
+}
 .cat-chip.active {
   background: var(--c-primary-gradient); color: #fff;
   box-shadow: var(--shadow-primary); border-color: var(--c-primary-dark);
@@ -383,25 +487,27 @@ input, textarea, select { outline: none; }
 }
 .new-cat-btn {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 9px 16px; background: transparent;
+  padding: 10px 18px; background: transparent;
   border: 2px dashed var(--c-primary); border-radius: var(--radius-full);
-  font-size: 0.84rem; font-weight: 800; color: var(--c-primary);
+  font-size: 0.85rem; font-weight: 800; color: var(--c-primary);
   cursor: pointer; transition: all 0.2s; font-family: inherit;
 }
 .new-cat-btn:hover { background: var(--c-primary-soft); transform: translateY(-1px); }
 .new-cat-wrap { display: none; margin-top: 12px; animation: fadeInUp 0.25s ease; }
 .new-cat-wrap.show { display: block; }
-.new-cat-actions { display: flex; gap: 8px; margin-top: 8px; }
+.new-cat-actions { display: flex; gap: 8px; margin-top: 10px; }
 .new-cat-actions button {
-  flex: 1; padding: 11px; border-radius: var(--radius-md);
-  font-weight: 800; font-size: 0.84rem; cursor: pointer;
+  flex: 1; padding: 12px; border-radius: var(--radius-md);
+  font-weight: 800; font-size: 0.85rem; cursor: pointer;
   border: none; font-family: inherit;
   display: flex; align-items: center; justify-content: center; gap: 6px;
   transition: all 0.2s;
 }
 .btn-save-cat { background: var(--c-primary-gradient); color: #fff; box-shadow: var(--shadow-primary); }
 .btn-cancel-cat { background: var(--c-surface-2); color: var(--c-text); }
+.btn-cancel-cat:hover { background: var(--c-surface-3); }
 
+/* ─── Image Upload ─── */
 .upload-cover {
   position: relative; width: 100%; height: 180px;
   border-radius: var(--radius-md); overflow: hidden;
@@ -415,11 +521,11 @@ input, textarea, select { outline: none; }
 .upload-cover img.loaded { opacity: 1; }
 .upload-cover .ph { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--c-text-soft); text-align: center; padding: 0 16px; }
 .upload-cover .ph i { font-size: 2rem; color: var(--c-primary); }
-.upload-cover .ph b { font-size: 0.88rem; font-weight: 800; color: var(--c-text); }
+.upload-cover .ph b { font-size: 0.9rem; font-weight: 800; color: var(--c-text); }
 .upload-cover .ph span { font-size: 0.72rem; font-weight: 600; }
 .upload-cover .edit-overlay {
   position: absolute; bottom: 10px; left: 10px;
-  background: rgba(0,0,0,0.7); color: #fff;
+  background: rgba(0,0,0,0.72); color: #fff;
   padding: 6px 14px; border-radius: var(--radius-full);
   font-size: 0.72rem; font-weight: 800;
   display: none; align-items: center; gap: 6px;
@@ -428,7 +534,7 @@ input, textarea, select { outline: none; }
 .upload-cover.has-image .edit-overlay { display: inline-flex; }
 .upload-logo-wrap {
   display: flex; align-items: center; gap: 16px;
-  margin-top: 18px; padding: 14px;
+  margin-top: 18px; padding: 16px;
   background: var(--c-surface-2); border-radius: var(--radius-md);
 }
 .upload-logo {
@@ -463,6 +569,7 @@ input, textarea, select { outline: none; }
   animation: spin 0.85s linear infinite;
 }
 
+/* ─── Live preview ─── */
 .preview-wrap { display: flex; justify-content: center; padding: 8px 0 4px; }
 .preview-card {
   width: 100%; max-width: 300px;
@@ -519,6 +626,7 @@ input, textarea, select { outline: none; }
   border: none; box-shadow: 0 4px 10px rgba(255,122,0,0.3);
 }
 
+/* ─── Footer ─── */
 .bzr-footer {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: rgba(255,255,255,0.94);
@@ -559,9 +667,10 @@ input, textarea, select { outline: none; }
 }
 .footer-note i { color: var(--c-success); font-size: 0.7rem; }
 
+/* ─── Terms ─── */
 .terms-wrap {
   display: flex; align-items: flex-start; gap: 10px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   background: var(--c-primary-soft);
   border: 1.5px solid rgba(255,122,0,0.2);
   border-radius: var(--radius-md);
@@ -573,11 +682,12 @@ input, textarea, select { outline: none; }
   margin-top: 2px; cursor: pointer; accent-color: var(--c-primary);
 }
 .terms-text {
-  font-size: 0.8rem; font-weight: 700;
+  font-size: 0.82rem; font-weight: 700;
   color: #92400E; line-height: 1.65;
 }
 .terms-text a { color: var(--c-primary-dark); text-decoration: underline; font-weight: 800; }
 
+/* ─── Toast ─── */
 #toast {
   position: fixed; bottom: 110px; left: 50%;
   transform: translateX(-50%) translateY(20px);
@@ -599,9 +709,11 @@ input, textarea, select { outline: none; }
 @media (max-width: 480px) {
   .hero h1 { font-size: 1.45rem; }
   .hero p { font-size: 0.86rem; }
-  .bzr-card { padding: 18px 14px; }
+  .bzr-card { padding: 20px 16px; }
   .upload-cover { height: 155px; }
   .bzr-secure-pill span { display: none; }
+  .gate-card { padding: 36px 22px 28px; }
+  .gate-title { font-size: 1.25rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -623,62 +735,79 @@ input, textarea, select { outline: none; }
 
 <div id="topProgressBar"></div>
 
-<!-- GATE 1: Device Check -->
+<!-- ═══════════════════════════════════════════════
+     GATE 1: Loading check
+     ═══════════════════════════════════════════════ -->
 <div id="gateCheck" class="gate-overlay">
   <div class="gate-card">
     <div class="gate-icon"><i class="fas fa-shield-halved"></i></div>
-    <h2 class="gate-title">جاري فحص الجهاز</h2>
+    <h2 class="gate-title">جارٍ التحقق</h2>
     <p class="gate-text">
-      نتحقق من سلامة جهازك لضمان بيئة تسجيل آمنة<br>
-      <strong>لا توجد مخاوف من الخصوصية</strong> — الفحص محلي بالكامل
+      نُجهّز لك تجربة تسجيل سريعة وآمنة<br>
+      <strong>لن يستغرق سوى ثوانٍ</strong>
     </p>
     <div class="gate-spinner"></div>
-    <div class="gate-steps" id="gateSteps">تحضير نظام التحقق...</div>
+    <div class="gate-steps" id="gateSteps">تحضير...</div>
   </div>
 </div>
 
-<!-- GATE 2: Already Registered -->
+<!-- ═══════════════════════════════════════════════
+     GATE 2: Already registered — REDESIGNED (professional & respectful)
+     ═══════════════════════════════════════════════ -->
 <div id="gateBlocked" class="gate-overlay hidden">
   <div class="gate-card">
-    <div class="gate-icon danger"><i class="fas fa-ban"></i></div>
-    <h2 class="gate-title">هذا الجهاز مسجّل مسبقًا</h2>
-    <p class="gate-text" id="blockedReason">
-      عذرًا، لا يمكن إنشاء أكثر من متجر واحد من نفس الجهاز.<br>
-      <strong>يُمنع منعًا باتًا التحايل على هذا القيد.</strong>
+    <div class="gate-icon info"><i class="fas fa-store"></i></div>
+    <h2 class="gate-title">لديك متجر بالفعل</h2>
+    <p class="gate-text">
+      يبدو أنك أنشأت متجرًا مسبقًا على BranZar من هذا الجهاز.<br>
+      يمكنك إدارة متجرك الحالي بكل سهولة.
     </p>
+
+    <div class="gate-store-card" id="blockedStoreCard" style="display:none;">
+      <div class="gate-store-card-icon">
+        <i class="fas fa-store"></i>
+      </div>
+      <div class="gate-store-card-info">
+        <div class="gate-store-card-label">متجرك</div>
+        <div class="gate-store-card-name" id="blockedStoreName">—</div>
+      </div>
+    </div>
+
     <a href="a.html" class="gate-btn gate-btn-primary">
       <i class="fas fa-sign-in-alt"></i>
-      <span>تسجيل الدخول لمتجري الحالي</span>
+      <span>الدخول لإدارة متجري</span>
     </a>
     <a href="index.html" class="gate-btn gate-btn-secondary">
       <i class="fas fa-home"></i>
-      <span>العودة للصفحة الرئيسية</span>
+      <span>تصفّح المنصة</span>
     </a>
-    <div class="gate-meta">
-      <i class="fas fa-lock"></i>
-      <span>حماية ببصمة الجهاز متعددة الطبقات</span>
-    </div>
   </div>
 </div>
 
-<!-- GATE 3: Fatal Error -->
+<!-- ═══════════════════════════════════════════════
+     GATE 3: Error
+     ═══════════════════════════════════════════════ -->
 <div id="gateError" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon danger"><i class="fas fa-exclamation-triangle"></i></div>
-    <h2 class="gate-title">تعذر التحقق من الجهاز</h2>
-    <p class="gate-text" id="errorReason">حدث خطأ أثناء فحص الجهاز.</p>
+    <h2 class="gate-title">حدث خطأ مؤقت</h2>
+    <p class="gate-text" id="errorReason">
+      تعذّر إتمام العملية. الرجاء المحاولة مرة أخرى.
+    </p>
     <button id="retryCheckBtn" class="gate-btn gate-btn-primary">
       <i class="fas fa-redo"></i>
       <span>إعادة المحاولة</span>
     </button>
     <a href="index.html" class="gate-btn gate-btn-secondary">
       <i class="fas fa-home"></i>
-      <span>العودة للصفحة الرئيسية</span>
+      <span>العودة للرئيسية</span>
     </a>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- ═══════════════════════════════════════════════
+     MAIN APP
+     ═══════════════════════════════════════════════ -->
 <div id="appContainer" class="hidden">
 
   <header class="bzr-header">
@@ -727,7 +856,7 @@ input, textarea, select { outline: none; }
 
     <form id="signupForm" novalidate autocomplete="off">
 
-      <!-- CARD 1 -->
+      <!-- CARD 1: Store Info -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-store"></i></div>
@@ -737,15 +866,17 @@ input, textarea, select { outline: none; }
 
         <div class="form-field">
           <label class="form-label" for="storeName">
-            <i class="fas fa-tag"></i>
-            <span>اسم المتجر أو الخدمة</span>
+            <span class="label-icon"><i class="fas fa-store"></i></span>
+            <span>اسم المتجر</span>
             <span class="required">*</span>
-            <span class="hint"><span id="nameCount">0</span>/60</span>
+            <span class="hint"><span id="nameCount">0</span> / 60</span>
           </label>
           <div class="input-wrap" id="nameWrap">
-            <div class="input-icon"><i class="fas fa-store"></i></div>
-            <input class="input" type="text" id="storeName" placeholder="مثال: متجر الأناقة"
-              maxlength="60" autocomplete="off" spellcheck="false">
+            <div class="input-icon"><i class="fas fa-tag"></i></div>
+            <input class="input" type="text" id="storeName"
+              placeholder="اكتب اسم متجرك هنا..."
+              maxlength="60" autocomplete="off" spellcheck="false"
+              inputmode="text" autocapitalize="words">
           </div>
           <div class="error-msg" id="nameError">
             <i class="fas fa-exclamation-circle"></i>
@@ -755,28 +886,28 @@ input, textarea, select { outline: none; }
 
         <div class="form-field">
           <label class="form-label">
-            <i class="fas fa-tags"></i>
+            <span class="label-icon"><i class="fas fa-tags"></i></span>
             <span>الفئة الرئيسية</span>
             <span class="required">*</span>
           </label>
           <div id="catsLoader" class="cat-loading">
             <div class="spinner"></div>
-            <span>جاري تحميل الفئات المتاحة...</span>
+            <span>جارٍ تحميل الفئات...</span>
           </div>
           <div id="catsGrid" class="cats-grid" style="display:none;"></div>
           <div class="error-msg" id="catError">
             <i class="fas fa-exclamation-circle"></i>
-            <span>يرجى اختيار فئة واحدة على الأقل</span>
+            <span>يرجى اختيار فئة</span>
           </div>
           <button type="button" class="new-cat-btn" id="addCatBtn" style="margin-top:10px;">
             <i class="fas fa-plus"></i>
-            <span>إضافة فئة مخصصة</span>
+            <span>فئة مخصصة</span>
           </button>
           <div class="new-cat-wrap" id="newCatWrap">
             <div class="input-wrap">
               <div class="input-icon"><i class="fas fa-folder-plus"></i></div>
               <input class="input" type="text" id="newCatInput"
-                placeholder="اسم الفئة الجديدة" maxlength="40" autocomplete="off">
+                placeholder="اكتب اسم الفئة الجديدة" maxlength="40" autocomplete="off">
             </div>
             <div class="new-cat-actions">
               <button type="button" class="btn-save-cat" id="saveCatBtn">
@@ -791,12 +922,12 @@ input, textarea, select { outline: none; }
 
         <div class="form-field">
           <label class="form-label" for="storeDescription">
-            <i class="fas fa-align-right"></i>
-            <span>وصف المتجر أو الخدمة</span>
+            <span class="label-icon"><i class="fas fa-align-right"></i></span>
+            <span>وصف المتجر</span>
             <span class="hint">اختياري</span>
           </label>
           <textarea class="textarea" id="storeDescription"
-            placeholder="اكتب وصفًا جاذبًا يعرّف العملاء بما تقدمه..."
+            placeholder="اكتب وصفًا قصيرًا يعرّف العملاء بما تقدمه..."
             maxlength="500"></textarea>
           <div class="char-counter"><span id="descCount">0</span> / 500</div>
         </div>
@@ -813,13 +944,14 @@ input, textarea, select { outline: none; }
         <div class="form-row">
           <div class="form-field">
             <label class="form-label" for="whatsapp">
-              <i class="fab fa-whatsapp" style="color:#25D366;"></i>
+              <span class="label-icon" style="color:#25D366;"><i class="fab fa-whatsapp"></i></span>
               <span>رقم الواتساب</span>
               <span class="required">*</span>
             </label>
             <div class="input-wrap" id="waWrap">
               <div class="input-icon" style="color:#25D366;"><i class="fab fa-whatsapp"></i></div>
-              <input class="input" type="tel" id="whatsapp" placeholder="09xxxxxxxx"
+              <input class="input" type="tel" id="whatsapp"
+                placeholder="09xxxxxxxx"
                 inputmode="numeric" maxlength="15" dir="ltr" style="text-align:left;">
             </div>
             <div class="error-msg" id="waError">
@@ -830,13 +962,14 @@ input, textarea, select { outline: none; }
 
           <div class="form-field">
             <label class="form-label" for="phone">
-              <i class="fas fa-phone" style="color:#3B82F6;"></i>
+              <span class="label-icon" style="color:#3B82F6;"><i class="fas fa-phone"></i></span>
               <span>رقم الهاتف</span>
               <span class="hint">اختياري</span>
             </label>
             <div class="input-wrap" id="phoneWrap">
               <div class="input-icon"><i class="fas fa-phone"></i></div>
-              <input class="input" type="tel" id="phone" placeholder="09xxxxxxxx"
+              <input class="input" type="tel" id="phone"
+                placeholder="09xxxxxxxx"
                 inputmode="numeric" maxlength="15" dir="ltr" style="text-align:left;">
             </div>
             <div class="error-msg" id="phoneError">
@@ -857,10 +990,10 @@ input, textarea, select { outline: none; }
 
         <div class="form-field">
           <label class="form-label">
-            <i class="fas fa-panorama"></i>
+            <span class="label-icon"><i class="fas fa-panorama"></i></span>
             <span>صورة الغلاف</span>
             <span class="required">*</span>
-            <span class="hint">1200×600</span>
+            <span class="hint">1200 × 600</span>
           </label>
           <div class="upload-cover" id="coverUpload" role="button" tabindex="0">
             <img id="coverPreview" alt="">
@@ -895,7 +1028,7 @@ input, textarea, select { outline: none; }
           </div>
           <div class="upload-logo-info">
             <b>شعار المتجر <span style="color:var(--c-danger)">*</span></b>
-            <span>مربع 1:1 • يظهر دائريًا. يفضل 500×500 بكسل</span>
+            <span>مربع 1:1 • يظهر دائريًا. يفضل 500 × 500 بكسل</span>
           </div>
         </div>
         <div class="error-msg" id="logoError" style="margin-top:8px;">
@@ -915,7 +1048,7 @@ input, textarea, select { outline: none; }
 
         <div class="form-field">
           <label class="form-label" for="password">
-            <i class="fas fa-key"></i>
+            <span class="label-icon"><i class="fas fa-key"></i></span>
             <span>كلمة مرور الدخول</span>
             <span class="required">*</span>
             <span class="hint">6 أحرف على الأقل</span>
@@ -947,7 +1080,7 @@ input, textarea, select { outline: none; }
 
         <div class="form-field">
           <label class="form-label" for="confirmPassword">
-            <i class="fas fa-shield-halved"></i>
+            <span class="label-icon"><i class="fas fa-shield-halved"></i></span>
             <span>تأكيد كلمة المرور</span>
             <span class="required">*</span>
           </label>
@@ -967,10 +1100,10 @@ input, textarea, select { outline: none; }
           </div>
         </div>
 
-        <div style="padding:12px 14px;background:var(--c-primary-soft);border-radius:var(--radius-md);display:flex;gap:10px;align-items:flex-start;">
+        <div style="padding:14px 16px;background:var(--c-primary-soft);border-radius:var(--radius-md);display:flex;gap:10px;align-items:flex-start;">
           <i class="fas fa-circle-info" style="color:var(--c-primary);font-size:0.95rem;margin-top:2px;flex-shrink:0;"></i>
-          <p style="font-size:0.75rem;font-weight:600;color:var(--c-text-soft);line-height:1.7;">
-            ستستخدم <b style="color:var(--c-text);">رقم الواتساب</b> وكلمة المرور هذه لتسجيل الدخول وإدارة متجرك.
+          <p style="font-size:0.78rem;font-weight:600;color:#7c4a15;line-height:1.7;">
+            احفظ <b style="color:#5a3310;">رقم الواتساب وكلمة المرور</b> — ستستخدمهما للدخول وإدارة متجرك في أي وقت.
           </p>
         </div>
       </div>
@@ -1010,7 +1143,7 @@ input, textarea, select { outline: none; }
           </div>
         </div>
 
-        <div style="margin-top:20px;">
+        <div style="margin-top:22px;">
           <label class="terms-wrap">
             <input type="checkbox" id="termsCheck">
             <span class="terms-text">
@@ -1026,9 +1159,7 @@ input, textarea, select { outline: none; }
       </div>
 
       <input type="text" class="honeypot" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-
     </form>
-
   </main>
 
   <div class="bzr-footer">
@@ -1043,12 +1174,11 @@ input, textarea, select { outline: none; }
       </div>
     </div>
   </div>
-
 </div>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<!-- ═══ Firebase SDKs ═══ -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
@@ -1096,9 +1226,6 @@ const RATE_LIMIT_MS = 60 * 1000;
 const PHONE_REGEX = /^(?:0?9\d{8}|0?1\d{8}|\+?249\d{9}|\+?\d{8,15})$/;
 const NAME_REGEX = /^[\u0600-\u06FFa-zA-Z0-9\s\-_.'&()]+$/;
 
-/* ═══════════════════════════════════════════════════════════
-   Global State
-   ═══════════════════════════════════════════════════════════ */
 const state = {
   deviceFingerprint: null,
   persistentId: null,
@@ -1113,9 +1240,6 @@ const state = {
   checkPassed: false
 };
 
-/* ═══════════════════════════════════════════════════════════
-   Utilities
-   ═══════════════════════════════════════════════════════════ */
 function $(id) { return document.getElementById(id); }
 function haptic(type) {
   if (!navigator.vibrate) return;
@@ -1179,11 +1303,7 @@ function uuid() {
   });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Anonymous Authentication
-   ═══════════════════════════════════════════════════════════ */
 async function ensureAnonymousAuth() {
-  // If already signed in (including existing anon session), reuse
   if (auth.currentUser) {
     state.anonUid = auth.currentUser.uid;
     return auth.currentUser;
@@ -1191,17 +1311,12 @@ async function ensureAnonymousAuth() {
   try {
     const cred = await auth.signInAnonymously();
     state.anonUid = cred.user.uid;
-    console.log('[Auth] Anonymous UID:', cred.user.uid);
     return cred.user;
   } catch (err) {
-    console.error('[Auth] Anonymous sign-in failed:', err);
     throw new Error('auth_failed:' + (err.code || 'unknown'));
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Storage Helpers
-   ═══════════════════════════════════════════════════════════ */
 function setCookie(name, value, days) {
   try {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
@@ -1296,9 +1411,7 @@ async function getOrCreatePersistentId() {
   return newId;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Fingerprint (12 layers)
-   ═══════════════════════════════════════════════════════════ */
+/* Fingerprint collectors (silent, no user-facing mention) */
 function getCanvasFingerprint() {
   try {
     const canvas = document.createElement('canvas');
@@ -1418,9 +1531,6 @@ async function buildFingerprint() {
   return { fingerprint: hash, persistentId: pId };
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Device Registration Check
-   ═══════════════════════════════════════════════════════════ */
 async function checkDeviceAlreadyRegistered(fp, pId) {
   const results = { blocked: false, existingStore: null, reason: null };
   try {
@@ -1428,20 +1538,22 @@ async function checkDeviceAlreadyRegistered(fp, pId) {
     if (!byFp.empty) {
       results.blocked = true;
       results.existingStore = { id: byFp.docs[0].id, ...byFp.docs[0].data() };
-      results.reason = 'fingerprint_match';
       return results;
     }
     const byDid = await db.collection(STORES_COLLECTION).where('device_id', '==', pId).limit(1).get();
     if (!byDid.empty) {
       results.blocked = true;
       results.existingStore = { id: byDid.docs[0].id, ...byDid.docs[0].data() };
-      results.reason = 'persistent_id_match';
       return results;
     }
     const byReg = await db.collection(DEVICES_COLLECTION).doc(fp).get();
     if (byReg.exists && byReg.data().storeId) {
       results.blocked = true;
-      results.reason = 'registry_match';
+      const sid = byReg.data().storeId;
+      try {
+        const sdoc = await db.collection(STORES_COLLECTION).doc(sid).get();
+        if (sdoc.exists) results.existingStore = { id: sid, ...sdoc.data() };
+      } catch(e){}
     }
     return results;
   } catch (err) {
@@ -1450,9 +1562,6 @@ async function checkDeviceAlreadyRegistered(fp, pId) {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   UI Helpers
-   ═══════════════════════════════════════════════════════════ */
 function showError(id) { $(id)?.classList.add('show'); }
 function hideError(id) { $(id)?.classList.remove('show'); }
 function setFieldState(wrapId, s) {
@@ -1470,9 +1579,6 @@ function doneProgress() {
   setTimeout(() => { b.classList.remove('done'); b.style.transform = ''; }, 400);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Image Compression & Upload
-   ═══════════════════════════════════════════════════════════ */
 function compressImage(file, maxW, quality) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -1568,9 +1674,6 @@ function setupImageUpload(opts) {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Live Preview
-   ═══════════════════════════════════════════════════════════ */
 function updatePreview() {
   const pc = $('previewCover'), pl = $('previewLogo');
   if (state.coverUrl) { pc.style.backgroundImage = `url(${state.coverUrl})`; pc.classList.add('has-image'); }
@@ -1581,9 +1684,6 @@ function updatePreview() {
   $('previewCat').textContent = state.selectedCategory || 'الفئة';
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Categories
-   ═══════════════════════════════════════════════════════════ */
 const DEFAULT_CATEGORIES = [
   'أزياء وموضة', 'إلكترونيات', 'هواتف وأجهزة', 'مطاعم ومقاهي',
   'تجميل وعناية', 'منزل ومفروشات', 'رياضة ولياقة', 'كتب وقرطاسية',
@@ -1606,7 +1706,6 @@ async function loadCategories() {
     state.categoriesList = Array.from(cats).filter(Boolean).sort();
     DEFAULT_CATEGORIES.forEach(c => { if (!state.categoriesList.includes(c)) state.categoriesList.push(c); });
   } catch (err) {
-    console.warn('[Categories] Fallback:', err);
     state.categoriesList = DEFAULT_CATEGORIES.slice();
   } finally {
     doneProgress();
@@ -1659,9 +1758,6 @@ function saveCustomCategory() {
   haptic('medium');
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Form Field Handlers
-   ═══════════════════════════════════════════════════════════ */
 const nameInput = $('storeName');
 const waInput = $('whatsapp');
 const phoneInput = $('phone');
@@ -1731,9 +1827,6 @@ pwdConfirmInput?.addEventListener('input', () => {
 });
 $('termsCheck')?.addEventListener('change', () => { if ($('termsCheck').checked) hideError('termsError'); });
 
-/* ═══════════════════════════════════════════════════════════
-   Image Upload Setup
-   ═══════════════════════════════════════════════════════════ */
 setupImageUpload({
   zoneEl: $('coverUpload'), inputEl: $('coverInput'),
   previewEl: $('coverPreview'), progressEl: $('coverProgress'),
@@ -1747,9 +1840,6 @@ setupImageUpload({
   isLogo: true
 });
 
-/* ═══════════════════════════════════════════════════════════
-   Form Validation
-   ═══════════════════════════════════════════════════════════ */
 function validateForm() {
   let ok = true, firstError = null;
   const name = sanitize(nameInput.value, 60);
@@ -1757,41 +1847,33 @@ function validateForm() {
     showError('nameError'); setFieldState('nameWrap', 'error');
     ok = false; firstError = firstError || 'storeName';
   } else { hideError('nameError'); setFieldState('nameWrap', 'valid'); }
-
   if (!state.selectedCategory) {
     showError('catError'); ok = false; firstError = firstError || 'catsGrid';
   } else hideError('catError');
-
   if (!isValidPhone(waInput.value)) {
     showError('waError'); setFieldState('waWrap', 'error');
     ok = false; firstError = firstError || 'whatsapp';
   } else { hideError('waError'); setFieldState('waWrap', 'valid'); }
-
   if (phoneInput.value && !isValidPhone(phoneInput.value)) {
     showError('phoneError'); setFieldState('phoneWrap', 'error');
     ok = false; firstError = firstError || 'phone';
   } else if (phoneInput.value) { hideError('phoneError'); setFieldState('phoneWrap', 'valid'); }
-
   if (!state.coverUrl) { showError('coverError'); ok = false; firstError = firstError || 'coverUpload'; }
   else hideError('coverError');
   if (!state.logoUrl) { showError('logoError'); ok = false; firstError = firstError || 'logoUpload'; }
   else hideError('logoError');
-
   const pwd = pwdInput.value;
   if (pwd.length < 6 || pwd.length > 64) {
     showError('pwdError'); setFieldState('pwdWrap', 'error');
     ok = false; firstError = firstError || 'password';
   } else { hideError('pwdError'); setFieldState('pwdWrap', 'valid'); }
-
   if (pwd !== pwdConfirmInput.value || !pwdConfirmInput.value) {
     showError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'error');
     ok = false; firstError = firstError || 'confirmPassword';
   } else { hideError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid'); }
-
   if (!$('termsCheck').checked) {
     showError('termsError'); ok = false; firstError = firstError || 'termsCheck';
   } else hideError('termsError');
-
   if (firstError) {
     const el = $(firstError);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1800,9 +1882,6 @@ function validateForm() {
   return ok;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Rate Limit
-   ═══════════════════════════════════════════════════════════ */
 function isRateLimited() {
   try {
     const last = parseInt(localStorage.getItem(SUBMIT_LOCK_KEY) || '0');
@@ -1816,49 +1895,38 @@ function isRateLimited() {
   } catch (e) {}
   return false;
 }
-function setRateLimit() {
-  try { localStorage.setItem(SUBMIT_LOCK_KEY, Date.now().toString()); } catch (e) {}
-}
+function setRateLimit() { try { localStorage.setItem(SUBMIT_LOCK_KEY, Date.now().toString()); } catch(e){} }
 
-/* ═══════════════════════════════════════════════════════════
-   Submit Handler
-   ═══════════════════════════════════════════════════════════ */
 const submitBtn = $('submitBtn');
 
 submitBtn?.addEventListener('click', async () => {
   if (state.submitting) return;
   if (isRateLimited()) return;
-  if ($('website').value) return; // honeypot
+  if ($('website').value) return;
   if (!validateForm()) { showToast('يرجى تصحيح الحقول المطلوبة', 'error'); return; }
 
   state.submitting = true;
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري التحقق من الهوية...</span>';
+  submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري التحقق...</span>';
   startProgress();
   haptic('medium');
 
   try {
-    /* ─── 1) Sign in anonymously ─── */
     const user = await ensureAnonymousAuth();
     const uid = user.uid;
-
     submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري إنشاء المتجر...</span>';
 
-    /* ─── 2) Final device re-check ─── */
     const finalCheck = await checkDeviceAlreadyRegistered(state.deviceFingerprint, state.persistentId);
     if (finalCheck.blocked) throw new Error('device_already_registered');
 
-    /* ─── 3) Duplicate name ─── */
     const nameCheck = await db.collection(STORES_COLLECTION)
       .where('name', '==', sanitize(nameInput.value, 60)).limit(1).get();
     if (!nameCheck.empty) throw new Error('store_name_exists');
 
-    /* ─── 4) Duplicate whatsapp ─── */
     const waCheck = await db.collection(STORES_COLLECTION)
       .where('whatsapp_number', '==', normalizePhone(waInput.value)).limit(1).get();
     if (!waCheck.empty) throw new Error('whatsapp_exists');
 
-    /* ─── 5) Prepare store data ─── */
     const now = Date.now();
     const storeData = {
       name: sanitize(nameInput.value, 60),
@@ -1876,16 +1944,14 @@ submitBtn?.addEventListener('click', async () => {
       products_count: 0,
       device_fingerprint: state.deviceFingerprint,
       device_id: state.persistentId,
-      owner_uid: uid,                    // ⭐ UID للـ Anonymous Auth
+      owner_uid: uid,
       user_agent_short: (navigator.userAgent || '').slice(0, 120),
       created_at: now,
       updated_at: now
     };
 
-    /* ─── 6) Create store ─── */
     const ref = await db.collection(STORES_COLLECTION).add(storeData);
 
-    /* ─── 7) Register device (atomic guard) ─── */
     try {
       await db.collection(DEVICES_COLLECTION).doc(state.deviceFingerprint).set({
         storeId: ref.id,
@@ -1894,9 +1960,8 @@ submitBtn?.addEventListener('click', async () => {
         registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
         fingerprint: state.deviceFingerprint
       });
-    } catch (e) { console.warn('[DeviceRegister]', e); }
+    } catch (e) {}
 
-    /* ─── 8) Success ─── */
     doneProgress();
     haptic('heavy');
     showToast('🎉 تم إنشاء متجرك بنجاح!', 'success');
@@ -1918,12 +1983,17 @@ submitBtn?.addEventListener('click', async () => {
     if (err.message === 'device_already_registered') msg = 'هذا الجهاز مسجّل مسبقًا';
     else if (err.message === 'store_name_exists') msg = 'اسم المتجر مستخدم بالفعل';
     else if (err.message === 'whatsapp_exists') msg = 'رقم الواتساب مستخدم بالفعل';
-    else if (err.message.startsWith('auth_failed')) msg = 'تعذر إنشاء جلسة آمنة — تحقق من اتصالك';
-    else if (err.code === 'permission-denied') msg = 'لا تملك صلاحية الإنشاء — راجع قواعد Firestore';
+    else if (err.message.startsWith('auth_failed')) msg = 'تعذر إنشاء جلسة آمنة';
+    else if (err.code === 'permission-denied') msg = 'لا تملك صلاحية الإنشاء';
     else if (err.code === 'unavailable' || err.code === 'network-request-failed') msg = 'تحقق من اتصالك بالإنترنت';
 
     showToast(msg, 'error');
-    if (err.message === 'device_already_registered') setTimeout(() => showGate('gateBlocked'), 800);
+    if (err.message === 'device_already_registered') {
+      setTimeout(async () => {
+        const check = await checkDeviceAlreadyRegistered(state.deviceFingerprint, state.persistentId);
+        showGateBlocked(check.existingStore);
+      }, 800);
+    }
 
     submitBtn.disabled = false;
     submitBtn.innerHTML = '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>';
@@ -1932,7 +2002,7 @@ submitBtn?.addEventListener('click', async () => {
 });
 
 /* ═══════════════════════════════════════════════════════════
-   Gate Display
+   Gates
    ═══════════════════════════════════════════════════════════ */
 function showGate(gateId) {
   ['gateCheck', 'gateBlocked', 'gateError', 'appContainer'].forEach(id => {
@@ -1940,40 +2010,41 @@ function showGate(gateId) {
     if (el) el.classList.toggle('hidden', id !== gateId);
   });
 }
+function showGateBlocked(existingStore) {
+  const card = $('blockedStoreCard');
+  const nameEl = $('blockedStoreName');
+  if (existingStore && existingStore.name && nameEl && card) {
+    nameEl.textContent = existingStore.name;
+    card.style.display = 'flex';
+  } else if (card) {
+    card.style.display = 'none';
+  }
+  showGate('gateBlocked');
+}
 function updateGateStep(text) {
   const el = $('gateSteps');
   if (el) { el.style.opacity = '0'; setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 150); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   Bootstrap
-   ═══════════════════════════════════════════════════════════ */
 async function bootstrap() {
   try {
-    updateGateStep('جمع بيانات التوقيع الرقمي...');
+    updateGateStep('تحضير البيئة الآمنة...');
     await new Promise(r => setTimeout(r, 200));
 
     const { fingerprint, persistentId } = await buildFingerprint();
-    updateGateStep('جاري تحليل البصمة الفريدة...');
+    updateGateStep('جارٍ التحقق من حسابك...');
     await new Promise(r => setTimeout(r, 250));
 
-    updateGateStep('فحص قاعدة بيانات الأجهزة...');
     const check = await checkDeviceAlreadyRegistered(fingerprint, persistentId);
 
     if (check.blocked) {
-      const reasonEl = $('blockedReason');
-      if (reasonEl && check.existingStore && check.existingStore.name) {
-        reasonEl.innerHTML = `عذرًا، لا يمكن إنشاء أكثر من متجر واحد من نفس الجهاز.<br>
-          لديك متجر مسجّل بالفعل باسم <strong>"${escapeHtml(check.existingStore.name)}"</strong>.<br>
-          <span style="color:#ef4444;font-weight:800;">يُمنع التحايل على هذا القيد نهائيًا.</span>`;
-      }
-      updateGateStep('❌ الجهاز مسجّل مسبقًا');
-      await new Promise(r => setTimeout(r, 700));
-      showGate('gateBlocked');
+      updateGateStep('جارٍ فتح لوحة الإدارة...');
+      await new Promise(r => setTimeout(r, 500));
+      showGateBlocked(check.existingStore);
       return;
     }
 
-    updateGateStep('✅ التحقق نجح — يمكنك المتابعة');
+    updateGateStep('✅ يمكنك المتابعة');
     await new Promise(r => setTimeout(r, 400));
     showGate('appContainer');
 
@@ -1984,7 +2055,7 @@ async function bootstrap() {
   } catch (err) {
     console.error('[Bootstrap]', err);
     const reasonEl = $('errorReason');
-    if (reasonEl) reasonEl.textContent = 'تعذر التحقق من الجهاز: ' + (err.message || 'خطأ غير معروف');
+    if (reasonEl) reasonEl.textContent = 'تعذّر إتمام التحقق. الرجاء المحاولة مرة أخرى.';
     showGate('gateError');
   }
 }
@@ -2004,7 +2075,7 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup.html loaded ✅ v2.1.0 — Anonymous Auth enabled');
+console.log('[BZR] signup.html loaded ✅ v2.2.0 — Professional UI');
 </script>
 
 </body>
