@@ -539,6 +539,7 @@
             </div>
 
             <div id="productsSection" class="tab-content hidden">
+                <!-- ✅ v10.1: عداد حدود الفئات -->
                 <div id="categoryLimitsInfo" style="margin-bottom: 1rem;"></div>
 
                 <div class="products-layout">
@@ -646,6 +647,7 @@
                                     <div class="card-title-icon"><i class="fas fa-boxes"></i></div>
                                     <span>منتجاتي</span>
                                 </div>
+                                <!-- ✅ v10.1: عرض الحد -->
                                 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                                     <span id="productsCount" style="background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 900;">0</span>
                                     <span id="mainLimitBadge" style="background: #EFF6FF; color: #1E40AF; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 900; border: 1px solid #BFDBFE; display:none; align-items:center; gap:5px;">
@@ -686,219 +688,7 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   🖐️ DEVICE FINGERPRINT — متوافق 100% مع core.js v9.9.0
-   ═══════════════════════════════════════════════════════════════ */
-const FP_CONFIG = {
-    STORAGE_KEY: 'branzar_device_id_v2',
-    COOKIE_NAME: 'bzr_did_v2',
-    IDB_NAME: 'branzar_idb',
-    IDB_STORE: 'device_store'
-};
-
-function _fnv1a(str) {
-    let hash = 0x811c9dc5;
-    for (let i = 0; i < str.length; i++) {
-        hash ^= str.charCodeAt(i);
-        hash = (hash * 0x01000193) >>> 0;
-    }
-    return hash.toString(16).padStart(8, '0');
-}
-async function _sha256Hex(str) {
-    if (window.crypto && crypto.subtle && crypto.subtle.digest) {
-        try {
-            const buf = new TextEncoder().encode(str);
-            const h = await crypto.subtle.digest('SHA-256', buf);
-            return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2,'0')).join('');
-        } catch(e){}
-    }
-    return _fnv1a(str) + _fnv1a(str+'|s1') + _fnv1a(str+'|s2') + _fnv1a(str+'|s3');
-}
-function _getCanvasFP() {
-    try {
-        const c = document.createElement('canvas');
-        c.width = 220; c.height = 30;
-        const ctx = c.getContext('2d');
-        if (!ctx) return 'no-ctx';
-        ctx.textBaseline = 'top';
-        ctx.font = '14px "Arial"';
-        ctx.fillStyle = '#f60'; ctx.fillRect(125, 1, 62, 20);
-        ctx.fillStyle = '#069'; ctx.fillText('BranZar🔒FP', 2, 15);
-        ctx.fillStyle = 'rgba(102,204,0,0.7)'; ctx.fillText('BranZar🔒FP', 4, 17);
-        ctx.globalCompositeOperation = 'multiply';
-        ctx.fillStyle = 'rgb(255,0,255)';
-        ctx.beginPath(); ctx.arc(50,50,50,0,Math.PI*2,true); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = 'rgb(0,255,255)';
-        ctx.beginPath(); ctx.arc(100,50,50,0,Math.PI*2,true); ctx.closePath(); ctx.fill();
-        return c.toDataURL();
-    } catch(e){ return 'canvas-error'; }
-}
-function _getWebGLFP() {
-    try {
-        const c = document.createElement('canvas');
-        const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
-        if (!gl) return 'no-webgl';
-        const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-        const v = dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : 'no-v';
-        const r = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'no-r';
-        return [v, r, gl.getParameter(gl.VERSION)||'', gl.getParameter(gl.SHADING_LANGUAGE_VERSION)||'', gl.getParameter(gl.MAX_TEXTURE_SIZE)||''].join('|');
-    } catch(e){ return 'webgl-error'; }
-}
-function _getAudioFP() {
-    return new Promise(resolve => {
-        try {
-            const AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-            if (!AC) return resolve('no-audio');
-            const ctx = new AC(1, 44100, 44100);
-            const osc = ctx.createOscillator();
-            osc.type = 'triangle'; osc.frequency.value = 10000;
-            const comp = ctx.createDynamicsCompressor();
-            comp.threshold.value = -50; comp.knee.value = 40;
-            comp.ratio.value = 12; comp.attack.value = 0; comp.release.value = 0.25;
-            osc.connect(comp); comp.connect(ctx.destination); osc.start(0);
-            const to = setTimeout(() => resolve('audio-timeout'), 800);
-            ctx.oncomplete = e => {
-                clearTimeout(to);
-                try {
-                    const buf = e.renderedBuffer.getChannelData(0);
-                    let sum = 0;
-                    for (let i = 4500; i < 5000; i++) sum += Math.abs(buf[i]);
-                    resolve('audio_' + sum.toFixed(6));
-                } catch { resolve('audio-err'); }
-            };
-            ctx.startRendering();
-        } catch { resolve('audio-error'); }
-    });
-}
-function _getFontsFP() {
-    try {
-        if (!document.body) return 'no-body';
-        const baseF = ['monospace','sans-serif','serif'];
-        const testF = ['Arial','Courier New','Georgia','Times New Roman','Trebuchet MS','Verdana','Tahoma','Comic Sans MS','Impact','Segoe UI','Roboto','Ubuntu','Noto Sans Arabic','Cairo'];
-        const s = document.createElement('span');
-        s.style.cssText = 'position:absolute;left:-9999px;top:-9999px;font-size:72px;visibility:hidden;';
-        s.textContent = 'mmmmmmmmmmlli';
-        document.body.appendChild(s);
-        const bw = {};
-        baseF.forEach(bf => { s.style.fontFamily = bf; bw[bf] = s.offsetWidth; });
-        const det = [];
-        testF.forEach(f => {
-            for (let i = 0; i < baseF.length; i++) {
-                s.style.fontFamily = '"' + f + '",' + baseF[i];
-                if (s.offsetWidth !== bw[baseF[i]]) { det.push(f); break; }
-            }
-        });
-        document.body.removeChild(s);
-        return det.join(',');
-    } catch { return 'fonts-error'; }
-}
-async function _computeDeviceFingerprint() {
-    const audioFP = await _getAudioFP();
-    const components = [
-        'screen:' + [Math.min(screen.width,screen.height), Math.max(screen.width,screen.height), screen.colorDepth, screen.pixelDepth].join('x'),
-        'cores:' + (navigator.hardwareConcurrency || 0),
-        'mem:' + (navigator.deviceMemory || 0),
-        'platform:' + (navigator.platform || ''),
-        'touch:' + (navigator.maxTouchPoints || 0),
-        'tz:' + (new Date().getTimezoneOffset()),
-        'lang:' + (navigator.language || ''),
-        'canvas:' + _fnv1a(_getCanvasFP()),
-        'webgl:' + _fnv1a(_getWebGLFP()),
-        'fonts:' + _fnv1a(_getFontsFP()),
-        'ua:' + navigator.userAgent,
-        'audio:' + audioFP,
-        'bzr-salt-v2-2025'
-    ];
-    const hash = await _sha256Hex(components.join('|||'));
-    return 'fp_' + hash.substring(0, 40);
-}
-function _readFPLocal()   { try { return localStorage.getItem(FP_CONFIG.STORAGE_KEY); } catch { return null; } }
-function _writeFPLocal(fp){ try { localStorage.setItem(FP_CONFIG.STORAGE_KEY, fp); } catch {} }
-function _readFPCookie() {
-    try {
-        const m = document.cookie.match(new RegExp('(?:^|; )' + FP_CONFIG.COOKIE_NAME + '=([^;]*)'));
-        return m ? decodeURIComponent(m[1]) : null;
-    } catch { return null; }
-}
-function _writeFPCookie(fp) {
-    try {
-        const exp = new Date(Date.now() + 365*24*60*60*1000).toUTCString();
-        document.cookie = FP_CONFIG.COOKIE_NAME + '=' + encodeURIComponent(fp) + '; expires=' + exp + '; path=/; SameSite=Lax; Secure';
-    } catch {}
-}
-function _openFPIDB() {
-    return new Promise(resolve => {
-        try {
-            if (!window.indexedDB) return resolve(null);
-            const req = indexedDB.open(FP_CONFIG.IDB_NAME, 1);
-            req.onupgradeneeded = () => {
-                const d = req.result;
-                if (!d.objectStoreNames.contains(FP_CONFIG.IDB_STORE)) d.createObjectStore(FP_CONFIG.IDB_STORE);
-            };
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
-            req.onblocked = () => resolve(null);
-        } catch { resolve(null); }
-    });
-}
-async function _readFPIDB() {
-    try {
-        const d = await _openFPIDB(); if (!d) return null;
-        return new Promise(res => {
-            try {
-                const tx = d.transaction(FP_CONFIG.IDB_STORE, 'readonly');
-                const r = tx.objectStore(FP_CONFIG.IDB_STORE).get(FP_CONFIG.STORAGE_KEY);
-                r.onsuccess = () => res(r.result || null);
-                r.onerror = () => res(null);
-            } catch { res(null); }
-        });
-    } catch { return null; }
-}
-async function _writeFPIDB(fp) {
-    try {
-        const d = await _openFPIDB(); if (!d) return false;
-        return new Promise(res => {
-            try {
-                const tx = d.transaction(FP_CONFIG.IDB_STORE, 'readwrite');
-                tx.objectStore(FP_CONFIG.IDB_STORE).put(fp, FP_CONFIG.STORAGE_KEY);
-                tx.oncomplete = () => res(true);
-                tx.onerror = () => res(false);
-            } catch { res(false); }
-        });
-    } catch { return false; }
-}
-
-let _DEVICE_FP_CACHE = null;
-let _DEVICE_FP_PROMISE = null;
-async function getDeviceFingerprint() {
-    if (_DEVICE_FP_CACHE) return _DEVICE_FP_CACHE;
-    if (_DEVICE_FP_PROMISE) return _DEVICE_FP_PROMISE;
-    _DEVICE_FP_PROMISE = (async () => {
-        try {
-            let stored = _readFPLocal() || await _readFPIDB() || _readFPCookie();
-            if (stored && stored.indexOf('fp_') === 0) {
-                _DEVICE_FP_CACHE = stored;
-                _writeFPLocal(stored); _writeFPCookie(stored); _writeFPIDB(stored);
-                return stored;
-            }
-            const fp = await _computeDeviceFingerprint();
-            _DEVICE_FP_CACHE = fp;
-            _writeFPLocal(fp); _writeFPCookie(fp); await _writeFPIDB(fp);
-            return fp;
-        } catch {
-            const fb = 'fp_fb_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
-            _DEVICE_FP_CACHE = fb;
-            return fb;
-        }
-    })();
-    return _DEVICE_FP_PROMISE;
-}
-
-// يُحسب بشكل غير متزامن عند التحميل، وسيُنتظر صراحةً قبل أي عملية حسّاسة
-let DEVICE_FP = null;
-const _DEVICE_FP_READY = getDeviceFingerprint().then(fp => { DEVICE_FP = fp; return fp; });
-
-/* ═══════════════════════════════════════════════════════════════
-   🛡️ SECURITY MODULE v2.1 — متوافق مع core.js
+   🛡️ SECURITY MODULE v2.0 — طبقات حماية متعددة
    ═══════════════════════════════════════════════════════════════ */
 const SEC = {
     MAX_ATTEMPTS: 5,
@@ -930,6 +720,28 @@ const _mask = {
         } catch { return ''; }
     }
 };
+
+function getDeviceFingerprint() {
+    try {
+        const raw = [
+            navigator.userAgent,
+            navigator.language,
+            navigator.platform || '',
+            screen.width + 'x' + screen.height,
+            screen.colorDepth || 0,
+            new Date().getTimezoneOffset(),
+            navigator.hardwareConcurrency || 0,
+            navigator.maxTouchPoints || 0
+        ].join('|');
+        let h = 0x811c9dc5;
+        for (let i = 0; i < raw.length; i++) {
+            h ^= raw.charCodeAt(i);
+            h = Math.imul(h, 0x01000193);
+        }
+        return 'fp_' + (h >>> 0).toString(36);
+    } catch { return 'fp_unknown'; }
+}
+const DEVICE_FP = getDeviceFingerprint();
 
 function timingSafeEqual(a, b) {
     a = String(a == null ? '' : a);
@@ -972,8 +784,7 @@ const RateLimiter = {
     },
     _key(username) {
         const norm = String(username || '').trim().toLowerCase().slice(0, 80);
-        // DEVICE_FP يجب أن يكون جاهزاً هنا — نضمن ذلك عبر _DEVICE_FP_READY قبل الاستخدام
-        return norm + '@' + (DEVICE_FP || 'fp_pending');
+        return norm + '@' + DEVICE_FP;
     },
     getStatus(username) {
         const data = this._read();
@@ -1043,7 +854,7 @@ const SecureSession = {
         const payload = {
             id: store.id,
             name: store.name,
-            fp: DEVICE_FP || 'fp_pending',
+            fp: DEVICE_FP,
             issuedAt: Date.now(),
             expiresAt: Date.now() + SEC.SESSION_TTL_MS,
             nonce: Array.from(crypto.getRandomValues(new Uint32Array(2))).join('-')
@@ -1057,11 +868,7 @@ const SecureSession = {
             const data = JSON.parse(_mask.dec(raw) || 'null');
             if (!data || !data.id || !data.expiresAt) return null;
             if (Date.now() > data.expiresAt) { this.clear(); return null; }
-            // نتحقق من البصمة فقط إذا كانت البصمة الحالية جاهزة
-            if (DEVICE_FP && data.fp && data.fp !== 'fp_pending' && data.fp !== DEVICE_FP) {
-                this.clear();
-                return null;
-            }
+            if (data.fp !== DEVICE_FP) { this.clear(); return null; }
             return data;
         } catch { return null; }
     },
@@ -1096,6 +903,7 @@ const storesTableName = 'stores';
 const productsTableName = 'products';
 const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.png';
 
+/* ✅ v10.1: حدود إضافة المنتجات لكل فئة */
 const PRODUCT_LIMITS = Object.freeze({
     MAIN_CATEGORY_MAX: 20,
     ADDITIONAL_CATEGORY_MAX: 50,
@@ -1103,7 +911,7 @@ const PRODUCT_LIMITS = Object.freeze({
 });
 
 const CACHE_DURATION = 72 * 60 * 60 * 1000;
-const CACHE_PREFIX = 'branzar_cache_';
+const CACHE_PREFIX = 'bazrena_cache_';
 
 const cacheManager = {
     set(key, value) { try { localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ timestamp: Date.now(), value })); } catch (e) {} },
@@ -1210,6 +1018,9 @@ function getStoreExtraCategories() {
 
 function isStoreSubscribed() { return !!(currentStore && currentStore.is_subscribed === true); }
 
+/* ═══════════════════════════════════════════════════════════════
+   ✅ v10.1: حساب عدد المنتجات لكل فئة
+   ═══════════════════════════════════════════════════════════════ */
 function getMainCategoryProductsCount() {
     if (!currentStore || !Array.isArray(productsData)) return 0;
     const mainCat = getStoreMainCategory();
@@ -1372,6 +1183,7 @@ function populateProductCategories(preserveValue) {
         select.value = '';
     }
 
+    /* ✅ v10.1: تعطيل الخيارات المكتملة */
     const editingId = $('product_id').value;
     Array.from(select.options).forEach(opt => {
         if (!opt.value || opt.disabled) return;
@@ -1577,11 +1389,6 @@ $('loginStoreName').addEventListener('input', updateRateLimitUI);
 
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    // ✅ ضمان جاهزية البصمة قبل أي عملية حساسة
-    if (!DEVICE_FP) {
-        try { DEVICE_FP = await _DEVICE_FP_READY; } catch { DEVICE_FP = 'fp_fb_unknown'; }
-    }
 
     if (detectRapidSubmits()) {
         const errEl = $('loginError');
@@ -1903,17 +1710,20 @@ function updateProductsUI() {
     $('productsCountBadge').textContent = productsData.length;
     $('ro_products_count').textContent = productsData.length;
 
+    /* ✅ v10.1: تحديث عدادات الحدود */
     updateCategoryLimitsUI();
     updateMainLimitBadge();
 
     renderMyProductsList(productsData);
 
+    /* ✅ إعادة تحديث select لإظهار الحد */
     if (!$('productsSection').classList.contains('hidden')) {
         const currentVal = $('product_category').value;
         populateProductCategories(currentVal);
     }
 }
 
+/* ✅ v10.1: عرض حالة الحدود لكل فئة */
 function updateCategoryLimitsUI() {
     const container = $('categoryLimitsInfo');
     if (!container || !currentStore) return;
@@ -1992,6 +1802,7 @@ function updateCategoryLimitsUI() {
     container.innerHTML = html;
 }
 
+/* ✅ v10.1: تحديث شارة الحد في العنوان */
 function updateMainLimitBadge() {
     const mainLimitBadge = $('mainLimitBadge');
     const mainLimitText = $('mainLimitText');
@@ -2040,6 +1851,7 @@ function renderMyProductsList(products) {
             ? `<img src="${escapeHtml(p.img_url)}" class="product-thumb" alt="" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
             : `<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
+        /* ✅ v10.1: تمييز الفئة الرئيسية */
         const isMainCat = !p.category || String(p.category).trim() === mainCat;
         let catBadge = '';
         if (isMainCat) {
@@ -2134,6 +1946,9 @@ function addColorRow(name = '', image = '') {
 
 document.getElementById('addColorBtn').addEventListener('click', () => addColorRow());
 
+/* ═══════════════════════════════════════════════════════════════
+   ✅ v10.1: حفظ المنتج مع التحقق من الحد
+   ═══════════════════════════════════════════════════════════════ */
 $('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingProduct || !currentStore) return;
@@ -2147,6 +1962,7 @@ $('productForm').addEventListener('submit', async (e) => {
     if (!category) { showToast('⚠️ اختر فئة المنتج', 'error'); return; }
     if (price <= 0) { showToast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
 
+    /* ✅ v10.1: التحقق من الحد قبل الإضافة/التعديل */
     const limitCheck = canAddProductToCategory(category, id || null);
 
     if (!limitCheck.allowed) {
@@ -2175,6 +1991,7 @@ $('productForm').addEventListener('submit', async (e) => {
         return;
     }
 
+    /* ✅ تحذير عند الاقتراب من الحد */
     if (limitCheck.remaining === 1) {
         showToast(`⚠️ تنبيه: هذا آخر منتج يمكن إضافته للفئة`, 'warning');
     } else if (limitCheck.remaining === 2) {
@@ -2336,11 +2153,6 @@ $('product_img_url').addEventListener('input', (e) => {
    🚀 Init
    ═══════════════════════════════════════════════════════════════ */
 async function init() {
-    // ✅ ضمان جاهزية البصمة قبل فحص الجلسة
-    if (!DEVICE_FP) {
-        try { DEVICE_FP = await _DEVICE_FP_READY; } catch { DEVICE_FP = 'fp_fb_unknown'; }
-    }
-
     const session = getSession();
     if (!session || !session.id) {
         SecureSession.clear();
