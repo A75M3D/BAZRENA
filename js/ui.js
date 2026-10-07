@@ -3,14 +3,41 @@
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
    ✅ v9.10.0: عرض موقع المتجر + وصف المنتج
    ✅ Theme/View code موجود هنا فقط (المصدر الوحيد)
+   ✅ Material Design SVG icons via bzrIcon() — لا Font Awesome
    ═══════════════════════════════════════════════════════════ */
 'use strict';
+
+/* ═══════════════════════════════════════════════════════════════
+   🎨 Fallback icon paths — يضمن توفر الأيقونات الأساسية
+   حتى لو كان index.html ناقصاً بعضها
+   ═══════════════════════════════════════════════════════════════ */
+(function ensureIconEngine() {
+  window.BZR_ICON_PATHS = window.BZR_ICON_PATHS || {};
+  var extra = {
+    'mi-lock':  'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6-3c1.66 0 3 1.34 3 3v2h-6V6c0-1.66 1.34-3 3-3zm6 15H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z',
+    'mi-image': 'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'
+  };
+  for (var k in extra) {
+    if (!window.BZR_ICON_PATHS[k]) window.BZR_ICON_PATHS[k] = extra[k];
+  }
+  if (typeof window.bzrIcon !== 'function') {
+    window.bzrIcon = function(name, classes, extraStyles) {
+      var p = window.BZR_ICON_PATHS[name];
+      if (!p) return '';
+      var c = classes || 'mi mi-xs';
+      var s = extraStyles ? ' style="' + extraStyles + '"' : '';
+      return '<svg class="' + c + '"' + s + ' aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="' + p + '"/></svg>';
+    };
+  }
+})();
+
+/* Alias محلي للاستخدام داخل الملف */
+var bzrIcon = window.bzrIcon;
 
 /* ═══ THEME ═══ */
 function applyTheme(theme) {
   document.body.classList.toggle('theme-dark', theme === 'dark');
-  const mainIcon = document.querySelector('#themeToggleBtn i');
-  if (mainIcon) mainIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  // 🎨 تبديل الأيقونة يتم تلقائياً عبر CSS (.mi-theme-moon / .mi-theme-sun)
   const accountSwitch = document.getElementById('accountThemeSwitch');
   if (accountSwitch) accountSwitch.classList.toggle('on', theme === 'dark');
   const meta = document.querySelector('meta[name="theme-color"]');
@@ -288,7 +315,7 @@ function showIOSInstallInstructions() {
               '<strong>اضغط زر المشاركة</strong>' +
               '<span>في شريط Safari السفلي</span>' +
             '</div>' +
-            '<i class="fas fa-share-square" style="font-size:1.3rem;color:#007AFF;"></i>' +
+            '<span style="color:#007AFF;display:inline-flex;">' + bzrIcon('mi-share-square', 'mi mi-sm') + '</span>' +
           '</li>' +
           '<li>' +
             '<span class="pwa-ios-step-num">2</span>' +
@@ -296,7 +323,7 @@ function showIOSInstallInstructions() {
               '<strong>اختر "إضافة إلى الشاشة الرئيسية"</strong>' +
               '<span>Add to Home Screen</span>' +
             '</div>' +
-            '<i class="fas fa-plus-square" style="font-size:1.3rem;color:#FF7A00;"></i>' +
+            '<span style="color:#FF7A00;display:inline-flex;">' + bzrIcon('mi-plus-square', 'mi mi-sm') + '</span>' +
           '</li>' +
           '<li>' +
             '<span class="pwa-ios-step-num">3</span>' +
@@ -304,7 +331,7 @@ function showIOSInstallInstructions() {
               '<strong>اضغط "إضافة"</strong>' +
               '<span>سيظهر التطبيق على شاشتك الرئيسية</span>' +
             '</div>' +
-            '<i class="fas fa-check-circle" style="font-size:1.3rem;color:#10B981;"></i>' +
+            '<span style="color:#10B981;display:inline-flex;">' + bzrIcon('mi-check-circle', 'mi mi-sm') + '</span>' +
           '</li>' +
         '</ol>' +
         '<button id="pwaIosCloseBtn" class="pwa-ios-close">فهمت، شكراً</button>' +
@@ -507,7 +534,9 @@ function performSearch(query) {
   ).slice(0, 8);
   searchResults.innerHTML = '';
   if (!matchedCats.length && !matchedStores.length && !matchedProducts.length) {
-    searchResults.innerHTML = '<div style="text-align:center;padding:2rem 0;color:var(--c-text-soft);"><i class="fas fa-search" style="font-size:2rem;margin-bottom:0.5rem;display:block;color:#CBD5E1;"></i><p style="font-weight:700;">لا توجد نتائج</p></div>';
+    searchResults.innerHTML = '<div style="text-align:center;padding:2rem 0;color:var(--c-text-soft);">' +
+      bzrIcon('mi-search', 'mi', 'width:32px;height:32px;color:#CBD5E1;margin-bottom:0.5rem;display:inline-block;') +
+      '<p style="font-weight:700;">لا توجد نتائج</p></div>';
     searchResults.classList.add('show'); return;
   }
   if (matchedCats.length) {
@@ -569,9 +598,10 @@ function createSearchStoreRow(store) {
   meta.style.cssText = 'font-size:0.72rem;color:var(--c-text-soft);margin-top:2px;';
   meta.textContent = (store.category || 'عام');
   info.appendChild(nm); info.appendChild(meta);
-  const arrow = document.createElement('i');
-  arrow.className = 'fas fa-chevron-left';
-  arrow.style.cssText = 'color:var(--c-text-soft);font-size:0.75rem;';
+  // 🎨 SVG arrow instead of FA
+  const arrow = document.createElement('span');
+  arrow.style.cssText = 'color:var(--c-text-soft);display:inline-flex;align-items:center;flex-shrink:0;';
+  arrow.innerHTML = bzrIcon('mi-chevron-left', 'mi mi-xs');
   row.appendChild(img); row.appendChild(info); row.appendChild(arrow);
   row.addEventListener('click', () => {
     searchResults.classList.remove('show');
@@ -653,7 +683,10 @@ function createStoreCard(store) {
   const catRow = document.createElement('div'); catRow.className = 'store-category'; catRow.textContent = store.category || 'عام';
   const bottomRow = document.createElement('div');
   bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;';
+
+  /* 🎨 زر المتابعة — SVG أيقونات + CSS للتبديل */
   const followBtn = document.createElement('button');
+  followBtn.className = 'bzr-follow-btn';
   followBtn.style.cssText = 'background:#FF7A00;color:#fff;border:1.5px solid #FF7A00;border-radius:9999px;padding:0.3rem 0.7rem;font-size:0.7rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.25s;white-space:nowrap;';
   followBtn.dataset.storeId = storeId;
   setCardFollowState(followBtn, followed);
@@ -661,25 +694,36 @@ function createStoreCard(store) {
     e.stopPropagation(); e.preventDefault(); haptic('light');
     toggleFollowFromCard(store, followBtn);
   });
+
+  /* 🎨 زر المشاركة — SVG أيقونة */
   const shareBtn = document.createElement('button');
-  shareBtn.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--c-primary-soft);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all 0.25s;padding:0;';
-  shareBtn.innerHTML = '<i class="fas fa-share-alt"></i>';
+  shareBtn.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--c-primary-soft);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.25s;padding:0;';
+  shareBtn.innerHTML = bzrIcon('mi-share', 'mi mi-xs');
   shareBtn.addEventListener('click', (e) => {
     e.stopPropagation(); e.preventDefault(); haptic('light'); shareStore(store);
   });
+
   bottomRow.appendChild(followBtn); bottomRow.appendChild(shareBtn);
   info.appendChild(nameRow); info.appendChild(catRow); info.appendChild(bottomRow);
   card.appendChild(cover); card.appendChild(logo); card.appendChild(info);
   card.addEventListener('click', () => { haptic('light'); openStoreModal(store); });
   return card;
 }
+
+/* 🎨 تحديث حالة زر المتابعة في البطاقة */
 function setCardFollowState(btn, following) {
   btn.classList.toggle('following', following);
-  btn.innerHTML = following
-    ? '<i class="fas fa-check"></i><span>متابَع</span>'
-    : '<i class="fas fa-plus"></i><span>متابعة</span>';
-  if (following) { btn.style.background = 'transparent'; btn.style.color = '#FF7A00'; }
-  else { btn.style.background = '#FF7A00'; btn.style.color = '#fff'; }
+  btn.innerHTML =
+    bzrIcon('mi-heart', 'mi mi-xs mi-follow-heart') +
+    bzrIcon('mi-check', 'mi mi-xs mi-follow-check') +
+    '<span>' + (following ? 'متابَع' : 'متابعة') + '</span>';
+  if (following) {
+    btn.style.background = 'transparent';
+    btn.style.color = '#FF7A00';
+  } else {
+    btn.style.background = '#FF7A00';
+    btn.style.color = '#fff';
+  }
 }
 async function toggleFollowFromCard(store, btn) {
   const storeId = String(getStoreId(store));
@@ -730,7 +774,7 @@ async function toggleFollowFromCard(store, btn) {
 }
 function updateCardFollowButtons(storeId) {
   const following = isStoreFollowed(storeId);
-  document.querySelectorAll('.store-card button[data-store-id]').forEach(btn => {
+  document.querySelectorAll('.store-card .bzr-follow-btn').forEach(btn => {
     if (btn.dataset.storeId === storeId) setCardFollowState(btn, following);
   });
 }
@@ -844,7 +888,7 @@ function renderStoreCategoryTabs(store) {
     tab.dataset.cat = mainCat;
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-selected', 'true');
-    tab.innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(mainCat) + '</span>';
+    tab.innerHTML = bzrIcon('mi-tag', 'mi mi-xs') + '<span>' + sanitizeHTML(mainCat) + '</span>';
     tab.addEventListener('click', () => selectStoreCategoryTab(tab, mainCat));
     container.appendChild(tab);
   }
@@ -856,8 +900,8 @@ function renderStoreCategoryTabs(store) {
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-selected', 'false');
     const icon = subscribed
-      ? '<i class="fas fa-tag"></i>'
-      : '<i class="fas fa-lock lock-icon" aria-hidden="true"></i>';
+      ? bzrIcon('mi-tag', 'mi mi-xs')
+      : bzrIcon('mi-lock', 'mi mi-xs lock-icon');
     tab.innerHTML = icon + '<span>' + sanitizeHTML(cat) + '</span>';
     if (!subscribed) tab.setAttribute('aria-label', cat + ' - مقفلة، تتطلب اشتراكاً');
     tab.addEventListener('click', () => {
@@ -911,17 +955,14 @@ async function refreshStoreDataOnOpen(storeId) {
       renderStoreCategoryTabs(fresh);
       loadStoreProducts(fresh.name, currentStoreCategoryForProducts);
       const catVal = (fresh.category && String(fresh.category).trim()) ? fresh.category : 'عام';
-      document.getElementById('storeCategory').innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(catVal) + '</span>';
-      // 🆕 v9.10.0: تحديث الموقع
+      document.getElementById('storeCategory').innerHTML = bzrIcon('mi-tag', 'mi mi-xs') + '<span>' + sanitizeHTML(catVal) + '</span>';
       renderStoreLocationInModal(fresh);
       cacheManager.remove('stores_list');
     }
   } catch(e) { /* silent */ }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🆕 v9.10.0: عرض موقع المتجر داخل النافذة
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ 🆕 v9.10.0: عرض موقع المتجر داخل النافذة ═══ */
 function renderStoreLocationInModal(store) {
   const row = document.getElementById('storeLocationRow');
   const value = document.getElementById('storeLocationValue');
@@ -947,9 +988,8 @@ function openStoreModal(store) {
   document.getElementById('storeLogo').src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   document.getElementById('storeDescription').textContent = store.description || 'متجر مميز';
   const catVal = (store.category && String(store.category).trim()) ? store.category : 'عام';
-  document.getElementById('storeCategory').innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(catVal) + '</span>';
+  document.getElementById('storeCategory').innerHTML = bzrIcon('mi-tag', 'mi mi-xs') + '<span>' + sanitizeHTML(catVal) + '</span>';
 
-  /* 🆕 v9.10.0: عرض موقع المتجر */
   renderStoreLocationInModal(store);
 
   updateFollowersDisplay();
@@ -1012,6 +1052,8 @@ document.getElementById('closeStoreModal')?.addEventListener('click', closeStore
 function updateFollowersDisplay() {
   document.getElementById('storeFollowers').textContent = currentFollowersCount.toLocaleString();
 }
+
+/* 🎨 تحديث حالة زر المتابعة في النافذة (CSS يتولى تبديل الأيقونة) */
 function updateFollowButtonUI() {
   const btn = document.getElementById('storeFollowButton');
   const txt = document.getElementById('storeFollowText');
@@ -1019,11 +1061,9 @@ function updateFollowButtonUI() {
   if (isFollowing) {
     btn.classList.add('following');
     txt.textContent = 'متابَع';
-    btn.querySelector('i').className = 'fas fa-check';
   } else {
     btn.classList.remove('following');
     txt.textContent = 'متابعة';
-    btn.querySelector('i').className = 'fas fa-heart';
   }
 }
 document.getElementById('storeFollowButton')?.addEventListener('click', async () => {
@@ -1102,8 +1142,9 @@ async function loadStoreProducts(storeName, category) {
   loadMoreBtn.classList.add('hidden');
   loadMoreBtn.hidden = true;
   loadMoreBtn.disabled = false;
-  loadMoreBtn.innerHTML = '<span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i>';
-  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#FF7A00;"></i></div>';
+  loadMoreBtn.innerHTML = '<span>عرض المزيد</span>' + bzrIcon('mi-chevron-down', 'mi mi-xs');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;">' +
+    bzrIcon('mi-refresh', 'mi mi-spin', 'width:32px;height:32px;color:#FF7A00;') + '</div>';
   currentStoreNameForProducts = storeName;
   currentStoreCategoryForProducts = category || null;
   storeProductsLastDoc = null;
@@ -1171,8 +1212,8 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     return;
   }
   btn.disabled = true;
-  const originalHTML = '<span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i>';
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>جاري التحميل...</span>';
+  const originalHTML = '<span>عرض المزيد</span>' + bzrIcon('mi-chevron-down', 'mi mi-xs');
+  btn.innerHTML = bzrIcon('mi-refresh', 'mi mi-xs mi-spin') + '<span>جاري التحميل...</span>';
   haptic('light');
   try {
     let q = db.collection('products')
@@ -1232,16 +1273,19 @@ function renderStoreProducts(products, append) {
       category: product.category || null
     };
     const card = document.createElement('div'); card.className = 'store-product-card';
+
+    /* 🎨 زر المفضلة */
     const favBtn = document.createElement('button');
     favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
-    favBtn.innerHTML = '<i class="' + (fav ? 'fas' : 'far') + ' fa-heart"></i>';
+    favBtn.innerHTML = bzrIcon(fav ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
     favBtn.addEventListener('click', (e) => {
       e.stopPropagation(); haptic('light');
       const now = toggleProductFav(product.id);
       favBtn.classList.toggle('active', now);
-      favBtn.innerHTML = '<i class="' + (now ? 'fas' : 'far') + ' fa-heart"></i>';
+      favBtn.innerHTML = bzrIcon(now ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
       showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
     });
+
     const imgWrap = document.createElement('div'); imgWrap.className = 'store-product-img-wrap';
     const img = document.createElement('img'); img.loading = 'lazy'; img.alt = product.name || '';
     img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300';
@@ -1252,7 +1296,6 @@ function renderStoreProducts(products, append) {
     nameEl.textContent = product.name || '';
     info.appendChild(nameEl);
 
-    /* 🆕 v9.10.0: عرض وصف المنتج المختصر */
     const desc = (product.description && String(product.description).trim()) || '';
     if (desc) {
       const descEl = document.createElement('div');
@@ -1264,11 +1307,14 @@ function renderStoreProducts(products, append) {
     const priceEl = document.createElement('div'); priceEl.className = 'store-product-price';
     priceEl.textContent = price.toLocaleString() + ' ج.س';
     info.appendChild(priceEl);
+
+    /* 🎨 زر عرض */
     const viewBtn = document.createElement('button');
     viewBtn.className = 'store-product-btn ripple';
-    viewBtn.innerHTML = '<span>عرض</span> <i class="fas fa-chevron-left"></i>';
+    viewBtn.innerHTML = '<span>عرض</span> ' + bzrIcon('mi-chevron-left', 'mi mi-xs');
     viewBtn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); openProductModal(pm); });
     info.appendChild(viewBtn);
+
     card.appendChild(favBtn);
     card.appendChild(imgWrap);
     card.appendChild(info);
@@ -1279,14 +1325,13 @@ function renderStoreProducts(products, append) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ⭐ ALL PRODUCTS RENDER — يستدعى من data.js
+   ⭐ ALL PRODUCTS RENDER
    ═══════════════════════════════════════════════════════════ */
 function renderProductsBatch(products, append) {
   const grid = document.getElementById('allProductsGrid');
   if (!grid) return;
   if (!Array.isArray(products) || products.length === 0) return;
 
-  /* كشف تلقائي لنمط الإضافة */
   if (typeof append !== 'boolean') {
     append = Array.isArray(allProductsLocal) &&
              allProductsLocal.length > products.length;
@@ -1313,19 +1358,18 @@ function renderProductsBatch(products, append) {
     const card = document.createElement('div');
     card.className = 'store-product-card';
 
-    /* زر المفضلة */
+    /* 🎨 زر المفضلة */
     const favBtn = document.createElement('button');
     favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
-    favBtn.innerHTML = '<i class="' + (fav ? 'fas' : 'far') + ' fa-heart"></i>';
+    favBtn.innerHTML = bzrIcon(fav ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
     favBtn.addEventListener('click', (e) => {
       e.stopPropagation(); haptic('light');
       const now = toggleProductFav(product.id);
       favBtn.classList.toggle('active', now);
-      favBtn.innerHTML = '<i class="' + (now ? 'fas' : 'far') + ' fa-heart"></i>';
+      favBtn.innerHTML = bzrIcon(now ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
       showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
     });
 
-    /* صورة المنتج */
     const imgWrap = document.createElement('div');
     imgWrap.className = 'store-product-img-wrap';
     const img = document.createElement('img');
@@ -1335,7 +1379,6 @@ function renderProductsBatch(products, append) {
     img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
     imgWrap.appendChild(img);
 
-    /* معلومات المنتج */
     const info = document.createElement('div');
     info.className = 'store-product-info';
 
@@ -1344,7 +1387,6 @@ function renderProductsBatch(products, append) {
     nameEl.textContent = product.name || '';
     info.appendChild(nameEl);
 
-    /* 🆕 v9.10.0: عرض وصف المنتج المختصر */
     const desc = (product.description && String(product.description).trim()) || '';
     if (desc) {
       const descEl = document.createElement('div');
@@ -1365,9 +1407,10 @@ function renderProductsBatch(products, append) {
     priceEl.textContent = price.toLocaleString() + ' ج.س';
     info.appendChild(priceEl);
 
+    /* 🎨 زر عرض */
     const viewBtn = document.createElement('button');
     viewBtn.className = 'store-product-btn ripple';
-    viewBtn.innerHTML = '<span>عرض</span> <i class="fas fa-chevron-left"></i>';
+    viewBtn.innerHTML = '<span>عرض</span> ' + bzrIcon('mi-chevron-left', 'mi mi-xs');
     viewBtn.addEventListener('click', (e) => {
       e.stopPropagation(); haptic('light'); openProductModal(pm);
     });
@@ -1405,7 +1448,6 @@ function openProductModal(product) {
     origEl.classList.add('hidden');
   }
 
-  /* 🆕 v9.10.0: عرض وصف المنتج */
   renderProductDescriptionInModal(product);
 
   const colorsContainer = document.getElementById('productColorsContainer');
@@ -1421,7 +1463,8 @@ function openProductModal(product) {
     originalBtn.className = 'color-swatch active';
     originalBtn.title = 'الصورة الأصلية';
     originalBtn.style.cssText = 'background:linear-gradient(135deg,#FF7A00,#FFA64D);display:flex;align-items:center;justify-content:center;position:relative;';
-    originalBtn.innerHTML = '<i class="fas fa-image" style="color:#fff;font-size:14px;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,0.3);"></i>';
+    // 🎨 أيقونة الصورة الأصلية SVG
+    originalBtn.innerHTML = bzrIcon('mi-image', 'mi', 'color:#fff;pointer-events:none;width:16px;height:16px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));');
     originalBtn.addEventListener('click', () => {
       if (selectedColorVariant === null) return;
       haptic('light');
@@ -1511,11 +1554,12 @@ document.getElementById('addToCartFromModal')?.addEventListener('click', (e) => 
   const p = JSON.parse(btn.dataset.product);
   addToCart(p);
   haptic('medium');
+  const originalBg = btn.style.background;
   btn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
-  btn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
+  btn.innerHTML = bzrIcon('mi-check', 'mi mi-xs') + ' تمت الإضافة';
   setTimeout(() => {
-    btn.style.background = '';
-    btn.innerHTML = '<i class="fas fa-shopping-bag"></i> أضف إلى السلة';
+    btn.style.background = originalBg;
+    btn.innerHTML = bzrIcon('mi-shopping-bag', 'mi mi-xs') + ' أضف إلى السلة';
   }, 1500);
 });
 document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
@@ -1561,7 +1605,9 @@ function updateCartUI() {
   const items = document.getElementById('cartItems');
   items.innerHTML = '';
   if (cart.length === 0) {
-    items.innerHTML = '<div style="text-align:center;color:var(--c-text-soft);padding:2.5rem 0;"><i class="fas fa-shopping-bag" style="font-size:3rem;margin-bottom:1rem;display:block;color:#CBD5E1;"></i><p style="font-weight:700;">السلة فارغة</p></div>';
+    items.innerHTML = '<div style="text-align:center;color:var(--c-text-soft);padding:2.5rem 0;">' +
+      bzrIcon('mi-shopping-bag', 'mi', 'width:48px;height:48px;color:#CBD5E1;margin-bottom:1rem;display:inline-block;') +
+      '<p style="font-weight:700;">السلة فارغة</p></div>';
   } else {
     const frag = document.createDocumentFragment();
     cart.forEach(item => {
@@ -1582,7 +1628,7 @@ function updateCartUI() {
         '</div>' +
         '<div style="text-align:left;flex-shrink:0;">' +
           '<div style="font-weight:900;color:#FF7A00;">' + (item.price * item.quantity).toLocaleString() + ' ج.س</div>' +
-          '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;font-size:0.85rem;"><i class="fas fa-trash"></i></button>' +
+          '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;">' + bzrIcon('mi-trash', 'mi mi-xs') + '</button>' +
         '</div>';
       frag.appendChild(div);
     });
@@ -1781,8 +1827,11 @@ function triggerUpdate() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn || btn.disabled) return;
   btn.disabled = true;
-  const iconEl = btn.querySelector('.update-icon-wrap i');
-  if (iconEl) { iconEl.className = 'fas fa-spinner fa-spin'; iconEl.style.animation = 'none'; }
+  /* 🎨 استبدال أيقونة التحديث بـ spinner SVG */
+  const iconWrap = btn.querySelector('.update-icon-wrap');
+  if (iconWrap) {
+    iconWrap.innerHTML = bzrIcon('mi-refresh', 'mi mi-sm mi-spin');
+  }
   const strongEl = btn.querySelector('.update-text-wrap strong');
   const spanEl = btn.querySelector('.update-text-wrap span');
   if (strongEl) strongEl.textContent = '⏳ جاري التحديث...';
@@ -1866,10 +1915,10 @@ document.getElementById('updateAvailableBtn')?.addEventListener('click', trigger
 /* ═══ MANUAL REFRESH BUTTON ═══ */
 document.getElementById('refreshProductsBtn')?.addEventListener('click', async (e) => {
   const btn = e.currentTarget;
-  const icon = btn.querySelector('i');
+  const svgIcon = btn.querySelector('svg');
   if (btn.disabled) return;
   btn.disabled = true;
-  if (icon) icon.classList.add('fa-spin');
+  if (svgIcon) svgIcon.classList.add('mi-spin');
   haptic('light');
   try {
     cacheManager.remove('all_products_page1');
@@ -1879,9 +1928,9 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   } catch(err) {
     showToast('تعذر التحديث، حاول مرة أخرى');
   } finally {
-    if (icon) icon.classList.remove('fa-spin');
+    if (svgIcon) svgIcon.classList.remove('mi-spin');
     btn.disabled = false;
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.10.0');
+console.log('[BZR] ui.js loaded ✅ v9.10.0 — Material SVG icons');
