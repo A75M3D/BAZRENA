@@ -82,6 +82,22 @@ body.theme-dark .mi-theme-sun { display: inline-block !important; }
 #storeFollowButton.following .mi-follow-check { display: inline-block !important; }
 
 i.fa-fallback { display: none !important; }
+
+/* ═══════════════════════════════════════════════════
+   🖼️ Hero Slider — صور فقط بدون نصوص
+   ═══════════════════════════════════════════════════ */
+.bzr-slide {
+  position: relative;
+  overflow: hidden;
+}
+.bzr-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* إزالة أي طبقة تعتيم كانت للنص */
+.bzr-slide-overlay { display: none !important; }
 </style>
 </head>
 <body class="font-cairo">
@@ -196,55 +212,30 @@ i.fa-fallback { display: none !important; }
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     🎯 HERO SLIDER — 5 صور تتحرك تلقائياً
+     🎯 HERO SLIDER — صور فقط بدون نصوص
      ═══════════════════════════════════════════════════════════ -->
 <section class="bzr-hero-slider" aria-label="عروض مميزة">
   <div class="bzr-slider" id="bzrSlider">
     <div class="bzr-slider-track" id="bzrSliderTrack">
 
       <div class="bzr-slide">
-        <img src="https://picsum.photos/seed/branzar1/900/450" alt="عرض 1" loading="eager" draggable="false">
-        <div class="bzr-slide-overlay">
-          <span class="bzr-slide-tag">🔥 خصومات حصرية</span>
-          <h3 class="bzr-slide-title">عروض تصل إلى 50%</h3>
-          <p class="bzr-slide-desc">من أفضل المتاجر والبراندات</p>
-        </div>
+        <img src="https://i.ibb.co/qMnbcY1q/file-00000000a7608210bb42f611c5f72af6-2.jpg" alt="عرض 1" loading="eager" draggable="false">
       </div>
 
       <div class="bzr-slide">
-        <img src="https://picsum.photos/seed/branzar2/900/450" alt="عرض 2" loading="lazy" draggable="false">
-        <div class="bzr-slide-overlay">
-          <span class="bzr-slide-tag">✨ وصل حديثاً</span>
-          <h3 class="bzr-slide-title">أزياء الموسم الجديد</h3>
-          <p class="bzr-slide-desc">تصاميم عصرية بأسعار مميزة</p>
-        </div>
+        <img src="https://i.ibb.co/rfHNwNTK/file-0000000040548246bcfc217b0de2355c.png" alt="عرض 2" loading="lazy" draggable="false">
       </div>
 
       <div class="bzr-slide">
-        <img src="https://picsum.photos/seed/branzar3/900/450" alt="عرض 3" loading="lazy" draggable="false">
-        <div class="bzr-slide-overlay">
-          <span class="bzr-slide-tag">📱 إلكترونيات</span>
-          <h3 class="bzr-slide-title">أحدث الأجهزة الذكية</h3>
-          <p class="bzr-slide-desc">ضمان أصلي وتوصيل سريع</p>
-        </div>
+        <img src="https://i.ibb.co/jPygNd6b/file-00000000ba848246a5734224d75aa3fe.png" alt="عرض 3" loading="lazy" draggable="false">
       </div>
 
       <div class="bzr-slide">
-        <img src="https://picsum.photos/seed/branzar4/900/450" alt="عرض 4" loading="lazy" draggable="false">
-        <div class="bzr-slide-overlay">
-          <span class="bzr-slide-tag">💄 تجميل وعناية</span>
-          <h3 class="bzr-slide-title">منتجات أصلية 100%</h3>
-          <p class="bzr-slide-desc">اختاري الأفضل لبشرتك</p>
-        </div>
+        <img src="https://i.ibb.co/qMnbcY1q/file-00000000a7608210bb42f611c5f72af6-2.jpg" alt="عرض 4" loading="lazy" draggable="false">
       </div>
 
       <div class="bzr-slide">
-        <img src="https://picsum.photos/seed/branzar5/900/450" alt="عرض 5" loading="lazy" draggable="false">
-        <div class="bzr-slide-overlay">
-          <span class="bzr-slide-tag">🎁 هدايا مميزة</span>
-          <h3 class="bzr-slide-title">اختر هديتك الآن</h3>
-          <p class="bzr-slide-desc">تغليف أنيق ومناسبات سعيدة</p>
-        </div>
+        <img src="https://i.ibb.co/rfHNwNTK/file-0000000040548246bcfc217b0de2355c.png" alt="عرض 5" loading="lazy" draggable="false">
       </div>
 
     </div>
