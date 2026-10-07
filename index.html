@@ -50,7 +50,7 @@
 
 <style>
 /* ═══════════════════════════════════════════════════
-   🎨 Material Icons & Dynamic Switchers (Android Style)
+   🎨 Material Icons & Dynamic Switchers
    ═══════════════════════════════════════════════════ */
 .mi {
   display: inline-block;
@@ -71,24 +71,23 @@
 .mi-spin { animation: miSpin 0.9s linear infinite; transform-origin: center; }
 @keyframes miSpin { to { transform: rotate(360deg); } }
 
-/* 🌙 Theme toggle: moon ↔ sun */
+/* 🌙 Theme toggle */
 .mi-theme-sun { display: none; }
 body.theme-dark .mi-theme-moon { display: none !important; }
 body.theme-dark .mi-theme-sun { display: inline-block !important; }
 
-/* ❤️ Follow button: heart ↔ check */
+/* ❤️ Follow button */
 .mi-follow-check { display: none; }
 #storeFollowButton.following .mi-follow-heart { display: none !important; }
 #storeFollowButton.following .mi-follow-check { display: inline-block !important; }
 
-/* Hide any leftover FA fallback <i> */
 i.fa-fallback { display: none !important; }
 </style>
 </head>
 <body class="font-cairo">
 
 <!-- ═══════════════════════════════════════════════════════════════
-     🎨 MATERIAL DESIGN 3 — SVG ICON SPRITE
+     🎨 SVG ICON SPRITE
      ═══════════════════════════════════════════════════════════════ -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" focusable="false">
 
@@ -141,7 +140,6 @@ i.fa-fallback { display: none !important; }
   <symbol id="mi-download" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></symbol>
   <symbol id="mi-bell" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></symbol>
 
-  <symbol id="mi-share-square-old" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></symbol>
   <symbol id="mi-trash" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></symbol>
 
   <symbol id="mi-info" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>
@@ -158,7 +156,7 @@ i.fa-fallback { display: none !important; }
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     🎯 APP BAR — نظيف واحترافي
+     🎯 APP BAR — نظيف جداً (Logo + Search + Cart)
      ═══════════════════════════════════════════════════════════ -->
 <header class="bzr-app-bar">
   <div class="bzr-app-bar-inner">
@@ -169,8 +167,8 @@ i.fa-fallback { display: none !important; }
       <div class="bzr-brand-text"><strong>بران زار</strong><small>BRANZAR</small></div>
     </button>
     <div class="bzr-app-actions">
-      <button id="openAccountBtn" class="bzr-account-btn" aria-label="حسابي" title="حسابي">
-        <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-person"/></svg>
+      <button id="openSearchBtn" class="bzr-search-icon-btn" aria-label="بحث" title="بحث">
+        <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-search"/></svg>
       </button>
       <button id="cartButton" class="bzr-cart-btn" aria-label="عرض سلة التسوق">
         <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-cart"/></svg>
@@ -181,18 +179,21 @@ i.fa-fallback { display: none !important; }
 </header>
 
 <!-- ═══════════════════════════════════════════════════════════
-     🔍 SEARCH BAR
+     🔍 SEARCH OVERLAY — يظهر عند الضغط على أيقونة البحث
      ═══════════════════════════════════════════════════════════ -->
-<div class="bzr-search-bar-wrap">
-  <div class="bzr-search-inner">
+<div id="bzrSearchOverlay" class="bzr-search-overlay hidden" role="dialog" aria-modal="true" aria-label="البحث">
+  <div class="bzr-search-overlay-head">
     <div class="bzr-search-input" id="bzrSearchWrapper">
       <svg class="mi mi-xs" aria-hidden="true"><use href="#mi-search"/></svg>
       <input id="searchInput" type="search" placeholder="ابحث عن متجر، منتج أو فئة..." autocomplete="off" aria-label="البحث" maxlength="100">
       <button class="search-clear" id="searchClearBtn" aria-label="مسح البحث"><svg class="mi mi-xs" aria-hidden="true"><use href="#mi-close-circle"/></svg></button>
     </div>
+    <button id="closeSearchBtn" class="bzr-search-close-btn" aria-label="إغلاق البحث">
+      <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-close"/></svg>
+    </button>
   </div>
+  <div id="searchResults" class="bzr-search-results-inline" role="region" aria-label="نتائج البحث"></div>
 </div>
-<div id="searchResults" class="bzr-search-results" role="region" aria-label="نتائج البحث"></div>
 
 <!-- ═══════════════════════════════════════════════════════════
      🎯 HERO SLIDER — 5 صور تتحرك تلقائياً
@@ -202,7 +203,7 @@ i.fa-fallback { display: none !important; }
     <div class="bzr-slider-track" id="bzrSliderTrack">
 
       <div class="bzr-slide">
-        <img src="https://picsum.photos/seed/branzar1/900/450" alt="عرض 1" loading="lazy" draggable="false">
+        <img src="https://picsum.photos/seed/branzar1/900/450" alt="عرض 1" loading="eager" draggable="false">
         <div class="bzr-slide-overlay">
           <span class="bzr-slide-tag">🔥 خصومات حصرية</span>
           <h3 class="bzr-slide-title">عروض تصل إلى 50%</h3>
@@ -465,7 +466,7 @@ i.fa-fallback { display: none !important; }
 </div>
 
 <!-- ═══════════════════════════════════════════════════════
-     ACCOUNT MODAL — Premium Compact (No Scroll)
+     ACCOUNT MODAL — Premium Compact
      ═══════════════════════════════════════════════════════ -->
 <div id="accountModal" class="hidden" role="dialog" aria-modal="true">
   <div class="account-overlay" id="accountOverlay"></div>
@@ -588,7 +589,7 @@ i.fa-fallback { display: none !important; }
       </div>
 
       <div class="acc-footer">
-        <span class="acc-footer-version">نسخة التطبيق: v1.10.4</span>
+        <span class="acc-footer-version">نسخة التطبيق: v1.10.5</span>
       </div>
 
     </div>
