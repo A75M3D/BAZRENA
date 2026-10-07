@@ -1909,4 +1909,62 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   finally { if (svgIcon) svgIcon.classList.remove('mi-spin'); btn.disabled = false; }
 });
 
+
+
+// --- إصلاح زر البحث وإضافة أيقونة الحساب العلوية ---
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. إصلاح زر البحث
+  const searchBtn = document.getElementById('openSearchBtn');
+  const searchOverlay = document.getElementById('bzrSearchOverlay');
+  const closeSearchBtn = document.getElementById('closeSearchBtn');
+  const searchInput = document.getElementById('searchInput');
+
+  if (searchBtn && searchOverlay) {
+    searchBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      searchOverlay.classList.remove('hidden');
+      searchOverlay.style.display = 'block';
+      setTimeout(() => searchInput?.focus(), 100);
+      if (typeof updateBodyScroll === 'function') updateBodyScroll();
+    });
+  }
+
+  if (closeSearchBtn && searchOverlay) {
+    closeSearchBtn.addEventListener('click', () => {
+      searchOverlay.classList.add('hidden');
+      searchOverlay.style.display = 'none';
+      if (typeof updateBodyScroll === 'function') updateBodyScroll();
+    });
+  }
+
+  // 2. إضافة أيقونة الحساب الكبيرة للهيدر
+  const appActions = document.querySelector('.bzr-app-actions');
+  if (appActions && !document.querySelector('.bzr-account-btn')) {
+    const accBtn = document.createElement('button');
+    accBtn.className = 'bzr-account-btn';
+    accBtn.setAttribute('aria-label', 'حسابي');
+    accBtn.innerHTML = '<svg class="mi" aria-hidden="true"><use href="#mi-person"></use></svg>';
+    
+    // إدراج الزر قبل السلة أو البحث
+    appActions.insertBefore(accBtn, appActions.firstChild);
+    
+    // ربطه بنافذة الحساب
+    accBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (typeof openAccountModal === 'function') openAccountModal();
+    });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
 console.log('[BZR] ui.js loaded ✅ v9.10.1 — follow + share buttons restored');
