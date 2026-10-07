@@ -1040,3 +1040,301 @@ body.theme-dark .product-card-desc { color: #9CA3AF; }
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* BranZar — Mobile layout, hero, categories and header polish */
+:root {
+  --app-bar-h: 50px;
+  --search-bar-h: 42px;
+  --bottom-nav-h: 60px;
+}
+
+/* Header */
+.bzr-app-bar-inner {
+  height: var(--app-bar-h);
+  padding-inline: 10px;
+  gap: 6px;
+}
+
+.bzr-logo-circle {
+  width: 40px;
+  height: 40px;
+}
+
+.bzr-app-actions { gap: 6px; }
+
+/* Profile/account icon */
+.bzr-account-btn {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  flex: 0 0 46px;
+  border: 1.5px solid rgba(255, 122, 0, .42);
+  border-radius: 15px;
+  background: linear-gradient(145deg, #FFF7ED, #FFFFFF);
+  color: #E66A00;
+  box-shadow: 0 4px 12px rgba(255, 122, 0, .16);
+}
+
+.bzr-account-btn svg.mi,
+.bzr-account-btn > svg,
+.bzr-account-btn > i,
+.bzr-account-btn .mi {
+  width: 23px;
+  height: 23px;
+  font-size: 23px;
+  color: currentColor;
+}
+
+.bzr-account-btn:hover {
+  background: linear-gradient(145deg, #FF8A1F, #FF6A00);
+  border-color: #FF7A00;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(255, 122, 0, .32);
+}
+
+.bzr-account-btn:focus-visible {
+  outline: 3px solid rgba(255, 122, 0, .28);
+  outline-offset: 2px;
+}
+
+body.theme-dark .bzr-account-btn {
+  background: #3B2410;
+  border-color: #7C461D;
+  color: #FDBA74;
+}
+
+/* Search button: keeps the existing #openSearchBtn behavior */
+.bzr-search-icon-btn {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  padding: 0;
+  flex: 0 0 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 122, 0, .18);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #FF8A1F, #FF6A00);
+  color: #fff;
+  box-shadow: 0 5px 14px rgba(255, 122, 0, .28);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.bzr-search-icon-btn svg.mi,
+.bzr-search-icon-btn .mi {
+  width: 20px;
+  height: 20px;
+  color: currentColor;
+}
+
+.bzr-search-icon-btn:hover {
+  filter: brightness(1.04);
+  box-shadow: 0 7px 18px rgba(255, 122, 0, .36);
+  transform: translateY(-1px);
+}
+
+.bzr-search-icon-btn:active { transform: scale(.94); }
+
+.bzr-search-icon-btn:focus-visible {
+  outline: 3px solid rgba(255, 122, 0, .32);
+  outline-offset: 3px;
+}
+
+/* Search field, if displayed as a bar */
+.bzr-search-bar-wrap { padding-block: 2px; }
+.bzr-search-inner { padding-inline: 10px; }
+
+.bzr-search-input {
+  min-height: 38px;
+  height: 38px;
+  padding-inline: 12px;
+  border: 1px solid var(--c-border);
+  border-radius: 13px;
+  background: var(--c-surface);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+}
+
+.bzr-search-input:focus-within {
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, .12);
+}
+
+.bzr-search-input input {
+  min-width: 0;
+  font-size: .84rem;
+}
+
+.bzr-search-results {
+  top: calc(var(--safe-top) + var(--app-bar-h) + var(--search-bar-h) + 6px);
+}
+
+body.theme-dark .bzr-search-icon-btn {
+  background: linear-gradient(145deg, #FF9A3D, #F97316);
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  /* Slightly smaller profile control on narrow phones */
+  .bzr-account-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    flex-basis: 44px;
+  }
+
+  .bzr-account-btn svg.mi,
+  .bzr-account-btn > svg,
+  .bzr-account-btn > i,
+  .bzr-account-btn .mi {
+    width: 22px;
+    height: 22px;
+    font-size: 22px;
+  }
+
+  /* Put categories immediately after the hero on phones.
+     Existing hidden sections remain hidden. */
+  #mainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+  }
+
+  #mainContent > #categories { order: 1; }
+  #mainContent > #followedStoresSection { order: 2; }
+  #mainContent > #stores { order: 3; }
+  #mainContent > #all-products { order: 4; }
+
+  /* Compact hero while preserving the existing slider */
+  .bzr-hero-slider {
+    margin: 6px auto 7px;
+    padding-inline: 8px;
+  }
+
+  .bzr-slider { border-radius: 16px; }
+  .bzr-slide { aspect-ratio: 2.55 / 1; }
+
+  .bzr-slide-overlay {
+    padding: 9px 13px;
+    gap: 3px;
+  }
+
+  .bzr-slide-tag {
+    padding: 3px 8px;
+    font-size: .56rem;
+  }
+
+  .bzr-slide-title {
+    max-width: 76%;
+    font-size: .9rem;
+    line-height: 1.2;
+  }
+
+  .bzr-slide-desc {
+    max-width: 72%;
+    font-size: .65rem;
+    line-height: 1.35;
+  }
+
+  .bzr-slider-arrow {
+    width: 30px;
+    height: 30px;
+  }
+
+  .bzr-slider-prev { right: 8px; }
+  .bzr-slider-next { left: 8px; }
+
+  .bzr-slider-dots {
+    bottom: 6px;
+    gap: 5px;
+    padding: 4px 8px;
+  }
+
+  .bzr-slider-dot { width: 6px; height: 6px; }
+  .bzr-slider-dot.active { width: 17px; }
+
+  /* Tighten section spacing */
+  .categories-section { padding: 1px 0 4px; }
+  .followed-section { padding: 2px 0 3px; }
+  .stores-section { padding: 1px 0 3px; }
+  .products-section { padding: 8px 0 14px; }
+
+  .section-header-flex {
+    margin-bottom: 3px;
+    gap: 4px;
+  }
+
+  .section-title-lg {
+    font-size: .98rem;
+    line-height: 1.25;
+  }
+
+  .section-title-md {
+    font-size: .9rem;
+    line-height: 1.25;
+  }
+
+  .section-icon-circle {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Compact followed-store row */
+  .followed-section .section-header { margin-bottom: 2px; }
+  .followed-scroll-container { gap: 6px; padding: 2px 0 3px; }
+  .followed-store-item { width: 62px; gap: 2px; }
+  .followed-store-avatar { width: 46px; height: 46px; padding: 2px; }
+  .followed-store-name { font-size: .62rem; line-height: 1.2; }
+
+  /* Shorter featured store cards */
+  .store-card {
+    width: clamp(145px, 42vw, 164px);
+    border-radius: 13px;
+  }
+
+  .store-card .cover-image { height: 58px; }
+
+  .store-card .store-logo {
+    width: 38px;
+    height: 38px;
+    margin-top: -19px;
+    margin-right: 8px;
+  }
+
+  .store-card .store-info { padding: 0 8px 7px; }
+  .store-card .store-name { margin-top: 2px; font-size: .76rem; line-height: 1.2; }
+  .store-card .store-category { margin-top: 1px; font-size: .63rem; line-height: 1.2; }
+  .stores-scroll-container { gap: 6px; padding-bottom: 1px; }
+
+  /* Compact, horizontally scrollable category chips */
+  .categories-scroll-container {
+    min-height: 34px;
+    gap: 4px;
+    padding: 0 0 1px;
+  }
+
+  .categories-scroll-container .chip {
+    min-height: 32px;
+    padding: 0 9px;
+    font-size: .68rem;
+    line-height: 1.2;
+  }
+
+  .scroll-btn { width: 28px; height: 28px; }
+  .scroll-btn svg.mi { width: 13px; height: 13px; }
+}
+
+@media (max-width: 480px) and (max-height: 760px) {
+  .bzr-hero-slider { margin-block: 4px 5px; }
+  .bzr-slide { aspect-ratio: 2.8 / 1; }
+  .followed-store-avatar { width: 42px; height: 42px; }
+  .store-card .cover-image { height: 52px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bzr-search-icon-btn { transition: none; }
+}
+
