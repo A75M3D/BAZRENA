@@ -1,14 +1,13 @@
 /* ═══════════════════════════════════════════════════════════
    BranZar v9.10.0 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
-   ✅ Material SVG icons — native createElementNS (100% reliable)
-   ✅ Store cards: share button only (no heart/follow)
+   ✅ Material SVG icons — native createElementNS
+   ✅ Store cards: follow button + share button
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════════
-   🎨 SVG Icon Engine — Native createElementNS (مضمون 100%)
-   نفس الطريقة التي يستخدمها زر المشاركة في نافذة المتجر
+   🎨 SVG Icon Engine — Native createElementNS
    ═══════════════════════════════════════════════════════════════ */
 var SVG_NS = 'http://www.w3.org/2000/svg';
 var XLINK_NS = 'http://www.w3.org/1999/xlink';
@@ -313,7 +312,6 @@ function showIOSInstallInstructions() {
         '<button id="pwaIosCloseBtn" class="pwa-ios-close">فهمت، شكراً</button>' +
       '</div>';
     document.body.appendChild(modal);
-    // إدراج أيقونات SVG عبر createElementNS (مضمون)
     var icon1 = modal.querySelector('#iosIcon1'); if (icon1) icon1.appendChild(bzrSvgIcon('mi-share-square', 'mi mi-sm'));
     var icon2 = modal.querySelector('#iosIcon2'); if (icon2) icon2.appendChild(bzrSvgIcon('mi-plus-square', 'mi mi-sm'));
     var icon3 = modal.querySelector('#iosIcon3'); if (icon3) icon3.appendChild(bzrSvgIcon('mi-check-circle', 'mi mi-sm'));
@@ -339,10 +337,7 @@ document.getElementById('installButtonFloating')?.addEventListener('click', asyn
     hideInstallButton();
     return;
   }
-  if (isIOS() && !deferredPrompt) {
-    showIOSInstallInstructions();
-    return;
-  }
+  if (isIOS() && !deferredPrompt) { showIOSInstallInstructions(); return; }
   if (deferredPrompt) {
     try {
       deferredPrompt.prompt();
@@ -363,10 +358,7 @@ document.getElementById('installButtonFloating')?.addEventListener('click', asyn
     }
     return;
   }
-  if (isFirefox()) {
-    showToast('لتثبيت التطبيق، استخدم Chrome أو Edge');
-    return;
-  }
+  if (isFirefox()) { showToast('لتثبيت التطبيق، استخدم Chrome أو Edge'); return; }
   showToast('التثبيت غير متاح على هذا المتصفح');
 });
 function maybeShowIOSButton() {
@@ -644,7 +636,7 @@ function goToCategory(cat) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   🏪 RENDER STORES — بطاقة المتجر: زر مشاركة فقط (بدون قلب)
+   🏪 RENDER STORES — بطاقة المتجر: زر متابعة + زر مشاركة
    ═══════════════════════════════════════════════════════════ */
 function displayStores() {
   const c = document.getElementById('storesScrollContainer');
@@ -655,6 +647,9 @@ function displayStores() {
 }
 
 function createStoreCard(store) {
+  const storeId = getStoreId(store);
+  const followed = isStoreFollowed(storeId);
+
   const card = document.createElement('div');
   card.className = 'store-card';
 
@@ -694,17 +689,29 @@ function createStoreCard(store) {
   catRow.className = 'store-category';
   catRow.textContent = store.category || 'عام';
 
-  /* 🎨 صف سفلي: زر مشاركة فقط (بنفس شكل زر نافذة المتجر) */
+  /* 🎨 الصف السفلي: زر المتابعة + زر المشاركة */
   const bottomRow = document.createElement('div');
-  bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;';
+  bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;';
 
+  /* زر المتابعة */
+  const followBtn = document.createElement('button');
+  followBtn.type = 'button';
+  followBtn.className = 'bzr-follow-btn';
+  followBtn.dataset.storeId = storeId;
+  followBtn.setAttribute('aria-label', followed ? 'إلغاء المتابعة' : 'متابعة المتجر');
+  setCardFollowState(followBtn, followed);
+  followBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); e.preventDefault(); haptic('light');
+    toggleFollowFromCard(store, followBtn);
+  });
+
+  /* زر المشاركة */
   const shareBtn = document.createElement('button');
   shareBtn.type = 'button';
   shareBtn.className = 'bzr-card-share';
   shareBtn.setAttribute('aria-label', 'مشاركة المتجر');
   shareBtn.title = 'مشاركة المتجر';
-  shareBtn.style.cssText = 'width:34px;height:34px;border-radius:50%;background:var(--c-primary-soft,#FFF1E0);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.25s;padding:0;';
-  /* 🎨 نفس الطريقة المستخدمة في نافذة المتجر (createElementNS) */
+  shareBtn.style.cssText = 'width:34px;height:34px;border-radius:50%;background:var(--c-primary-soft,#FFF1E0);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.25s;padding:0;flex-shrink:0;';
   shareBtn.appendChild(bzrSvgIcon('mi-share', 'mi mi-sm'));
   shareBtn.addEventListener('click', (e) => {
     e.stopPropagation(); e.preventDefault(); haptic('light');
@@ -723,7 +730,9 @@ function createStoreCard(store) {
     shareBtn.style.transform = '';
   });
 
+  bottomRow.appendChild(followBtn);
   bottomRow.appendChild(shareBtn);
+
   info.appendChild(nameRow);
   info.appendChild(catRow);
   info.appendChild(bottomRow);
@@ -735,8 +744,79 @@ function createStoreCard(store) {
   return card;
 }
 
-/* 🚫 دوال المتابعة من البطاقة — تم تعطيلها (الأزرار محذوفة) */
-function updateCardFollowButtons() { /* no-op: البطاقات لم تعد تحتوي أزرار متابعة */ }
+/* 🎨 تحديث شكل زر المتابعة في البطاقة */
+function setCardFollowState(btn, following) {
+  if (!btn) return;
+  btn.classList.toggle('following', following);
+  while (btn.firstChild) btn.removeChild(btn.firstChild);
+  btn.appendChild(bzrSvgIcon(following ? 'mi-check' : 'mi-plus', 'mi mi-xs'));
+  const sp = document.createElement('span');
+  sp.textContent = following ? 'متابَع' : 'متابعة';
+  btn.appendChild(sp);
+  btn.style.cssText = 'background:#FF7A00;color:#fff;border:1.5px solid #FF7A00;border-radius:9999px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.25s;white-space:nowrap;flex-shrink:0;font-family:inherit;';
+  if (following) {
+    btn.style.background = 'transparent';
+    btn.style.color = '#FF7A00';
+    btn.style.borderColor = '#FF7A00';
+  }
+}
+
+/* 🎯 تبديل المتابعة من البطاقة */
+async function toggleFollowFromCard(store, btn) {
+  const storeId = String(getStoreId(store));
+  if (btn.disabled) return;
+  const guardCheck = FollowGuard.canFollow(storeId);
+  if (!guardCheck.allowed) {
+    haptic('heavy');
+    showToast(guardCheck.message);
+    btn.classList.add('blocked-flash');
+    setTimeout(() => btn.classList.remove('blocked-flash'), 600);
+    return;
+  }
+  btn.disabled = true;
+  haptic('light');
+  try {
+    const result = await performFollowToggle(store);
+    FollowGuard.recordAction(storeId);
+    const action = result.action;
+    const wasFollowing = (action === 'unfollowed');
+    if (wasFollowing) _followedFromServer.delete(storeId);
+    else _followedFromServer.add(storeId);
+    const list = getFollowedStores();
+    if (wasFollowing) {
+      const i = list.indexOf(storeId);
+      if (i > -1) list.splice(i, 1);
+      store.followers = Math.max(0, (parseInt(store.followers) || 0) - 1);
+    } else {
+      if (list.indexOf(storeId) === -1) list.push(storeId);
+      store.followers = (parseInt(store.followers) || 0) + 1;
+    }
+    saveFollowedStores(list);
+    updateCardFollowButtons(storeId);
+    renderFollowedStores();
+    if (currentStoreId === storeId) {
+      isFollowing = !wasFollowing;
+      currentFollowersCount = store.followers;
+      updateFollowersDisplay();
+      updateFollowButtonUI();
+    }
+    showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
+    haptic('medium');
+  } catch(err) {
+    console.error('[BZR] Follow error:', err);
+    showToast('حدث خطأ، حاول مرة أخرى');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* 🎨 تحديث كل أزرار المتابعة لمتجر معيّن (في كل البطاقات) */
+function updateCardFollowButtons(storeId) {
+  const following = isStoreFollowed(storeId);
+  document.querySelectorAll('.store-card .bzr-follow-btn').forEach(btn => {
+    if (String(btn.dataset.storeId) === String(storeId)) setCardFollowState(btn, following);
+  });
+}
 
 function renderFollowedStores() {
   const section = document.getElementById('followedStoresSection');
@@ -932,7 +1012,7 @@ async function refreshStoreDataOnOpen(storeId) {
   } catch(e) { /* silent */ }
 }
 
-/* ═══ 🆕 v9.10.0: عرض موقع المتجر داخل النافذة ═══ */
+/* ═══ موقع المتجر داخل النافذة ═══ */
 function renderStoreLocationInModal(store) {
   const row = document.getElementById('storeLocationRow');
   const value = document.getElementById('storeLocationValue');
@@ -1009,6 +1089,7 @@ function openStoreModal(store) {
         if (i > -1) { list.splice(i, 1); saveFollowedStores(list); }
       }
       updateFollowButtonUI();
+      updateCardFollowButtons(storeIdSnapshot);
       renderFollowedStores();
     }
   }).catch(() => {});
@@ -1076,6 +1157,7 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
     saveFollowedStores(list);
     updateFollowersDisplay();
     updateFollowButtonUI();
+    updateCardFollowButtons(currentStoreId);
     renderFollowedStores();
     showToast(nowFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
     if (currentStore) currentStore.followers = currentFollowersCount;
@@ -1223,7 +1305,7 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
   }
 });
 
-/* 🎨 helper لتوليد زر المنتج (قلب المفضلة + زر العرض) */
+/* 🎨 بطاقة المنتج (مشتركة بين قائمة المتجر وقائمة الكل) */
 function buildProductCard(product, showStoreName) {
   const price = parseFloat(product.price) || 0;
   const fav = isProductFav(product.id);
@@ -1240,7 +1322,6 @@ function buildProductCard(product, showStoreName) {
   const card = document.createElement('div');
   card.className = 'store-product-card';
 
-  /* ❤️ زر المفضلة */
   const favBtn = document.createElement('button');
   favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
   favBtn.appendChild(bzrSvgIcon(fav ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs'));
@@ -1252,7 +1333,6 @@ function buildProductCard(product, showStoreName) {
     showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
   });
 
-  /* صورة */
   const imgWrap = document.createElement('div');
   imgWrap.className = 'store-product-img-wrap';
   const img = document.createElement('img');
@@ -1262,7 +1342,6 @@ function buildProductCard(product, showStoreName) {
   img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
   imgWrap.appendChild(img);
 
-  /* معلومات */
   const info = document.createElement('div');
   info.className = 'store-product-info';
 
@@ -1291,7 +1370,6 @@ function buildProductCard(product, showStoreName) {
   priceEl.textContent = price.toLocaleString() + ' ج.س';
   info.appendChild(priceEl);
 
-  /* 🎨 زر عرض */
   const viewBtn = document.createElement('button');
   viewBtn.className = 'store-product-btn ripple';
   const vs = document.createElement('span'); vs.textContent = 'عرض';
@@ -1544,14 +1622,10 @@ function updateCartUI() {
         '</div>' +
         '<div style="text-align:left;flex-shrink:0;">' +
           '<div style="font-weight:900;color:#FF7A00;">' + (item.price * item.quantity).toLocaleString() + ' ج.س</div>' +
-          '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;padding:0;display:inline-flex;"><span></span></button>' +
+          '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;padding:0;display:inline-flex;"></button>' +
         '</div>';
-      /* إدراج أيقونة الحذف عبر createElementNS */
       const rmBtn = div.querySelector('.remove-btn');
-      if (rmBtn) {
-        rmBtn.innerHTML = '';
-        rmBtn.appendChild(bzrSvgIcon('mi-trash', 'mi mi-xs'));
-      }
+      if (rmBtn) rmBtn.appendChild(bzrSvgIcon('mi-trash', 'mi mi-xs'));
       frag.appendChild(div);
     });
     items.appendChild(frag);
@@ -1797,4 +1871,4 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   finally { if (svgIcon) svgIcon.classList.remove('mi-spin'); btn.disabled = false; }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.10.0 — native SVG icons + share-only cards');
+console.log('[BZR] ui.js loaded ✅ v9.10.1 — follow + share buttons restored');
