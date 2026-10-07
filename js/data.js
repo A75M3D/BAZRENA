@@ -75,7 +75,17 @@ async function loadStores(force) {
       return snap.docs.map(d => ({ id: d.id, ...d.data() }));
     }, force, CONFIG.CACHE_TTL_STORES);
 
-    stores = result;
+    stores = result.sort((a, b) => {
+  const followersA = Number(a.followers) || 0;
+  const followersB = Number(b.followers) || 0;
+
+  if (followersB !== followersA) {
+    return followersB - followersA;
+  }
+
+  return String(b.created_at || '').localeCompare(String(a.created_at || ''));
+});
+
 
     const cats = [];
     stores.forEach(s => {
