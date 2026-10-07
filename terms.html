@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FF7A00">
+<meta name="description" content="الشروط والأحكام - BranZar بران زار">
+<title>الشروط والأحكام | BranZar</title>
+<link rel="icon" href="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-primary: #FF7A00;
+  --c-primary-2: #FFA64D;
+  --c-bg: #F8FAFC;
+  --c-surface: #FFFFFF;
+  --c-surface-2: #F1F5F9;
+  --c-text: #0F172A;
+  --c-text-soft: #64748B;
+  --c-border: #E2E8F0;
+  --c-primary-soft: #FFF7ED;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Cairo', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  direction: rtl;
+  line-height: 1.8;
+  min-height: 100vh;
+  padding-bottom: 40px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ App Bar ═══ */
+.appbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  padding: 12px 16px;
+  box-shadow: 0 4px 20px rgba(255,122,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.appbar-back {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+.appbar-back:hover { background: rgba(255,255,255,0.32); }
+.appbar-back:active { transform: scale(0.92); }
+.appbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.appbar-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.appbar-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+.appbar-title {
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.appbar-sub {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* ═══ Hero ═══ */
+.hero {
+  background: linear-gradient(150deg, var(--c-primary), var(--c-primary-2));
+  padding: 40px 20px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 70%);
+}
+.hero-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  border: 2px solid rgba(255,255,255,0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+.hero-title {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+}
+.hero-text {
+  color: rgba(255,255,255,0.92);
+  font-size: 0.92rem;
+  font-weight: 600;
+  max-width: 500px;
+  margin: 0 auto 16px;
+  position: relative;
+  z-index: 2;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.22);
+  border: 1.5px solid rgba(255,255,255,0.4);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  position: relative;
+  z-index: 2;
+}
+
+/* ═══ Main Content ═══ */
+.main {
+  max-width: 900px;
+  margin: -30px auto 0;
+  padding: 0 16px;
+  position: relative;
+  z-index: 3;
+}
+.intro {
+  background: var(--c-surface);
+  border-radius: 24px;
+  padding: 24px 22px;
+  box-shadow: 0 12px 32px rgba(15,23,42,0.12);
+  border: 1px solid var(--c-border);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.intro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--c-primary), var(--c-primary-2));
+}
+.intro-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.intro-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+.intro-title {
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+.intro-date {
+  font-size: 0.75rem;
+  color: var(--c-text-soft);
+  font-weight: 700;
+  margin-top: 2px;
+}
+.intro-text {
+  font-size: 0.95rem;
+  color: var(--c-text-soft);
+  font-weight: 600;
+}
+
+/* ═══ Sections ═══ */
+.section {
+  background: var(--c-surface);
+  border-radius: 20px;
+  border: 1px solid var(--c-border);
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.06);
+  transition: all 0.3s;
+}
+.section:hover {
+  border-color: #FFE0BD;
+  box-shadow: 0 4px 14px rgba(15,23,42,0.08);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: right;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.section-header:hover {
+  background: linear-gradient(90deg, transparent, var(--c-primary-soft) 60%);
+}
+.section-num {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px -5px rgba(255,122,0,0.55);
+}
+.section-title {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--c-text);
+  line-height: 1.4;
+}
+.section-toggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--c-surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text-soft);
+  font-size: 0.8rem;
+  font-weight: 900;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.section.open .section-toggle {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  color: #fff;
+  transform: rotate(180deg);
+}
+.section-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.section.open .section-body {
+  max-height: 5000px;
+}
+.section-content {
+  padding: 0 18px 22px;
+  border-top: 1px solid var(--c-border);
+  padding-top: 18px;
+  font-size: 0.92rem;
+  color: var(--c-text-soft);
+  font-weight: 600;
+}
+.section-content p {
+  margin-bottom: 14px;
+}
+.section-content p:last-child {
+  margin-bottom: 0;
+}
+.section-content strong {
+  color: var(--c-text);
+  font-weight: 800;
+}
+
+/* ═══ Lists ═══ */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--c-text-soft);
+  font-weight: 600;
+}
+.list li::before {
+  content: '✓';
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary-soft);
+  border: 1.5px solid #FFE0BD;
+  color: var(--c-primary);
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ═══ Callout ═══ */
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+  border: 1.5px solid #FFD9A8;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 14px 0;
+}
+.callout-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.callout-content {
+  flex: 1;
+}
+.callout-title {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #9A3412;
+  margin-bottom: 4px;
+}
+.callout-text {
+  font-size: 0.85rem;
+  color: #7C2D12;
+  font-weight: 600;
+  line-height: 1.75;
+}
+.callout.info {
+  background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+  border-color: #BFDBFE;
+}
+.callout.info .callout-title { color: #1E40AF; }
+.callout.info .callout-text { color: #1E3A8A; }
+.callout.success {
+  background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+  border-color: #A7F3D0;
+}
+.callout.success .callout-title { color: #065F46; }
+.callout.success .callout-text { color: #064E3B; }
+
+/* ═══ Prohibited Grid ═══ */
+.prohibited-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+@media (min-width: 560px) {
+  .prohibited-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.prohibited-item {
+  background: linear-gradient(135deg, #FEF2F2, #FEE2E2);
+  border: 1.5px solid #FECACA;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #991B1B;
+  line-height: 1.4;
+}
+
+/* ═══ Contact ═══ */
+.contact {
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  border-radius: 24px;
+  padding: 28px 22px;
+  color: #fff;
+  margin-top: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(15,23,42,0.12);
+}
+.contact::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,122,0,0.35), transparent 70%);
+}
+.contact-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+.contact-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+}
+.contact-text {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.75);
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+  max-width: 400px;
+  margin-inline: auto;
+}
+.contact-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 9999px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: all 0.25s;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: #fff;
+}
+.contact-btn.wa {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  box-shadow: 0 8px 22px -8px rgba(37,211,102,0.8);
+}
+.contact-btn.wa:hover { transform: translateY(-2px); }
+.contact-btn.mail {
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.2);
+}
+.contact-btn.mail:hover { background: rgba(255,255,255,0.18); }
+
+/* ═══ Footer ═══ */
+.footer {
+  text-align: center;
+  padding: 30px 20px 40px;
+  color: var(--c-text-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--c-text);
+  font-weight: 900;
+  font-size: 0.92rem;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 10px 0 16px;
+}
+.footer-links a {
+  color: var(--c-text-soft);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+.footer-links a:hover { color: var(--c-primary); }
+
+/* ═══ Back to Top ═══ */
+.back-top {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 900;
+  box-shadow: 0 10px 25px -5px rgba(255,122,0,0.7);
+  transition: all 0.3s;
+  z-index: 500;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+.back-top.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.back-top:active { transform: scale(0.92); }
+
+/* ═══ Mobile ═══ */
+@media (max-width: 480px) {
+  .hero { padding: 30px 16px 50px; }
+  .hero-title { font-size: 1.5rem; }
+  .hero-text { font-size: 0.85rem; }
+  .hero-icon { width: 68px; height: 68px; font-size: 1.9rem; }
+  .main { padding: 0 12px; }
+  .intro { padding: 20px 16px; }
+  .section-header { padding: 14px; }
+  .section-content { padding: 0 14px 18px; padding-top: 14px; }
+  .section-num { width: 34px; height: 34px; font-size: 0.88rem; }
+  .section-title { font-size: 0.92rem; }
+  .contact { padding: 24px 18px; }
+  .prohibited-grid { grid-template-columns: 1fr 1fr; }
+  .prohibited-item { font-size: 0.75rem; padding: 8px 10px; }
+}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <button class="appbar-back" id="backBtn" aria-label="رجوع">←</button>
+  <div class="appbar-brand">
+    <div class="appbar-logo">
+      <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="BranZar">
+    </div>
+    <div>
+      <div class="appbar-title">الشروط والأحكام</div>
+      <div class="appbar-sub">BranZar • بران زار</div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-icon">🛡️</div>
+  <h1 class="hero-title">الشروط والأحكام</h1>
+  <p class="hero-text">اتفاقية استخدام منصة BranZar</p>
+  <div class="hero-badge">📅 آخر تحديث: 7 أكتوبر 2026</div>
+</section>
+
+<main class="main">
+
+  <div class="intro">
+    <div class="intro-head">
+      <div class="intro-icon">👋</div>
+      <div>
+        <div class="intro-title">مرحباً بك في BranZar</div>
+        <div class="intro-date">📅 آخر تحديث: 7 أكتوبر 2026</div>
+      </div>
+    </div>
+    <p class="intro-text">
+      BranZar هي منصة رقمية تهدف إلى جمع المتاجر والعلامات التجارية وأصحاب المنتجات والخدمات والعملاء في مكان واحد. باستخدامك للمنصة أو إنشاء حساب أو متجر أو نشر أي محتوى، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على أي جزء منها، يرجى عدم استخدام خدمات BranZar.
+    </p>
+  </div>
+
+  <!-- 1 -->
+  <section class="section open">
+    <button class="section-header" type="button">
+      <span class="section-num">1</span>
+      <span class="section-title">نطاق خدمات BranZar</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>توفر BranZar أدوات وخدمات رقمية تساعد المستخدمين على:</p>
+        <ul class="list">
+          <li>إنشاء وعرض المتاجر والعلامات التجارية.</li>
+          <li>إضافة المنتجات والخدمات.</li>
+          <li>عرض الصور والمعلومات والأسعار.</li>
+          <li>التواصل بين أصحاب المتاجر والعملاء.</li>
+          <li>اكتشاف المتاجر والمنتجات المختلفة.</li>
+          <li>الاستفادة من بعض الخدمات المجانية أو المدفوعة.</li>
+          <li>التقدم للحصول على مستويات التحقق أو التوثيق.</li>
+        </ul>
+        <p>قد تختلف الخدمات والمزايا المتاحة من وقت لآخر، ويحق لـ BranZar تطوير أو تعديل أو إضافة أو إيقاف أي ميزة وفقاً لاحتياجات المنصة.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">2</span>
+      <span class="section-title">الأهلية واستخدام المنصة</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يجب استخدام BranZar بطريقة قانونية ومسؤولة، وعدم استخدام المنصة بطريقة تؤدي إلى الإضرار بالمستخدمين أو بالمنصة أو بنيتها التقنية.</p>
+        <p><strong>عند استخدام BranZar، فإنك توافق على عدم:</strong></p>
+        <ul class="list">
+          <li>استخدام المنصة لأغراض غير قانونية.</li>
+          <li>محاولة الوصول إلى حسابات أو بيانات مستخدمين آخرين.</li>
+          <li>تجاوز أنظمة الحماية أو القيود التقنية.</li>
+          <li>استغلال أي خلل أو ثغرة في المنصة.</li>
+          <li>استخدام أدوات آلية بطريقة تؤثر على تشغيل المنصة.</li>
+          <li>إنشاء حسابات بهدف التضليل أو الاحتيال.</li>
+          <li>نشر محتوى يضر بالآخرين أو بالمنصة.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">3</span>
+      <span class="section-title">الحسابات والبيانات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>قد تتطلب بعض خدمات BranZar إنشاء حساب. يلتزم المستخدم عند التسجيل بتقديم معلومات صحيحة، ويتحمل مسؤولية المحافظة على سرية بيانات الدخول الخاصة به.</p>
+        <p>ويتحمل صاحب الحساب مسؤولية الأنشطة التي تتم من خلال حسابه، ما لم يثبت وجود استخدام غير مصرح به تم الإبلاغ عنه إلى BranZar.</p>
+        <p><strong>يجب على المستخدم إبلاغ BranZar عند اكتشاف:</strong></p>
+        <ul class="list">
+          <li>دخول غير مصرح به إلى الحساب.</li>
+          <li>فقدان أو كشف بيانات الدخول.</li>
+          <li>استخدام الحساب من شخص آخر دون إذن.</li>
+          <li>أي نشاط غير معتاد قد يشكل خطراً على الحساب.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">4</span>
+      <span class="section-title">المتاجر والعلامات التجارية</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>تتيح BranZar للمستخدمين إنشاء صفحات أو متاجر لعرض نشاطهم التجاري.</p>
+        <p><strong>ويتحمل صاحب المتجر المسؤولية الكاملة عن المعلومات التي يضيفها، بما في ذلك:</strong></p>
+        <ul class="list">
+          <li>اسم المتجر والشعار والصور.</li>
+          <li>وصف النشاط وبيانات التواصل.</li>
+          <li>المنتجات والخدمات والأسعار.</li>
+          <li>العروض والخصومات.</li>
+          <li>المعلومات المقدمة للعملاء.</li>
+        </ul>
+        <div class="callout">
+          <div class="callout-icon">ℹ️</div>
+          <div class="callout-content">
+            <div class="callout-title">ملاحظة مهمة</div>
+            <div class="callout-text">ظهور متجر على BranZar لا يعني أن المنصة مالكة أو شريكة في ذلك النشاط التجاري، ولا يمثل ضماناً لجودة منتجاته أو خدماته.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">5</span>
+      <span class="section-title">المنتجات والإعلانات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يجب أن تكون جميع المعلومات المتعلقة بالمنتجات والخدمات دقيقة وواضحة وغير مضللة. ويجب على صاحب المتجر التأكد من أن لديه الحق في عرض أو بيع المنتجات التي ينشرها.</p>
+        <p><strong>ويشمل ذلك المسؤولية عن:</strong></p>
+        <ul class="list">
+          <li>ملكية المنتج أو الحق في بيعه.</li>
+          <li>صحة الصور والوصف المستخدم.</li>
+          <li>السعر المعلن وحالة المنتج.</li>
+          <li>توفر المنتج وأي شروط أو قيود مرتبطة بالبيع.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">6</span>
+      <span class="section-title">المحتوى الذي يضيفه المستخدم</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يظل المستخدم مسؤولاً عن المحتوى الذي يقوم برفعه أو نشره على BranZar.</p>
+        <p><strong>ويجب ألا يتضمن المحتوى:</strong></p>
+        <ul class="list">
+          <li>معلومات كاذبة أو مضللة.</li>
+          <li>مواد منسوخة دون حق استخدامها.</li>
+          <li>انتهاكاً لحقوق الآخرين.</li>
+          <li>بيانات شخصية لأشخاص دون تصريح.</li>
+          <li>محتوى يحرض على العنف أو الكراهية.</li>
+          <li>روابط أو ملفات ضارة.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">7</span>
+      <span class="section-title">الأنشطة والمنتجات غير المسموح بها</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يحظر استخدام BranZar في بيع أو ترويج أو تسهيل أي نشاط مخالف للقوانين أو سياسات المنصة.</p>
+        <p><strong>ويشمل ذلك على سبيل المثال لا الحصر:</strong></p>
+        <div class="prohibited-grid">
+          <div class="prohibited-item">🚫 الأسلحة والذخائر</div>
+          <div class="prohibited-item">🚫 المخدرات والمواد المحظورة</div>
+          <div class="prohibited-item">🚫 الأدوية غير المرخصة</div>
+          <div class="prohibited-item">🚫 الوثائق المزورة</div>
+          <div class="prohibited-item">🚫 الحسابات المسروقة</div>
+          <div class="prohibited-item">🚫 البرامج غير المرخصة</div>
+          <div class="prohibited-item">🚫 المحتوى الإباحي</div>
+          <div class="prohibited-item">🚫 خدمات الاحتيال</div>
+          <div class="prohibited-item">🚫 البيانات الشخصية المسربة</div>
+        </div>
+        <div class="callout">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-content">
+            <div class="callout-title">البطاقات والخدمات المالية</div>
+            <div class="callout-text">يحظر عرض أو بيع أو تفعيل البطاقات البنكية أو المحافظ الإلكترونية أو الحسابات المالية أو خدمات التحويل أو العملات الرقمية، إلا إذا سمحت BranZar بذلك صراحة وبعد استيفاء المتطلبات النظامية.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">8</span>
+      <span class="section-title">التواصل بين العملاء وأصحاب المتاجر</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>تعمل BranZar على تسهيل وصول العملاء إلى المتاجر والتواصل معها. ولا يعني توفير وسيلة التواصل أن BranZar طرف في الاتفاق الذي يتم بين الطرفين.</p>
+        <p><strong>لذلك يجب على المستخدم قبل إتمام أي عملية أن يتحقق بنفسه من:</strong></p>
+        <ul class="list">
+          <li>هوية الطرف الآخر.</li>
+          <li>المنتج أو الخدمة.</li>
+          <li>السعر وطريقة الدفع.</li>
+          <li>مكان أو طريقة التسليم.</li>
+          <li>أي شروط أخرى متعلقة بالعملية.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">9</span>
+      <span class="section-title">المدفوعات والمعاملات المالية</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>ما لم تعلن BranZar صراحة عن توفير خدمة دفع أو تحصيل معينة، فإن BranZar لا تعتبر طرفاً في عمليات الدفع التي تتم بين البائع والمشتري.</p>
+        <p>ولا تضمن BranZar إتمام أي تحويل مالي أو تسليم منتج أو تنفيذ اتفاق بين المستخدمين.</p>
+        <p>وفي حال قدمت BranZar مستقبلاً خدمات مالية أو خدمات دفع داخل المنصة، فقد تخضع هذه الخدمات لشروط إضافية يتم عرضها للمستخدم قبل استخدامها.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">10</span>
+      <span class="section-title">التوثيق والعلامات المميزة</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>قد تقدم BranZar خدمة توثيق لبعض الحسابات أو المتاجر وفقاً للمعايير والإجراءات التي تحددها المنصة. وقد تطلب BranZar بعض البيانات أو المستندات للتحقق من هوية صاحب الحساب أو طبيعة النشاط التجاري.</p>
+        <p><strong>ظهور علامة التوثيق يعني أن BranZar أجرت عملية تحقق وفق الإجراءات المعتمدة لديها، ولا يعني أن BranZar تضمن:</strong></p>
+        <ul class="list">
+          <li>جودة المنتجات أو الخدمات.</li>
+          <li>الأسعار أو النتائج التجارية.</li>
+          <li>توفر المنتجات أو التزام المتجر بالاتفاقات.</li>
+        </ul>
+        <p>كما يحق لـ BranZar إعادة مراجعة التوثيق أو تعليقه أو إلغائه إذا ظهرت معلومات جديدة أو تبين وجود بيانات غير صحيحة.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">11</span>
+      <span class="section-title">الخدمات المجانية والمدفوعة</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>قد توفر BranZar بعض الخدمات دون مقابل، بينما قد تكون بعض الميزات أو الخدمات الأخرى مدفوعة.</p>
+        <p>قبل شراء أي خدمة، يتم عرض المعلومات الأساسية المتعلقة بها، مثل السعر وطبيعة الخدمة ومدة الاستفادة منها.</p>
+        <p>وتختلف شروط الإلغاء أو الاسترداد حسب نوع الخدمة المقدمة. وبمجرد تنفيذ الخدمة الرقمية أو بدء الاستفادة منها، قد لا يكون استرداد الرسوم متاحاً، إلا إذا قررت BranZar خلاف ذلك أو كان الاسترداد مطلوباً بموجب القانون المعمول به.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">12</span>
+      <span class="section-title">العروض والاشتراكات والخدمات الترويجية</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>قد توفر BranZar عروضاً أو مزايا مؤقتة أو خدمات ترويجية للمتاجر والمستخدمين.</p>
+        <p><strong>ويجوز أن تكون هذه العروض:</strong></p>
+        <ul class="list">
+          <li>محددة بمدة زمنية.</li>
+          <li>محددة بعدد معين من المستخدمين.</li>
+          <li>مرتبطة بشروط معينة.</li>
+          <li>قابلة للتغيير أو الإيقاف.</li>
+        </ul>
+        <p>ولا تعتبر أي ميزة مجانية أو ترويجية وعداً باستمرارها إلى أجل غير محدد.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">13</span>
+      <span class="section-title">التقييمات والمعلومات التي يقدمها المستخدمون</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>إذا أتاحت BranZar مستقبلاً التقييمات أو المراجعات أو التعليقات، فيجب أن تعكس تجربة حقيقية وألا تستخدم للتلاعب بسمعة متجر أو منافس.</p>
+        <p><strong>ويمنع استخدام التقييمات من أجل:</strong></p>
+        <ul class="list">
+          <li>نشر معلومات كاذبة.</li>
+          <li>ابتزاز أصحاب المتاجر.</li>
+          <li>تشويه السمعة عمداً.</li>
+          <li>إنشاء تقييمات وهمية.</li>
+          <li>تقديم مكافآت أو حوافز بطريقة مخالفة.</li>
+        </ul>
+        <p>ويحق للمنصة إزالة أي تقييم أو تعليق يخالف سياساتها.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">14</span>
+      <span class="section-title">البلاغات والمخالفات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يمكن للمستخدمين الإبلاغ عن الحسابات أو المتاجر أو المنتجات أو المحتوى الذي يعتقدون أنه يخالف شروط BranZar.</p>
+        <p>بعد استلام البلاغ، قد تقوم BranZar بمراجعة المعلومات المتاحة وطلب تفاصيل إضافية عند الحاجة.</p>
+        <p><strong>وقد تشمل الإجراءات:</strong></p>
+        <ul class="list">
+          <li>إزالة المحتوى أو إخفاء المنتج.</li>
+          <li>تقييد بعض الميزات.</li>
+          <li>تعليق المتجر أو إيقاف الحساب.</li>
+          <li>إلغاء التوثيق.</li>
+          <li>اتخاذ أي إجراء آخر مناسب للمخالفة.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">15</span>
+      <span class="section-title">تعليق أو إنهاء الحساب</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>تسعى BranZar إلى الحفاظ على بيئة آمنة وموثوقة، ولذلك يجوز لها تقييد أو تعليق أو إنهاء حساب أو متجر في حالات تشمل:</p>
+        <ul class="list">
+          <li>مخالفة هذه الشروط.</li>
+          <li>تقديم بيانات أو مستندات غير صحيحة.</li>
+          <li>الاحتيال أو محاولة الاحتيال.</li>
+          <li>إساءة استخدام المنصة.</li>
+          <li>الإضرار بالمستخدمين.</li>
+          <li>محاولة اختراق المنصة.</li>
+          <li>تكرار المخالفات.</li>
+          <li>استخدام BranZar في نشاط غير قانوني.</li>
+        </ul>
+        <p>وقد يتم اتخاذ بعض الإجراءات دون إشعار مسبق عندما يكون ذلك ضرورياً لمنع الضرر أو حماية المستخدمين والمنصة.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">16</span>
+      <span class="section-title">حماية المنصة والأنظمة</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يحظر القيام بأي نشاط قد يؤثر على استقرار BranZar أو أمنها، بما في ذلك:</p>
+        <ul class="list">
+          <li>محاولة اختراق الخوادم أو قواعد البيانات.</li>
+          <li>اختبار الثغرات دون تصريح.</li>
+          <li>إرسال طلبات أو بيانات ضارة.</li>
+          <li>نشر برمجيات خبيثة.</li>
+          <li>محاولة تعطيل الموقع أو التطبيق.</li>
+          <li>استخراج البيانات بطريقة غير مصرح بها.</li>
+        </ul>
+        <p>إذا اكتشف المستخدم ثغرة أمنية حقيقية، فمن الأفضل الإبلاغ عنها عبر قنوات التواصل الرسمية بدلاً من استغلالها أو نشر تفاصيلها بطريقة قد تعرض المستخدمين للخطر.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">17</span>
+      <span class="section-title">الملكية الفكرية لـ BranZar</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>تعتبر هوية BranZar ومكوناتها الرقمية، بما في ذلك الاسم والشعار والتصميمات والواجهات والبرمجيات والنصوص والعناصر البصرية، من الأصول التي تحميها حقوق الملكية الفكرية المعمول بها.</p>
+        <p>ولا يجوز نسخ أو إعادة بيع أو إعادة توزيع أو استغلال هذه العناصر تجارياً دون الحصول على إذن مناسب. ولا تمنح شروط استخدام BranZar المستخدم حق ملكية أي جزء من المنصة لمجرد استخدامه للخدمة.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">18</span>
+      <span class="section-title">المحتوى الذي يرفعه أصحاب المتاجر</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يحتفظ المستخدم بحقوقه في المحتوى الذي يملكه ويقوم بإضافته إلى BranZar، مثل صور المنتجات والشعارات والوصف التجاري، مع تأكيده أن لديه الحق في استخدام هذا المحتوى.</p>
+        <p>ومن خلال نشر المحتوى على BranZar، يمنح المستخدم المنصة الإذن اللازم لاستضافة المحتوى وعرضه ومعالجته وتشغيله ضمن الخدمات، بما في ذلك عرضه للمستخدمين والزوار وفقاً لطبيعة الخدمة. ولا يعني ذلك انتقال ملكية المحتوى إلى BranZar.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">19</span>
+      <span class="section-title">مسؤولية المستخدم</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>المستخدم مسؤول عن القرارات التي يتخذها اعتماداً على المعلومات المنشورة في المنصة.</p>
+        <p>وعلى المستخدم اتخاذ الاحتياطات المناسبة قبل التعامل مع أي متجر أو منتج، خصوصاً عند وجود مبالغ مالية أو عمليات تسليم أو معلومات حساسة. وتبقى مسؤولية صاحب المتجر قائمة تجاه صحة بيانات نشاطه ومنتجاته والخدمات التي يقدمها.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">20</span>
+      <span class="section-title">حدود مسؤولية BranZar</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>BranZar تعمل كمنصة تقنية لعرض المتاجر والمنتجات وتسهيل الوصول والتواصل بين المستخدمين.</p>
+        <p><strong>وبقدر ما يسمح به القانون، لا تتحمل BranZar مسؤولية:</strong></p>
+        <ul class="list">
+          <li>جودة المنتجات أو الخدمات.</li>
+          <li>دقة جميع البيانات التي ينشرها المستخدمون.</li>
+          <li>التزام البائع أو المشتري بالاتفاق.</li>
+          <li>التأخر في التسليم.</li>
+          <li>خسائر الصفقات التي تتم بين المستخدمين.</li>
+          <li>سوء استخدام المنتج.</li>
+          <li>الاحتيال الذي يتم خارج أنظمة BranZar.</li>
+          <li>أي أضرار تنتج عن استخدام المستخدم للمنصة بطريقة مخالفة.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">21</span>
+      <span class="section-title">توفر المنصة والتحديثات التقنية</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>تعمل BranZar على إبقاء خدماتها متاحة بصورة مستقرة، إلا أن المنصة قد تتعرض أحياناً إلى:</p>
+        <ul class="list">
+          <li>أعمال صيانة.</li>
+          <li>تحديثات تقنية.</li>
+          <li>أعطال مؤقتة.</li>
+          <li>مشاكل في خدمات الاستضافة أو مزودي الخدمات الخارجيين.</li>
+          <li>ظروف تقنية أو أمنية خارجة عن السيطرة.</li>
+        </ul>
+        <p>ويجوز لـ BranZar إيقاف جزء من الخدمة مؤقتاً عند الحاجة إلى الصيانة أو الحماية أو التطوير.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 22 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">22</span>
+      <span class="section-title">الخدمات الخارجية</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>قد تعتمد بعض وظائف BranZar على خدمات أو تقنيات تقدمها جهات خارجية، مثل خدمات الاستضافة أو التخزين أو الإشعارات أو التحليلات أو خدمات الاتصال.</p>
+        <p>وقد تخضع هذه الخدمات لشروط وسياسات مستقلة يقدمها مزودوها. ولا تتحمل BranZar مسؤولية الأعطال الناتجة حصراً عن توقف أو تغيير خدمة خارجية لا تملك BranZar السيطرة عليها.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 23 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">23</span>
+      <span class="section-title">الخصوصية والبيانات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>تتعامل BranZar مع بيانات المستخدمين وفقاً لسياسة الخصوصية الخاصة بالمنصة.</p>
+        <p>وباستخدام BranZar، يقر المستخدم بأنه اطلع على سياسة الخصوصية وفهم كيفية التعامل مع البيانات وفقاً لما توضحه السياسة.</p>
+        <p>يجب على المستخدم أيضاً عدم نشر بيانات شخصية تخص أشخاصاً آخرين دون وجود أساس أو إذن مناسب لذلك.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 24 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">24</span>
+      <span class="section-title">الروابط والمحتوى الخارجي</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>قد تحتوي BranZar على روابط أو وسائل انتقال إلى مواقع أو خدمات خارجية. هذه الخدمات لا تخضع بالضرورة لإدارة BranZar، ولذلك يجب على المستخدم مراجعة شروط وسياسات الجهة الخارجية قبل استخدامها.</p>
+        <p>ولا تتحمل BranZar مسؤولية محتوى أو خدمات المواقع الخارجية التي لا تملكها أو تديرها.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 25 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">25</span>
+      <span class="section-title">التعديلات على الشروط</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>قد تقوم BranZar بتحديث هذه الشروط من وقت لآخر نتيجة لتطور الخدمات أو إضافة ميزات جديدة أو تغير المتطلبات القانونية والتشغيلية.</p>
+        <p>سيتم نشر النسخة المحدثة عبر المنصة مع توضيح تاريخ آخر تحديث. ويُعد استمرار استخدام BranZar بعد نشر التعديلات قبولاً بالشروط الجديدة، ما لم ينص القانون على خلاف ذلك.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 26 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">26</span>
+      <span class="section-title">إغلاق الحساب</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يمكن للمستخدم التوقف عن استخدام BranZar أو طلب إنهاء حسابه وفق الإمكانيات والإجراءات المتاحة داخل المنصة.</p>
+        <p>وقد تبقى بعض البيانات أو السجلات محفوظة لفترة معينة عندما يكون ذلك ضرورياً للأمان أو المتطلبات القانونية أو لمنع الاحتيال أو حل النزاعات أو تنفيذ الالتزامات النظامية.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 27 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">27</span>
+      <span class="section-title">القانون وتسوية النزاعات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>تُفسر هذه الشروط وتطبق وفقاً للقوانين والأنظمة السارية في الدولة التي تعمل ضمنها BranZar، وبما لا يتعارض مع القواعد القانونية الإلزامية المطبقة على المستخدم.</p>
+        <p>وفي حال حدوث نزاع، تسعى BranZar والمستخدم أولاً إلى الوصول إلى حل ودي، وإذا تعذر ذلك يمكن اللجوء إلى الجهات المختصة وفقاً للقانون.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 28 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">28</span>
+      <span class="section-title">قابلية فصل البنود</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>إذا اعتُبر أحد بنود هذه الشروط غير صالح أو غير قابل للتنفيذ بموجب القانون، فلا يؤثر ذلك بالضرورة على بقية البنود، وتظل الأحكام الأخرى سارية بالقدر الذي يسمح به القانون.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 29 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">29</span>
+      <span class="section-title">عدم التنازل عن الحقوق</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>عدم قيام BranZar بتطبيق أحد بنود هذه الشروط في موقف معين لا يعني التخلي عن حقها في تطبيق البند نفسه أو أي بند آخر في المستقبل.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 30 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">30</span>
+      <span class="section-title">التواصل مع BranZar</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>إذا كان لديك استفسار حول هذه الشروط، أو أردت الإبلاغ عن متجر أو منتج أو حساب، يمكنك التواصل مع BranZar من خلال قنوات التواصل الرسمية المتاحة داخل الموقع أو التطبيق.</p>
+        <p>نرحب بالملاحظات والاقتراحات التي تساعدنا على تطوير المنصة وتحسين تجربة المستخدمين.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- إقرار -->
+  <div class="intro" style="margin-top:20px;">
+    <div class="intro-head">
+      <div class="intro-icon">✓</div>
+      <div>
+        <div class="intro-title">إقرار المستخدم</div>
+      </div>
+    </div>
+    <p class="intro-text">
+      باستخدامك BranZar أو إنشاء حساب أو متجر أو نشر منتجات من خلالها، فإنك تقر بأنك قرأت هذه الشروط وفهمتها وتوافق على الالتزام بها وبسياسات المنصة ذات الصلة.
+    </p>
+    <p class="intro-text" style="margin-top:10px;color:var(--c-primary);font-weight:900;">
+      BranZar — كل البراندات في مكان واحد.
+    </p>
+  </div>
+
+  <!-- Contact -->
+  <div class="contact">
+    <div class="contact-icon">💬</div>
+    <h3 class="contact-title">هل لديك استفسار؟</h3>
+    <p class="contact-text">فريق خدمة العملاء جاهز لمساعدتك في أي وقت</p>
+    <div class="contact-buttons">
+      <a href="https://wa.me/249908280115" target="_blank" rel="noopener" class="contact-btn wa">💬 واتساب</a>
+      <a href="mailto:support@branzar.app" class="contact-btn mail">✉️ البريد الإلكتروني</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">🛡️ BranZar – بران زار</div>
+    <p>أكبر سوق إلكتروني لأشهر البراندات</p>
+    <div class="footer-links">
+      <a href="/">الرئيسية</a>
+      <a href="privacy.html">سياسة الخصوصية</a>
+      <a href="about.html">عن المنصة</a>
+    </div>
+    <p style="margin-top:16px;opacity:0.8;">© 2026 BranZar — جميع الحقوق محفوظة</p>
+  </footer>
+
+</main>
+
+<button class="back-top" id="backTop" aria-label="العودة للأعلى">↑</button>
+
+<script>
+(function() {
+  // Accordion
+  var sections = document.querySelectorAll('.section');
+  sections.forEach(function(section) {
+    var header = section.querySelector('.section-header');
+    if (!header) return;
+    header.addEventListener('click', function() {
+      var isOpen = section.classList.contains('open');
+      sections.forEach(function(s) {
+        if (s !== section) s.classList.remove('open');
+      });
+      section.classList.toggle('open', !isOpen);
+      if ('vibrate' in navigator) {
+        try { navigator.vibrate(8); } catch(e){}
+      }
+    });
+  });
+
+  // Back button
+  var backBtn = document.getElementById('backBtn');
+  if (backBtn) {
+    backBtn.addEventListener('click', function() {
+      if (document.referrer && document.referrer.indexOf(location.hostname) > -1) {
+        history.back();
+      } else {
+        window.location.href = '/';
+      }
+    });
+  }
+
+  // Back to top
+  var backTop = document.getElementById('backTop');
+  if (backTop) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 400) {
+        backTop.classList.add('show');
+      } else {
+        backTop.classList.remove('show');
+      }
+    }, { passive: true });
+    backTop.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
