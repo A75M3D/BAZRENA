@@ -48,10 +48,224 @@
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link rel="stylesheet" href="styles.css">
+
+<style>
+/* ═══════════════════════════════════════════════════
+   🎨 SVG Icon Utilities & Dynamic Switchers
+   ═══════════════════════════════════════════════════ */
+.svg-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.svg-spin { animation: svgSpin 0.85s linear infinite; }
+@keyframes svgSpin { to { transform: rotate(360deg); } }
+
+/* 🌙 Theme toggle: moon (light mode) ↔ sun (dark mode) */
+.theme-icon-sun { display: none; }
+body.theme-dark .theme-icon-moon { display: none !important; }
+body.theme-dark .theme-icon-sun { display: inline-block !important; }
+
+/* ❤️ Follow button: heart (not following) ↔ check (following) */
+.follow-icon-check { display: none; }
+#storeFollowButton.following .follow-icon-heart { display: none !important; }
+#storeFollowButton.following .follow-icon-check { display: inline-block !important; }
+
+/* 🚫 Hide any FA fallback <i> tags we keep for JS compatibility */
+i.fa-fallback { display: none !important; }
+</style>
 </head>
 <body class="font-cairo">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     🎨 SVG ICON SPRITE — كل الأيقونات الثابتة هنا
+     استخدمها بـ: <svg class="svg-icon"><use href="#i-xxx"/></svg>
+     ═══════════════════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" focusable="false">
+
+  <!-- ▸ Header / Toolbar -->
+  <symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="6" y="2" width="12" height="20" rx="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+  </symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+    <line x1="8" y1="21" x2="16" y2="21"/>
+    <line x1="12" y1="17" x2="12" y2="21"/>
+  </symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+  </symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="21" r="1"/>
+    <circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </symbol>
+
+  <!-- ▸ Search -->
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="7"/>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="15" y1="9" x2="9" y2="15"/>
+    <line x1="9" y1="9" x2="15" y2="15"/>
+  </symbol>
+
+  <!-- ▸ Navigation Chevrons -->
+  <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="9 18 15 12 9 6"/>
+  </symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="15 18 9 12 15 6"/>
+  </symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6 9 12 15 18 9"/>
+  </symbol>
+
+  <!-- ▸ Basic UI -->
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/>
+    <line x1="5" y1="12" x2="19" y2="12"/>
+  </symbol>
+
+  <!-- ▸ Share -->
+  <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="18" cy="5" r="3"/>
+    <circle cx="6" cy="12" r="3"/>
+    <circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+  </symbol>
+  <symbol id="i-share-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+    <polyline points="16 6 12 2 8 6"/>
+    <line x1="12" y1="2" x2="12" y2="15"/>
+  </symbol>
+
+  <!-- ▸ Store / Commerce -->
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+    <circle cx="7" cy="7" r="0.5"/>
+  </symbol>
+  <symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+    <circle cx="12" cy="10" r="3"/>
+  </symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </symbol>
+  <symbol id="i-heart-filled" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </symbol>
+  <symbol id="i-shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <path d="M16 10a4 4 0 0 1-8 0"/>
+  </symbol>
+  <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l1-5h16l1 5"/>
+    <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/>
+    <line x1="3" y1="9" x2="21" y2="9"/>
+    <path d="M9 22V12h6v10"/>
+  </symbol>
+  <symbol id="i-store-slash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l1-5h16l1 5"/>
+    <path d="M3 9v10a2 2 0 0 0 2 2h6"/>
+    <line x1="3" y1="9" x2="21" y2="9"/>
+    <line x1="17" y1="14" x2="22" y2="19"/>
+    <line x1="22" y1="14" x2="17" y2="19"/>
+  </symbol>
+  <symbol id="i-box-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 9l10-5 10 5v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/>
+    <polyline points="2 9 12 14 22 9"/>
+    <line x1="12" y1="14" x2="12" y2="22"/>
+  </symbol>
+  <symbol id="i-align-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="21" y1="6" x2="7" y2="6"/>
+    <line x1="21" y1="12" x2="3" y2="12"/>
+    <line x1="21" y1="18" x2="9" y2="18"/>
+  </symbol>
+
+  <!-- ▸ Contact -->
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </symbol>
+  <symbol id="i-whatsapp" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </symbol>
+
+  <!-- ▸ Account / Nav -->
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+    <polyline points="9 22 9 12 15 12 15 22"/>
+  </symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+    <polyline points="2 17 12 22 22 17"/>
+    <polyline points="2 12 12 17 22 12"/>
+  </symbol>
+  <symbol id="i-user-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+    <circle cx="12" cy="7" r="4"/>
+  </symbol>
+  <symbol id="i-log-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+    <polyline points="10 17 15 12 10 7"/>
+    <line x1="15" y1="12" x2="3" y2="12"/>
+  </symbol>
+
+  <!-- ▸ Update / Install / Notifications -->
+  <symbol id="i-cloud-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="8 17 12 21 16 17"/>
+    <line x1="12" y1="12" x2="12" y2="21"/>
+    <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/>
+  </symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+  </symbol>
+
+  <!-- ▸ Loader -->
+  <symbol id="i-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+  </symbol>
+  <symbol id="i-plus-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+    <line x1="12" y1="8" x2="12" y2="16"/>
+    <line x1="8" y1="12" x2="16" y2="12"/>
+  </symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+    <polyline points="22 4 12 14.01 9 11.01"/>
+  </symbol>
+
+</svg>
 
 <div id="bzrSplash" role="status" aria-label="جاري التحميل">
   <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="bzr-splash-logo" alt="BranZar" fetchpriority="high">
@@ -68,17 +282,23 @@
     </button>
     <div class="bzr-app-actions">
       <div class="view-toggle-pill" role="tablist" aria-label="وضع العرض">
-        <button id="viewMobileBtn" data-view="mobile" role="tab" aria-label="وضع الهاتف" title="وضع الهاتف"><i class="fas fa-mobile-alt" aria-hidden="true"></i></button>
-        <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب" title="وضع سطح المكتب"><i class="fas fa-desktop" aria-hidden="true"></i></button>
+        <button id="viewMobileBtn" data-view="mobile" role="tab" aria-label="وضع الهاتف" title="وضع الهاتف">
+          <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-smartphone"/></svg>
+        </button>
+        <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب" title="وضع سطح المكتب">
+          <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-monitor"/></svg>
+        </button>
       </div>
-      <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن"><i class="fas fa-moon" aria-hidden="true"></i></button>
+
+      <!-- 🌙 Theme toggle — hybrid (SVG + hidden <i> for JS compatibility) -->
+      <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن">
+        <i class="fas fa-moon fa-fallback" aria-hidden="true"></i>
+        <svg class="svg-icon theme-icon-moon" width="20" height="20" aria-hidden="true"><use href="#i-moon"/></svg>
+        <svg class="svg-icon theme-icon-sun" width="20" height="20" aria-hidden="true"><use href="#i-sun"/></svg>
+      </button>
 
       <button id="cartButton" class="bzr-cart-btn" aria-label="عرض سلة التسوق">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
+        <svg class="svg-icon" width="22" height="22" aria-hidden="true"><use href="#i-cart"/></svg>
         <span id="cartCount" class="bzr-cart-badge" style="display:none;" aria-live="polite">0</span>
       </button>
     </div>
@@ -88,9 +308,11 @@
 <div class="bzr-search-bar-wrap">
   <div class="bzr-search-inner">
     <div class="bzr-search-input" id="bzrSearchWrapper">
-      <i class="fas fa-search" aria-hidden="true"></i>
+      <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-search"/></svg>
       <input id="searchInput" type="search" placeholder="ابحث عن متجر، منتج أو فئة..." autocomplete="off" aria-label="البحث" maxlength="100">
-      <button class="search-clear" id="searchClearBtn" aria-label="مسح البحث"><i class="fas fa-times-circle" aria-hidden="true"></i></button>
+      <button class="search-clear" id="searchClearBtn" aria-label="مسح البحث">
+        <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-x-circle"/></svg>
+      </button>
     </div>
   </div>
 </div>
@@ -102,7 +324,9 @@
     <div class="bzr-container">
       <div class="section-header">
         <div class="section-title-group">
-          <div class="section-icon-circle"><i class="fas fa-heart" aria-hidden="true"></i></div>
+          <div class="section-icon-circle">
+            <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-heart-filled"/></svg>
+          </div>
           <div>
             <h2 class="section-title">المتاجر التي تتابعها</h2>
           </div>
@@ -120,17 +344,21 @@
           <h2 class="section-title-lg">المتاجر المميزة</h2>
         </div>
         <div class="nav-buttons">
-          <button id="prevStoresBtn" class="scroll-btn" aria-label="السابق"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
-          <button id="nextStoresBtn" class="scroll-btn" aria-label="التالي"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+          <button id="prevStoresBtn" class="scroll-btn" aria-label="السابق">
+            <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+          </button>
+          <button id="nextStoresBtn" class="scroll-btn" aria-label="التالي">
+            <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+          </button>
         </div>
       </div>
       <div id="storesScrollContainer" class="stores-scroll-container"></div>
       <div id="storesLoader" class="loader hidden">
-        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+        <svg class="svg-icon svg-spin" width="24" height="24" aria-hidden="true"><use href="#i-spinner"/></svg>
         <p>جاري تحميل المتاجر...</p>
       </div>
       <div id="storesEmpty" class="empty-state hidden">
-        <i class="fas fa-store-slash" aria-hidden="true"></i>
+        <svg class="svg-icon" width="48" height="48" aria-hidden="true"><use href="#i-store-slash"/></svg>
         <p id="storesErrorMessage">خطأ في الشبكة الرجاء اعادة المحاولة⚠️</p>
         <button id="retryStoresBtn" class="btn-primary ripple">إعادة المحاولة</button>
       </div>
@@ -143,8 +371,12 @@
       <h2 class="section-title-md">الفئات</h2>
 
       <div class="nav-buttons">
-        <button id="prevCategoriesBtn" class="scroll-btn" aria-label="السابق"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
-        <button id="nextCategoriesBtn" class="scroll-btn" aria-label="التالي"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+        <button id="prevCategoriesBtn" class="scroll-btn" aria-label="السابق">
+          <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+        </button>
+        <button id="nextCategoriesBtn" class="scroll-btn" aria-label="التالي">
+          <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+        </button>
       </div>
     </div>
     <div id="categoriesContainer" class="categories-scroll-container"></div>
@@ -156,15 +388,18 @@
       <h2 class="section-title-lg">جميع المنتجات</h2>
       <div id="allProductsGrid"></div>
       <div id="allProductsLoader" class="loader hidden">
-        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+        <svg class="svg-icon svg-spin" width="24" height="24" aria-hidden="true"><use href="#i-spinner"/></svg>
         <p>جاري تحميل المنتجات...</p>
       </div>
       <div id="allProductsEmpty" class="empty-state hidden">
-        <i class="fas fa-box-open" aria-hidden="true"></i>
+        <svg class="svg-icon" width="48" height="48" aria-hidden="true"><use href="#i-box-open"/></svg>
         <p>لا توجد منتجات في هذه الفئة</p>
       </div>
       <div class="load-more-wrap">
-        <button id="loadMoreProductsBtn" class="load-more-btn ripple hidden"><span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+        <button id="loadMoreProductsBtn" class="load-more-btn ripple hidden">
+          <span>عرض المزيد</span>
+          <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+        </button>
       </div>
     </div>
   </section>
@@ -176,8 +411,12 @@
   <div class="modal-content">
     <div class="store-cover-wrap">
       <img id="storeCoverImage" src="" alt="غلاف المتجر">
-      <button id="closeStoreModal" class="store-close-btn" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
-      <button id="storeShareBtn" class="store-share-btn" type="button" aria-label="مشاركة"><i class="fas fa-share-alt" aria-hidden="true"></i></button>
+      <button id="closeStoreModal" class="store-close-btn" aria-label="إغلاق">
+        <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+      <button id="storeShareBtn" class="store-share-btn" type="button" aria-label="مشاركة">
+        <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-share"/></svg>
+      </button>
     </div>
     <div class="store-info-card">
       <div class="store-header-row">
@@ -185,7 +424,10 @@
         <div class="store-header-info">
           <h3 id="storeName" class="store-header-name"></h3>
           <div class="store-header-meta">
-            <span class="store-meta-category" id="storeCategory"><i class="fas fa-tag" aria-hidden="true"></i><span>عام</span></span>
+            <span class="store-meta-category" id="storeCategory">
+              <svg class="svg-icon" width="12" height="12" aria-hidden="true"><use href="#i-tag"/></svg>
+              <span>عام</span>
+            </span>
           </div>
         </div>
       </div>
@@ -195,7 +437,7 @@
       <!-- 🆕 v9.10: صف الموقع -->
       <div id="storeLocationRow" class="store-location-row" aria-label="موقع المتجر">
         <div class="loc-icon">
-          <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+          <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-map-pin"/></svg>
         </div>
         <div class="loc-text">
           <div class="loc-label">موقع المتجر</div>
@@ -204,10 +446,30 @@
       </div>
 
       <div class="store-actions-grid">
-        <button id="storeFollowButton" class="store-action-btn primary ripple" type="button"><i class="fas fa-heart" aria-hidden="true"></i><span id="storeFollowText">متابعة</span></button>
-        <div class="store-action-btn static"><i class="fas fa-users" aria-hidden="true"></i><span id="storeFollowers">0</span><span>متابع</span></div>
-        <a id="storeWhatsAppButton" href="#" target="_blank" rel="noopener noreferrer" class="store-action-btn ripple"><span class="icon-circle"><i class="fab fa-whatsapp" aria-hidden="true"></i></span><span>واتساب</span></a>
-        <a id="storeCallButton" href="#" class="store-action-btn ripple"><span class="icon-circle"><i class="fas fa-phone" aria-hidden="true"></i></span><span>اتصال</span></a>
+        <!-- ❤️ Follow button — hybrid for JS class swap -->
+        <button id="storeFollowButton" class="store-action-btn primary ripple" type="button">
+          <i class="fas fa-heart fa-fallback" aria-hidden="true"></i>
+          <svg class="svg-icon follow-icon-heart" width="18" height="18" aria-hidden="true"><use href="#i-heart"/></svg>
+          <svg class="svg-icon follow-icon-check" width="18" height="18" aria-hidden="true"><use href="#i-check"/></svg>
+          <span id="storeFollowText">متابعة</span>
+        </button>
+        <div class="store-action-btn static">
+          <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-users"/></svg>
+          <span id="storeFollowers">0</span>
+          <span>متابع</span>
+        </div>
+        <a id="storeWhatsAppButton" href="#" target="_blank" rel="noopener noreferrer" class="store-action-btn ripple">
+          <span class="icon-circle">
+            <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+          </span>
+          <span>واتساب</span>
+        </a>
+        <a id="storeCallButton" href="#" class="store-action-btn ripple">
+          <span class="icon-circle">
+            <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-phone"/></svg>
+          </span>
+          <span>اتصال</span>
+        </a>
       </div>
 
       <div id="storeCategoriesTabs" class="store-categories-tabs" role="tablist" aria-label="فئات المتجر"></div>
@@ -215,12 +477,15 @@
     <div class="divider-strip"></div>
     <div class="store-products-section">
       <div class="store-products-header">
-        <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+        <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-shopping-bag"/></svg>
         <h4>منتجات المتجر</h4>
       </div>
       <div id="storeProductsGrid" class="store-products-grid"></div>
       <div class="load-more-wrap">
-        <button id="loadMoreStoreProductsBtn" class="load-more-btn ripple hidden"><span>عرض المزيد</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+        <button id="loadMoreStoreProductsBtn" class="load-more-btn ripple hidden">
+          <span>عرض المزيد</span>
+          <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -229,7 +494,9 @@
 <!-- PRODUCT MODAL -->
 <div id="productModal" class="product-modal hidden" role="dialog" aria-modal="true" aria-labelledby="productModalName">
   <div class="product-modal-content">
-    <button id="closeProductModal" class="icon-btn modal-close" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <button id="closeProductModal" class="icon-btn modal-close" aria-label="إغلاق">
+      <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-x"/></svg>
+    </button>
     <div class="product-modal-grid">
       <div class="product-modal-left">
         <div class="product-modal-image-wrapper"><img id="productModalImage" src="" alt="صورة المنتج"></div>
@@ -244,7 +511,7 @@
       <div class="product-modal-right">
         <h2 id="productModalName"></h2>
         <div class="product-store-row">
-          <i class="fas fa-store" aria-hidden="true"></i>
+          <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-store"/></svg>
           <span id="productModalStore">—</span>
         </div>
 
@@ -256,15 +523,21 @@
         <!-- 🆕 v9.10: وصف المنتج -->
         <div id="productModalDesc" class="product-modal-desc" aria-label="وصف المنتج">
           <div class="desc-title">
-            <i class="fas fa-align-right" aria-hidden="true"></i>
+            <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-align-right"/></svg>
             <span>وصف المنتج</span>
           </div>
           <div id="productModalDescText" class="desc-text"></div>
         </div>
 
         <div class="product-actions">
-          <button id="addToCartFromModal" class="btn-primary ripple"><i class="fas fa-shopping-bag" aria-hidden="true"></i><span>أضف إلى السلة</span></button>
-          <button id="buyNowFromModal" class="btn-whatsapp ripple"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>شراء مباشر عبر واتساب</span></button>
+          <button id="addToCartFromModal" class="btn-primary ripple">
+            <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-shopping-bag"/></svg>
+            <span>أضف إلى السلة</span>
+          </button>
+          <button id="buyNowFromModal" class="btn-whatsapp ripple">
+            <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+            <span>شراء مباشر عبر واتساب</span>
+          </button>
         </div>
       </div>
     </div>
@@ -277,21 +550,22 @@
   <div class="cart-header">
     <div class="cart-header-title">
       <div class="cart-icon-circle">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
+        <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-cart"/></svg>
       </div>
       <h2 id="cartTitle">سلة التسوق</h2>
     </div>
-    <button id="closeCart" class="icon-btn" aria-label="إغلاق السلة"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <button id="closeCart" class="icon-btn" aria-label="إغلاق السلة">
+      <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-x"/></svg>
+    </button>
   </div>
   <div id="cartItems" class="cart-items"></div>
   <div class="cart-footer">
     <div id="cartTotal" class="cart-total"><span>المجموع:</span><span>0 ج.س</span></div>
     <button id="continueShopping" class="btn-ghost ripple">مواصلة التسوق</button>
-    <button id="whatsappOrder" class="btn-whatsapp ripple"><i class="fab fa-whatsapp" aria-hidden="true"></i><span>طلب السلة عبر واتساب</span></button>
+    <button id="whatsappOrder" class="btn-whatsapp ripple">
+      <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+      <span>طلب السلة عبر واتساب</span>
+    </button>
   </div>
 </div>
 
@@ -300,7 +574,9 @@
   <div class="account-overlay" id="accountOverlay"></div>
   <div class="account-sheet">
     <div class="account-handle"></div>
-    <button id="closeAccountModal" class="account-close-btn" aria-label="إغلاق"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <button id="closeAccountModal" class="account-close-btn" aria-label="إغلاق">
+      <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-x"/></svg>
+    </button>
     <div class="account-header">
       <div class="account-avatar"><img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="BranZar"></div>
       <div class="account-welcome">مرحباً بك في</div>
@@ -308,27 +584,41 @@
     </div>
     <div class="account-actions">
       <a href="a.html" class="account-action-btn primary ripple">
-        <div class="action-icon"><i class="fas fa-sign-in-alt" aria-hidden="true"></i></div>
+        <div class="action-icon">
+          <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-log-in"/></svg>
+        </div>
         <div class="action-info"><strong>تسجيل الدخول</strong><span>ادخل لإدارة منتجاتك ومتجرك</span></div>
-        <i class="fas fa-chevron-left action-arrow" aria-hidden="true"></i>
+        <svg class="svg-icon action-arrow" width="16" height="16" aria-hidden="true"><use href="#i-chevron-left"/></svg>
       </a>
       <a href="signup.html" class="account-action-btn ripple">
-        <div class="action-icon secondary"><i class="fas fa-store" aria-hidden="true"></i></div>
+        <div class="action-icon secondary">
+          <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-store"/></svg>
+        </div>
         <div class="action-info"><strong>إنشاء متجر خاص</strong><span>انضم كتاجر أو صاحب براند</span></div>
-        <i class="fas fa-chevron-left action-arrow" aria-hidden="true"></i>
+        <svg class="svg-icon action-arrow" width="16" height="16" aria-hidden="true"><use href="#i-chevron-left"/></svg>
       </a>
     </div>
     <div class="account-section">
       <div class="account-section-title">الإعدادات والتفضيلات</div>
       <div class="setting-row">
-        <div class="setting-label"><i class="fas fa-moon" aria-hidden="true"></i><span>الوضع الداكن</span></div>
+        <div class="setting-label">
+          <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-moon"/></svg>
+          <span>الوضع الداكن</span>
+        </div>
         <div id="accountThemeSwitch" class="switch" role="switch" aria-label="الوضع الداكن" tabindex="0"></div>
       </div>
       <div class="setting-row">
-        <div class="setting-label"><i class="fas fa-mobile-alt" aria-hidden="true"></i><span>وضع العرض</span></div>
+        <div class="setting-label">
+          <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-smartphone"/></svg>
+          <span>وضع العرض</span>
+        </div>
         <div class="view-toggle-pill">
-          <button id="accountViewMobileBtn" data-view="mobile" aria-label="هاتف"><i class="fas fa-mobile-alt" aria-hidden="true"></i></button>
-          <button id="accountViewDesktopBtn" data-view="desktop" aria-label="سطح مكتب"><i class="fas fa-desktop" aria-hidden="true"></i></button>
+          <button id="accountViewMobileBtn" data-view="mobile" aria-label="هاتف">
+            <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-smartphone"/></svg>
+          </button>
+          <button id="accountViewDesktopBtn" data-view="desktop" aria-label="سطح مكتب">
+            <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-monitor"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -342,43 +632,60 @@
 
 <nav id="bzrBottomNav" aria-label="التنقل الرئيسي">
   <div class="bzr-nav-list">
-    <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية"><i class="fas fa-home" aria-hidden="true"></i><span>الرئيسية</span></button>
+    <button class="bzr-nav-item active" data-nav="home" aria-label="الرئيسية">
+      <svg class="svg-icon" width="24" height="24" aria-hidden="true"><use href="#i-home"/></svg>
+      <span>الرئيسية</span>
+    </button>
 
-    <button class="bzr-nav-item" data-nav="categories" aria-label="الفئات"><i class="fas fa-layer-group" aria-hidden="true"></i><span>الفئات</span></button>
+    <button class="bzr-nav-item" data-nav="categories" aria-label="الفئات">
+      <svg class="svg-icon" width="24" height="24" aria-hidden="true"><use href="#i-layers"/></svg>
+      <span>الفئات</span>
+    </button>
 
     <button class="bzr-nav-item" data-nav="cart" aria-label="السلة">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="9" cy="21" r="1"></circle>
-        <circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-      </svg>
+      <svg class="svg-icon" width="24" height="24" aria-hidden="true"><use href="#i-cart"/></svg>
       <span>السلة</span>
       <span class="bzr-nav-badge" id="bottomNavCartBadge" style="display:none;" aria-live="polite">0</span>
     </button>
 
-    <button class="bzr-nav-item" data-nav="account" aria-label="حسابي"><i class="fas fa-user-circle" aria-hidden="true"></i><span>حسابي</span></button>
+    <button class="bzr-nav-item" data-nav="account" aria-label="حسابي">
+      <svg class="svg-icon" width="24" height="24" aria-hidden="true"><use href="#i-user-circle"/></svg>
+      <span>حسابي</span>
+    </button>
   </div>
 </nav>
 
+<!-- 🚀 Update Available Button — hybrid (icon swaps to spinner via JS) -->
 <button id="updateAvailableBtn" class="hidden" type="button" aria-label="تحديث التطبيق">
-  <div class="update-icon-wrap"><i class="fas fa-cloud-download-alt" aria-hidden="true"></i></div>
+  <div class="update-icon-wrap">
+    <i class="fas fa-cloud-download-alt fa-fallback" aria-hidden="true"></i>
+    <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-cloud-download"/></svg>
+  </div>
   <div class="update-text-wrap">
     <strong>🎉 تحديث جديد متوفر</strong>
     <span>اضغط للتحديث الآن</span>
   </div>
-  <i class="fas fa-chevron-left update-arrow" aria-hidden="true"></i>
+  <svg class="svg-icon update-arrow" width="16" height="16" aria-hidden="true"><use href="#i-chevron-left"/></svg>
 </button>
 
-<button id="installButtonFloating" class="hidden" title="تثبيت التطبيق"><i class="fas fa-download" aria-hidden="true"></i><span>تثبيت التطبيق</span></button>
+<button id="installButtonFloating" class="hidden" title="تثبيت التطبيق">
+  <svg class="svg-icon" width="18" height="18" aria-hidden="true"><use href="#i-download"/></svg>
+  <span>تثبيت التطبيق</span>
+</button>
 
 <div id="notifPermissionBanner" class="hidden" role="dialog">
   <div class="notif-banner-content">
-    <div class="notif-bell-icon"><i class="fas fa-bell" aria-hidden="true"></i></div>
+    <div class="notif-bell-icon">
+      <svg class="svg-icon" width="24" height="24" aria-hidden="true"><use href="#i-bell"/></svg>
+    </div>
     <div class="notif-banner-text">
       <div class="notif-banner-title">🔔 فعّل إشعارات BranZar</div>
       <p>كن أول من يعرف عند نزول عروض حصرية</p>
       <div class="notif-banner-actions">
-        <button id="enableNotifBtn" class="notif-btn-enable ripple"><i class="fas fa-bell" aria-hidden="true"></i><span>تفعيل</span></button>
+        <button id="enableNotifBtn" class="notif-btn-enable ripple">
+          <svg class="svg-icon" width="16" height="16" aria-hidden="true"><use href="#i-bell"/></svg>
+          <span>تفعيل</span>
+        </button>
         <button id="dismissNotifBtn" class="notif-btn-dismiss">لاحقاً</button>
       </div>
     </div>
@@ -386,7 +693,9 @@
 </div>
 
 <div id="pushToast" role="alert">
-  <div class="push-icon"><i class="fas fa-bell" aria-hidden="true"></i></div>
+  <div class="push-icon">
+    <svg class="svg-icon" width="20" height="20" aria-hidden="true"><use href="#i-bell"/></svg>
+  </div>
   <div class="push-toast-text">
     <div id="pushToastTitle">إشعار جديد</div>
     <div id="pushToastBody">لديك جديد</div>
