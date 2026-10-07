@@ -2,71 +2,930 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#FF7A00">
-<title>سياسة الخصوصية — BranZar</title>
+<meta name="description" content="سياسة الخصوصية - BranZar بران زار">
+<title>سياسة الخصوصية | BranZar</title>
+<link rel="icon" href="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  body { font-family: 'Cairo', system-ui, sans-serif; margin: 0; background: #F8FAFC; color: #0F172A; line-height: 1.9; }
-  .wrap { max-width: 780px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-  h1 { font-size: 1.75rem; font-weight: 900; color: #FF7A00; margin: 0 0 0.5rem; }
-  .sub { color: #64748B; font-weight: 600; margin: 0 0 2rem; }
-  h2 { font-size: 1.15rem; font-weight: 900; margin: 2rem 0 0.75rem; color: #0F172A; }
-  p, li { color: #334155; font-weight: 500; }
-  ul { padding-right: 1.5rem; }
-  .box { background: #fff; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; }
-  a { color: #FF7A00; font-weight: 700; }
-  .footer { text-align: center; margin-top: 3rem; color: #94A3B8; font-weight: 600; font-size: 0.85rem; }
+:root {
+  --c-primary: #FF7A00;
+  --c-primary-2: #FFA64D;
+  --c-bg: #F8FAFC;
+  --c-surface: #FFFFFF;
+  --c-surface-2: #F1F5F9;
+  --c-text: #0F172A;
+  --c-text-soft: #64748B;
+  --c-border: #E2E8F0;
+  --c-primary-soft: #FFF7ED;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Cairo', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  direction: rtl;
+  line-height: 1.8;
+  min-height: 100vh;
+  padding-bottom: 40px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ App Bar ═══ */
+.appbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  padding: 12px 16px;
+  box-shadow: 0 4px 20px rgba(255,122,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.appbar-back {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+.appbar-back:hover { background: rgba(255,255,255,0.32); }
+.appbar-back:active { transform: scale(0.92); }
+.appbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.appbar-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.appbar-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+.appbar-title {
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.appbar-sub {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* ═══ Hero ═══ */
+.hero {
+  background: linear-gradient(150deg, var(--c-primary), var(--c-primary-2));
+  padding: 40px 20px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 70%);
+}
+.hero-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  border: 2px solid rgba(255,255,255,0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+.hero-title {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+}
+.hero-text {
+  color: rgba(255,255,255,0.92);
+  font-size: 0.92rem;
+  font-weight: 600;
+  max-width: 500px;
+  margin: 0 auto 16px;
+  position: relative;
+  z-index: 2;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.22);
+  border: 1.5px solid rgba(255,255,255,0.4);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  position: relative;
+  z-index: 2;
+}
+
+/* ═══ Main ═══ */
+.main {
+  max-width: 900px;
+  margin: -30px auto 0;
+  padding: 0 16px;
+  position: relative;
+  z-index: 3;
+}
+.intro {
+  background: var(--c-surface);
+  border-radius: 24px;
+  padding: 24px 22px;
+  box-shadow: 0 12px 32px rgba(15,23,42,0.12);
+  border: 1px solid var(--c-border);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.intro::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--c-primary), var(--c-primary-2));
+}
+.intro-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.intro-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+.intro-title {
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+.intro-date {
+  font-size: 0.75rem;
+  color: var(--c-text-soft);
+  font-weight: 700;
+  margin-top: 2px;
+}
+.intro-text {
+  font-size: 0.95rem;
+  color: var(--c-text-soft);
+  font-weight: 600;
+}
+
+/* ═══ Sections ═══ */
+.section {
+  background: var(--c-surface);
+  border-radius: 20px;
+  border: 1px solid var(--c-border);
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.06);
+  transition: all 0.3s;
+}
+.section:hover {
+  border-color: #FFE0BD;
+  box-shadow: 0 4px 14px rgba(15,23,42,0.08);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: right;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.section-header:hover {
+  background: linear-gradient(90deg, transparent, var(--c-primary-soft) 60%);
+}
+.section-num {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px -5px rgba(255,122,0,0.55);
+}
+.section-title {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--c-text);
+  line-height: 1.4;
+}
+.section-toggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--c-surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text-soft);
+  font-size: 0.8rem;
+  font-weight: 900;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.section.open .section-toggle {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  color: #fff;
+  transform: rotate(180deg);
+}
+.section-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.section.open .section-body {
+  max-height: 5000px;
+}
+.section-content {
+  padding: 0 18px 22px;
+  border-top: 1px solid var(--c-border);
+  padding-top: 18px;
+  font-size: 0.92rem;
+  color: var(--c-text-soft);
+  font-weight: 600;
+}
+.section-content p {
+  margin-bottom: 14px;
+}
+.section-content p:last-child {
+  margin-bottom: 0;
+}
+.section-content strong {
+  color: var(--c-text);
+  font-weight: 800;
+}
+.section-content h3 {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--c-text);
+  margin: 14px 0 8px;
+}
+.section-content h3:first-child {
+  margin-top: 0;
+}
+
+/* ═══ Lists ═══ */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--c-text-soft);
+  font-weight: 600;
+}
+.list li::before {
+  content: '✓';
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary-soft);
+  border: 1.5px solid #FFE0BD;
+  color: var(--c-primary);
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ═══ Callout ═══ */
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+  border: 1.5px solid #FFD9A8;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 14px 0;
+}
+.callout-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.callout-content { flex: 1; }
+.callout-title {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #9A3412;
+  margin-bottom: 4px;
+}
+.callout-text {
+  font-size: 0.85rem;
+  color: #7C2D12;
+  font-weight: 600;
+  line-height: 1.75;
+}
+.callout.info {
+  background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+  border-color: #BFDBFE;
+}
+.callout.info .callout-title { color: #1E40AF; }
+.callout.info .callout-text { color: #1E3A8A; }
+.callout.success {
+  background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+  border-color: #A7F3D0;
+}
+.callout.success .callout-title { color: #065F46; }
+.callout.success .callout-text { color: #064E3B; }
+
+/* ═══ Data Grid ═══ */
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 12px 0;
+}
+@media (min-width: 560px) {
+  .data-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.data-item {
+  background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+  border: 1.5px solid #FFD9A8;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #9A3412;
+  line-height: 1.4;
+}
+
+/* ═══ Contact ═══ */
+.contact {
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  border-radius: 24px;
+  padding: 28px 22px;
+  color: #fff;
+  margin-top: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(15,23,42,0.12);
+}
+.contact::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,122,0,0.35), transparent 70%);
+}
+.contact-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+.contact-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+}
+.contact-text {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.75);
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+  max-width: 400px;
+  margin-inline: auto;
+}
+.contact-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 9999px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: all 0.25s;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: #fff;
+}
+.contact-btn.wa {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  box-shadow: 0 8px 22px -8px rgba(37,211,102,0.8);
+}
+.contact-btn.wa:hover { transform: translateY(-2px); }
+.contact-btn.mail {
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.2);
+}
+.contact-btn.mail:hover { background: rgba(255,255,255,0.18); }
+
+/* ═══ Footer ═══ */
+.footer {
+  text-align: center;
+  padding: 30px 20px 40px;
+  color: var(--c-text-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--c-text);
+  font-weight: 900;
+  font-size: 0.92rem;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 10px 0 16px;
+}
+.footer-links a {
+  color: var(--c-text-soft);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+.footer-links a:hover { color: var(--c-primary); }
+
+/* ═══ Back to Top ═══ */
+.back-top {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-2));
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 900;
+  box-shadow: 0 10px 25px -5px rgba(255,122,0,0.7);
+  transition: all 0.3s;
+  z-index: 500;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+.back-top.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.back-top:active { transform: scale(0.92); }
+
+/* ═══ Mobile ═══ */
+@media (max-width: 480px) {
+  .hero { padding: 30px 16px 50px; }
+  .hero-title { font-size: 1.5rem; }
+  .hero-text { font-size: 0.85rem; }
+  .hero-icon { width: 68px; height: 68px; font-size: 1.9rem; }
+  .main { padding: 0 12px; }
+  .intro { padding: 20px 16px; }
+  .section-header { padding: 14px; }
+  .section-content { padding: 0 14px 18px; padding-top: 14px; }
+  .section-num { width: 34px; height: 34px; font-size: 0.88rem; }
+  .section-title { font-size: 0.92rem; }
+  .contact { padding: 24px 18px; }
+  .data-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .data-item { font-size: 0.75rem; padding: 8px 10px; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>سياسة الخصوصية</h1>
-  <p class="sub">آخر تحديث: 2026-01-01</p>
 
-  <div class="box">
-    <p>يحترم تطبيق <strong>BranZar — بران زار</strong> خصوصيتك. توضح هذه السياسة البيانات التي نجمعها وكيفية استخدامها.</p>
+<header class="appbar">
+  <button class="appbar-back" id="backBtn" aria-label="رجوع">←</button>
+  <div class="appbar-brand">
+    <div class="appbar-logo">
+      <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="BranZar">
+    </div>
+    <div>
+      <div class="appbar-title">سياسة الخصوصية</div>
+      <div class="appbar-sub">BranZar • بران زار</div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-icon">🔒</div>
+  <h1 class="hero-title">سياسة الخصوصية</h1>
+  <p class="hero-text">كيف نجمع بياناتك ونستخدمها ونحميها</p>
+  <div class="hero-badge">📅 آخر تحديث: 7 أكتوبر 2026</div>
+</section>
+
+<main class="main">
+
+  <div class="intro">
+    <div class="intro-head">
+      <div class="intro-icon">🛡️</div>
+      <div>
+        <div class="intro-title">خصوصيتك تهمنا</div>
+        <div class="intro-date">📅 آخر تحديث: 7 أكتوبر 2026</div>
+      </div>
+    </div>
+    <p class="intro-text">
+      تحترم منصة <strong>BranZar</strong> خصوصية مستخدميها. توضح هذه السياسة البيانات التي قد تُعالج عند تصفح الموقع أو استخدام التطبيق، وأغراض استخدامها، والخدمات التي قد تتلقاها، والخيارات المتاحة لك. إذا أضفنا ميزة جديدة تغيّر طريقة جمع البيانات، فسنحدّث السياسة ونطلب الإذن اللازم قبل تفعيلها.
+    </p>
   </div>
 
-  <h2>1) البيانات التي نجمعها</h2>
-  <ul>
-    <li><strong>مصادقة مجهولة (Anonymous Auth):</strong> نستخدم Firebase Anonymous Authentication لتحديد جلسة مجهولة الهوية. لا نجمع اسمك أو بريدك أو رقم هاتفك.</li>
-    <li><strong>رموز الإشعارات (FCM Tokens):</strong> عند تفعيلك للإشعارات، نخزّن رمز جهازك لإرسال التحديثات والعروض فقط.</li>
-    <li><strong>التخزين المحلي (localStorage):</strong> نحفظ على جهازك فقط: السلة، المتاجر المتابَعة، المفضلة، تفضيلات الوضع (داكن/فاتح).</li>
-    <li><strong>الطلبات عبر واتساب:</strong> عند استخدام زر الشراء/التواصل، يُفتح واتساب برسالة تحتوي على تفاصيل طلبك — وهذا يخضع لسياسة واتساب.</li>
-  </ul>
+  <!-- 1 -->
+  <section class="section open">
+    <button class="section-header" type="button">
+      <span class="section-num">1</span>
+      <span class="section-title">نطاق السياسة</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>تسري هذه السياسة على موقع BranZar وتطبيقها وخدماتها الرقمية. وهي تغطي بيانات <strong>الزوار، ومستخدمي الميزات، وأصحاب المتاجر</strong>.</p>
+        <p>لا تسري على المواقع أو التطبيقات الأخرى التي قد تصل إليها من خلال روابط خارجية؛ إذ تحكمها سياسات تلك الجهات.</p>
+      </div>
+    </div>
+  </section>
 
-  <h2>2) كيف نستخدم البيانات</h2>
-  <ul>
-    <li>عرض المحتوى وعمل التطبيق بشكل صحيح.</li>
-    <li>إرسال إشعارات حول العروض والمتاجر الجديدة (إن فعّلت الإشعارات).</li>
-    <li>حماية التطبيق من الاستخدام المفرط.</li>
-  </ul>
+  <!-- 2 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">2</span>
+      <span class="section-title">البيانات التي نعالجها</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <h3>أ. بيانات التصفح والاستخدام</h3>
+        <p>معرّف جلسة Firebase المجهول، إعدادات العرض، حالة السلة والمفضلة والمتاجر المتابَعة، وسجلات تقنية أساسية لتشغيل الخدمة وحمايتها.</p>
 
-  <h2>3) مشاركة البيانات</h2>
-  <p>لا نبيع بياناتك ولا نشاركها مع أي طرف ثالث، باستثناء الخدمات التقنية الضرورية:</p>
-  <ul>
-    <li><strong>Google Firebase</strong> (Firestore، Auth، FCM) — لتشغيل التطبيق.</li>
-    <li><strong>WhatsApp</strong> — فقط عند اختيارك التواصل مع متجر أو الإدارة.</li>
-  </ul>
+        <h3>ب. بيانات الحساب وإنشاء المتجر</h3>
+        <p>اسم المتجر، اسم الدخول، الفئة، الوصف، الولاية/المنطقة، رقم WhatsApp، رقم الهاتف الاختياري، الشعار، الغلاف، وبيانات الاعتماد اللازمة للدخول.</p>
 
-  <h2>4) ملفات تعريف الارتباط والتخزين</h2>
-  <p>نستخدم التخزين المحلي لتشغيل التطبيق دون اتصال، لا نستخدم كوكيز تتبع إعلانية.</p>
+        <h3>ج. محتوى المتجر والمنتجات</h3>
+        <p>أسماء المنتجات وأوصافها وأسعارها وصورها وتصنيفاتها وبيانات المتجر المرتبطة بها. هذه المعلومات مخصصة للعرض العام، فلا تضف أي بيانات شخصية لا ترغب بنشرها.</p>
 
-  <h2>5) حقوقك</h2>
-  <ul>
-    <li>يمكنك حذف بياناتك المحلية عبر مسح بيانات التطبيق من إعدادات جهازك.</li>
-    <li>يمكنك تعطيل الإشعارات في أي وقت من إعدادات النظام.</li>
-    <li>للتواصل: <a href="https://wa.me/249908280115" target="_blank" rel="noopener">راسل الإدارة عبر واتساب</a></li>
-  </ul>
+        <h3>د. معرّفات الجهاز ومنع إساءة الاستخدام</h3>
+        <p>لأغراض أمن المنصة والحد من التسجيلات الوهمية، قد ينشئ النموذج معرّفًا تقنيًا لبصمة الجهاز من خصائص المتصفح. يُحفظ في مساحة التخزين المحلية أو ملفات تعريف الارتباط ويُستخدم للتحقق من التكرار ومنع إساءة الاستخدام.</p>
 
-  <h2>6) الأطفال</h2>
-  <p>التطبيق غير موجّه للأطفال تحت 13 عاماً.</p>
+        <h3>هـ. الإشعارات</h3>
+        <p>إذا فعّلت الإشعارات، تعالج خدمات الإشعارات رمزًا تقنيًا لإيصال التنبيهات. يمكنك إيقاف الإشعارات من إعدادات الجهاز في أي وقت.</p>
 
-  <h2>7) التعديلات</h2>
-  <p>قد نحدّث هذه السياسة، وسننشر التغييرات على هذه الصفحة.</p>
+        <h3>و. الموقع الجغرافي</h3>
+        <p>نموذج إنشاء المتجر يطلب موقعًا نصيًا (الولاية والمنطقة) لإظهاره داخل معلومات المتجر. لا نقرأ إحداثيات GPS.</p>
 
-  <p class="footer">© 2026 BranZar — بران زار. جميع الحقوق محفوظة.</p>
-</div>
+        <h3>ز. الرسائل عبر WhatsApp</h3>
+        <p>عند اختيار زر الطلب أو التواصل، يفتح BranZar WhatsApp برسالة تحتوي على تفاصيل طلبك. تخضع الرسالة لسياسة WhatsApp، ويتلقى المتجر المعلومات التي ترسلها إليه.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">3</span>
+      <span class="section-title">كيف نستخدم البيانات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>نستخدم البيانات بالقدر اللازم لتقديم الخدمات التي تطلبها:</p>
+        <ul class="list">
+          <li>تشغيل المتاجر والمنتجات وعرضها.</li>
+          <li>حفظ إعدادات الاستخدام والسلة والمفضلة.</li>
+          <li>تمكين التواصل بين العميل والمتجر.</li>
+          <li>إرسال الإشعارات التي وافقت عليها.</li>
+          <li>التحقق من الحسابات ومنع الاحتيال.</li>
+          <li>معالجة البلاغات وطلبات الدعم.</li>
+          <li>صيانة أمن المنصة وتحسين أدائها.</li>
+          <li>الامتثال للالتزامات القانونية.</li>
+        </ul>
+        <div class="callout success">
+          <div class="callout-icon">✅</div>
+          <div class="callout-content">
+            <div class="callout-title">التزامنا</div>
+            <div class="callout-text">لا نستخدم بيانات كلمة المرور لإرسال إعلانات، ولا نبيع البيانات الشخصية لأي جهة.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">4</span>
+      <span class="section-title">متى ومع من نشارك البيانات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>لا نبيع البيانات الشخصية. وقد نشاركها بالحد اللازم مع:</p>
+        <ul class="list">
+          <li><strong>عموم المستخدمين:</strong> بيانات المتجر والمنتجات التي تختار نشرها.</li>
+          <li><strong>Google Firebase:</strong> المصادقة المجهولة، قاعدة Firestore، والإشعارات.</li>
+          <li><strong>Cloudinary:</strong> رفع الصور واستضافتها وعرضها.</li>
+          <li><strong>Vercel و Google Fonts:</strong> استضافة الموقع والخطوط.</li>
+          <li><strong>WhatsApp:</strong> عند اختيارك التواصل مع متجر أو الإدارة.</li>
+          <li><strong>مزود الاستضافة:</strong> للسجلات التقنية اللازمة لتشغيل الخدمة.</li>
+          <li><strong>أسباب قانونية:</strong> إذا كان الإفصاح لازمًا للامتثال لطلب قانوني ملزم.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">5</span>
+      <span class="section-title">التخزين والاحتفاظ</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يستخدم الموقع التخزين المحلي وملفات تعريف الارتباط لحفظ التفضيلات وحالة السلة والمتابعة والمعرّفات التقنية. يمكنك مسح هذه البيانات من إعدادات المتصفح في أي وقت.</p>
+        <p>نحتفظ ببيانات الحساب والمتجر ما دام الحساب قائمًا أو ما دامت لازمة لتقديم الخدمة، ولأغراض الأمن ومنع الاحتيال وحل النزاعات والامتثال للالتزامات القانونية.</p>
+        <div class="callout info">
+          <div class="callout-icon">ℹ️</div>
+          <div class="callout-content">
+            <div class="callout-title">ملاحظة</div>
+            <div class="callout-text">قد تبقى بعض البيانات محفوظة في النسخ الاحتياطية لفترة إضافية، وفق دورة النسخ الاحتياطي المتبعة.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">6</span>
+      <span class="section-title">حماية البيانات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>نتخذ تدابير تقنية وتنظيمية مناسبة لحماية البيانات من الوصول أو الاستخدام غير المصرح به، ونستخدم اتصالات HTTPS مع الخدمات التي تدعمها.</p>
+        <p>مع ذلك، لا يمكن ضمان أمان أي نقل أو تخزين إلكتروني ضمانًا مطلقًا. احرص على استخدام كلمة مرور فريدة وعدم مشاركتها، وأبلغنا فورًا إذا اشتبهت في وصول غير مصرح به لحساب متجرك.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">7</span>
+      <span class="section-title">حقوقك وحذف البيانات</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>يمكنك:</p>
+        <ul class="list">
+          <li>تعديل معلومات المتجر أو طلب تصحيحها.</li>
+          <li>سحب إذن الإشعارات من إعدادات جهازك.</li>
+          <li>مسح بيانات المتصفح المحلية من جهازك.</li>
+          <li>طلب إغلاق حسابك وحذف بياناتك المرتبطة به.</li>
+        </ul>
+        <div class="callout">
+          <div class="callout-icon">🗑️</div>
+          <div class="callout-content">
+            <div class="callout-title">لطلب حذف الحساب</div>
+            <div class="callout-text">أرسل طلبًا من وسيلة الاتصال المرتبطة بمتجرك إلى البريد أدناه أو عبر WhatsApp. اذكر اسم المتجر ووسيلة تواصل مناسبة، <strong>ولا تكتب كلمة المرور</strong> في الرسالة.</div>
+          </div>
+        </div>
+        <p>قد تُزال بيانات الحساب والمحتوى غير المطلوب عند تنفيذ الطلب، مع احتفاظ محدود بالبيانات اللازمة للامتثال القانوني أو لحل النزاعات أو منع الاحتيال.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">8</span>
+      <span class="section-title">الأطفال</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>لا تستهدف BranZar الأطفال دون 13 عامًا، ولا نقصد جمع بياناتهم الشخصية. إذا علمت أن طفلًا أرسل إلينا بيانات شخصية دون موافقة وليه، يرجى التواصل معنا لاتخاذ الإجراء المناسب.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">9</span>
+      <span class="section-title">التعديلات على السياسة</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>قد نحدّث هذه السياسة عند تغير الخدمات أو المتطلبات القانونية. سننشر النسخة الجديدة في هذه الصفحة ونعدّل تاريخ آخر تحديث.</p>
+        <p>إذا كان التغيير جوهريًا، فسنعرض إشعارًا أو نطلب موافقة منفصلة قبل بدء المعالجة الجديدة.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="section">
+    <button class="section-header" type="button">
+      <span class="section-num">10</span>
+      <span class="section-title">التواصل معنا</span>
+      <span class="section-toggle">▾</span>
+    </button>
+    <div class="section-body">
+      <div class="section-content">
+        <p>للاستفسارات المتعلقة بالخصوصية أو الوصول إلى البيانات أو تصحيحها أو حذفها، تواصل مع إدارة BranZar عبر القنوات الرسمية الموضحة أدناه.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Card -->
+  <div class="contact">
+    <div class="contact-icon">🔒</div>
+    <h3 class="contact-title">لديك استفسار عن الخصوصية؟</h3>
+    <p class="contact-text">فريقنا جاهز لمساعدتك في أي استفسار يتعلق ببياناتك وحقوقك</p>
+    <div class="contact-buttons">
+      <a href="https://wa.me/249908280115" target="_blank" rel="noopener" class="contact-btn wa">💬 واتساب</a>
+      <a href="mailto:support@branzar.com" class="contact-btn mail">✉️ البريد الإلكتروني</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-brand">🛡️ BranZar – بران زار</div>
+    <p>أكبر سوق إلكتروني لأشهر البراندات</p>
+    <div class="footer-links">
+      <a href="/">الرئيسية</a>
+      <a href="terms.html">الشروط والأحكام</a>
+      <a href="about.html">عن المنصة</a>
+    </div>
+    <p style="margin-top:16px;opacity:0.8;">© 2026 BranZar — جميع الحقوق محفوظة</p>
+  </footer>
+
+</main>
+
+<button class="back-top" id="backTop" aria-label="العودة للأعلى">↑</button>
+
+<script>
+(function() {
+  // Accordion
+  var sections = document.querySelectorAll('.section');
+  sections.forEach(function(section) {
+    var header = section.querySelector('.section-header');
+    if (!header) return;
+    header.addEventListener('click', function() {
+      var isOpen = section.classList.contains('open');
+      sections.forEach(function(s) {
+        if (s !== section) s.classList.remove('open');
+      });
+      section.classList.toggle('open', !isOpen);
+      if ('vibrate' in navigator) {
+        try { navigator.vibrate(8); } catch(e){}
+      }
+    });
+  });
+
+  // Back button
+  var backBtn = document.getElementById('backBtn');
+  if (backBtn) {
+    backBtn.addEventListener('click', function() {
+      if (document.referrer && document.referrer.indexOf(location.hostname) > -1) {
+        history.back();
+      } else {
+        window.location.href = '/';
+      }
+    });
+  }
+
+  // Back to top
+  var backTop = document.getElementById('backTop');
+  if (backTop) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 400) {
+        backTop.classList.add('show');
+      } else {
+        backTop.classList.remove('show');
+      }
+    }, { passive: true });
+    backTop.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
