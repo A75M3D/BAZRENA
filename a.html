@@ -150,10 +150,16 @@
         }
         .field-locked:focus { border-color: #E5E7EB !important; box-shadow: none !important; }
 
-        /* 🚫 بانر المعلومات */
+        /* 🔓 تجاوز القفل عند وجود زر toggle */
+        .input-with-toggle .form-input.field-locked {
+            background-image: none !important;
+            padding-left: 3rem !important;
+        }
+
+        /* 🚫 بانر المعلومات (يظهر عند الضغط على زر الحفظ) */
         .info-banner {
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-            border: 1.5px solid #FFD9A8;
+            background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+            border: 1.5px solid #FECACA;
             border-radius: 1rem;
             padding: 1rem 1.1rem;
             margin-bottom: 1.25rem;
@@ -162,6 +168,11 @@
             gap: 12px;
             position: relative;
             overflow: hidden;
+            animation: bannerIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes bannerIn {
+            from { opacity: 0; transform: translateY(-15px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .info-banner::before {
             content: '';
@@ -170,26 +181,26 @@
             right: 0;
             width: 4px;
             height: 100%;
-            background: linear-gradient(180deg, #FF7A00, #FFA64D);
+            background: linear-gradient(180deg, #EF4444, #DC2626);
         }
         .info-banner-icon {
             width: 42px;
             height: 42px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            background: linear-gradient(135deg, #EF4444, #DC2626);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.15rem;
             flex-shrink: 0;
-            box-shadow: 0 8px 20px -6px rgba(255,122,0,0.55);
+            box-shadow: 0 8px 20px -6px rgba(239,68,68,0.55);
         }
         .info-banner-content { flex: 1; min-width: 0; }
         .info-banner-title {
             font-size: 0.92rem;
             font-weight: 900;
-            color: #9A3412;
+            color: #991B1B;
             margin-bottom: 0.3rem;
             display: flex;
             align-items: center;
@@ -197,7 +208,7 @@
         }
         .info-banner-text {
             font-size: 0.8rem;
-            color: #7C2D12;
+            color: #7F1D1D;
             font-weight: 700;
             line-height: 1.7;
             margin-bottom: 0.7rem;
@@ -244,6 +255,8 @@
         .btn-primary { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; box-shadow: 0 12px 28px -10px rgba(255,122,0,0.65); }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+        .btn-whatsapp { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #fff; box-shadow: 0 12px 28px -10px rgba(37,211,102,0.65); }
+        .btn-whatsapp:hover:not(:disabled) { transform: translateY(-2px); }
         .btn-danger { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #fff; }
         .btn-row { display: flex; gap: 0.6rem; }
         .btn-row .btn { flex: 1; width: auto; }
@@ -310,7 +323,6 @@
         #addColorBtn { background: #FFF7ED; color: #FF7A00; border: 1.5px dashed #FFA64D; border-radius: 12px; padding: 0.7rem 1rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-family: 'Cairo', sans-serif; }
         #addColorBtn:hover { background: #FFE0BD; border-color: #FF7A00; }
 
-        /* ✅ عداد الأحرف */
         .char-counter { display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem; font-size: 0.74rem; font-weight: 800; }
         .char-counter .count { color: #6B7280; transition: color 0.2s; }
         .char-counter .count.warn { color: #F59E0B; }
@@ -538,22 +550,22 @@
                             <span>معلومات المتجر</span>
                         </div>
 
-                        <!-- 🚫 بانر: التحديث عبر خدمة العملاء -->
-                        <div class="info-banner">
+                        <!-- 🚫 بانر إعلامي (يظهر فقط عند الضغط على زر الحفظ) -->
+                        <div id="updateNoticeBanner" class="info-banner" style="display: none;">
                             <div class="info-banner-icon">
-                                <i class="fas fa-headset"></i>
+                                <i class="fas fa-lock"></i>
                             </div>
                             <div class="info-banner-content">
                                 <div class="info-banner-title">
-                                    <i class="fas fa-info-circle"></i>
-                                    تعديل بيانات المتجر عبر خدمة العملاء
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    لا يمكن تعديل البيانات مباشرة
                                 </div>
                                 <div class="info-banner-text">
-                                    جميع بيانات المتجر (الاسم، الأرقام، الشعار، الغلاف، الوصف، الموقع) تُعدَّل حصرياً من قِبل إدارة BranZar. تواصل معنا لتحديثها فوراً.
+                                    جميع بيانات المتجر (الاسم، كلمة المرور، الأرقام، الشعار، الغلاف، الوصف، الموقع) <strong>غير قابلة للتعديل من لوحة التحكم</strong>. للقيام بأي تحديث، يرجى التواصل مع خدمة عملاء BranZar عبر الواتساب.
                                 </div>
                                 <button type="button" class="info-banner-btn" onclick="openSupportChat('update_store')">
                                     <i class="fab fa-whatsapp"></i>
-                                    تواصل مع خدمة العملاء
+                                    تواصل الآن مع خدمة العملاء
                                 </button>
                             </div>
                         </div>
@@ -565,7 +577,7 @@
                                 <label class="form-label">
                                     <i class="fas fa-store"></i>
                                     <span>اسم المتجر</span>
-                                    <i class="fas fa-lock" style="color:#F59E0B;margin-right:auto;font-size:0.7rem;"></i>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <input type="text" id="store_name" class="form-input field-locked" readonly tabindex="-1">
                             </div>
@@ -574,19 +586,16 @@
                                 <label class="form-label">
                                     <i class="fas fa-key"></i>
                                     <span>كلمة مرور الدخول</span>
-                                    <span class="req">*</span>
-                                    <span style="margin-right:auto;font-size:0.68rem;color:#10B981;font-weight:900;">
-                                        <i class="fas fa-pen"></i> قابلة للتعديل
-                                    </span>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <div class="input-with-toggle">
-                                    <input type="password" id="store_login_password" class="form-input" required placeholder="كلمة المرور" minlength="6" autocomplete="off">
+                                    <input type="password" id="store_login_password" class="form-input field-locked" readonly tabindex="-1" placeholder="—">
                                     <button type="button" id="storePasswordToggle" class="input-toggle-btn" aria-label="إظهار كلمة المرور">
                                         <i class="fas fa-eye" id="storePasswordToggleIcon"></i>
                                     </button>
                                 </div>
                                 <div class="form-hint">
-                                    <i class="fas fa-shield-alt"></i> 6 أحرف على الأقل، تحتوي على أرقام وحروف. (فقط كلمة المرور يمكنك تعديلها)
+                                    <i class="fas fa-shield-alt"></i> كلمة المرور قابلة للإظهار فقط — للتعديل تواصل مع الإدارة
                                 </div>
                             </div>
 
@@ -594,6 +603,7 @@
                                 <label class="form-label">
                                     <i class="fas fa-tag"></i>
                                     <span>الفئة الرئيسية</span>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <input type="text" id="store_category" class="form-input field-locked" readonly tabindex="-1">
                                 <div class="form-hint">
@@ -618,6 +628,7 @@
                                 <label class="form-label">
                                     <i class="fas fa-align-right"></i>
                                     <span>وصف المتجر</span>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <textarea id="store_description" class="form-input field-locked" rows="3" readonly tabindex="-1" style="padding-left:1rem;background-image:none;"></textarea>
                             </div>
@@ -626,6 +637,7 @@
                                 <label class="form-label">
                                     <i class="fas fa-location-dot"></i>
                                     <span>موقع المتجر</span>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <input type="text" id="store_location" class="form-input field-locked" readonly tabindex="-1" placeholder="—">
                                 <div class="form-hint">
@@ -642,6 +654,7 @@
                                 <label class="form-label">
                                     <i class="fab fa-whatsapp" style="color:#25D366;"></i>
                                     <span>رقم الواتساب</span>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <input type="tel" id="store_whatsapp" class="form-input field-locked" readonly tabindex="-1" dir="ltr" style="text-align:right;">
                             </div>
@@ -650,6 +663,7 @@
                                 <label class="form-label">
                                     <i class="fas fa-phone" style="color:#2196F3;"></i>
                                     <span>رقم الهاتف</span>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <input type="tel" id="store_phone" class="form-input field-locked" readonly tabindex="-1" dir="ltr" style="text-align:right;">
                             </div>
@@ -663,6 +677,7 @@
                                 <label class="form-label">
                                     <i class="fas fa-image"></i>
                                     <span>شعار المتجر</span>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <input type="url" id="store_logo" class="form-input field-locked" readonly tabindex="-1" dir="ltr" style="text-align:left;padding-left:1rem;background-image:none;">
                                 <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار" onerror="this.style.display='none'">
@@ -672,16 +687,20 @@
                                 <label class="form-label">
                                     <i class="fas fa-panorama"></i>
                                     <span>غلاف المتجر</span>
+                                    <i class="fas fa-lock" style="color:#9CA3AF;margin-right:auto;font-size:0.7rem;"></i>
                                 </label>
                                 <input type="url" id="store_cover" class="form-input field-locked" readonly tabindex="-1" dir="ltr" style="text-align:left;padding-left:1rem;background-image:none;">
                                 <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.style.display='none'">
                             </div>
 
                             <div style="padding-top: 0.5rem;">
-                                <button type="submit" id="storeSubmitBtn" class="btn btn-primary">
-                                    <i class="fas fa-key"></i>
-                                    <span>حفظ كلمة المرور الجديدة</span>
+                                <button type="button" id="storeSubmitBtn" class="btn btn-whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <span>تواصل مع خدمة العملاء للتحديث</span>
                                 </button>
+                                <div class="form-hint" style="text-align:center;margin-top:0.6rem;">
+                                    <i class="fas fa-info-circle"></i> جميع التعديلات تُجرى حصرياً من قِبل إدارة BranZar
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -1090,7 +1109,6 @@ firebase.auth().signInAnonymously().then(() => console.log('%c✅ اتصال آ�
 let currentStore = null;
 let productsData = [];
 let isSavingProduct = false;
-let isSavingStore = false;
 let productsUnsubscribe = null;
 let storeUnsubscribe = null;
 let isFirstProductsSnapshot = true;
@@ -1504,14 +1522,16 @@ function setupRealtimeStoreListener() {
         const extChanged = JSON.stringify(fs.categories || []) !== JSON.stringify(currentStore.categories || []);
         const subChanged = (fs.is_subscribed === true) !== (currentStore.is_subscribed === true);
         const locChanged = (fs.location || '') !== (currentStore.location || '');
+        const pwdChanged = (fs.login_password || '') !== (currentStore.login_password || '');
         currentStore = fs;
         const safe = { ...fs }; delete safe.login_password;
         cacheManager.set(`store_${currentStore.id}`, safe);
-        if (catChanged || extChanged || subChanged || locChanged) {
+        if (catChanged || extChanged || subChanged || locChanged || pwdChanged) {
             renderExtraCategoriesDisplay();
             populateProductCategories();
             fillStoreForm(currentStore);
             if (subChanged) showToast(fs.is_subscribed ? '🎉 تم تفعيل اشتراكك!' : '⚠️ تم إيقاف اشتراكك', fs.is_subscribed ? 'success' : 'warning');
+            if (pwdChanged) showToast('🔑 تم تحديث كلمة المرور من قبل الإدارة', 'info');
         }
     }, err => console.warn('Store listener:', err));
 }
@@ -1548,26 +1568,20 @@ function fillStoreForm(store) {
     renderExtraCategoriesDisplay();
 }
 
-/* ✅ حفظ كلمة المرور فقط */
-$('storeForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    if (isSavingStore || !currentStore) return;
-    const storeId = $('store_id').value;
-    const newPassword = $('store_login_password').value;
-    const pwdCheck = checkPasswordStrength(newPassword);
-    if (!pwdCheck.ok) { showToast('⚠️ ' + pwdCheck.msg, 'error'); return; }
-    if (newPassword === currentStore.login_password) { showToast('⚠️ كلمة المرور نفسها الحالية', 'info'); return; }
-
-    isSavingStore = true;
-    setButtonLoading($('storeSubmitBtn'), true, 'جارٍ الحفظ...', '<i class="fas fa-key"></i> <span>حفظ كلمة المرور الجديدة</span>');
-    try {
-        await db.collection(storesTableName).doc(storeId).update({ login_password: newPassword });
-        currentStore.login_password = newPassword;
-        const safe = { ...currentStore }; delete safe.login_password;
-        cacheManager.set(`store_${storeId}`, safe);
-        showToast('✅ تم تحديث كلمة المرور بنجاح');
-    } catch (err) { showToast('فشل الحفظ: ' + err.message, 'error'); }
-    finally { isSavingStore = false; setButtonLoading($('storeSubmitBtn'), false, '', '<i class="fas fa-key"></i> <span>حفظ كلمة المرور الجديدة</span>'); }
+/* 🚫 زر التواصل مع خدمة العملاء (بدلاً من حفظ البيانات) */
+$('storeSubmitBtn').addEventListener('click', () => {
+    // إظهار البانر
+    const banner = $('updateNoticeBanner');
+    if (banner) {
+        banner.style.display = 'flex';
+        banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    // فتح واتساب بعد لحظة قصيرة
+    setTimeout(() => {
+        openSupportChat('update_store');
+    }, 800);
+    // إظهار إشعار
+    showToast('💬 جارٍ فتح محادثة خدمة العملاء...', 'info');
 });
 
 /* ═══════════════════════════════════════════════════════════════
