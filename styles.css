@@ -1338,3 +1338,43 @@ body.theme-dark .bzr-search-icon-btn {
   .bzr-search-icon-btn { transition: none; }
 }
 
+
+/* تحسين مساحة اللمس لزر البحث وأيقونة الحساب */
+.bzr-app-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bzr-search-icon-btn,
+.bzr-account-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #FFF7ED 0%, #FFFFFF 100%);
+  border: 1.5px solid rgba(255, 122, 0, 0.4);
+  color: #E66A00;
+  box-shadow: 0 4px 12px rgba(255, 122, 0, 0.12);
+  cursor: pointer;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bzr-search-icon-btn svg.mi,
+.bzr-account-btn svg.mi {
+  width: 22px;
+  height: 22px;
+}
+
+/* تمييز زر البحث قليلًا ليكون أوضح */
+.bzr-search-icon-btn {
+  background: linear-gradient(145deg, #FF8A1F 0%, #FF6A00 100%);
+  color: #fff;
+  border: none;
+}
+
+
