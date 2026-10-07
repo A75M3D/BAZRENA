@@ -1,8 +1,59 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.9.0 — data.js
+   BranZar v9.10.0 — data.js
    Layer 2: Data Loading + Follow System + Polling + Deep Link
+   ✅ v9.10.0: إضافة ثوابت الموقع ووصف المنتج
    ═══════════════════════════════════════════════════════════ */
 'use strict';
+
+/* ═══════════════════════════════════════════════════════════
+   🆕 v9.10.0: ثوابت الحقول الجديدة
+   ═══════════════════════════════════════════════════════════ */
+
+/**
+ * حقول المتجر — تُحدّد ما يمكن للمستخدم تعديله وما لا يمكن
+ */
+const STORE_FIELDS = Object.freeze({
+  // الحقول التي يمكن للمستخدم تعديلها بنفسه
+  EDITABLE: ['login_password'],
+  // الحقول للقراءة فقط — تُعدَّل عبر خدمة العملاء فقط
+  READONLY: [
+    'name',
+    'whatsapp_number',
+    'phone_number',
+    'logo_url',
+    'cover_url',
+    'description',
+    'location',
+    'category',
+    'categories'
+  ]
+});
+
+/**
+ * حقول المنتج الجديدة
+ */
+const PRODUCT_FIELDS = Object.freeze({
+  DESCRIPTION_MAX: 100,
+  DESCRIPTION_MIN: 0,
+  DEFAULT_LOCATION: ''
+});
+
+/**
+ * رقم خدمة العملاء (واتساب)
+ */
+const SUPPORT_WHATSAPP = '249908280115';
+
+/**
+ * رسائل جاهزة لخدمة العملاء (WhatsApp)
+ */
+const SUPPORT_MESSAGES = Object.freeze({
+  general: 'السلام عليكم ورحمة الله 👋\nأرغب بالتواصل مع خدمة عملاء BranZar.',
+  update_store: 'السلام عليكم ورحمة الله 👋\nأرغب بتحديث بيانات متجري على BranZar.\nأرجو منكم مساعدتي في تحديث البيانات.\nشكراً لكم 🌸',
+  location: 'السلام عليكم ورحمة الله 👋\nأرغب بتحديث موقع متجري على BranZar.\nأرجو منكم إضافة الموقع الصحيح.\nشكراً لكم 🌸',
+  description: 'السلام عليكم ورحمة الله 👋\nأرغب بتحديث وصف متجري على BranZar.\nشكراً لكم 🌸',
+  verify: 'السلام عليكم ورحمة الله 👋\nأرغب بتوثيق حساب متجري على BranZar.',
+  subscribe: 'السلام عليكم ورحمة الله 👋\nأرغب بالاشتراك في إحدى باقات BranZar.\nأرجو موافاتي بالتفاصيل والأسعار.\nشكراً لكم 🌸'
+});
 
 /* ═══ DATA LOADING ═══ */
 async function loadStores(force) {
@@ -396,4 +447,57 @@ async function handleDeepLink() {
   } catch(err){}
 }
 
-console.log('[BZR] data.js loaded ✅ v9.9.0');
+/* ═══════════════════════════════════════════════════════════
+   🆕 v9.10.0: دوال مساعدة للحقول الجديدة
+   ═══════════════════════════════════════════════════════════ */
+
+/**
+ * جلب موقع المتجر بشكل آمن
+ * @param {object} store
+ * @returns {string}
+ */
+function getStoreLocation(store) {
+  if (!store) return '';
+  return (store.location && String(store.location).trim()) || '';
+}
+
+/**
+ * التحقق من أن المتجر يحتوي على موقع لعرضه
+ * @param {object} store
+ * @returns {boolean}
+ */
+function hasStoreLocation(store) {
+  return getStoreLocation(store).length > 0;
+}
+
+/**
+ * جلب وصف المنتج بشكل آمن مع التحقق من الطول
+ * @param {object} product
+ * @returns {string}
+ */
+function getProductDescription(product) {
+  if (!product) return '';
+  const desc = (product.description && String(product.description).trim()) || '';
+  return desc.slice(0, PRODUCT_FIELDS.DESCRIPTION_MAX);
+}
+
+/**
+ * التحقق من أن المنتج يحتوي على وصف لعرضه
+ * @param {object} product
+ * @returns {boolean}
+ */
+function hasProductDescription(product) {
+  return getProductDescription(product).length > 0;
+}
+
+/**
+ * فتح محادثة واتساب مع خدمة العملاء
+ * @param {string} context - نوع الرسالة (general, update_store, location, etc)
+ */
+function openSupportWhatsApp(context) {
+  const message = SUPPORT_MESSAGES[context] || SUPPORT_MESSAGES.general;
+  const url = `https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+console.log('[BZR] data.js loaded ✅ v9.10.0');
