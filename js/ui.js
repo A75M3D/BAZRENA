@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.9.0 — ui.js
+   BranZar v9.10.0 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
+   ✅ v9.10.0: عرض موقع المتجر + وصف المنتج
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -897,7 +898,9 @@ async function refreshStoreDataOnOpen(storeId) {
     const newList = JSON.stringify(fresh.categories || []);
     const oldSub = currentStore?.is_subscribed === true;
     const newSub = fresh.is_subscribed === true;
-    if (oldMain !== newMain || oldList !== newList || oldSub !== newSub) {
+    const oldLoc = String(currentStore?.location || '');
+    const newLoc = String(fresh.location || '');
+    if (oldMain !== newMain || oldList !== newList || oldSub !== newSub || oldLoc !== newLoc) {
       currentStore = { ...currentStore, ...fresh };
       const activeCat = currentStoreCategoryForProducts;
       const mainCat = (fresh.category && String(fresh.category).trim()) ? String(fresh.category).trim() : null;
@@ -908,9 +911,28 @@ async function refreshStoreDataOnOpen(storeId) {
       loadStoreProducts(fresh.name, currentStoreCategoryForProducts);
       const catVal = (fresh.category && String(fresh.category).trim()) ? fresh.category : 'عام';
       document.getElementById('storeCategory').innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(catVal) + '</span>';
+      // 🆕 v9.10.0: تحديث الموقع
+      renderStoreLocationInModal(fresh);
       cacheManager.remove('stores_list');
     }
   } catch(e) { /* silent */ }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   🆕 v9.10.0: عرض موقع المتجر داخل النافذة
+   ═══════════════════════════════════════════════════════════ */
+function renderStoreLocationInModal(store) {
+  const row = document.getElementById('storeLocationRow');
+  const value = document.getElementById('storeLocationValue');
+  if (!row || !value) return;
+  const loc = (store && store.location && String(store.location).trim()) || '';
+  if (loc) {
+    value.textContent = loc;
+    row.classList.add('visible');
+  } else {
+    row.classList.remove('visible');
+    value.textContent = '';
+  }
 }
 
 /* ═══ STORE MODAL ═══ */
@@ -925,6 +947,10 @@ function openStoreModal(store) {
   document.getElementById('storeDescription').textContent = store.description || 'متجر مميز';
   const catVal = (store.category && String(store.category).trim()) ? store.category : 'عام';
   document.getElementById('storeCategory').innerHTML = '<i class="fas fa-tag"></i><span>' + sanitizeHTML(catVal) + '</span>';
+
+  /* 🆕 v9.10.0: عرض موقع المتجر */
+  renderStoreLocationInModal(store);
+
   updateFollowersDisplay();
   updateFollowButtonUI();
   if (store.is_verified) {
@@ -1224,6 +1250,16 @@ function renderStoreProducts(products, append) {
     const nameEl = document.createElement('div'); nameEl.className = 'store-product-name';
     nameEl.textContent = product.name || '';
     info.appendChild(nameEl);
+
+    /* 🆕 v9.10.0: عرض وصف المنتج المختصر */
+    const desc = (product.description && String(product.description).trim()) || '';
+    if (desc) {
+      const descEl = document.createElement('div');
+      descEl.className = 'product-card-desc';
+      descEl.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX);
+      info.appendChild(descEl);
+    }
+
     const priceEl = document.createElement('div'); priceEl.className = 'store-product-price';
     priceEl.textContent = price.toLocaleString() + ' ج.س';
     info.appendChild(priceEl);
@@ -1249,9 +1285,7 @@ function renderProductsBatch(products, append) {
   if (!grid) return;
   if (!Array.isArray(products) || products.length === 0) return;
 
-  /* كشف تلقائي لنمط الإضافة:
-     data.js يقوم بـ concat قبل الاستدعاء، لذا إذا كان
-     طول allProductsLocal أكبر من الدفعة الحالية فهذا Load More */
+  /* كشف تلقائي لنمط الإضافة */
   if (typeof append !== 'boolean') {
     append = Array.isArray(allProductsLocal) &&
              allProductsLocal.length > products.length;
@@ -1309,6 +1343,15 @@ function renderProductsBatch(products, append) {
     nameEl.textContent = product.name || '';
     info.appendChild(nameEl);
 
+    /* 🆕 v9.10.0: عرض وصف المنتج المختصر */
+    const desc = (product.description && String(product.description).trim()) || '';
+    if (desc) {
+      const descEl = document.createElement('div');
+      descEl.className = 'product-card-desc';
+      descEl.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX);
+      info.appendChild(descEl);
+    }
+
     if (product.store_name) {
       const storeEl = document.createElement('div');
       storeEl.style.cssText = 'font-size:0.68rem;color:var(--c-text-soft);font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
@@ -1360,6 +1403,10 @@ function openProductModal(product) {
     origEl.textContent = '';
     origEl.classList.add('hidden');
   }
+
+  /* 🆕 v9.10.0: عرض وصف المنتج */
+  renderProductDescriptionInModal(product);
+
   const colorsContainer = document.getElementById('productColorsContainer');
   const swatchesContainer = document.getElementById('productColorSwatches');
   const selColorName = document.getElementById('selectedColorName');
@@ -1422,6 +1469,24 @@ function openProductModal(product) {
   updateModalActionButtons();
   bzrPushModal();
 }
+
+/* ═══════════════════════════════════════════════════════════
+   🆕 v9.10.0: عرض وصف المنتج داخل نافذة التفاصيل
+   ═══════════════════════════════════════════════════════════ */
+function renderProductDescriptionInModal(product) {
+  const descBox = document.getElementById('productModalDesc');
+  const descText = document.getElementById('productModalDescText');
+  if (!descBox || !descText) return;
+  const desc = (product && product.description && String(product.description).trim()) || '';
+  if (desc) {
+    descText.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX);
+    descBox.classList.add('visible');
+  } else {
+    descText.textContent = '';
+    descBox.classList.remove('visible');
+  }
+}
+
 function closeProductModalInternal() {
   document.getElementById('productModal').classList.add('hidden');
   updateBodyScroll();
@@ -1818,4 +1883,4 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.9.0');
+console.log('[BZR] ui.js loaded ✅ v9.10.0');
