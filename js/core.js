@@ -2,6 +2,7 @@
    BranZar v9.10.0 — core.js
    Layer 1: Config + Utils + Security + Fingerprint + Cache + Firebase + Auth + State
    ✅ v9.10.0: إضافة دالة truncateText + CONFIG.PRODUCT_DESCRIPTION_MAX
+   ✅ Fix: إزالة كود الثيم ووضع العرض المكرر (موجود في ui.js فقط)
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -794,53 +795,9 @@ function getFallbackHex(colorName) {
   return result;
 }
 
-/* ═══ THEME ═══ */
-function applyTheme(theme) {
-  document.body.classList.toggle('theme-dark', theme === 'dark');
-  const mainIcon = document.querySelector('#themeToggleBtn i');
-  if (mainIcon) mainIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-  const accountSwitch = document.getElementById('accountThemeSwitch');
-  if (accountSwitch) accountSwitch.classList.toggle('on', theme === 'dark');
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0F172A' : '#FF7A00');
-}
-function initTheme() {
-  const saved = localStorage.getItem(KEYS.THEME);
-  if (saved) { applyTheme(saved); return; }
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  applyTheme(prefersDark ? 'dark' : 'light');
-}
-function toggleTheme() {
-  const current = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
-  applyTheme(next);
-  localStorage.setItem(KEYS.THEME, next);
-  haptic('light');
-}
-document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
-document.getElementById('accountThemeSwitch')?.addEventListener('click', toggleTheme);
-document.getElementById('accountThemeSwitch')?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
-});
+/* ═══════════════════════════════════════════════════════════
+   ✅ تم حذف كتلتي THEME و VIEW MODE من هذا الملف
+   ✅ موجودتان الآن في ui.js فقط (المصدر الوحيد)
+   ═══════════════════════════════════════════════════════════ */
 
-/* ═══ VIEW MODE ═══ */
-function applyViewMode(mode) {
-  document.body.classList.remove('view-mobile','view-desktop');
-  document.body.classList.add('view-' + mode);
-  $$('.view-toggle-pill button').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
-  localStorage.setItem(KEYS.VIEW, mode);
-}
-function initViewMode() {
-  const saved = localStorage.getItem(KEYS.VIEW);
-  if (saved) { applyViewMode(saved); return; }
-  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent)
-    || window.matchMedia('(max-width: 767px)').matches;
-  applyViewMode(isMobile ? 'mobile' : 'desktop');
-}
-function setView(mode) { applyViewMode(mode); haptic('light'); }
-document.getElementById('viewMobileBtn')?.addEventListener('click', () => setView('mobile'));
-document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
-document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
-document.getElementById('accountViewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
-
-console.log('[BZR] core.js loaded ✅ v9.10.0');
+console.log('[BZR] core.js loaded ✅ v9.10.0 (theme/view moved to ui.js)');
