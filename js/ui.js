@@ -233,6 +233,44 @@ createStoreModal?.addEventListener('click', (e) => {
 });
 document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
+
+
+/* ═══════════════════════════════════════════════════════════════
+   🆕 v9.10.2: زر مشاركة التطبيق من نافذة الحساب
+   ═══════════════════════════════════════════════════════════════ */
+document.getElementById('accountShareAppBtn')?.addEventListener('click', async () => {
+  haptic('medium');
+  const shareData = {
+    title: 'BranZar - بران زار',
+    text: 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد 🛒🛍️',
+    url: window.location.origin
+  };
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+    }
+  }
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(shareData.url);
+      showToast('✅ تم نسخ رابط التطبيق');
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = shareData.url;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('✅ تم نسخ رابط التطبيق');
+    }
+  } catch (e) {
+    showToast('تعذر نسخ الرابط');
+  }
+});
 /* ═══════════════════════════════════════════════════════════
    📱 PWA INSTALL
    ═══════════════════════════════════════════════════════════ */
