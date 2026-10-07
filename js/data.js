@@ -76,8 +76,8 @@ async function loadStores(force) {
     }, force, CONFIG.CACHE_TTL_STORES);
 
     stores = result.sort((a, b) => {
-  const followersA = Number(a.followers) || 0;
-  const followersB = Number(b.followers) || 0;
+  const followersA = Number(b.followers) || 0;
+  const followersB = Number(a.followers) || 0;
 
   if (followersB !== followersA) {
     return followersB - followersA;
