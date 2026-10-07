@@ -2,6 +2,7 @@
    BranZar v9.10.0 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
    ✅ v9.10.0: عرض موقع المتجر + وصف المنتج
+   ✅ Theme/View code موجود هنا فقط (المصدر الوحيد)
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
