@@ -157,24 +157,21 @@ i.fa-fallback { display: none !important; }
   <div class="bzr-splash-loader"></div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     🎯 APP BAR — نظيف واحترافي
+     ═══════════════════════════════════════════════════════════ -->
 <header class="bzr-app-bar">
   <div class="bzr-app-bar-inner">
     <button class="bzr-logo-btn" id="logoMenuBtn" aria-label="الصفحة الرئيسية">
-      <div class="bzr-logo-circle"><img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="" fetchpriority="high"></div>
+      <div class="bzr-logo-circle">
+        <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="" fetchpriority="high">
+      </div>
       <div class="bzr-brand-text"><strong>بران زار</strong><small>BRANZAR</small></div>
     </button>
     <div class="bzr-app-actions">
-      <div class="view-toggle-pill" role="tablist" aria-label="وضع العرض">
-        <button id="viewMobileBtn" data-view="mobile" role="tab" aria-label="وضع الهاتف" title="وضع الهاتف"><svg class="mi mi-xs"><use href="#mi-smartphone"/></svg></button>
-        <button id="viewDesktopBtn" data-view="desktop" role="tab" aria-label="وضع سطح المكتب" title="وضع سطح المكتب"><svg class="mi mi-xs"><use href="#mi-monitor"/></svg></button>
-      </div>
-
-      <button id="themeToggleBtn" class="icon-btn" aria-label="تبديل الوضع الداكن" title="تبديل الوضع الداكن">
-        <i class="fas fa-moon fa-fallback" aria-hidden="true"></i>
-        <svg class="mi mi-theme-moon" aria-hidden="true"><use href="#mi-moon"/></svg>
-        <svg class="mi mi-theme-sun" aria-hidden="true"><use href="#mi-sun"/></svg>
+      <button id="openAccountBtn" class="bzr-account-btn" aria-label="حسابي" title="حسابي">
+        <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-person"/></svg>
       </button>
-
       <button id="cartButton" class="bzr-cart-btn" aria-label="عرض سلة التسوق">
         <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-cart"/></svg>
         <span id="cartCount" class="bzr-cart-badge" style="display:none;" aria-live="polite">0</span>
@@ -183,6 +180,9 @@ i.fa-fallback { display: none !important; }
   </div>
 </header>
 
+<!-- ═══════════════════════════════════════════════════════════
+     🔍 SEARCH BAR
+     ═══════════════════════════════════════════════════════════ -->
 <div class="bzr-search-bar-wrap">
   <div class="bzr-search-inner">
     <div class="bzr-search-input" id="bzrSearchWrapper">
@@ -193,6 +193,77 @@ i.fa-fallback { display: none !important; }
   </div>
 </div>
 <div id="searchResults" class="bzr-search-results" role="region" aria-label="نتائج البحث"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     🎯 HERO SLIDER — 5 صور تتحرك تلقائياً
+     ═══════════════════════════════════════════════════════════ -->
+<section class="bzr-hero-slider" aria-label="عروض مميزة">
+  <div class="bzr-slider" id="bzrSlider">
+    <div class="bzr-slider-track" id="bzrSliderTrack">
+
+      <div class="bzr-slide">
+        <img src="https://picsum.photos/seed/branzar1/900/450" alt="عرض 1" loading="lazy" draggable="false">
+        <div class="bzr-slide-overlay">
+          <span class="bzr-slide-tag">🔥 خصومات حصرية</span>
+          <h3 class="bzr-slide-title">عروض تصل إلى 50%</h3>
+          <p class="bzr-slide-desc">من أفضل المتاجر والبراندات</p>
+        </div>
+      </div>
+
+      <div class="bzr-slide">
+        <img src="https://picsum.photos/seed/branzar2/900/450" alt="عرض 2" loading="lazy" draggable="false">
+        <div class="bzr-slide-overlay">
+          <span class="bzr-slide-tag">✨ وصل حديثاً</span>
+          <h3 class="bzr-slide-title">أزياء الموسم الجديد</h3>
+          <p class="bzr-slide-desc">تصاميم عصرية بأسعار مميزة</p>
+        </div>
+      </div>
+
+      <div class="bzr-slide">
+        <img src="https://picsum.photos/seed/branzar3/900/450" alt="عرض 3" loading="lazy" draggable="false">
+        <div class="bzr-slide-overlay">
+          <span class="bzr-slide-tag">📱 إلكترونيات</span>
+          <h3 class="bzr-slide-title">أحدث الأجهزة الذكية</h3>
+          <p class="bzr-slide-desc">ضمان أصلي وتوصيل سريع</p>
+        </div>
+      </div>
+
+      <div class="bzr-slide">
+        <img src="https://picsum.photos/seed/branzar4/900/450" alt="عرض 4" loading="lazy" draggable="false">
+        <div class="bzr-slide-overlay">
+          <span class="bzr-slide-tag">💄 تجميل وعناية</span>
+          <h3 class="bzr-slide-title">منتجات أصلية 100%</h3>
+          <p class="bzr-slide-desc">اختاري الأفضل لبشرتك</p>
+        </div>
+      </div>
+
+      <div class="bzr-slide">
+        <img src="https://picsum.photos/seed/branzar5/900/450" alt="عرض 5" loading="lazy" draggable="false">
+        <div class="bzr-slide-overlay">
+          <span class="bzr-slide-tag">🎁 هدايا مميزة</span>
+          <h3 class="bzr-slide-title">اختر هديتك الآن</h3>
+          <p class="bzr-slide-desc">تغليف أنيق ومناسبات سعيدة</p>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="bzr-slider-arrow bzr-slider-prev" id="bzrSliderPrev" aria-label="الشريحة السابقة">
+      <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-chevron-right"/></svg>
+    </button>
+    <button class="bzr-slider-arrow bzr-slider-next" id="bzrSliderNext" aria-label="الشريحة التالية">
+      <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-chevron-left"/></svg>
+    </button>
+
+    <div class="bzr-slider-dots" id="bzrSliderDots" role="tablist" aria-label="التنقل بين الشرائح">
+      <button class="bzr-slider-dot active" data-index="0" role="tab" aria-label="الشريحة 1"></button>
+      <button class="bzr-slider-dot" data-index="1" role="tab" aria-label="الشريحة 2"></button>
+      <button class="bzr-slider-dot" data-index="2" role="tab" aria-label="الشريحة 3"></button>
+      <button class="bzr-slider-dot" data-index="3" role="tab" aria-label="الشريحة 4"></button>
+      <button class="bzr-slider-dot" data-index="4" role="tab" aria-label="الشريحة 5"></button>
+    </div>
+  </div>
+</section>
 
 <main class="bzr-page-fade" id="mainContent">
 
@@ -400,7 +471,6 @@ i.fa-fallback { display: none !important; }
   <div class="account-overlay" id="accountOverlay"></div>
   <div class="account-sheet">
 
-    <!-- ▸ Header (Orange Gradient) -->
     <div class="acc-header">
       <button id="closeAccountModal" class="acc-header-close" aria-label="إغلاق">
         <svg class="mi mi-xs" aria-hidden="true"><use href="#mi-close"/></svg>
@@ -416,10 +486,8 @@ i.fa-fallback { display: none !important; }
       </div>
     </div>
 
-    <!-- ▸ Body -->
     <div class="acc-body">
 
-      <!-- Quick Actions -->
       <div class="acc-quick">
         <a href="a.html" class="acc-quick-btn primary">
           <svg class="mi mi-xs" aria-hidden="true"><use href="#mi-login"/></svg>
@@ -431,7 +499,6 @@ i.fa-fallback { display: none !important; }
         </a>
       </div>
 
-      <!-- Section: روابط مهمة -->
       <div class="acc-section-label">
         <span class="acc-section-dot"></span>
         <span>روابط مهمة</span>
@@ -489,7 +556,6 @@ i.fa-fallback { display: none !important; }
         </a>
       </div>
 
-      <!-- Section: الإعدادات -->
       <div class="acc-section-label">
         <span class="acc-section-dot"></span>
         <span>الإعدادات</span>
@@ -521,7 +587,6 @@ i.fa-fallback { display: none !important; }
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="acc-footer">
         <span class="acc-footer-version">نسخة التطبيق: v1.10.4</span>
       </div>
@@ -586,6 +651,7 @@ i.fa-fallback { display: none !important; }
 <script src="js/data.js" defer></script>
 <script src="js/ui.js" defer></script>
 <script src="js/app.js" defer></script>
+<script src="js/ad.js" defer></script>
 
 </body>
 </html>
