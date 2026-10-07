@@ -157,6 +157,8 @@
         .meta-pill-free { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
         .meta-pill-cats { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
         .meta-pill-prodcat { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
+        .meta-pill-loc { background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; }
+        .meta-pill-desc { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
         .item-actions { display: flex; gap: 0.35rem; flex-shrink: 0; align-items: flex-start; }
         .icon-btn { width: 36px; height: 36px; border-radius: 0.75rem; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; font-size: 0.82rem; }
         @media (min-width: 640px) { .icon-btn { width: 40px; height: 40px; font-size: 0.88rem; } }
@@ -230,6 +232,11 @@
         .tags-input-row .form-input { padding: 0.55rem 0.8rem; font-size: 0.85rem; border: 1px dashed #E5E7EB; }
         .tags-input-row .form-input:focus { border-style: solid; }
         .tags-input-row button { padding: 0.55rem 0.95rem; font-size: 0.82rem; }
+
+        /* ═══ Location Field Helper ═══ */
+        .loc-helper { display: flex; gap: 8px; align-items: flex-start; background: #F8FAFC; border: 1px dashed #E5E7EB; border-radius: 0.8rem; padding: 0.7rem 0.9rem; margin-bottom: 0.65rem; font-size: 0.74rem; font-weight: 600; color: #6B7280; line-height: 1.6; }
+        .loc-helper i { color: #FF7A00; font-size: 0.8rem; margin-top: 2px; flex-shrink: 0; }
+        .loc-helper strong { color: #1A1A1A; font-weight: 800; }
 
         /* ═══ Toast ═══ */
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #1F2937; color: #fff; padding: 0.9rem 1.5rem; border-radius: 0.9rem; z-index: 999999; opacity: 0; transition: all 0.35s cubic-bezier(0.4,0,0.2,1); pointer-events: none; font-weight: 800; font-size: 0.88rem; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4); max-width: calc(100% - 32px); text-align: center; }
@@ -435,6 +442,38 @@
                 <div class="form-hint"><i class="fas fa-info-circle"></i> سيستخدمها صاحب المتجر للدخول إلى لوحة تحكم متجره</div>
             </div>
 
+            <!-- ⭐ حقل الموقع (حقل واحد) -->
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-map-marker-alt"></i><span>موقع المتجر (الولاية والمنطقة)</span></label>
+                <div class="loc-helper">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>
+                        ابدأ بكتابة اسم الولاية ثم أضف المنطقة. مثال: <strong>الخرطوم - الرياض</strong> أو <strong>الجزيرة - ود مدني</strong>
+                    </span>
+                </div>
+                <input type="text" id="store_location" class="form-input" placeholder="مثال: الخرطوم - الرياض" maxlength="100" list="sudanStatesList" autocomplete="off">
+                <datalist id="sudanStatesList">
+                    <option value="الخرطوم"></option>
+                    <option value="الجزيرة"></option>
+                    <option value="البحر الأحمر"></option>
+                    <option value="كسلا"></option>
+                    <option value="القضارف"></option>
+                    <option value="سنار"></option>
+                    <option value="النيل الأبيض"></option>
+                    <option value="النيل الأزرق"></option>
+                    <option value="نهر النيل"></option>
+                    <option value="الشمالية"></option>
+                    <option value="شمال كردفان"></option>
+                    <option value="جنوب كردفان"></option>
+                    <option value="غرب كردفان"></option>
+                    <option value="شمال دارفور"></option>
+                    <option value="جنوب دارفور"></option>
+                    <option value="غرب دارفور"></option>
+                    <option value="شرق دارفور"></option>
+                    <option value="وسط دارفور"></option>
+                </datalist>
+            </div>
+
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-tag"></i><span>الفئة الرئيسية (مجانية دائماً)</span></label>
                 <input type="text" id="store_category" class="form-input" placeholder="مثال: إلكترونيات">
@@ -564,6 +603,13 @@
                 <div class="form-hint"><i class="fas fa-info-circle"></i> اختر الفئة التي يظهر بها المنتج داخل صفحة المتجر</div>
             </div>
 
+            <!-- ⭐ حقل وصف المنتج (جديد) -->
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-align-right"></i><span>وصف المنتج</span></label>
+                <textarea id="product_description" class="form-input" rows="3" placeholder="اكتب وصفاً مختصراً للمنتج — المواصفات، المميزات، الحالة..." maxlength="1000" style="resize: vertical; min-height: 90px;"></textarea>
+                <div class="form-hint"><i class="fas fa-info-circle"></i> اختياري — يظهر للعملاء عند فتح تفاصيل المنتج</div>
+            </div>
+
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-money-bill-wave"></i><span>السعر (ج.س)</span><span class="req">*</span></label>
                 <input type="number" id="product_price" class="form-input" required min="0" step="0.01" placeholder="0.00">
@@ -622,6 +668,16 @@ const PRODUCTS_COLLECTION = 'products';
 // ============================================================
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
+
+// ============================================================
+// ⭐ ولايات السودان (الخرطوم أولاً)
+// ============================================================
+const SUDAN_STATES = [
+    'الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','سنار',
+    'النيل الأبيض','النيل الأزرق','نهر النيل','الشمالية',
+    'شمال كردفان','جنوب كردفان','غرب كردفان',
+    'شمال دارفور','جنوب دارفور','غرب دارفور','شرق دارفور','وسط دارفور'
+];
 
 // ============================================================
 // 🔐 نسخ كلمة المرور وإظهارها
@@ -756,6 +812,16 @@ const $ = id => document.getElementById(id);
 function sanitize(str) {
     if (!str) return '';
     return String(str).replace(/<[^>]*>/g, '').trim();
+}
+// ⭐ تنظيف الموقع وإزالة الشرطة الزائدة في النهاية
+function sanitizeLocation(loc) {
+    if (!loc) return '';
+    return String(loc)
+        .replace(/[<>"`\\]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/[\s\-]+$/, '')
+        .slice(0, 100);
 }
 function toNum(v, def = 0) {
     const n = parseFloat(v);
@@ -1052,6 +1118,7 @@ function applyStoresFilter() {
         if (!q) return true;
         return (s.name || '').toLowerCase().includes(q) ||
                (s.category || '').toLowerCase().includes(q) ||
+               (s.location || '').toLowerCase().includes(q) ||
                (s.whatsapp_number || '').includes(q);
     });
     renderStoresList();
@@ -1088,13 +1155,17 @@ function renderStoresList() {
             ? `<span class="meta-pill meta-pill-cats"><i class="fas fa-layer-group"></i> ${extraCatsCount} فئة إضافية</span>`
             : '';
 
+        // ⭐ بادج الموقع
+        const locationBadge = s.location
+            ? `<span class="meta-pill meta-pill-loc"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(s.location)}</span>`
+            : '';
+
         const whatsappHtml = s.whatsapp_number
             ? `<a href="https://wa.me/${cleanPhone(s.whatsapp_number)}" target="_blank" rel="noopener" style="color:#25D366;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:4px;"><i class="fab fa-whatsapp"></i> ${escapeHtml(s.whatsapp_number)}</a>`
             : '<span style="color:#9ca3af;">—</span>';
 
         const safeName = escapeHtml(s.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
-        // ✅ عرض كلمة المرور
         const pwd = s.login_password ? String(s.login_password) : '';
         const pwdEscaped = escapeHtml(pwd).replace(/'/g, "\\'").replace(/"/g, '&quot;');
         const passwordHtml = pwd
@@ -1124,6 +1195,7 @@ function renderStoresList() {
                     <div class="item-meta">
                         <span class="meta-pill meta-pill-cat"><i class="fas fa-tag"></i> ${escapeHtml(s.category || 'عام')}</span>
                         <span class="meta-pill meta-pill-count"><i class="fas fa-box"></i> ${s.products_count || 0}</span>
+                        ${locationBadge}
                         ${verifiedBadge}
                         ${subscribedBadge}
                         ${catsBadge}
@@ -1153,7 +1225,8 @@ function applyProductsFilter() {
         if (storeFilter && p.store_name !== storeFilter) return false;
         if (!q) return true;
         return (p.name || '').toLowerCase().includes(q) ||
-               (p.store_name || '').toLowerCase().includes(q);
+               (p.store_name || '').toLowerCase().includes(q) ||
+               (p.description || '').toLowerCase().includes(q);
     });
     renderProductsList();
 }
@@ -1182,6 +1255,17 @@ function renderProductsList() {
             ? `<span class="meta-pill meta-pill-prodcat"><i class="fas fa-tag"></i> ${escapeHtml(p.category)}</span>`
             : '';
 
+        // ⭐ بادج الوصف
+        const hasDesc = p.description && String(p.description).trim().length > 0;
+        const descBadge = hasDesc
+            ? `<span class="meta-pill meta-pill-desc"><i class="fas fa-align-right"></i> وصف</span>`
+            : '';
+
+        // ⭐ نص الوصف (مقتطف قصير)
+        const descPreview = hasDesc
+            ? `<div style="font-size:0.72rem;color:#6B7280;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">${escapeHtml(String(p.description).slice(0, 90))}${String(p.description).length > 90 ? '…' : ''}</div>`
+            : '';
+
         html += `
             <div class="item-card">
                 ${imgHtml}
@@ -1190,8 +1274,10 @@ function renderProductsList() {
                     <div class="item-meta">
                         <span class="meta-pill meta-pill-cat"><i class="fas fa-store"></i> ${escapeHtml(p.store_name || '')}</span>
                         ${prodCatBadge}
+                        ${descBadge}
                         <span class="meta-pill meta-pill-price"><i class="fas fa-tag"></i> ${price.toLocaleString()} ج.س</span>
                     </div>
+                    ${descPreview}
                 </div>
                 <div class="item-actions">
                     <button class="icon-btn icon-btn-edit" onclick="openProductEdit('${p.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
@@ -1400,6 +1486,25 @@ $('newCategoryInput')?.addEventListener('keydown', (e) => {
 });
 
 // ============================================================
+// 📍 Location Field - Auto Append " - " on state selection
+// ============================================================
+const storeLocationInput = $('store_location');
+storeLocationInput?.addEventListener('input', (e) => {
+    let val = e.target.value.replace(/[<>"`\\]/g, '');
+    if (e.target.value !== val) e.target.value = val;
+
+    const inputType = e.inputType || '';
+    const isDeleting = inputType.startsWith('delete');
+    const trimmed = val.trim();
+
+    // ⭐ عند اختيار ولاية كاملة → نضيف " - " تلقائيًا
+    if (!isDeleting && SUDAN_STATES.includes(trimmed) && !val.endsWith(' - ')) {
+        val = trimmed + ' - ';
+        e.target.value = val;
+    }
+});
+
+// ============================================================
 // 🏪 Store Modal
 // ============================================================
 function openStoreModal(store = null) {
@@ -1421,6 +1526,7 @@ function openStoreModal(store = null) {
         $('store_name').value = store.name || '';
         $('store_login_password').value = store.login_password || '';
         $('store_category').value = store.category || '';
+        $('store_location').value = store.location || '';
         $('store_description').value = store.description || '';
         $('store_whatsapp').value = store.whatsapp_number || '';
         $('store_phone').value = store.phone_number || '';
@@ -1478,6 +1584,7 @@ $('storeForm').addEventListener('submit', async (e) => {
     const password = $('store_login_password').value.trim();
     const whatsapp = cleanPhone($('store_whatsapp').value);
     const mainCat = sanitize($('store_category').value);
+    const locationValue = sanitizeLocation($('store_location').value);
 
     if (!name) { showToast('اسم المتجر مطلوب', 'error'); return; }
     if (!password || password.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
@@ -1509,6 +1616,7 @@ $('storeForm').addEventListener('submit', async (e) => {
         category: mainCat,
         categories: cleanCategories,
         is_subscribed: $('store_is_subscribed').checked,
+        location: locationValue || null,   // ⭐ حقل الموقع الواحد
         description: sanitize($('store_description').value),
         whatsapp_number: whatsapp,
         phone_number: cleanPhone($('store_phone').value) || null,
@@ -1668,6 +1776,7 @@ function openProductModal(product = null) {
     $('product_img_preview').removeAttribute('src');
     $('product_category').innerHTML = '<option value="">اختر المتجر أولاً</option>';
     $('product_category').disabled = true;
+    $('product_description').value = '';
 
     if (isEdit) {
         $('product_id').value = product.id;
@@ -1675,6 +1784,7 @@ function openProductModal(product = null) {
         $('product_store_name').value = product.store_name || '';
         $('product_price').value = product.price || 0;
         $('product_img_url').value = product.img_url || '';
+        $('product_description').value = product.description || '';   // ⭐ الوصف
         refreshProductCategoriesSelect(product.category || '');
         if (product.img_url) {
             $('product_img_preview').src = product.img_url;
@@ -1707,6 +1817,7 @@ $('productForm').addEventListener('submit', async (e) => {
     const storeName = $('product_store_name').value;
     const price = toNum($('product_price').value);
     const productCategory = sanitize($('product_category').value);
+    const productDescription = sanitize($('product_description').value).slice(0, 1000);   // ⭐ الوصف
 
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (!storeName) { showToast('يجب اختيار المتجر', 'error'); return; }
@@ -1718,6 +1829,7 @@ $('productForm').addEventListener('submit', async (e) => {
         store_name: storeName,
         category: productCategory || null,
         price,
+        description: productDescription || null,   // ⭐ حقل الوصف
         img_url: sanitize($('product_img_url').value),
         updated_at: now
     };
