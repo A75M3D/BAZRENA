@@ -78,7 +78,7 @@
         .login-footer-hint a { color: #FF7A00; text-decoration: none; font-weight: 700; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; }
         .login-footer-hint a:hover { text-decoration: underline; }
 
-        .app-container { max-width: 900px; margin: 0 auto; padding: 0 0 100px 0; min-height: 100vh; }
+        .app-container { max-width: 900px; margin: 0 auto; padding: 0 0 130px 0; min-height: 100vh; }
         @media (min-width: 1024px) { .app-container { padding-bottom: 2rem; } }
         .app-header { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); padding: 1.25rem 1.25rem 3rem; border-radius: 0 0 2rem 2rem; position: relative; overflow: hidden; box-shadow: 0 12px 30px -12px rgba(255,122,0,0.5); }
         @media (min-width: 640px) { .app-header { padding: 1.75rem 2rem 3.5rem; border-radius: 0 0 2.5rem 2.5rem; } }
@@ -215,7 +215,7 @@
         @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .btn.loading { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
 
-        @supports (padding-bottom: env(safe-area-inset-bottom)) { .app-container { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } }
+        @supports (padding-bottom: env(safe-area-inset-bottom)) { .app-container { padding-bottom: calc(130px + env(safe-area-inset-bottom)); } }
         @media (min-width: 1024px) { .app-container { max-width: 1200px; padding-bottom: 2rem; } .products-layout { display: grid; grid-template-columns: 420px 1fr; gap: 1.25rem; align-items: start; } .card + .card { margin-top: 0; } .products-layout .card:first-child { position: sticky; top: 1rem; } }
         button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid #FF7A00; outline-offset: 2px; }
 
@@ -290,6 +290,404 @@
         }
         .rate-limit-bar.show { display: flex; }
         .rate-limit-bar i { color: #DC2626; flex-shrink: 0; }
+
+        /* ═══════════════════════════════════════════════════════
+           💬 زر واتساب العائم
+           ═══════════════════════════════════════════════════════ */
+        .support-float {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.85rem;
+            text-decoration: none;
+            cursor: pointer;
+            z-index: 8000;
+            box-shadow: 0 10px 30px -8px rgba(37,211,102,0.7), 0 0 0 0 rgba(37,211,102,0.5);
+            transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            animation: waPulse 2.4s ease-in-out infinite;
+            border: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .support-float:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 16px 40px -10px rgba(37,211,102,0.95);
+        }
+        .support-float:active { transform: scale(0.94); }
+        .support-float i { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15)); }
+        .support-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #EF4444;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 900;
+            border: 2.5px solid #fff;
+            animation: badgePulse 1.8s infinite;
+            box-shadow: 0 2px 8px rgba(239,68,68,0.5);
+        }
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        @keyframes waPulse {
+            0%, 100% { box-shadow: 0 10px 30px -8px rgba(37,211,102,0.7), 0 0 0 0 rgba(37,211,102,0.5); }
+            50% { box-shadow: 0 10px 30px -8px rgba(37,211,102,0.7), 0 0 0 18px rgba(37,211,102,0); }
+        }
+        .support-tooltip {
+            position: fixed;
+            bottom: 42px;
+            left: 98px;
+            background: linear-gradient(135deg, #1F2937, #111827);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            white-space: nowrap;
+            z-index: 7999;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(10px);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 10px 30px -6px rgba(0,0,0,0.35);
+        }
+        .support-tooltip::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            width: 12px;
+            height: 12px;
+            background: #1F2937;
+        }
+        .support-tooltip.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        @media (max-width: 480px) {
+            .support-float { bottom: 20px; left: 16px; width: 58px; height: 58px; font-size: 1.7rem; }
+            .support-tooltip { display: none; }
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           🪟 النوافذ المنبثقة (Modals)
+           ═══════════════════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 50000;
+            overflow-y: auto;
+            animation: modalOverlayIn 0.3s ease;
+        }
+        @keyframes modalOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-card {
+            background: #fff;
+            border-radius: 1.75rem;
+            max-width: 480px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5), 0 15px 40px -10px rgba(0,0,0,0.25);
+            animation: modalCardIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            border: 1px solid rgba(255,255,255,0.1);
+            max-height: calc(100vh - 2rem);
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes modalCardIn {
+            from { transform: translateY(40px) scale(0.92); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .modal-hero {
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%);
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .modal-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%);
+        }
+        .modal-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; left: -60px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        }
+        .modal-hero-upgrade {
+            background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%);
+        }
+        .modal-hero-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+            animation: heroIconBounce 1.2s ease infinite alternate;
+            display: inline-block;
+            line-height: 1;
+        }
+        @keyframes heroIconBounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-6px); }
+        }
+        .modal-hero-title {
+            font-size: 1.35rem;
+            font-weight: 900;
+            margin: 0 0 0.35rem;
+            position: relative;
+            z-index: 2;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .modal-hero-subtitle {
+            font-size: 0.85rem;
+            font-weight: 700;
+            opacity: 0.95;
+            margin: 0;
+            position: relative;
+            z-index: 2;
+            color: #fff;
+        }
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .modal-lead {
+            font-size: 0.9rem;
+            color: #374151;
+            line-height: 1.8;
+            margin: 0 0 1.1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .modal-lead strong { color: #FF7A00; font-weight: 900; }
+        .plan-card {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+            border: 1.5px solid #FFE0BD;
+            border-radius: 1rem;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1.1rem;
+        }
+        .plan-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.85rem;
+        }
+        .plan-badge {
+            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            color: #fff;
+            padding: 0.3rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 900;
+            box-shadow: 0 4px 12px -4px rgba(255,122,0,0.5);
+        }
+        .plan-price {
+            font-size: 1rem;
+            font-weight: 900;
+            color: #FF7A00;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+        .plan-features li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.83rem;
+            color: #1F2937;
+            font-weight: 700;
+        }
+        .plan-features i { color: #10B981; font-size: 0.9rem; flex-shrink: 0; }
+        .plan-features strong { color: #C2410C; }
+        .upgrade-hint {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            border: 1.5px solid #BFDBFE;
+            border-radius: 1rem;
+            padding: 0.9rem 1rem;
+        }
+        .upgrade-hint > i {
+            color: #8B5CF6;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .upgrade-hint strong {
+            display: block;
+            color: #1E40AF;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+            font-weight: 900;
+        }
+        .upgrade-hint p {
+            margin: 0;
+            font-size: 0.78rem;
+            color: #1E40AF;
+            line-height: 1.65;
+            font-weight: 600;
+        }
+        .benefits-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            font-weight: 900;
+            color: #1F2937;
+            margin-bottom: 0.85rem;
+        }
+        .benefits-title i { color: #F59E0B; }
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+        .benefits-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 0.9rem;
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.9rem;
+            transition: all 0.25s;
+        }
+        .benefits-list li:hover {
+            background: #FFF7ED;
+            border-color: #FFE0BD;
+            transform: translateX(-3px);
+        }
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8B5CF6, #A855F7);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 6px 16px -6px rgba(139,92,246,0.5);
+        }
+        .benefits-list li:nth-child(2) .benefit-icon {
+            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            box-shadow: 0 6px 16px -6px rgba(255,122,0,0.5);
+        }
+        .benefits-list li:nth-child(3) .benefit-icon {
+            background: linear-gradient(135deg, #10B981, #059669);
+            box-shadow: 0 6px 16px -6px rgba(16,185,129,0.5);
+        }
+        .benefits-list strong {
+            display: block;
+            font-size: 0.85rem;
+            color: #1F2937;
+            font-weight: 900;
+            margin-bottom: 0.15rem;
+        }
+        .benefits-list p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: #6B7280;
+            font-weight: 600;
+            line-height: 1.55;
+        }
+        .modal-footer {
+            padding: 1rem 1.5rem 1.25rem;
+            display: flex;
+            gap: 0.6rem;
+            border-top: 1px solid #F3F4F6;
+            background: #FAFAFA;
+            flex-shrink: 0;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 0.9rem 1rem;
+            border-radius: 0.9rem;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.22s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Cairo', sans-serif;
+        }
+        .modal-btn-outline {
+            background: #fff;
+            color: #6B7280;
+            border: 1.5px solid #E5E7EB;
+        }
+        .modal-btn-outline:hover {
+            background: #F9FAFB;
+            color: #374151;
+            border-color: #D1D5DB;
+        }
+        .modal-btn-whatsapp {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: #fff;
+            box-shadow: 0 10px 24px -8px rgba(37,211,102,0.7);
+        }
+        .modal-btn-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px -8px rgba(37,211,102,0.95);
+        }
+        .modal-btn-whatsapp:active { transform: translateY(0); }
+        .modal-btn i { font-size: 1.05rem; }
+
+        @media (max-width: 420px) {
+            .modal-hero { padding: 1.75rem 1.25rem 1.25rem; }
+            .modal-hero-title { font-size: 1.2rem; }
+            .modal-hero-icon { font-size: 2.5rem; }
+            .modal-body { padding: 1.25rem; }
+            .modal-footer { padding: 0.9rem 1.25rem 1.1rem; flex-direction: column; }
+            .modal-btn { padding: 0.85rem 0.75rem; font-size: 0.86rem; }
+        }
     </style>
 </head>
 <body>
@@ -344,6 +742,16 @@
 
 <div id="dashboard" class="hidden">
     <div id="toast" class="toast"></div>
+
+    <!-- ═══ زر واتساب العائم الثابت ═══ -->
+    <button type="button" id="supportFloat" class="support-float" aria-label="تواصل مع خدمة العملاء">
+        <i class="fab fa-whatsapp"></i>
+        <span class="support-badge">1</span>
+    </button>
+    <div class="support-tooltip" id="supportTooltip">
+        <i class="fas fa-headset"></i> تواصل معنا مباشرة
+    </div>
+
     <div class="app-container">
         <div class="app-header">
             <div class="header-top">
@@ -539,7 +947,6 @@
             </div>
 
             <div id="productsSection" class="tab-content hidden">
-                <!-- ✅ v10.1: عداد حدود الفئات -->
                 <div id="categoryLimitsInfo" style="margin-bottom: 1rem;"></div>
 
                 <div class="products-layout">
@@ -647,7 +1054,6 @@
                                     <div class="card-title-icon"><i class="fas fa-boxes"></i></div>
                                     <span>منتجاتي</span>
                                 </div>
-                                <!-- ✅ v10.1: عرض الحد -->
                                 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                                     <span id="productsCount" style="background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 900;">0</span>
                                     <span id="mainLimitBadge" style="background: #EFF6FF; color: #1E40AF; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 900; border: 1px solid #BFDBFE; display:none; align-items:center; gap:5px;">
@@ -660,6 +1066,107 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         🎉 نافذة الترحيب بالمستخدم الجديد
+         ═══════════════════════════════════════════════════════ -->
+    <div id="welcomeModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+        <div class="modal-card">
+            <div class="modal-hero">
+                <div class="modal-hero-icon">🎉</div>
+                <h2 class="modal-hero-title" id="welcomeTitle">أهلاً بك في BranZar</h2>
+                <p class="modal-hero-subtitle">تم تفعيل حسابك بنجاح — لنبدأ رحلتك!</p>
+            </div>
+            <div class="modal-body">
+                <p class="modal-lead">
+                    يسعدنا انضمامك إلى عائلة <strong>BranZar</strong>!<br>
+                    تم تفعيل <strong>الخطة المجانية</strong> لمتجرك ويمكنك البدء بإدارة منتجاتك الآن.
+                </p>
+
+                <div class="plan-card">
+                    <div class="plan-card-header">
+                        <span class="plan-badge">🆓 الخطة المجانية</span>
+                        <span class="plan-price">0 ج.س</span>
+                    </div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check-circle"></i> حتى <strong>20 منتجاً</strong> في الفئة الرئيسية</li>
+                        <li><i class="fas fa-check-circle"></i> لوحة تحكم كاملة لإدارة متجرك</li>
+                        <li><i class="fas fa-check-circle"></i> عرض منتجاتك للعملاء في المنصة</li>
+                    </ul>
+                </div>
+
+                <div class="upgrade-hint">
+                    <i class="fas fa-crown"></i>
+                    <div>
+                        <strong>هل ترغب بالمزيد؟</strong>
+                        <p>لإضافة <strong>فئات إضافية</strong> داخل متجرك أو <strong>توثيق حسابك</strong>، تواصل مع خدمة العملاء وسنسعد بمساعدتك.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-outline" onclick="closeWelcomeModal()">
+                    <i class="fas fa-clock"></i> لاحقاً
+                </button>
+                <button type="button" class="modal-btn modal-btn-whatsapp" onclick="openSupportChat('welcome')">
+                    <i class="fab fa-whatsapp"></i> تواصل معنا الآن
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         🚀 نافذة الاشتراك / الوصول للحد الأقصى
+         ═══════════════════════════════════════════════════════ -->
+    <div id="subscribeModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="subscribeTitle">
+        <div class="modal-card">
+            <div class="modal-hero modal-hero-upgrade">
+                <div class="modal-hero-icon">🚀</div>
+                <h2 class="modal-hero-title" id="subscribeTitle">استعد للارتقاء بمتجرك</h2>
+                <p class="modal-hero-subtitle" id="subscribeModalSubtitle">لقد وصلت إلى الحد الأقصى في الخطة المجانية</p>
+            </div>
+            <div class="modal-body">
+                <p class="modal-lead" id="subscribeModalLead">
+                    استخدمت جميع المنتجات المتاحة في خطتك المجانية (<strong>20 منتجاً</strong>).<br>
+                    للاستمرار بإضافة المزيد، اشترك في إحدى باقاتنا.
+                </p>
+
+                <div class="benefits-title">
+                    <i class="fas fa-star"></i> ماذا تحصل عليه مع الاشتراك؟
+                </div>
+                <ul class="benefits-list">
+                    <li>
+                        <span class="benefit-icon"><i class="fas fa-boxes-stacked"></i></span>
+                        <div>
+                            <strong>منتجات أكثر</strong>
+                            <p>أضف حتى <strong>50 منتجاً</strong> في كل فئة من فئات متجرك</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="benefit-icon"><i class="fas fa-layer-group"></i></span>
+                        <div>
+                            <strong>فئات إضافية متعددة</strong>
+                            <p>افتح عدة فئات داخل متجر واحد لتوسيع نطاق منتجاتك</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="benefit-icon"><i class="fas fa-check-circle"></i></span>
+                        <div>
+                            <strong>توثيق الحساب</strong>
+                            <p>شارة التوثيق لزيادة مصداقية متجرك وثقة عملائك</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-outline" onclick="closeSubscribeModal()">
+                    <i class="fas fa-clock"></i> لاحقاً
+                </button>
+                <button type="button" class="modal-btn modal-btn-whatsapp" onclick="openSupportChat('subscribe')">
+                    <i class="fab fa-whatsapp"></i> اشترك الآن
+                </button>
             </div>
         </div>
     </div>
@@ -886,6 +1393,11 @@ const SecureSession = {
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
+/* 💬 رقم خدمة العملاء (واتساب مباشر) */
+const WHATSAPP_SUPPORT = '249908280115';
+/* 🔖 مفتاح تتبع نافذة الترحيب */
+const WELCOME_FLAG_PREFIX = 'bzr_welcome_v1_';
+
 const firebaseConfig = {
     apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
     authDomain: "bazarena-725e4.firebaseapp.com",
@@ -903,7 +1415,6 @@ const storesTableName = 'stores';
 const productsTableName = 'products';
 const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.png';
 
-/* ✅ v10.1: حدود إضافة المنتجات لكل فئة */
 const PRODUCT_LIMITS = Object.freeze({
     MAIN_CATEGORY_MAX: 20,
     ADDITIONAL_CATEGORY_MAX: 50,
@@ -942,6 +1453,7 @@ let storeUnsubscribe = null;
 let isFirstProductsSnapshot = true;
 let lastProductsFingerprint = '';
 let _rateLimitTicker = null;
+let _hasShownLimitModal = false;
 
 const $ = id => document.getElementById(id);
 
@@ -999,6 +1511,133 @@ function startRateLimitTicker() {
 startRateLimitTicker();
 
 /* ═══════════════════════════════════════════════════════════════
+   💬 التواصل مع خدمة العملاء (واتساب)
+   ═══════════════════════════════════════════════════════════════ */
+function openSupportChat(context) {
+    const messages = {
+        general: 'السلام عليكم ورحمة الله 👋\nأرغب بالتواصل مع خدمة عملاء BranZar.',
+        welcome: 'السلام عليكم ورحمة الله 👋\nأنا صاحب متجر جديد على منصة BranZar، وأرغب بالاستفسار عن:\n• الفئات الإضافية داخل المتجر\n• توثيق الحساب\nشكراً لكم 🌸',
+        subscribe: 'السلام عليكم ورحمة الله 👋\nوصلت إلى الحد الأقصى في الخطة المجانية (20 منتجاً)،\nوأرغب بالاشتراك في إحدى باقات BranZar.\nأرجو موافاتي بتفاصيل الباقات والأسعار.\nشكراً لكم 🌸',
+        extra_cats: 'السلام عليكم ورحمة الله 👋\nأرغب بإضافة فئات إضافية داخل متجري على BranZar.\nأرجو موافاتي بالتفاصيل.',
+        verify: 'السلام عليكم ورحمة الله 👋\nأرغب بتوثيق حساب متجري على BranZar.\nأرجو موافاتي بالتفاصيل.',
+        limit: 'السلام عليكم ورحمة الله 👋\nوصلت إلى الحد الأقصى للمنتجات في خطتي الحالية على BranZar،\nوأرغب بالاشتراك في إحدى الباقات للاستمرار.\nشكراً لكم 🌸'
+    };
+    const msg = messages[context] || messages.general;
+    const url = `https://wa.me/${WHATSAPP_SUPPORT}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+}
+window.openSupportChat = openSupportChat;
+
+/* ═══════════════════════════════════════════════════════════════
+   🎉 نافذة الترحيب بالمستخدم الجديد
+   ═══════════════════════════════════════════════════════════════ */
+function showWelcomeModal() {
+    const modal = $('welcomeModal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeWelcomeModal() {
+    const modal = $('welcomeModal');
+    if (modal) modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    if (currentStore && currentStore.id) {
+        try { localStorage.setItem(WELCOME_FLAG_PREFIX + currentStore.id, '1'); } catch {}
+    }
+}
+window.closeWelcomeModal = closeWelcomeModal;
+
+function checkAndShowWelcome() {
+    if (!currentStore || !currentStore.id) return;
+    try {
+        const seen = localStorage.getItem(WELCOME_FLAG_PREFIX + currentStore.id);
+        if (!seen) {
+            setTimeout(() => showWelcomeModal(), 900);
+        }
+    } catch {}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   🚀 نافذة الاشتراك
+   ═══════════════════════════════════════════════════════════════ */
+function showSubscribeModal(reason, limitInfo) {
+    const modal = $('subscribeModal');
+    if (!modal) return;
+    const subtitle = $('subscribeModalSubtitle');
+    const lead = $('subscribeModalLead');
+
+    if (reason === 'limit' && limitInfo) {
+        const isMain = limitInfo.isMainCategory;
+        const categoryLabel = isMain ? 'الفئة الرئيسية' : `فئة "${escapeHtml(limitInfo.category || '')}"`;
+        if (subtitle) subtitle.textContent = 'لقد وصلت إلى الحد الأقصى في الخطة المجانية';
+        if (lead) lead.innerHTML = `استخدمت جميع المنتجات المتاحة في <strong>${categoryLabel}</strong> ضمن خطتك المجانية (<strong>${limitInfo.limit} منتجاً</strong>).<br>للاستمرار بإضافة المزيد، اشترك في إحدى باقاتنا.`;
+    } else if (reason === 'extra_cats') {
+        if (subtitle) subtitle.textContent = 'افتح فئات إضافية داخل متجرك';
+        if (lead) lead.innerHTML = `تتيح لك باقات الاشتراك إضافة <strong>فئات متعددة</strong> داخل متجر واحد، لتوسيع نطاق منتجاتك وزيادة مبيعاتك.`;
+    } else if (reason === 'verify') {
+        if (subtitle) subtitle.textContent = 'وثّق حساب متجرك';
+        if (lead) lead.innerHTML = `شارة التوثيق <strong>تزيد ثقة العملاء</strong> بمتجرك، وتمنحك مصداقية أكبر في نتائج البحث.`;
+    } else {
+        if (subtitle) subtitle.textContent = 'ارتقِ بمتجرك مع باقاتنا';
+        if (lead) lead.innerHTML = `استفد من مزايا حصرية لمتجرك: <strong>منتجات أكثر</strong>، <strong>فئات متعددة</strong>، و<strong>توثيق الحساب</strong>.`;
+    }
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeSubscribeModal() {
+    const modal = $('subscribeModal');
+    if (modal) modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+window.closeSubscribeModal = closeSubscribeModal;
+
+/* ═══════════════════════════════════════════════════════════════
+   🖱️ تفاعلات النوافذ
+   ═══════════════════════════════════════════════════════════════ */
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            if (overlay.id === 'welcomeModal') closeWelcomeModal();
+            if (overlay.id === 'subscribeModal') closeSubscribeModal();
+        }
+    });
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeWelcomeModal();
+        closeSubscribeModal();
+    }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   💬 زر واتساب العائم
+   ═══════════════════════════════════════════════════════════════ */
+(function setupSupportFloat() {
+    const floatBtn = $('supportFloat');
+    const tooltip = $('supportTooltip');
+    if (!floatBtn) return;
+
+    floatBtn.addEventListener('click', () => openSupportChat('general'));
+
+    if (tooltip) {
+        floatBtn.addEventListener('mouseenter', () => tooltip.classList.add('show'));
+        floatBtn.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+        floatBtn.addEventListener('touchstart', () => {
+            tooltip.classList.add('show');
+            clearTimeout(window._tooltipT);
+            window._tooltipT = setTimeout(() => tooltip.classList.remove('show'), 2500);
+        }, { passive: true });
+
+        /* إظهار تلقائي أول مرة بعد 4 ثواني */
+        setTimeout(() => {
+            tooltip.classList.add('show');
+            setTimeout(() => tooltip.classList.remove('show'), 5000);
+        }, 4000);
+    }
+})();
+
+/* ═══════════════════════════════════════════════════════════════
    📂 إدارة فئات المتجر
    ═══════════════════════════════════════════════════════════════ */
 function getStoreMainCategory() {
@@ -1018,9 +1657,6 @@ function getStoreExtraCategories() {
 
 function isStoreSubscribed() { return !!(currentStore && currentStore.is_subscribed === true); }
 
-/* ═══════════════════════════════════════════════════════════════
-   ✅ v10.1: حساب عدد المنتجات لكل فئة
-   ═══════════════════════════════════════════════════════════════ */
 function getMainCategoryProductsCount() {
     if (!currentStore || !Array.isArray(productsData)) return 0;
     const mainCat = getStoreMainCategory();
@@ -1071,10 +1707,12 @@ function canAddProductToCategory(category, excludeId) {
         return {
             allowed: false,
             reason: 'limit_reached',
+            isMainCategory,
+            category: targetCat || mainCat,
             current: currentCount,
             limit: limit,
             remaining: 0,
-            message: `🚫 وصلت للحد الأقصى في ${label} (${limit} منتج) — احذف منتجاً أولاً`
+            message: `🚫 وصلت إلى الحد الأقصى في ${label} (${limit} منتج) — اشترك للمزيد`
         };
     }
     
@@ -1183,7 +1821,6 @@ function populateProductCategories(preserveValue) {
         select.value = '';
     }
 
-    /* ✅ v10.1: تعطيل الخيارات المكتملة */
     const editingId = $('product_id').value;
     Array.from(select.options).forEach(opt => {
         if (!opt.value || opt.disabled) return;
@@ -1490,6 +2127,9 @@ async function enterDashboard() {
     setupRealtimeStoreListener();
     await loadMyProducts();
     updateConnectionStatus(true, currentStore.name);
+
+    /* 🎉 إظهار نافذة الترحيب للمستخدم الجديد */
+    checkAndShowWelcome();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1710,20 +2350,32 @@ function updateProductsUI() {
     $('productsCountBadge').textContent = productsData.length;
     $('ro_products_count').textContent = productsData.length;
 
-    /* ✅ v10.1: تحديث عدادات الحدود */
     updateCategoryLimitsUI();
     updateMainLimitBadge();
-
     renderMyProductsList(productsData);
 
-    /* ✅ إعادة تحديث select لإظهار الحد */
     if (!$('productsSection').classList.contains('hidden')) {
         const currentVal = $('product_category').value;
         populateProductCategories(currentVal);
     }
+
+    /* 🚀 تنبيه عند الوصول للحد الأقصى (مرة واحدة) */
+    checkAndShowLimitAlert();
 }
 
-/* ✅ v10.1: عرض حالة الحدود لكل فئة */
+function checkAndShowLimitAlert() {
+    if (!currentStore || _hasShownLimitModal) return;
+    const mainCat = getStoreMainCategory();
+    if (!mainCat) return;
+    const mainCount = getMainCategoryProductsCount();
+    if (mainCount >= PRODUCT_LIMITS.MAIN_CATEGORY_MAX) {
+        _hasShownLimitModal = true;
+        setTimeout(() => {
+            showToast(`🎯 وصلت إلى الحد الأقصى (${PRODUCT_LIMITS.MAIN_CATEGORY_MAX} منتج) — اشترك للمزيد`, 'warning');
+        }, 1500);
+    }
+}
+
 function updateCategoryLimitsUI() {
     const container = $('categoryLimitsInfo');
     if (!container || !currentStore) return;
@@ -1750,8 +2402,10 @@ function updateCategoryLimitsUI() {
         mainText = `${mainCount} / ${mainLimit} — متبقي ${mainRemaining}`;
     }
 
+    const atMainLimit = mainCount >= mainLimit;
+
     let html = `
-        <div style="background:#fff;border:1.5px solid #E5E7EB;border-radius:0.9rem;padding:0.85rem;margin-bottom:0.75rem;">
+        <div style="background:#fff;border:1.5px solid ${atMainLimit ? '#FECACA' : '#E5E7EB'};border-radius:0.9rem;padding:0.85rem;margin-bottom:0.75rem;">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
                 <div style="display:flex;align-items:center;gap:8px;">
                     <i class="fas ${mainIcon}" style="color:${mainColor};font-size:1rem;"></i>
@@ -1762,6 +2416,11 @@ function updateCategoryLimitsUI() {
             <div style="background:#F3F4F6;height:6px;border-radius:6px;overflow:hidden;">
                 <div style="background:${mainColor};height:100%;width:${mainPercent}%;transition:width 0.4s ease;border-radius:6px;"></div>
             </div>
+            ${atMainLimit ? `
+            <button type="button" onclick="showSubscribeModal('limit', {isMainCategory:true, limit:${mainLimit}, category:'${escapeHtml(mainCat)}'})" 
+                style="margin-top:10px;width:100%;padding:0.65rem;border-radius:0.7rem;border:none;background:linear-gradient(135deg,#7C3AED,#A855F7);color:#fff;font-weight:900;font-size:0.82rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 6px 16px -6px rgba(124,58,237,0.6);font-family:'Cairo',sans-serif;">
+                <i class="fas fa-crown"></i> اشترك لإضافة المزيد
+            </button>` : ''}
         </div>
     `;
 
@@ -1802,7 +2461,6 @@ function updateCategoryLimitsUI() {
     container.innerHTML = html;
 }
 
-/* ✅ v10.1: تحديث شارة الحد في العنوان */
 function updateMainLimitBadge() {
     const mainLimitBadge = $('mainLimitBadge');
     const mainLimitText = $('mainLimitText');
@@ -1851,7 +2509,6 @@ function renderMyProductsList(products) {
             ? `<img src="${escapeHtml(p.img_url)}" class="product-thumb" alt="" onerror="this.outerHTML='<div class=\\'product-thumb product-thumb-placeholder\\'><i class=\\'fas fa-box\\'></i></div>'">`
             : `<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
-        /* ✅ v10.1: تمييز الفئة الرئيسية */
         const isMainCat = !p.category || String(p.category).trim() === mainCat;
         let catBadge = '';
         if (isMainCat) {
@@ -1947,7 +2604,7 @@ function addColorRow(name = '', image = '') {
 document.getElementById('addColorBtn').addEventListener('click', () => addColorRow());
 
 /* ═══════════════════════════════════════════════════════════════
-   ✅ v10.1: حفظ المنتج مع التحقق من الحد
+   ✅ حفظ المنتج مع التحقق من الحد وإظهار نافذة الاشتراك
    ═══════════════════════════════════════════════════════════════ */
 $('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1962,7 +2619,7 @@ $('productForm').addEventListener('submit', async (e) => {
     if (!category) { showToast('⚠️ اختر فئة المنتج', 'error'); return; }
     if (price <= 0) { showToast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
 
-    /* ✅ v10.1: التحقق من الحد قبل الإضافة/التعديل */
+    /* ✅ التحقق من الحد قبل الإضافة/التعديل */
     const limitCheck = canAddProductToCategory(category, id || null);
 
     if (!limitCheck.allowed) {
@@ -1988,12 +2645,16 @@ $('productForm').addEventListener('submit', async (e) => {
             { duration: 500, easing: 'ease-in-out' }
         );
 
+        /* 🚀 إظهار نافذة الاشتراك عند الوصول للحد */
+        if (limitCheck.reason === 'limit_reached' && limitCheck.isMainCategory) {
+            setTimeout(() => showSubscribeModal('limit', limitCheck), 500);
+        }
         return;
     }
 
     /* ✅ تحذير عند الاقتراب من الحد */
     if (limitCheck.remaining === 1) {
-        showToast(`⚠️ تنبيه: هذا آخر منتج يمكن إضافته للفئة`, 'warning');
+        showToast(`⚠️ تنبيه: هذا آخر منتج يمكن إضافته لهذه الفئة`, 'warning');
     } else if (limitCheck.remaining === 2) {
         showToast(`ℹ️ متبقي ${limitCheck.remaining} منتجات في هذه الفئة`, 'info');
     }
