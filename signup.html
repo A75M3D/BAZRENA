@@ -303,6 +303,23 @@ input, textarea, select { outline: none; }
   border-radius: var(--radius-full);
 }
 
+/* ═══ Field Helper Text ═══ */
+.field-helper {
+  display: flex; gap: 8px; align-items: flex-start;
+  background: #F8FAFC;
+  border: 1px dashed var(--c-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-size: 0.76rem; font-weight: 600;
+  color: var(--c-text-soft); line-height: 1.65;
+}
+.field-helper i {
+  color: var(--c-primary); font-size: 0.82rem;
+  margin-top: 3px; flex-shrink: 0;
+}
+.field-helper strong { color: var(--c-text); font-weight: 800; }
+
 /* ═══ Form ═══ */
 .form-field { margin-bottom: 18px; }
 .form-field:last-child { margin-bottom: 0; }
@@ -385,6 +402,19 @@ input, textarea, select { outline: none; }
 }
 .input-icon-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
 
+/* Location quick helper */
+.loc-hint-row {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+}
+.loc-hint-chip {
+  padding: 5px 12px; border-radius: var(--radius-full);
+  background: var(--c-surface-2); color: var(--c-text-soft);
+  font-size: 0.7rem; font-weight: 700;
+  border: 1px solid var(--c-border);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.loc-hint-chip i { color: var(--c-primary); font-size: 0.65rem; }
+
 .textarea {
   width: 100%; min-height: 120px; padding: 16px;
   border: 2px solid var(--c-border); border-radius: var(--radius-md);
@@ -443,7 +473,6 @@ input, textarea, select { outline: none; }
   border-radius: 50%; animation: spin 0.8s linear infinite;
 }
 
-/* ⭐ Empty state — لا توجد فئات */
 .cat-empty {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 12px; padding: 28px 20px; text-align: center;
@@ -612,12 +641,22 @@ input, textarea, select { outline: none; }
   color: var(--c-text); margin-bottom: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.preview-meta {
+  display: flex; flex-direction: column; gap: 3px;
+  margin-top: 4px;
+}
 .preview-cat {
   font-size: 0.74rem; font-weight: 700;
   color: var(--c-text-soft);
   display: inline-flex; align-items: center; gap: 4px;
 }
 .preview-cat i { font-size: 0.65rem; color: var(--c-primary); }
+.preview-loc {
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--c-text-soft);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.preview-loc i { font-size: 0.65rem; color: var(--c-info); }
 .preview-stats {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: 12px; padding-top: 10px;
@@ -857,11 +896,12 @@ input, textarea, select { outline: none; }
 
     <form id="signupForm" novalidate autocomplete="off">
 
+      <!-- ═══ 1. المعلومات الأساسية ═══ -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-store"></i></div>
           <h2>المعلومات الأساسية</h2>
-          <span class="bzr-card-step">1 / 5</span>
+          <span class="bzr-card-step">1 / 6</span>
         </div>
 
         <div class="form-field">
@@ -874,7 +914,7 @@ input, textarea, select { outline: none; }
           <div class="input-wrap" id="nameWrap">
             <div class="input-icon"><i class="fas fa-tag"></i></div>
             <input class="input" type="text" id="storeName"
-              placeholder="اكتب اسم متجرك هنا..."
+              placeholder="أدخل اسم متجرك الذي سيظهر في المنصة..."
               maxlength="60" autocomplete="off" spellcheck="false"
               inputmode="text" autocapitalize="words">
           </div>
@@ -890,6 +930,12 @@ input, textarea, select { outline: none; }
             <span>الفئة الرئيسية</span>
             <span class="required">*</span>
           </label>
+          <div class="field-helper">
+            <i class="fas fa-circle-info"></i>
+            <span>
+              <strong>اختر الفئة المناسبة لمتجرك.</strong> ستساعد هذه الفئة العملاء في العثور عليك بسهولة عند التصفح أو البحث. إذا لم تجد فئة تناسب نشاطك، اضغط على <strong>«فئة مخصصة»</strong> لإضافتها بنفسك.
+            </span>
+          </div>
           <div id="catsLoader" class="cat-loading">
             <div class="spinner"></div>
             <span>جارٍ تحميل الفئات...</span>
@@ -938,11 +984,74 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
+      <!-- ═══ 2. موقع المتجر (حقل واحد فقط) ═══ -->
+      <div class="bzr-card">
+        <div class="bzr-card-head">
+          <div class="bzr-card-head-icon"><i class="fas fa-map-location-dot"></i></div>
+          <h2>موقع المتجر</h2>
+          <span class="bzr-card-step">2 / 6</span>
+        </div>
+
+        <div class="field-helper">
+          <i class="fas fa-location-dot"></i>
+          <span>
+            <strong>حدد موقعك في حقل واحد.</strong> اختر ولايتك أولاً من الاقتراحات، ثم أضف الحي أو المنطقة بعدها مباشرة.<br>
+            مثال: <strong>الخرطوم - الرياض</strong> &nbsp;أو&nbsp; <strong>الجزيرة - ود مدني</strong>
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="locationInput">
+            <span class="label-icon"><i class="fas fa-map-marker-alt"></i></span>
+            <span>الموقع (الولاية والمنطقة)</span>
+            <span class="required">*</span>
+            <span class="hint">الولاية أولاً</span>
+          </label>
+          <div class="input-wrap" id="locationWrap">
+            <div class="input-icon"><i class="fas fa-location-dot"></i></div>
+            <input class="input" type="text" id="locationInput"
+              placeholder="مثال: الخرطوم - الرياض"
+              maxlength="100" autocomplete="off" list="sudanStatesList">
+          </div>
+          <div class="error-msg" id="locationError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>يرجى إدخال الولاية والمنطقة (مثال: الخرطوم - الرياض)</span>
+          </div>
+
+          <div class="loc-hint-row">
+            <span class="loc-hint-chip"><i class="fas fa-lightbulb"></i> ابدأ بكتابة اسم الولاية</span>
+            <span class="loc-hint-chip"><i class="fas fa-arrow-left"></i> ستظهر الاقتراحات تلقائيًا</span>
+          </div>
+
+          <datalist id="sudanStatesList">
+            <option value="الخرطوم"></option>
+            <option value="الجزيرة"></option>
+            <option value="البحر الأحمر"></option>
+            <option value="كسلا"></option>
+            <option value="القضارف"></option>
+            <option value="سنار"></option>
+            <option value="النيل الأبيض"></option>
+            <option value="النيل الأزرق"></option>
+            <option value="نهر النيل"></option>
+            <option value="الشمالية"></option>
+            <option value="شمال كردفان"></option>
+            <option value="جنوب كردفان"></option>
+            <option value="غرب كردفان"></option>
+            <option value="شمال دارفور"></option>
+            <option value="جنوب دارفور"></option>
+            <option value="غرب دارفور"></option>
+            <option value="شرق دارفور"></option>
+            <option value="وسط دارفور"></option>
+          </datalist>
+        </div>
+      </div>
+
+      <!-- ═══ 3. بيانات التواصل ═══ -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-address-book"></i></div>
           <h2>بيانات التواصل</h2>
-          <span class="bzr-card-step">2 / 5</span>
+          <span class="bzr-card-step">3 / 6</span>
         </div>
 
         <div class="form-row">
@@ -984,11 +1093,12 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
+      <!-- ═══ 4. صور المتجر ═══ -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-image"></i></div>
           <h2>صور المتجر</h2>
-          <span class="bzr-card-step">3 / 5</span>
+          <span class="bzr-card-step">4 / 6</span>
         </div>
 
         <div class="form-field">
@@ -1041,11 +1151,12 @@ input, textarea, select { outline: none; }
         <input type="file" id="logoInput" accept="image/*" hidden>
       </div>
 
+      <!-- ═══ 5. حماية الحساب ═══ -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-lock"></i></div>
           <h2>حماية الحساب</h2>
-          <span class="bzr-card-step">4 / 5</span>
+          <span class="bzr-card-step">5 / 6</span>
         </div>
 
         <div class="form-field">
@@ -1110,11 +1221,12 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
+      <!-- ═══ 6. معاينة مباشرة ═══ -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-eye"></i></div>
           <h2>معاينة مباشرة</h2>
-          <span class="bzr-card-step">5 / 5</span>
+          <span class="bzr-card-step">6 / 6</span>
         </div>
 
         <div class="preview-wrap">
@@ -1127,9 +1239,15 @@ input, textarea, select { outline: none; }
             </div>
             <div class="preview-info">
               <div class="preview-name" id="previewName">اسم متجرك</div>
-              <div class="preview-cat">
-                <i class="fas fa-tag"></i>
-                <span id="previewCat">الفئة</span>
+              <div class="preview-meta">
+                <div class="preview-cat">
+                  <i class="fas fa-tag"></i>
+                  <span id="previewCat">الفئة</span>
+                </div>
+                <div class="preview-loc">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span id="previewLoc">الموقع</span>
+                </div>
               </div>
               <div class="preview-stats">
                 <span class="preview-followers">
@@ -1225,14 +1343,38 @@ const RATE_LIMIT_MS = 60 * 1000;
 
 const PHONE_REGEX = /^(?:0?9\d{8}|0?1\d{8}|\+?249\d{9}|\+?\d{8,15})$/;
 const NAME_REGEX = /^[\u0600-\u06FFa-zA-Z0-9\s\-_.'&()]+$/;
+const LOCATION_REGEX = /^[\u0600-\u06FFa-zA-Z0-9\s\-_,.'&()]+$/;
+
+// ⭐ ولايات السودان (الخرطوم أولًا)
+const SUDAN_STATES = [
+  'الخرطوم',
+  'الجزيرة',
+  'البحر الأحمر',
+  'كسلا',
+  'القضارف',
+  'سنار',
+  'النيل الأبيض',
+  'النيل الأزرق',
+  'نهر النيل',
+  'الشمالية',
+  'شمال كردفان',
+  'جنوب كردفان',
+  'غرب كردفان',
+  'شمال دارفور',
+  'جنوب دارفور',
+  'غرب دارفور',
+  'شرق دارفور',
+  'وسط دارفور'
+];
 
 const state = {
   deviceFingerprint: null,
   persistentId: null,
   anonUid: null,
   selectedCategory: null,
-  categoriesList: [],       // ⭐ فئات من Firestore فقط
-  customCategories: [],     // ⭐ فئات أضافها المستخدم محليًا
+  categoriesList: [],
+  customCategories: [],
+  location: null,
   coverUrl: null,
   logoUrl: null,
   coverFile: null,
@@ -1274,6 +1416,17 @@ function sanitize(str, maxLen = 500) {
     .replace(/[<>"`]/g, '')
     .trim()
     .slice(0, maxLen);
+}
+// ⭐ تنظيف الموقع وإزالة الشرطة الزائدة في النهاية
+function sanitizeLocation(loc) {
+  if (!loc) return '';
+  let clean = String(loc)
+    .replace(/[<>"`\\]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[\s\-]+$/, '')
+    .slice(0, 100);
+  return clean;
 }
 function cleanPhone(v) { return String(v || '').replace(/[^0-9+]/g, ''); }
 function normalizePhone(v) {
@@ -1428,7 +1581,6 @@ async function getOrCreatePersistentId() {
   return newId;
 }
 
-/* Registration Status Cache */
 async function saveRegStatus(registered, store) {
   const data = {
     registered: !!registered,
@@ -1760,10 +1912,14 @@ function updatePreview() {
   else { pl.style.backgroundImage = ''; pl.classList.remove('has-image'); }
   $('previewName').textContent = $('storeName').value.trim() || 'اسم متجرك';
   $('previewCat').textContent = state.selectedCategory || 'الفئة';
+
+  const locRaw = $('locationInput').value.trim();
+  const locClean = locRaw.replace(/\s*-\s*$/, '').trim();
+  $('previewLoc').textContent = locClean || 'الموقع';
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ⭐ Categories — Firestore Only (No Local Defaults)
+   Categories
    ═══════════════════════════════════════════════════════════ */
 async function loadCategories() {
   const loader = $('catsLoader');
@@ -1777,7 +1933,6 @@ async function loadCategories() {
 
     snap.docs.forEach(d => {
       const data = d.data();
-      // ⭐ الفئة الرئيسية فقط — لا نقرأ categories الإضافية
       if (data.category && String(data.category).trim()) {
         const clean = sanitize(String(data.category).trim(), 40);
         if (clean) cats.add(clean);
@@ -1789,7 +1944,6 @@ async function loadCategories() {
 
   } catch (err) {
     console.warn('[Categories] Failed to load:', err);
-    // ⭐ في حال الفشل لا نضيف أي فئات افتراضية
     state.categoriesList = [];
     state.customCategories = [];
   } finally {
@@ -1797,7 +1951,6 @@ async function loadCategories() {
     loader.style.display = 'none';
 
     if (state.categoriesList.length === 0) {
-      // لا توجد فئات في قاعدة البيانات
       grid.style.display = 'none';
       empty.style.display = 'flex';
     } else {
@@ -1829,7 +1982,6 @@ function renderCategories() {
 
   grid.appendChild(frag);
 
-  // إظهار/إخفاء حسب الحالة
   if (allCats.length === 0) {
     grid.style.display = 'none';
     empty.style.display = 'flex';
@@ -1868,7 +2020,6 @@ function saveCustomCategory() {
   if (val.length < 2) { showToast('اسم الفئة قصير جدًا', 'error'); return; }
   if (!NAME_REGEX.test(val)) { showToast('يحتوي على رموز غير مسموحة', 'error'); return; }
 
-  // التحقق من عدم التكرار في فئات Firestore أو المخصصة
   const existsInFirestore = state.categoriesList.some(c => c.toLowerCase() === val.toLowerCase());
   const existsInCustom = state.customCategories.some(c => c.toLowerCase() === val.toLowerCase());
 
@@ -1879,7 +2030,6 @@ function saveCustomCategory() {
     showToast('هذه الفئة موجودة بالفعل', 'warning');
     return;
   }
-
   if (existsInCustom) {
     selectCategory(state.customCategories.find(c => c.toLowerCase() === val.toLowerCase()));
     $('newCatWrap').classList.remove('show');
@@ -1896,6 +2046,40 @@ function saveCustomCategory() {
   showToast('✅ تمت إضافة الفئة', 'success');
   haptic('medium');
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Location — Single Field Input
+   ═══════════════════════════════════════════════════════════ */
+const locationInput = $('locationInput');
+
+locationInput?.addEventListener('input', (e) => {
+  // تنظيف أولي من الرموز الخطيرة
+  let val = e.target.value.replace(/[<>"`\\]/g, '');
+  if (e.target.value !== val) e.target.value = val;
+
+  const inputType = e.inputType || '';
+  const isDeleting = inputType.startsWith('delete');
+  const trimmed = val.trim();
+
+  // ⭐ عند اختيار ولاية كاملة (من الاقتراحات أو بالكتابة) → نضيف " - " تلقائيًا
+  if (!isDeleting && SUDAN_STATES.includes(trimmed) && !val.endsWith(' - ')) {
+    val = trimmed + ' - ';
+    e.target.value = val;
+  }
+
+  state.location = val.trim();
+
+  const cleanForValidation = val.replace(/\s*-\s*$/, '').trim();
+  if (cleanForValidation.length >= 3 && LOCATION_REGEX.test(cleanForValidation)) {
+    hideError('locationError');
+    setFieldState('locationWrap', 'valid');
+  } else if (cleanForValidation.length > 0) {
+    setFieldState('locationWrap', null);
+  } else {
+    setFieldState('locationWrap', null);
+  }
+  updatePreview();
+});
 
 /* Form handlers */
 const nameInput = $('storeName');
@@ -1982,38 +2166,55 @@ setupImageUpload({
 
 function validateForm() {
   let ok = true, firstError = null;
+
   const name = sanitize(nameInput.value, 60);
   if (name.length < 3 || name.length > 60 || !NAME_REGEX.test(name)) {
     showError('nameError'); setFieldState('nameWrap', 'error');
     ok = false; firstError = firstError || 'storeName';
   } else { hideError('nameError'); setFieldState('nameWrap', 'valid'); }
+
   if (!state.selectedCategory) {
     showError('catError'); ok = false; firstError = firstError || 'catsGrid';
   } else hideError('catError');
+
+  // ⭐ التحقق من الموقع (حقل واحد)
+  const locClean = sanitizeLocation(locationInput.value);
+  if (locClean.length < 3 || !LOCATION_REGEX.test(locClean)) {
+    showError('locationError'); setFieldState('locationWrap', 'error');
+    ok = false; firstError = firstError || 'locationInput';
+  } else { hideError('locationError'); setFieldState('locationWrap', 'valid'); }
+
   if (!isValidPhone(waInput.value)) {
     showError('waError'); setFieldState('waWrap', 'error');
     ok = false; firstError = firstError || 'whatsapp';
   } else { hideError('waError'); setFieldState('waWrap', 'valid'); }
+
   if (phoneInput.value && !isValidPhone(phoneInput.value)) {
     showError('phoneError'); setFieldState('phoneWrap', 'error');
     ok = false; firstError = firstError || 'phone';
   } else if (phoneInput.value) { hideError('phoneError'); setFieldState('phoneWrap', 'valid'); }
+
   if (!state.coverUrl) { showError('coverError'); ok = false; firstError = firstError || 'coverUpload'; }
   else hideError('coverError');
+
   if (!state.logoUrl) { showError('logoError'); ok = false; firstError = firstError || 'logoUpload'; }
   else hideError('logoError');
+
   const pwd = pwdInput.value;
   if (pwd.length < 6 || pwd.length > 64) {
     showError('pwdError'); setFieldState('pwdWrap', 'error');
     ok = false; firstError = firstError || 'password';
   } else { hideError('pwdError'); setFieldState('pwdWrap', 'valid'); }
+
   if (pwd !== pwdConfirmInput.value || !pwdConfirmInput.value) {
     showError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'error');
     ok = false; firstError = firstError || 'confirmPassword';
   } else { hideError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid'); }
+
   if (!$('termsCheck').checked) {
     showError('termsError'); ok = false; firstError = firstError || 'termsCheck';
   } else hideError('termsError');
+
   if (firstError) {
     const el = $(firstError);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2068,6 +2269,9 @@ submitBtn?.addEventListener('click', async () => {
       .where('whatsapp_number', '==', normalizePhone(waInput.value)).limit(1).get();
     if (!waCheck.empty) throw new Error('whatsapp_exists');
 
+    // ⭐ الموقع — حقل واحد نظيف
+    const locationValue = sanitizeLocation(locationInput.value);
+
     const now = Date.now();
     const storeData = {
       name: sanitize(nameInput.value, 60),
@@ -2076,6 +2280,10 @@ submitBtn?.addEventListener('click', async () => {
       category: sanitize(state.selectedCategory, 40),
       categories: [],
       description: sanitize(descInput.value, 500),
+
+      // ⭐ حقل الموقع الواحد (نصي)
+      location: locationValue,
+
       whatsapp_number: normalizePhone(waInput.value),
       phone_number: phoneInput.value ? normalizePhone(phoneInput.value) : null,
       logo_url: state.logoUrl,
@@ -2243,7 +2451,7 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup.html loaded ✅ v2.4.0 — Firestore-Only Categories');
+console.log('[BZR] signup.html loaded ✅ v2.6.0 — Single Location Field');
 </script>
 
 </body>
