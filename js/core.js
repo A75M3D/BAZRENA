@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.9.0 — core.js
+   BranZar v9.10.0 — core.js
    Layer 1: Config + Utils + Security + Fingerprint + Cache + Firebase + Auth + State
+   ✅ v9.10.0: إضافة دالة truncateText + CONFIG.PRODUCT_DESCRIPTION_MAX
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -8,11 +9,14 @@
 const CONFIG = Object.freeze({
   PRODUCTS_PER_PAGE: 8,
   STORE_PRODUCTS_PER_PAGE: 20,
-STORE_ADDITIONAL_CATEGORY_PER_PAGE: 16,
-MAIN_CATEGORY_MAX_PRODUCTS: 20,       
-ADDITIONAL_CATEGORY_MAX_PRODUCTS: 50, 
+  STORE_ADDITIONAL_CATEGORY_PER_PAGE: 16,
+  MAIN_CATEGORY_MAX_PRODUCTS: 20,
+  ADDITIONAL_CATEGORY_MAX_PRODUCTS: 50,
   SEARCH_CAP: 800,
   SEARCH_DEBOUNCE_MS: 200,
+
+  /* 🆕 v9.10.0: حد وصف المنتج */
+  PRODUCT_DESCRIPTION_MAX: 100,
 
   CACHE_TTL_STORES: 6 * 60 * 60 * 1000,
   CACHE_TTL_PRODUCTS: 30 * 60 * 1000,
@@ -114,6 +118,15 @@ function optimizeCloudinaryUrl(url) {
   if (!url.includes('cloudinary.com')) return url;
   if (url.includes('/upload/q_auto')) return url;
   return url.replace('/upload/', '/upload/q_auto,f_auto,w_800,c_limit/');
+}
+
+/* 🆕 v9.10.0: قصّ النص لطول محدد بشكل آمن */
+function truncateText(text, max) {
+  if (text == null) return '';
+  const str = String(text).trim();
+  if (!max || max <= 0) return str;
+  if (str.length <= max) return str;
+  return str.slice(0, max);
 }
 
 /* ═══ RATE LIMITER ═══ */
@@ -830,4 +843,4 @@ document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setVi
 document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
 document.getElementById('accountViewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
 
-console.log('[BZR] core.js loaded ✅ v9.9.0');
+console.log('[BZR] core.js loaded ✅ v9.10.0');
