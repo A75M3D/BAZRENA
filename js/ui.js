@@ -1,43 +1,41 @@
 /* ═══════════════════════════════════════════════════════════
    BranZar v9.10.0 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
-   ✅ v9.10.0: عرض موقع المتجر + وصف المنتج
-   ✅ Theme/View code موجود هنا فقط (المصدر الوحيد)
-   ✅ Material Design SVG icons via bzrIcon() — لا Font Awesome
+   ✅ Material SVG icons — native createElementNS (100% reliable)
+   ✅ Store cards: share button only (no heart/follow)
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════════
-   🎨 Fallback icon paths — يضمن توفر الأيقونات الأساسية
-   حتى لو كان index.html ناقصاً بعضها
+   🎨 SVG Icon Engine — Native createElementNS (مضمون 100%)
+   نفس الطريقة التي يستخدمها زر المشاركة في نافذة المتجر
    ═══════════════════════════════════════════════════════════════ */
-(function ensureIconEngine() {
-  window.BZR_ICON_PATHS = window.BZR_ICON_PATHS || {};
-  var extra = {
-    'mi-lock':  'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6-3c1.66 0 3 1.34 3 3v2h-6V6c0-1.66 1.34-3 3-3zm6 15H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z',
-    'mi-image': 'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'
-  };
-  for (var k in extra) {
-    if (!window.BZR_ICON_PATHS[k]) window.BZR_ICON_PATHS[k] = extra[k];
-  }
-  if (typeof window.bzrIcon !== 'function') {
-    window.bzrIcon = function(name, classes, extraStyles) {
-      var p = window.BZR_ICON_PATHS[name];
-      if (!p) return '';
-      var c = classes || 'mi mi-xs';
-      var s = extraStyles ? ' style="' + extraStyles + '"' : '';
-      return '<svg class="' + c + '"' + s + ' aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="' + p + '"/></svg>';
-    };
-  }
-})();
+var SVG_NS = 'http://www.w3.org/2000/svg';
+var XLINK_NS = 'http://www.w3.org/1999/xlink';
 
-/* Alias محلي للاستخدام داخل الملف */
-var bzrIcon = window.bzrIcon;
+function bzrSvgIcon(iconId, className) {
+  var svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('class', className || 'mi mi-sm');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  var use = document.createElementNS(SVG_NS, 'use');
+  use.setAttribute('href', '#' + iconId);
+  use.setAttributeNS(XLINK_NS, 'xlink:href', '#' + iconId);
+  svg.appendChild(use);
+  return svg;
+}
+function bzrSetIcon(parentEl, iconId, className) {
+  if (!parentEl) return;
+  while (parentEl.firstChild) parentEl.removeChild(parentEl.firstChild);
+  parentEl.appendChild(bzrSvgIcon(iconId, className || 'mi mi-sm'));
+}
+window.bzrSvgIcon = bzrSvgIcon;
+window.bzrSetIcon = bzrSetIcon;
 
 /* ═══ THEME ═══ */
 function applyTheme(theme) {
   document.body.classList.toggle('theme-dark', theme === 'dark');
-  // 🎨 تبديل الأيقونة يتم تلقائياً عبر CSS (.mi-theme-moon / .mi-theme-sun)
   const accountSwitch = document.getElementById('accountThemeSwitch');
   if (accountSwitch) accountSwitch.classList.toggle('on', theme === 'dark');
   const meta = document.querySelector('meta[name="theme-color"]');
@@ -87,7 +85,6 @@ let isHoveringStores = false;
 let lastStoresInteraction = 0;
 let _scrollRAFId = null;
 let _lastScrollFrame = 0;
-
 let isHoveringCategories = false;
 let lastCategoriesInteraction = 0;
 let _catScrollRAFId = null;
@@ -238,7 +235,7 @@ createStoreModal?.addEventListener('click', (e) => {
 document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
 /* ═══════════════════════════════════════════════════════════
-   📱 PWA INSTALL — Enhanced Multi-Platform
+   📱 PWA INSTALL
    ═══════════════════════════════════════════════════════════ */
 let deferredPrompt = null;
 const INSTALL_DISMISS_KEY = 'branzar_install_dismissed_v2';
@@ -309,34 +306,17 @@ function showIOSInstallInstructions() {
         '<h3 class="pwa-ios-title">📱 تثبيت التطبيق على iPhone</h3>' +
         '<p class="pwa-ios-desc">لتثبيت BranZar كتطبيق على جهازك، اتبع الخطوات التالية:</p>' +
         '<ol class="pwa-ios-steps">' +
-          '<li>' +
-            '<span class="pwa-ios-step-num">1</span>' +
-            '<div>' +
-              '<strong>اضغط زر المشاركة</strong>' +
-              '<span>في شريط Safari السفلي</span>' +
-            '</div>' +
-            '<span style="color:#007AFF;display:inline-flex;">' + bzrIcon('mi-share-square', 'mi mi-sm') + '</span>' +
-          '</li>' +
-          '<li>' +
-            '<span class="pwa-ios-step-num">2</span>' +
-            '<div>' +
-              '<strong>اختر "إضافة إلى الشاشة الرئيسية"</strong>' +
-              '<span>Add to Home Screen</span>' +
-            '</div>' +
-            '<span style="color:#FF7A00;display:inline-flex;">' + bzrIcon('mi-plus-square', 'mi mi-sm') + '</span>' +
-          '</li>' +
-          '<li>' +
-            '<span class="pwa-ios-step-num">3</span>' +
-            '<div>' +
-              '<strong>اضغط "إضافة"</strong>' +
-              '<span>سيظهر التطبيق على شاشتك الرئيسية</span>' +
-            '</div>' +
-            '<span style="color:#10B981;display:inline-flex;">' + bzrIcon('mi-check-circle', 'mi mi-sm') + '</span>' +
-          '</li>' +
+          '<li><span class="pwa-ios-step-num">1</span><div><strong>اضغط زر المشاركة</strong><span>في شريط Safari السفلي</span></div><span style="color:#007AFF;display:inline-flex;" id="iosIcon1"></span></li>' +
+          '<li><span class="pwa-ios-step-num">2</span><div><strong>اختر "إضافة إلى الشاشة الرئيسية"</strong><span>Add to Home Screen</span></div><span style="color:#FF7A00;display:inline-flex;" id="iosIcon2"></span></li>' +
+          '<li><span class="pwa-ios-step-num">3</span><div><strong>اضغط "إضافة"</strong><span>سيظهر التطبيق على شاشتك الرئيسية</span></div><span style="color:#10B981;display:inline-flex;" id="iosIcon3"></span></li>' +
         '</ol>' +
         '<button id="pwaIosCloseBtn" class="pwa-ios-close">فهمت، شكراً</button>' +
       '</div>';
     document.body.appendChild(modal);
+    // إدراج أيقونات SVG عبر createElementNS (مضمون)
+    var icon1 = modal.querySelector('#iosIcon1'); if (icon1) icon1.appendChild(bzrSvgIcon('mi-share-square', 'mi mi-sm'));
+    var icon2 = modal.querySelector('#iosIcon2'); if (icon2) icon2.appendChild(bzrSvgIcon('mi-plus-square', 'mi mi-sm'));
+    var icon3 = modal.querySelector('#iosIcon3'); if (icon3) icon3.appendChild(bzrSvgIcon('mi-check-circle', 'mi mi-sm'));
     modal.querySelector('.pwa-ios-overlay').addEventListener('click', closeIOSInstructions);
     document.getElementById('pwaIosCloseBtn').addEventListener('click', closeIOSInstructions);
   }
@@ -534,9 +514,18 @@ function performSearch(query) {
   ).slice(0, 8);
   searchResults.innerHTML = '';
   if (!matchedCats.length && !matchedStores.length && !matchedProducts.length) {
-    searchResults.innerHTML = '<div style="text-align:center;padding:2rem 0;color:var(--c-text-soft);">' +
-      bzrIcon('mi-search', 'mi', 'width:32px;height:32px;color:#CBD5E1;margin-bottom:0.5rem;display:inline-block;') +
-      '<p style="font-weight:700;">لا توجد نتائج</p></div>';
+    const emptyDiv = document.createElement('div');
+    emptyDiv.style.cssText = 'text-align:center;padding:2rem 0;color:var(--c-text-soft);';
+    const icon = bzrSvgIcon('mi-search', 'mi mi-lg');
+    icon.style.display = 'block';
+    icon.style.margin = '0 auto 0.5rem';
+    icon.style.color = '#CBD5E1';
+    emptyDiv.appendChild(icon);
+    const p = document.createElement('p');
+    p.style.fontWeight = '700';
+    p.textContent = 'لا توجد نتائج';
+    emptyDiv.appendChild(p);
+    searchResults.appendChild(emptyDiv);
     searchResults.classList.add('show'); return;
   }
   if (matchedCats.length) {
@@ -598,10 +587,9 @@ function createSearchStoreRow(store) {
   meta.style.cssText = 'font-size:0.72rem;color:var(--c-text-soft);margin-top:2px;';
   meta.textContent = (store.category || 'عام');
   info.appendChild(nm); info.appendChild(meta);
-  // 🎨 SVG arrow instead of FA
   const arrow = document.createElement('span');
   arrow.style.cssText = 'color:var(--c-text-soft);display:inline-flex;align-items:center;flex-shrink:0;';
-  arrow.innerHTML = bzrIcon('mi-chevron-left', 'mi mi-xs');
+  arrow.appendChild(bzrSvgIcon('mi-chevron-left', 'mi mi-xs'));
   row.appendChild(img); row.appendChild(info); row.appendChild(arrow);
   row.addEventListener('click', () => {
     searchResults.classList.remove('show');
@@ -655,7 +643,9 @@ function goToCategory(cat) {
   if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ═══ RENDER STORES ═══ */
+/* ═══════════════════════════════════════════════════════════
+   🏪 RENDER STORES — بطاقة المتجر: زر مشاركة فقط (بدون قلب)
+   ═══════════════════════════════════════════════════════════ */
 function displayStores() {
   const c = document.getElementById('storesScrollContainer');
   c.innerHTML = '';
@@ -663,121 +653,91 @@ function displayStores() {
   stores.forEach(s => frag.appendChild(createStoreCard(s)));
   c.appendChild(frag);
 }
+
 function createStoreCard(store) {
-  const storeId = getStoreId(store);
-  const followed = isStoreFollowed(storeId);
-  const card = document.createElement('div'); card.className = 'store-card';
-  const cover = document.createElement('img'); cover.className = 'cover-image'; cover.loading = 'lazy'; cover.alt = store.name || '';
+  const card = document.createElement('div');
+  card.className = 'store-card';
+
+  /* صورة الغلاف */
+  const cover = document.createElement('img');
+  cover.className = 'cover-image';
+  cover.loading = 'lazy';
+  cover.alt = store.name || '';
   cover.src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
   cover.onerror = function(){ this.src = 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; };
-  const logo = document.createElement('img'); logo.className = 'store-logo'; logo.loading = 'lazy'; logo.alt = '';
+
+  /* شعار المتجر */
+  const logo = document.createElement('img');
+  logo.className = 'store-logo';
+  logo.loading = 'lazy';
+  logo.alt = '';
   logo.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   logo.onerror = function(){ this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
-  const info = document.createElement('div'); info.className = 'store-info';
-  const nameRow = document.createElement('div'); nameRow.className = 'store-name';
+
+  /* معلومات المتجر */
+  const info = document.createElement('div');
+  info.className = 'store-info';
+
+  const nameRow = document.createElement('div');
+  nameRow.className = 'store-name';
   if (store.is_verified) {
-    const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG;
+    const v = document.createElement('span');
+    v.className = 'verified-icon';
+    v.innerHTML = VERIFIED_BADGE_SVG;
     nameRow.appendChild(v);
   }
-  const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nameRow.appendChild(nameText);
-  const catRow = document.createElement('div'); catRow.className = 'store-category'; catRow.textContent = store.category || 'عام';
+  const nameText = document.createElement('span');
+  nameText.textContent = store.name || '';
+  nameRow.appendChild(nameText);
+
+  const catRow = document.createElement('div');
+  catRow.className = 'store-category';
+  catRow.textContent = store.category || 'عام';
+
+  /* 🎨 صف سفلي: زر مشاركة فقط (بنفس شكل زر نافذة المتجر) */
   const bottomRow = document.createElement('div');
-  bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;';
+  bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;';
 
-  /* 🎨 زر المتابعة — SVG أيقونات + CSS للتبديل */
-  const followBtn = document.createElement('button');
-  followBtn.className = 'bzr-follow-btn';
-  followBtn.style.cssText = 'background:#FF7A00;color:#fff;border:1.5px solid #FF7A00;border-radius:9999px;padding:0.3rem 0.7rem;font-size:0.7rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.25s;white-space:nowrap;';
-  followBtn.dataset.storeId = storeId;
-  setCardFollowState(followBtn, followed);
-  followBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); e.preventDefault(); haptic('light');
-    toggleFollowFromCard(store, followBtn);
-  });
-
-  /* 🎨 زر المشاركة — SVG أيقونة */
   const shareBtn = document.createElement('button');
-  shareBtn.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--c-primary-soft);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.25s;padding:0;';
-  shareBtn.innerHTML = bzrIcon('mi-share', 'mi mi-xs');
+  shareBtn.type = 'button';
+  shareBtn.className = 'bzr-card-share';
+  shareBtn.setAttribute('aria-label', 'مشاركة المتجر');
+  shareBtn.title = 'مشاركة المتجر';
+  shareBtn.style.cssText = 'width:34px;height:34px;border-radius:50%;background:var(--c-primary-soft,#FFF1E0);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.25s;padding:0;';
+  /* 🎨 نفس الطريقة المستخدمة في نافذة المتجر (createElementNS) */
+  shareBtn.appendChild(bzrSvgIcon('mi-share', 'mi mi-sm'));
   shareBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); e.preventDefault(); haptic('light'); shareStore(store);
+    e.stopPropagation(); e.preventDefault(); haptic('light');
+    shareStore(store);
+  });
+  shareBtn.addEventListener('mouseenter', () => {
+    shareBtn.style.background = '#FF7A00';
+    shareBtn.style.color = '#fff';
+    shareBtn.style.borderColor = '#FF7A00';
+    shareBtn.style.transform = 'scale(1.08)';
+  });
+  shareBtn.addEventListener('mouseleave', () => {
+    shareBtn.style.background = 'var(--c-primary-soft,#FFF1E0)';
+    shareBtn.style.color = '#FF7A00';
+    shareBtn.style.borderColor = '#FFE0BD';
+    shareBtn.style.transform = '';
   });
 
-  bottomRow.appendChild(followBtn); bottomRow.appendChild(shareBtn);
-  info.appendChild(nameRow); info.appendChild(catRow); info.appendChild(bottomRow);
-  card.appendChild(cover); card.appendChild(logo); card.appendChild(info);
+  bottomRow.appendChild(shareBtn);
+  info.appendChild(nameRow);
+  info.appendChild(catRow);
+  info.appendChild(bottomRow);
+
+  card.appendChild(cover);
+  card.appendChild(logo);
+  card.appendChild(info);
   card.addEventListener('click', () => { haptic('light'); openStoreModal(store); });
   return card;
 }
 
-/* 🎨 تحديث حالة زر المتابعة في البطاقة */
-function setCardFollowState(btn, following) {
-  btn.classList.toggle('following', following);
-  btn.innerHTML =
-    bzrIcon('mi-heart', 'mi mi-xs mi-follow-heart') +
-    bzrIcon('mi-check', 'mi mi-xs mi-follow-check') +
-    '<span>' + (following ? 'متابَع' : 'متابعة') + '</span>';
-  if (following) {
-    btn.style.background = 'transparent';
-    btn.style.color = '#FF7A00';
-  } else {
-    btn.style.background = '#FF7A00';
-    btn.style.color = '#fff';
-  }
-}
-async function toggleFollowFromCard(store, btn) {
-  const storeId = String(getStoreId(store));
-  if (btn.disabled) return;
-  const guardCheck = FollowGuard.canFollow(storeId);
-  if (!guardCheck.allowed) {
-    haptic('heavy');
-    showToast(guardCheck.message);
-    btn.classList.add('blocked-flash');
-    setTimeout(() => btn.classList.remove('blocked-flash'), 600);
-    return;
-  }
-  btn.disabled = true;
-  haptic('light');
-  try {
-    const result = await performFollowToggle(store);
-    FollowGuard.recordAction(storeId);
-    const action = result.action;
-    const wasFollowing = (action === 'unfollowed');
-    if (wasFollowing) _followedFromServer.delete(storeId);
-    else _followedFromServer.add(storeId);
-    const list = getFollowedStores();
-    if (wasFollowing) {
-      const i = list.indexOf(storeId);
-      if (i > -1) list.splice(i, 1);
-      store.followers = Math.max(0, (parseInt(store.followers) || 0) - 1);
-    } else {
-      if (list.indexOf(storeId) === -1) list.push(storeId);
-      store.followers = (parseInt(store.followers) || 0) + 1;
-    }
-    saveFollowedStores(list);
-    updateCardFollowButtons(storeId);
-    renderFollowedStores();
-    if (currentStoreId === storeId) {
-      isFollowing = !wasFollowing;
-      currentFollowersCount = store.followers;
-      updateFollowersDisplay();
-      updateFollowButtonUI();
-    }
-    showToast(wasFollowing ? 'تم إلغاء المتابعة' : 'تمت المتابعة بنجاح!');
-    haptic('medium');
-  } catch(err) {
-    console.error('[BZR] Follow error:', err);
-    showToast('حدث خطأ، حاول مرة أخرى');
-  } finally {
-    btn.disabled = false;
-  }
-}
-function updateCardFollowButtons(storeId) {
-  const following = isStoreFollowed(storeId);
-  document.querySelectorAll('.store-card .bzr-follow-btn').forEach(btn => {
-    if (btn.dataset.storeId === storeId) setCardFollowState(btn, following);
-  });
-}
+/* 🚫 دوال المتابعة من البطاقة — تم تعطيلها (الأزرار محذوفة) */
+function updateCardFollowButtons() { /* no-op: البطاقات لم تعد تحتوي أزرار متابعة */ }
+
 function renderFollowedStores() {
   const section = document.getElementById('followedStoresSection');
   const container = document.getElementById('followedStoresContainer');
@@ -813,6 +773,7 @@ function renderFollowedStores() {
   });
   container.appendChild(frag);
 }
+
 function filterStoresByCategory(cat) {
   currentCategory = cat;
   const filtered = stores.filter(s => s.category === cat);
@@ -888,7 +849,10 @@ function renderStoreCategoryTabs(store) {
     tab.dataset.cat = mainCat;
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-selected', 'true');
-    tab.innerHTML = bzrIcon('mi-tag', 'mi mi-xs') + '<span>' + sanitizeHTML(mainCat) + '</span>';
+    tab.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs'));
+    const sp = document.createElement('span');
+    sp.textContent = mainCat;
+    tab.appendChild(sp);
     tab.addEventListener('click', () => selectStoreCategoryTab(tab, mainCat));
     container.appendChild(tab);
   }
@@ -899,10 +863,10 @@ function renderStoreCategoryTabs(store) {
     tab.dataset.cat = cat;
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-selected', 'false');
-    const icon = subscribed
-      ? bzrIcon('mi-tag', 'mi mi-xs')
-      : bzrIcon('mi-lock', 'mi mi-xs lock-icon');
-    tab.innerHTML = icon + '<span>' + sanitizeHTML(cat) + '</span>';
+    tab.appendChild(bzrSvgIcon(subscribed ? 'mi-tag' : 'mi-lock', 'mi mi-xs'));
+    const sp = document.createElement('span');
+    sp.textContent = cat;
+    tab.appendChild(sp);
     if (!subscribed) tab.setAttribute('aria-label', cat + ' - مقفلة، تتطلب اشتراكاً');
     tab.addEventListener('click', () => {
       if (!subscribed) {
@@ -955,7 +919,13 @@ async function refreshStoreDataOnOpen(storeId) {
       renderStoreCategoryTabs(fresh);
       loadStoreProducts(fresh.name, currentStoreCategoryForProducts);
       const catVal = (fresh.category && String(fresh.category).trim()) ? fresh.category : 'عام';
-      document.getElementById('storeCategory').innerHTML = bzrIcon('mi-tag', 'mi mi-xs') + '<span>' + sanitizeHTML(catVal) + '</span>';
+      const catEl = document.getElementById('storeCategory');
+      if (catEl) {
+        catEl.innerHTML = '';
+        catEl.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs'));
+        const sp = document.createElement('span'); sp.textContent = catVal;
+        catEl.appendChild(sp);
+      }
       renderStoreLocationInModal(fresh);
       cacheManager.remove('stores_list');
     }
@@ -988,10 +958,14 @@ function openStoreModal(store) {
   document.getElementById('storeLogo').src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   document.getElementById('storeDescription').textContent = store.description || 'متجر مميز';
   const catVal = (store.category && String(store.category).trim()) ? store.category : 'عام';
-  document.getElementById('storeCategory').innerHTML = bzrIcon('mi-tag', 'mi mi-xs') + '<span>' + sanitizeHTML(catVal) + '</span>';
-
+  const catEl = document.getElementById('storeCategory');
+  if (catEl) {
+    catEl.innerHTML = '';
+    catEl.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs'));
+    const sp = document.createElement('span'); sp.textContent = catVal;
+    catEl.appendChild(sp);
+  }
   renderStoreLocationInModal(store);
-
   updateFollowersDisplay();
   updateFollowButtonUI();
   if (store.is_verified) {
@@ -1035,7 +1009,6 @@ function openStoreModal(store) {
         if (i > -1) { list.splice(i, 1); saveFollowedStores(list); }
       }
       updateFollowButtonUI();
-      updateCardFollowButtons(storeIdSnapshot);
       renderFollowedStores();
     }
   }).catch(() => {});
@@ -1052,8 +1025,6 @@ document.getElementById('closeStoreModal')?.addEventListener('click', closeStore
 function updateFollowersDisplay() {
   document.getElementById('storeFollowers').textContent = currentFollowersCount.toLocaleString();
 }
-
-/* 🎨 تحديث حالة زر المتابعة في النافذة (CSS يتولى تبديل الأيقونة) */
 function updateFollowButtonUI() {
   const btn = document.getElementById('storeFollowButton');
   const txt = document.getElementById('storeFollowText');
@@ -1105,7 +1076,6 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
     saveFollowedStores(list);
     updateFollowersDisplay();
     updateFollowButtonUI();
-    updateCardFollowButtons(currentStoreId);
     renderFollowedStores();
     showToast(nowFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة');
     if (currentStore) currentStore.followers = currentFollowersCount;
@@ -1142,9 +1112,19 @@ async function loadStoreProducts(storeName, category) {
   loadMoreBtn.classList.add('hidden');
   loadMoreBtn.hidden = true;
   loadMoreBtn.disabled = false;
-  loadMoreBtn.innerHTML = '<span>عرض المزيد</span>' + bzrIcon('mi-chevron-down', 'mi mi-xs');
-  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0;">' +
-    bzrIcon('mi-refresh', 'mi mi-spin', 'width:32px;height:32px;color:#FF7A00;') + '</div>';
+  loadMoreBtn.innerHTML = '';
+  const lbl = document.createElement('span'); lbl.textContent = 'عرض المزيد';
+  loadMoreBtn.appendChild(lbl);
+  loadMoreBtn.appendChild(bzrSvgIcon('mi-chevron-down', 'mi mi-xs'));
+  grid.innerHTML = '';
+  const spin = bzrSvgIcon('mi-refresh', 'mi mi-spin');
+  spin.style.color = '#FF7A00';
+  spin.style.width = '32px';
+  spin.style.height = '32px';
+  const spinWrap = document.createElement('div');
+  spinWrap.style.cssText = 'grid-column:1/-1;text-align:center;padding:2rem 0;';
+  spinWrap.appendChild(spin);
+  grid.appendChild(spinWrap);
   currentStoreNameForProducts = storeName;
   currentStoreCategoryForProducts = category || null;
   storeProductsLastDoc = null;
@@ -1167,18 +1147,12 @@ async function loadStoreProducts(storeName, category) {
   }
   if (!RateLimiter.canRequest('store_products')) return;
   try {
-    let q = db.collection('products')
-      .where('store_name', '==', storeName)
-      .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
+    let q = db.collection('products').where('store_name', '==', storeName).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
     let snap;
-    try {
-      snap = await q.get();
-    } catch(innerErr) {
-      snap = await db.collection('products')
-        .where('store_name', '==', storeName)
-        .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
-        .get();
+    try { snap = await q.get(); }
+    catch(innerErr) {
+      snap = await db.collection('products').where('store_name', '==', storeName).limit(CONFIG.STORE_PRODUCTS_PER_PAGE).get();
     }
     const rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
@@ -1207,29 +1181,21 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
   if (!storeProductsHasMore) return;
   if (!currentStoreNameForProducts) return;
   if (!storeProductsLastDoc) return;
-  if (!RateLimiter.canRequest('store_products')) {
-    showToast('⏳ يرجى المحاولة بعد قليل');
-    return;
-  }
+  if (!RateLimiter.canRequest('store_products')) { showToast('⏳ يرجى المحاولة بعد قليل'); return; }
   btn.disabled = true;
-  const originalHTML = '<span>عرض المزيد</span>' + bzrIcon('mi-chevron-down', 'mi mi-xs');
-  btn.innerHTML = bzrIcon('mi-refresh', 'mi mi-xs mi-spin') + '<span>جاري التحميل...</span>';
+  const origHTML = btn.innerHTML;
+  btn.innerHTML = '';
+  btn.appendChild(bzrSvgIcon('mi-refresh', 'mi mi-xs mi-spin'));
+  const l2 = document.createElement('span'); l2.textContent = 'جاري التحميل...';
+  btn.appendChild(l2);
   haptic('light');
   try {
-    let q = db.collection('products')
-      .where('store_name', '==', currentStoreNameForProducts)
-      .startAfter(storeProductsLastDoc)
-      .limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
+    let q = db.collection('products').where('store_name', '==', currentStoreNameForProducts).startAfter(storeProductsLastDoc).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
     let snap;
-    try {
-      snap = await q.get();
-    } catch(err) {
-      snap = await db.collection('products')
-        .where('store_name', '==', currentStoreNameForProducts)
-        .startAfter(storeProductsLastDoc)
-        .limit(CONFIG.STORE_PRODUCTS_PER_PAGE)
-        .get();
+    try { snap = await q.get(); }
+    catch(err) {
+      snap = await db.collection('products').where('store_name', '==', currentStoreNameForProducts).startAfter(storeProductsLastDoc).limit(CONFIG.STORE_PRODUCTS_PER_PAGE).get();
     }
     const rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
@@ -1246,183 +1212,120 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
       btn.disabled = true;
       showToast('✅ عرضت جميع المنتجات');
     } else {
-      btn.innerHTML = originalHTML;
+      btn.innerHTML = origHTML;
       btn.disabled = false;
     }
   } catch(err){
     console.error('[BZR] loadMore error:', err);
     showToast('❌ تعذر تحميل المزيد');
-    btn.innerHTML = originalHTML;
+    btn.innerHTML = origHTML;
     btn.disabled = false;
   }
 });
+
+/* 🎨 helper لتوليد زر المنتج (قلب المفضلة + زر العرض) */
+function buildProductCard(product, showStoreName) {
+  const price = parseFloat(product.price) || 0;
+  const fav = isProductFav(product.id);
+  const pm = {
+    id: product.id, name: product.name, img_url: product.img_url,
+    price,
+    original_price: product.original_price ? parseFloat(product.original_price) : null,
+    store_name: product.store_name,
+    description: product.description || '',
+    colors: product.colors || null,
+    category: product.category || null
+  };
+
+  const card = document.createElement('div');
+  card.className = 'store-product-card';
+
+  /* ❤️ زر المفضلة */
+  const favBtn = document.createElement('button');
+  favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
+  favBtn.appendChild(bzrSvgIcon(fav ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs'));
+  favBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); haptic('light');
+    const now = toggleProductFav(product.id);
+    favBtn.classList.toggle('active', now);
+    bzrSetIcon(favBtn, now ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
+    showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
+  });
+
+  /* صورة */
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'store-product-img-wrap';
+  const img = document.createElement('img');
+  img.loading = 'lazy';
+  img.alt = product.name || '';
+  img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300';
+  img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
+  imgWrap.appendChild(img);
+
+  /* معلومات */
+  const info = document.createElement('div');
+  info.className = 'store-product-info';
+
+  const nameEl = document.createElement('div');
+  nameEl.className = 'store-product-name';
+  nameEl.textContent = product.name || '';
+  info.appendChild(nameEl);
+
+  const desc = (product.description && String(product.description).trim()) || '';
+  if (desc) {
+    const descEl = document.createElement('div');
+    descEl.className = 'product-card-desc';
+    descEl.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX);
+    info.appendChild(descEl);
+  }
+
+  if (showStoreName && product.store_name) {
+    const storeEl = document.createElement('div');
+    storeEl.style.cssText = 'font-size:0.68rem;color:var(--c-text-soft);font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+    storeEl.textContent = product.store_name;
+    info.appendChild(storeEl);
+  }
+
+  const priceEl = document.createElement('div');
+  priceEl.className = 'store-product-price';
+  priceEl.textContent = price.toLocaleString() + ' ج.س';
+  info.appendChild(priceEl);
+
+  /* 🎨 زر عرض */
+  const viewBtn = document.createElement('button');
+  viewBtn.className = 'store-product-btn ripple';
+  const vs = document.createElement('span'); vs.textContent = 'عرض';
+  viewBtn.appendChild(vs);
+  viewBtn.appendChild(document.createTextNode(' '));
+  viewBtn.appendChild(bzrSvgIcon('mi-chevron-left', 'mi mi-xs'));
+  viewBtn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); openProductModal(pm); });
+  info.appendChild(viewBtn);
+
+  card.appendChild(favBtn);
+  card.appendChild(imgWrap);
+  card.appendChild(info);
+  card.addEventListener('click', () => { haptic('light'); openProductModal(pm); });
+  return card;
+}
+
 function renderStoreProducts(products, append) {
   const grid = document.getElementById('storeProductsGrid');
   if (!append) grid.innerHTML = '';
   const frag = document.createDocumentFragment();
-  products.forEach(product => {
-    const price = parseFloat(product.price) || 0;
-    const fav = isProductFav(product.id);
-    const pm = {
-      id: product.id, name: product.name, img_url: product.img_url,
-      price,
-      original_price: product.original_price ? parseFloat(product.original_price) : null,
-      store_name: product.store_name,
-      description: product.description || '',
-      colors: product.colors || null,
-      category: product.category || null
-    };
-    const card = document.createElement('div'); card.className = 'store-product-card';
-
-    /* 🎨 زر المفضلة */
-    const favBtn = document.createElement('button');
-    favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
-    favBtn.innerHTML = bzrIcon(fav ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
-    favBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); haptic('light');
-      const now = toggleProductFav(product.id);
-      favBtn.classList.toggle('active', now);
-      favBtn.innerHTML = bzrIcon(now ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
-      showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
-    });
-
-    const imgWrap = document.createElement('div'); imgWrap.className = 'store-product-img-wrap';
-    const img = document.createElement('img'); img.loading = 'lazy'; img.alt = product.name || '';
-    img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300';
-    img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
-    imgWrap.appendChild(img);
-    const info = document.createElement('div'); info.className = 'store-product-info';
-    const nameEl = document.createElement('div'); nameEl.className = 'store-product-name';
-    nameEl.textContent = product.name || '';
-    info.appendChild(nameEl);
-
-    const desc = (product.description && String(product.description).trim()) || '';
-    if (desc) {
-      const descEl = document.createElement('div');
-      descEl.className = 'product-card-desc';
-      descEl.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX);
-      info.appendChild(descEl);
-    }
-
-    const priceEl = document.createElement('div'); priceEl.className = 'store-product-price';
-    priceEl.textContent = price.toLocaleString() + ' ج.س';
-    info.appendChild(priceEl);
-
-    /* 🎨 زر عرض */
-    const viewBtn = document.createElement('button');
-    viewBtn.className = 'store-product-btn ripple';
-    viewBtn.innerHTML = '<span>عرض</span> ' + bzrIcon('mi-chevron-left', 'mi mi-xs');
-    viewBtn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); openProductModal(pm); });
-    info.appendChild(viewBtn);
-
-    card.appendChild(favBtn);
-    card.appendChild(imgWrap);
-    card.appendChild(info);
-    card.addEventListener('click', () => { haptic('light'); openProductModal(pm); });
-    frag.appendChild(card);
-  });
+  products.forEach(product => frag.appendChild(buildProductCard(product, false)));
   grid.appendChild(frag);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ⭐ ALL PRODUCTS RENDER
-   ═══════════════════════════════════════════════════════════ */
 function renderProductsBatch(products, append) {
   const grid = document.getElementById('allProductsGrid');
   if (!grid) return;
   if (!Array.isArray(products) || products.length === 0) return;
-
   if (typeof append !== 'boolean') {
-    append = Array.isArray(allProductsLocal) &&
-             allProductsLocal.length > products.length;
+    append = Array.isArray(allProductsLocal) && allProductsLocal.length > products.length;
   }
-
   if (!append) grid.innerHTML = '';
-
   const frag = document.createDocumentFragment();
-  products.forEach(product => {
-    const price = parseFloat(product.price) || 0;
-    const fav = isProductFav(product.id);
-    const pm = {
-      id: product.id,
-      name: product.name,
-      img_url: product.img_url,
-      price,
-      original_price: product.original_price ? parseFloat(product.original_price) : null,
-      store_name: product.store_name,
-      description: product.description || '',
-      colors: product.colors || null,
-      category: product.category || null
-    };
-
-    const card = document.createElement('div');
-    card.className = 'store-product-card';
-
-    /* 🎨 زر المفضلة */
-    const favBtn = document.createElement('button');
-    favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
-    favBtn.innerHTML = bzrIcon(fav ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
-    favBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); haptic('light');
-      const now = toggleProductFav(product.id);
-      favBtn.classList.toggle('active', now);
-      favBtn.innerHTML = bzrIcon(now ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
-      showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
-    });
-
-    const imgWrap = document.createElement('div');
-    imgWrap.className = 'store-product-img-wrap';
-    const img = document.createElement('img');
-    img.loading = 'lazy';
-    img.alt = product.name || '';
-    img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300';
-    img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; };
-    imgWrap.appendChild(img);
-
-    const info = document.createElement('div');
-    info.className = 'store-product-info';
-
-    const nameEl = document.createElement('div');
-    nameEl.className = 'store-product-name';
-    nameEl.textContent = product.name || '';
-    info.appendChild(nameEl);
-
-    const desc = (product.description && String(product.description).trim()) || '';
-    if (desc) {
-      const descEl = document.createElement('div');
-      descEl.className = 'product-card-desc';
-      descEl.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX);
-      info.appendChild(descEl);
-    }
-
-    if (product.store_name) {
-      const storeEl = document.createElement('div');
-      storeEl.style.cssText = 'font-size:0.68rem;color:var(--c-text-soft);font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
-      storeEl.textContent = product.store_name;
-      info.appendChild(storeEl);
-    }
-
-    const priceEl = document.createElement('div');
-    priceEl.className = 'store-product-price';
-    priceEl.textContent = price.toLocaleString() + ' ج.س';
-    info.appendChild(priceEl);
-
-    /* 🎨 زر عرض */
-    const viewBtn = document.createElement('button');
-    viewBtn.className = 'store-product-btn ripple';
-    viewBtn.innerHTML = '<span>عرض</span> ' + bzrIcon('mi-chevron-left', 'mi mi-xs');
-    viewBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); haptic('light'); openProductModal(pm);
-    });
-    info.appendChild(viewBtn);
-
-    card.appendChild(favBtn);
-    card.appendChild(imgWrap);
-    card.appendChild(info);
-    card.addEventListener('click', () => { haptic('light'); openProductModal(pm); });
-    frag.appendChild(card);
-  });
-
+  products.forEach(product => frag.appendChild(buildProductCard(product, true)));
   grid.appendChild(frag);
 }
 
@@ -1447,7 +1350,6 @@ function openProductModal(product) {
     origEl.textContent = '';
     origEl.classList.add('hidden');
   }
-
   renderProductDescriptionInModal(product);
 
   const colorsContainer = document.getElementById('productColorsContainer');
@@ -1463,8 +1365,12 @@ function openProductModal(product) {
     originalBtn.className = 'color-swatch active';
     originalBtn.title = 'الصورة الأصلية';
     originalBtn.style.cssText = 'background:linear-gradient(135deg,#FF7A00,#FFA64D);display:flex;align-items:center;justify-content:center;position:relative;';
-    // 🎨 أيقونة الصورة الأصلية SVG
-    originalBtn.innerHTML = bzrIcon('mi-image', 'mi', 'color:#fff;pointer-events:none;width:16px;height:16px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35));');
+    const imgIco = bzrSvgIcon('mi-image', 'mi');
+    imgIco.style.color = '#fff';
+    imgIco.style.width = '16px';
+    imgIco.style.height = '16px';
+    imgIco.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.35))';
+    originalBtn.appendChild(imgIco);
     originalBtn.addEventListener('click', () => {
       if (selectedColorVariant === null) return;
       haptic('light');
@@ -1514,9 +1420,6 @@ function openProductModal(product) {
   bzrPushModal();
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🆕 v9.10.0: عرض وصف المنتج داخل نافذة التفاصيل
-   ═══════════════════════════════════════════════════════════ */
 function renderProductDescriptionInModal(product) {
   const descBox = document.getElementById('productModalDesc');
   const descText = document.getElementById('productModalDescText');
@@ -1554,12 +1457,16 @@ document.getElementById('addToCartFromModal')?.addEventListener('click', (e) => 
   const p = JSON.parse(btn.dataset.product);
   addToCart(p);
   haptic('medium');
-  const originalBg = btn.style.background;
+  const origBg = btn.style.background;
   btn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
-  btn.innerHTML = bzrIcon('mi-check', 'mi mi-xs') + ' تمت الإضافة';
+  btn.innerHTML = '';
+  btn.appendChild(bzrSvgIcon('mi-check', 'mi mi-xs'));
+  btn.appendChild(document.createTextNode(' تمت الإضافة'));
   setTimeout(() => {
-    btn.style.background = originalBg;
-    btn.innerHTML = bzrIcon('mi-shopping-bag', 'mi mi-xs') + ' أضف إلى السلة';
+    btn.style.background = origBg;
+    btn.innerHTML = '';
+    btn.appendChild(bzrSvgIcon('mi-shopping-bag', 'mi mi-xs'));
+    btn.appendChild(document.createTextNode(' أضف إلى السلة'));
   }, 1500);
 });
 document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
@@ -1605,9 +1512,18 @@ function updateCartUI() {
   const items = document.getElementById('cartItems');
   items.innerHTML = '';
   if (cart.length === 0) {
-    items.innerHTML = '<div style="text-align:center;color:var(--c-text-soft);padding:2.5rem 0;">' +
-      bzrIcon('mi-shopping-bag', 'mi', 'width:48px;height:48px;color:#CBD5E1;margin-bottom:1rem;display:inline-block;') +
-      '<p style="font-weight:700;">السلة فارغة</p></div>';
+    const empty = document.createElement('div');
+    empty.style.cssText = 'text-align:center;color:var(--c-text-soft);padding:2.5rem 0;';
+    const bag = bzrSvgIcon('mi-shopping-bag', 'mi');
+    bag.style.width = '48px';
+    bag.style.height = '48px';
+    bag.style.color = '#CBD5E1';
+    bag.style.display = 'inline-block';
+    bag.style.marginBottom = '1rem';
+    empty.appendChild(bag);
+    const p = document.createElement('p'); p.style.fontWeight = '700'; p.textContent = 'السلة فارغة';
+    empty.appendChild(p);
+    items.appendChild(empty);
   } else {
     const frag = document.createDocumentFragment();
     cart.forEach(item => {
@@ -1628,8 +1544,14 @@ function updateCartUI() {
         '</div>' +
         '<div style="text-align:left;flex-shrink:0;">' +
           '<div style="font-weight:900;color:#FF7A00;">' + (item.price * item.quantity).toLocaleString() + ' ج.س</div>' +
-          '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;">' + bzrIcon('mi-trash', 'mi mi-xs') + '</button>' +
+          '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;padding:0;display:inline-flex;"><span></span></button>' +
         '</div>';
+      /* إدراج أيقونة الحذف عبر createElementNS */
+      const rmBtn = div.querySelector('.remove-btn');
+      if (rmBtn) {
+        rmBtn.innerHTML = '';
+        rmBtn.appendChild(bzrSvgIcon('mi-trash', 'mi mi-xs'));
+      }
       frag.appendChild(div);
     });
     items.appendChild(frag);
@@ -1676,51 +1598,33 @@ document.getElementById('continueShopping')?.addEventListener('click', closeCart
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   if (cart.length === 0) { showToast('السلة فارغة'); return; }
   haptic('medium');
-  let msg = '🛒 *طلب جديد من BranZar*\n\n';
-  msg += '📋 *تفاصيل الطلب:*\n';
-  msg += '━━━━━━━━━━━━━━\n';
+  let msg = '🛒 *طلب جديد من BranZar*\n\n📋 *تفاصيل الطلب:*\n━━━━━━━━━━━━━━\n';
   cart.forEach((item, index) => {
-    msg += `${index + 1}. *${item.name}*\n`;
-    msg += `   • الكمية: ${item.quantity}\n`;
-    msg += `   • السعر: ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+    msg += `${index + 1}. *${item.name}*\n   • الكمية: ${item.quantity}\n   • السعر: ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
     if (item.selectedColor) msg += `   • اللون: ${item.selectedColor}\n`;
     if (item.store_name) msg += `   • المتجر: ${item.store_name}\n`;
     msg += '\n';
   });
   msg += '━━━━━━━━━━━━━━\n';
   const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  msg += `💰 *المجموع الكلي:* ${total.toLocaleString()} ج.س\n\n`;
-  msg += `📦 عدد المنتجات: ${cart.reduce((s, i) => s + i.quantity, 0)}\n\n`;
-  msg += `شكراً لاستخدامكم BranZar 🌟`;
-  const whatsappUrl = 'https://wa.me/' + CONFIG.FIXED_WHATSAPP + '?text=' + encodeURIComponent(msg);
-  window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+  msg += `💰 *المجموع الكلي:* ${total.toLocaleString()} ج.س\n\n📦 عدد المنتجات: ${cart.reduce((s, i) => s + i.quantity, 0)}\n\nشكراً لاستخدامكم BranZar 🌟`;
+  window.open('https://wa.me/' + CONFIG.FIXED_WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
 });
 
 /* ═══ SHARE STORE ═══ */
 function updateMetaTagsForStore(store) {
   if (!store) return;
   const storeName = store.name || 'BranZar';
-  const storeDesc = (store.description && String(store.description).trim())
-    ? store.description
-    : 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن🛒🛍️';
-  const storeImage = optimizeCloudinaryUrl(store.cover_url)
-    || optimizeCloudinaryUrl(store.logo_url)
-    || CONFIG.DEFAULT_OG_IMAGE;
+  const storeDesc = (store.description && String(store.description).trim()) ? store.description : 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن🛒🛍️';
+  const storeImage = optimizeCloudinaryUrl(store.cover_url) || optimizeCloudinaryUrl(store.logo_url) || CONFIG.DEFAULT_OG_IMAGE;
   const storeUrl = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(String(getStoreId(store)));
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) ogTitle.setAttribute('content', storeName + ' | BranZar');
-  const ogDesc = document.querySelector('meta[property="og:description"]');
-  if (ogDesc) ogDesc.setAttribute('content', storeDesc);
-  const ogImage = document.querySelector('meta[property="og:image"]');
-  if (ogImage) ogImage.setAttribute('content', storeImage);
-  const ogUrl = document.querySelector('meta[property="og:url"]');
-  if (ogUrl) ogUrl.setAttribute('content', storeUrl);
-  const twTitle = document.querySelector('meta[name="twitter:title"]');
-  if (twTitle) twTitle.setAttribute('content', storeName + ' | BranZar');
-  const twDesc = document.querySelector('meta[name="twitter:description"]');
-  if (twDesc) twDesc.setAttribute('content', storeDesc);
-  const twImage = document.querySelector('meta[name="twitter:image"]');
-  if (twImage) twImage.setAttribute('content', storeImage);
+  const ogTitle = document.querySelector('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', storeName + ' | BranZar');
+  const ogDesc = document.querySelector('meta[property="og:description"]'); if (ogDesc) ogDesc.setAttribute('content', storeDesc);
+  const ogImage = document.querySelector('meta[property="og:image"]'); if (ogImage) ogImage.setAttribute('content', storeImage);
+  const ogUrl = document.querySelector('meta[property="og:url"]'); if (ogUrl) ogUrl.setAttribute('content', storeUrl);
+  const twTitle = document.querySelector('meta[name="twitter:title"]'); if (twTitle) twTitle.setAttribute('content', storeName + ' | BranZar');
+  const twDesc = document.querySelector('meta[name="twitter:description"]'); if (twDesc) twDesc.setAttribute('content', storeDesc);
+  const twImage = document.querySelector('meta[name="twitter:image"]'); if (twImage) twImage.setAttribute('content', storeImage);
   document.title = storeName + ' | BranZar';
 }
 document.getElementById('storeShareBtn')?.addEventListener('click', () => { if (currentStore) shareStore(currentStore); });
@@ -1731,18 +1635,11 @@ async function shareStore(store) {
   const url = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(storeId);
   const shareText = `اكتشف متجر ${store.name} على BranZar 🛒🛍️\n${store.description || 'أفضل المنتجات والبراندات في مكان واحد'}`;
   if (navigator.share) {
-    try {
-      await navigator.share({ title: store.name + ' | BranZar', text: shareText, url });
-      haptic('medium');
-      return;
-    } catch(err){ if (err && err.name === 'AbortError') return; }
+    try { await navigator.share({ title: store.name + ' | BranZar', text: shareText, url }); haptic('medium'); return; }
+    catch(err){ if (err && err.name === 'AbortError') return; }
   }
-  try {
-    if (navigator.clipboard) {
-      await navigator.clipboard.writeText(url);
-      showToast('✅ تم نسخ الرابط');
-    }
-  } catch(err){ showToast('تعذر النسخ'); }
+  try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); showToast('✅ تم نسخ الرابط'); } }
+  catch(err){ showToast('تعذر النسخ'); }
 }
 
 /* ═══ KEYBOARD ═══ */
@@ -1758,24 +1655,16 @@ document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) =>
   if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; }
 }, { passive: false });
 document.getElementById('prevStoresBtn')?.addEventListener('click', () => {
-  const c = document.getElementById('storesScrollContainer');
-  lastStoresInteraction = Date.now();
-  c.scrollBy({ left: 300, behavior: 'smooth' });
+  const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: 300, behavior: 'smooth' });
 });
 document.getElementById('nextStoresBtn')?.addEventListener('click', () => {
-  const c = document.getElementById('storesScrollContainer');
-  lastStoresInteraction = Date.now();
-  c.scrollBy({ left: -300, behavior: 'smooth' });
+  const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: -300, behavior: 'smooth' });
 });
 document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => {
-  const c = document.getElementById('categoriesContainer');
-  lastCategoriesInteraction = Date.now();
-  c.scrollBy({ left: -200, behavior: 'smooth' });
+  const c = document.getElementById('categoriesContainer'); lastCategoriesInteraction = Date.now(); c.scrollBy({ left: -200, behavior: 'smooth' });
 });
 document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => {
-  const c = document.getElementById('categoriesContainer');
-  lastCategoriesInteraction = Date.now();
-  c.scrollBy({ left: 200, behavior: 'smooth' });
+  const c = document.getElementById('categoriesContainer'); lastCategoriesInteraction = Date.now(); c.scrollBy({ left: 200, behavior: 'smooth' });
 });
 const storesContainer = document.getElementById('storesScrollContainer');
 if (storesContainer) {
@@ -1806,11 +1695,7 @@ function getSWVersionFromWorker(worker) {
     const timeout = setTimeout(() => resolve(null), 1500);
     try {
       const channel = new MessageChannel();
-      channel.port1.onmessage = (e) => {
-        clearTimeout(timeout);
-        const v = e.data && e.data.version;
-        resolve(typeof v === 'string' ? v : null);
-      };
+      channel.port1.onmessage = (e) => { clearTimeout(timeout); const v = e.data && e.data.version; resolve(typeof v === 'string' ? v : null); };
       worker.postMessage({ type: 'GET_VERSION' }, [channel.port2]);
     } catch(e) { clearTimeout(timeout); resolve(null); }
   });
@@ -1819,23 +1704,16 @@ function showUpdateButton() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn || btn.classList.contains('show')) return;
   btn.classList.remove('hidden');
-  requestAnimationFrame(() => {
-    setTimeout(() => { btn.classList.add('show'); try { haptic('medium'); } catch(e){} }, 50);
-  });
+  requestAnimationFrame(() => { setTimeout(() => { btn.classList.add('show'); try { haptic('medium'); } catch(e){} }, 50); });
 }
 function triggerUpdate() {
   const btn = document.getElementById('updateAvailableBtn');
   if (!btn || btn.disabled) return;
   btn.disabled = true;
-  /* 🎨 استبدال أيقونة التحديث بـ spinner SVG */
   const iconWrap = btn.querySelector('.update-icon-wrap');
-  if (iconWrap) {
-    iconWrap.innerHTML = bzrIcon('mi-refresh', 'mi mi-sm mi-spin');
-  }
-  const strongEl = btn.querySelector('.update-text-wrap strong');
-  const spanEl = btn.querySelector('.update-text-wrap span');
-  if (strongEl) strongEl.textContent = '⏳ جاري التحديث...';
-  if (spanEl) spanEl.textContent = 'لحظة من فضلك';
+  if (iconWrap) { iconWrap.innerHTML = ''; iconWrap.appendChild(bzrSvgIcon('mi-refresh', 'mi mi-sm mi-spin')); }
+  const strongEl = btn.querySelector('.update-text-wrap strong'); if (strongEl) strongEl.textContent = '⏳ جاري التحديث...';
+  const spanEl = btn.querySelector('.update-text-wrap span'); if (spanEl) spanEl.textContent = 'لحظة من فضلك';
   const reg = swRegistration;
   if (reg && reg.waiting) {
     reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -1849,10 +1727,7 @@ async function maybeShowUpdate() {
   const active = navigator.serviceWorker.controller;
   if (!waiting || !active) return;
   try {
-    const [newV, oldV] = await Promise.all([
-      getSWVersionFromWorker(waiting),
-      getSWVersionFromWorker(active)
-    ]);
+    const [newV, oldV] = await Promise.all([getSWVersionFromWorker(waiting), getSWVersionFromWorker(active)]);
     if (newV && oldV && newV === oldV) return;
     if (!newV) return;
     _updateButtonShownThisLoad = true;
@@ -1862,10 +1737,7 @@ async function maybeShowUpdate() {
 }
 async function checkForUpdate() {
   if (!swRegistration || document.hidden) return;
-  try {
-    await swRegistration.update();
-    await maybeShowUpdate();
-  } catch(err){}
+  try { await swRegistration.update(); await maybeShowUpdate(); } catch(err){}
 }
 function throttledCheckForUpdate() {
   const now = Date.now();
@@ -1889,9 +1761,7 @@ if ('serviceWorker' in navigator) {
           });
         });
         if (updateCheckInterval) clearInterval(updateCheckInterval);
-        updateCheckInterval = setInterval(() => {
-          if (!document.hidden) checkForUpdate();
-        }, CONFIG.UPDATE_CHECK_INTERVAL_MS);
+        updateCheckInterval = setInterval(() => { if (!document.hidden) checkForUpdate(); }, CONFIG.UPDATE_CHECK_INTERVAL_MS);
       })
       .catch((err) => console.warn('[BZR] SW registration failed:', err));
     let hadControllerAtLoad = !!navigator.serviceWorker.controller;
@@ -1905,9 +1775,7 @@ if ('serviceWorker' in navigator) {
       const data = event.data || {};
       if (data.type === 'SW_ACTIVATED') _updateButtonShownThisLoad = false;
     });
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) throttledCheckForUpdate();
-    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) throttledCheckForUpdate(); });
   });
 }
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
@@ -1925,12 +1793,8 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
     cacheManager.remove('stores_list');
     await Promise.all([loadStores(true), loadAllProducts(true)]);
     showToast('✅ تم تحديث البيانات');
-  } catch(err) {
-    showToast('تعذر التحديث، حاول مرة أخرى');
-  } finally {
-    if (svgIcon) svgIcon.classList.remove('mi-spin');
-    btn.disabled = false;
-  }
+  } catch(err) { showToast('تعذر التحديث، حاول مرة أخرى'); }
+  finally { if (svgIcon) svgIcon.classList.remove('mi-spin'); btn.disabled = false; }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.10.0 — Material SVG icons');
+console.log('[BZR] ui.js loaded ✅ v9.10.0 — native SVG icons + share-only cards');
