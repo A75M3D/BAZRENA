@@ -173,11 +173,86 @@ input, textarea, select { outline: none; }
   box-shadow: var(--shadow-primary);
 }
 .gate-btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-primary-lg); }
+.gate-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 .gate-btn-secondary {
   background: rgba(255,255,255,0.06); color: #d1d5db;
   border: 1.5px solid rgba(255,255,255,0.12); margin-top: 10px;
 }
 .gate-btn-secondary:hover { background: rgba(255,255,255,0.1); }
+.gate-btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ═══ Gate Input (Email) ═══ */
+.gate-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid rgba(255,122,0,0.3);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  direction: ltr;
+  transition: all 0.2s;
+  margin-bottom: 8px;
+  outline: none;
+}
+.gate-input::placeholder { color: #6b7280; font-weight: 500; }
+.gate-input:focus {
+  border-color: #FF7A00;
+  background: rgba(255,122,0,0.08);
+  box-shadow: 0 0 0 4px rgba(255,122,0,0.15);
+}
+.gate-error {
+  color: #F87171;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: right;
+  margin-top: 2px;
+  margin-bottom: 12px;
+  display: none;
+  align-items: center;
+  gap: 5px;
+  justify-content: flex-end;
+  padding-inline-end: 4px;
+}
+.gate-error.show { display: flex; }
+.gate-email-badge {
+  display: inline-block;
+  padding: 10px 18px;
+  background: rgba(255,122,0,0.1);
+  border: 1px solid rgba(255,122,0,0.3);
+  border-radius: 999px;
+  color: #FFA64D;
+  font-weight: 800;
+  font-size: 0.85rem;
+  word-break: break-all;
+  direction: ltr;
+  margin-bottom: 8px;
+  max-width: 100%;
+}
+.gate-info-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  background: rgba(59,130,246,0.08);
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 12px;
+  color: #93C5FD;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.65;
+  text-align: right;
+  margin-bottom: 20px;
+}
+.gate-info-note i {
+  color: #60A5FA;
+  font-size: 0.9rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
 
 /* ═══ Header ═══ */
 .bzr-header {
@@ -773,8 +848,72 @@ input, textarea, select { outline: none; }
 
 <div id="topProgressBar"></div>
 
-<!-- GATE 1: Loading -->
-<div id="gateCheck" class="gate-overlay">
+<!-- ═══════════════════════════════════════════════
+     GATE 0: EMAIL VERIFICATION (البريد الإلكتروني)
+     ═══════════════════════════════════════════════ -->
+<div id="gateEmail" class="gate-overlay hidden">
+  <div class="gate-card">
+    <div class="gate-icon"><i class="fas fa-envelope"></i></div>
+    <h2 class="gate-title">تحقق من بريدك الإلكتروني</h2>
+    <p class="gate-text">
+      أدخل بريدك الإلكتروني لنؤكد هويتك<br>
+      <strong>سيصلك رابط تحقق خلال ثوانٍ</strong>
+    </p>
+    <div style="margin-bottom:18px;">
+      <input type="email" id="verifyEmailInput" class="gate-input"
+        placeholder="example@email.com" autocomplete="email" inputmode="email">
+      <div id="emailError" class="gate-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="emailErrorText">يرجى إدخال بريد إلكتروني صحيح</span>
+      </div>
+    </div>
+    <button id="sendVerifyBtn" class="gate-btn gate-btn-primary" type="button">
+      <i class="fas fa-paper-plane"></i>
+      <span>إرسال رابط التحقق</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     GATE 0.5: WAITING FOR VERIFICATION
+     ═══════════════════════════════════════════════ -->
+<div id="gateWaiting" class="gate-overlay hidden">
+  <div class="gate-card">
+    <div class="gate-icon info"><i class="fas fa-envelope-open-text"></i></div>
+    <h2 class="gate-title">تفقد بريدك الإلكتروني</h2>
+    <p class="gate-text">
+      أرسلنا رابط التحقق إلى
+    </p>
+    <div style="text-align:center;margin-bottom:18px;">
+      <span class="gate-email-badge" id="waitingEmail">example@email.com</span>
+    </div>
+    <div class="gate-info-note">
+      <i class="fas fa-info-circle"></i>
+      <span>اضغط على الرابط في البريد لتفعيل حسابك. هذه الصفحة ستتحدث تلقائيًا عند التحقق.</span>
+    </div>
+    <div class="gate-spinner"></div>
+    <div class="gate-steps" id="waitingSteps">بانتظار تأكيد البريد...</div>
+    <div style="margin-top:22px;display:flex;flex-direction:column;gap:8px;">
+      <button id="checkVerifyBtn" class="gate-btn gate-btn-primary" type="button">
+        <i class="fas fa-check-circle"></i>
+        <span>تحققت من البريد الآن</span>
+      </button>
+      <button id="resendVerifyBtn" class="gate-btn gate-btn-secondary" type="button">
+        <i class="fas fa-redo"></i>
+        <span>إعادة إرسال الرابط</span>
+      </button>
+      <button id="changeEmailBtn" class="gate-btn gate-btn-secondary" type="button" style="background:transparent;border-color:rgba(255,255,255,0.06);color:#9ca3af;">
+        <i class="fas fa-arrow-right"></i>
+        <span>تغيير البريد الإلكتروني</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     GATE 1: Loading
+     ═══════════════════════════════════════════════ -->
+<div id="gateCheck" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon"><i class="fas fa-shield-halved"></i></div>
     <h2 class="gate-title">جارٍ التحقق</h2>
@@ -1280,14 +1419,19 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 db.settings({ ignoreUndefinedProperties: true });
 
+// استخدام التخزين المحلي لبقاء الجلسة
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+
 const STORES_COLLECTION = 'stores';
 const DEVICES_COLLECTION = 'device_registry';
+const VERIFIED_EMAIL_KEY = 'branzar_verified_email_v1';
+const RESEND_COOLDOWN_MS = 60 * 1000; // دقيقة واحدة بين كل إعادة إرسال
 
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 /* ═══════════════════════════════════════════════════════════
-   ⭐ الفئات الثابتة المحلية (16 فئة) — لا يمكن إضافة فئات جديدة
+   ⭐ الفئات الثابتة المحلية (17 فئة) — لا يمكن إضافة فئات جديدة
    ═══════════════════════════════════════════════════════════ */
 const FIXED_CATEGORIES = [
   { id: 'electronics',  name: 'إلكترونيات وتقنية',   emoji: '📱' },
@@ -1303,6 +1447,7 @@ const FIXED_CATEGORIES = [
   { id: 'construction', name: 'بناء ومعدات',         emoji: '🏗️' },
   { id: 'agriculture',  name: 'زراعة ومنتجات',       emoji: '🌾' },
   { id: 'education',    name: 'تعليم وكتب',          emoji: '📚' },
+  { id: 'training',     name: 'تعليم وتطوير',        emoji: '🎓' },
   { id: 'services',     name: 'خدمات وأعمال',        emoji: '💼' },
   { id: 'transport',    name: 'نقل وتوصيل',          emoji: '🚚' },
   { id: 'travel',       name: 'سفر وسياحة',          emoji: '✈️' }
@@ -1328,27 +1473,13 @@ const RATE_LIMIT_MS = 60 * 1000;
 const PHONE_REGEX = /^(?:0?9\d{8}|0?1\d{8}|\+?249\d{9}|\+?\d{8,15})$/;
 const NAME_REGEX = /^[\u0600-\u06FFa-zA-Z0-9\s\-_.'&()]+$/;
 const LOCATION_REGEX = /^[\u0600-\u06FFa-zA-Z0-9\s\-_,.'&()]+$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-// ⭐ ولايات السودان (الخرطوم أولًا)
 const SUDAN_STATES = [
-  'الخرطوم',
-  'الجزيرة',
-  'البحر الأحمر',
-  'كسلا',
-  'القضارف',
-  'سنار',
-  'النيل الأبيض',
-  'النيل الأزرق',
-  'نهر النيل',
-  'الشمالية',
-  'شمال كردفان',
-  'جنوب كردفان',
-  'غرب كردفان',
-  'شمال دارفور',
-  'جنوب دارفور',
-  'غرب دارفور',
-  'شرق دارفور',
-  'وسط دارفور'
+  'الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','سنار',
+  'النيل الأبيض','النيل الأزرق','نهر النيل','الشمالية',
+  'شمال كردفان','جنوب كردفان','غرب كردفان',
+  'شمال دارفور','جنوب دارفور','غرب دارفور','شرق دارفور','وسط دارفور'
 ];
 
 const state = {
@@ -1363,7 +1494,12 @@ const state = {
   logoFile: null,
   submitting: false,
   checkPassed: false,
-  alreadyRegistered: false
+  alreadyRegistered: false,
+  emailVerified: false,
+  pendingEmail: null,
+  emailUser: null,
+  pollTimer: null,
+  lastResendAt: 0
 };
 
 function $(id) { return document.getElementById(id); }
@@ -1379,7 +1515,7 @@ function showToast(msg, type = 'info') {
   const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
   t.className = '';
   if (type !== 'info') t.classList.add(type);
-  t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${escapeHtml(msg)}</span>`;
+  t.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '"></i><span>' + escapeHtml(msg) + '</span>';
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
@@ -1390,7 +1526,8 @@ function escapeHtml(str) {
   div.textContent = String(str);
   return div.innerHTML;
 }
-function sanitize(str, maxLen = 500) {
+function sanitize(str, maxLen) {
+  maxLen = maxLen || 500;
   if (!str) return '';
   return String(str)
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
@@ -1401,13 +1538,12 @@ function sanitize(str, maxLen = 500) {
 }
 function sanitizeLocation(loc) {
   if (!loc) return '';
-  let clean = String(loc)
+  return String(loc)
     .replace(/[<>"`\\]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/[\s\-]+$/, '')
     .slice(0, 100);
-  return clean;
 }
 function cleanPhone(v) { return String(v || '').replace(/[^0-9+]/g, ''); }
 function normalizePhone(v) {
@@ -1419,6 +1555,9 @@ function normalizePhone(v) {
 function isValidPhone(v) {
   const clean = normalizePhone(v);
   return PHONE_REGEX.test(clean) && clean.length >= 9;
+}
+function isValidEmail(v) {
+  return EMAIL_REGEX.test(String(v || '').trim());
 }
 async function sha256(str) {
   try {
@@ -1438,26 +1577,17 @@ function uuid() {
     return (c === 'x' ? r : ((r & 0x3) | 0x8)).toString(16);
   });
 }
-
-async function ensureAnonymousAuth() {
-  if (auth.currentUser) {
-    state.anonUid = auth.currentUser.uid;
-    return auth.currentUser;
-  }
-  try {
-    const cred = await auth.signInAnonymously();
-    state.anonUid = cred.user.uid;
-    return cred.user;
-  } catch (err) {
-    throw new Error('auth_failed:' + (err.code || 'unknown'));
-  }
+// كلمة مرور عشوائية داخلية لحساب التحقق (لا تُستخدم للدخول)
+function generateTempPassword() {
+  return 'Bzr!' + uuid().replace(/-/g, '').slice(0, 20) + 'Aa9';
 }
 
+/* ═══ Cookie helpers ═══ */
 function setCookie(name, value, days) {
   try {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
     const secure = location.protocol === 'https:' ? '; Secure' : '';
-    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax${secure}`;
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax' + secure;
   } catch (e) {}
 }
 function getCookie(name) {
@@ -1470,6 +1600,7 @@ function deleteCookie(name) {
   try { document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; } catch(e){}
 }
 
+/* ═══ IndexedDB helpers ═══ */
 function openIDB() {
   return new Promise((resolve, reject) => {
     try {
@@ -1532,6 +1663,7 @@ async function cacheDelete(key) {
   } catch (e) { return false; }
 }
 
+/* ═══ Device persistent ID ═══ */
 async function getOrCreatePersistentId() {
   try {
     const id = localStorage.getItem(DID_KEY);
@@ -1562,11 +1694,12 @@ async function getOrCreatePersistentId() {
   return newId;
 }
 
+/* ═══ Reg Status Cache ═══ */
 async function saveRegStatus(registered, store) {
   const data = {
     registered: !!registered,
-    storeId: store?.id || null,
-    storeName: store?.name || null,
+    storeId: store && store.id ? store.id : null,
+    storeName: store && store.name ? store.name : null,
     checkedAt: Date.now(),
     v: 1
   };
@@ -1576,7 +1709,6 @@ async function saveRegStatus(registered, store) {
   try { await idbSet(REG_CACHE_KEY, data); } catch(e){}
   try { await cacheSet(REG_CACHE_KEY, json); } catch(e){}
 }
-
 async function readRegStatus() {
   try {
     const raw = localStorage.getItem(REG_CACHE_KEY);
@@ -1615,14 +1747,32 @@ async function readRegStatus() {
   return null;
 }
 
-async function clearRegStatus() {
-  try { localStorage.removeItem(REG_CACHE_KEY); } catch(e){}
-  try { deleteCookie(REG_CACHE_COOKIE); } catch(e){}
-  try { await idbSet(REG_CACHE_KEY, null); } catch(e){}
-  try { await cacheDelete(REG_CACHE_KEY); } catch(e){}
+/* ═══ Email Verified Cache ═══ */
+function saveVerifiedEmail(email) {
+  try {
+    localStorage.setItem(VERIFIED_EMAIL_KEY, JSON.stringify({
+      email: email,
+      verifiedAt: Date.now(),
+      v: 1
+    }));
+  } catch (e) {}
+}
+function readVerifiedEmail() {
+  try {
+    const raw = localStorage.getItem(VERIFIED_EMAIL_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data && data.email && (Date.now() - (data.verifiedAt || 0)) < (365 * 24 * 60 * 60 * 1000)) {
+      return data;
+    }
+  } catch (e) {}
+  return null;
+}
+function clearVerifiedEmail() {
+  try { localStorage.removeItem(VERIFIED_EMAIL_KEY); } catch(e){}
 }
 
-/* Fingerprint collectors */
+/* ═══ Fingerprint ═══ */
 function getCanvasFingerprint() {
   try {
     const canvas = document.createElement('canvas');
@@ -1671,57 +1821,18 @@ async function getAudioFingerprint() {
   } catch (e) { return 'no_audio'; }
 }
 function getHardwareFingerprint() {
-  return [
-    navigator.hardwareConcurrency || 0,
-    navigator.deviceMemory || 0,
-    navigator.maxTouchPoints || 0,
-    navigator.platform || '',
-    navigator.vendor || ''
-  ].join('|');
+  return [navigator.hardwareConcurrency || 0, navigator.deviceMemory || 0, navigator.maxTouchPoints || 0, navigator.platform || '', navigator.vendor || ''].join('|');
 }
 function getScreenFingerprint() {
-  return [
-    screen.width + 'x' + screen.height,
-    screen.availWidth + 'x' + screen.availHeight,
-    screen.colorDepth, screen.pixelDepth,
-    window.devicePixelRatio || 1,
-    window.innerWidth + 'x' + window.innerHeight
-  ].join('|');
+  return [screen.width + 'x' + screen.height, screen.availWidth + 'x' + screen.availHeight, screen.colorDepth, screen.pixelDepth, window.devicePixelRatio || 1, window.innerWidth + 'x' + window.innerHeight].join('|');
 }
 function getLocaleFingerprint() {
   let tz = '';
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch(e){}
   return [navigator.language || '', (navigator.languages || []).slice(0,3).join(','), new Date().getTimezoneOffset(), tz].join('|');
 }
-function getFontsFingerprint() {
-  const testFonts = ['Arial','Cairo','Tahoma','Verdana','Georgia','Palatino','Times New Roman','Courier New','Comic Sans MS','Trebuchet MS','Impact','Lucida Console','Segoe UI','Roboto','Helvetica Neue','Noto Naskh Arabic','Noto Sans Arabic','Amiri'];
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const baseFonts = ['monospace','sans-serif','serif'];
-  const testString = 'mmmmmmmmmmlli';
-  const testSize = '72px';
-  const baseSizes = {};
-  baseFonts.forEach(bf => { ctx.font = testSize + ' ' + bf; baseSizes[bf] = ctx.measureText(testString).width; });
-  const detected = [];
-  testFonts.forEach(font => {
-    let d = false;
-    baseFonts.forEach(bf => {
-      ctx.font = testSize + ' "' + font + '", ' + bf;
-      if (ctx.measureText(testString).width !== baseSizes[bf]) d = true;
-    });
-    if (d) detected.push(font);
-  });
-  return detected.join(',');
-}
 function getMiscFingerprint() {
-  return [
-    navigator.cookieEnabled ? '1' : '0',
-    navigator.doNotTrack || '0',
-    'ontouchstart' in window ? '1' : '0',
-    typeof Notification !== 'undefined' ? Notification.permission : 'na',
-    navigator.pdfViewerEnabled ? '1' : '0',
-    navigator.webdriver ? 'WD' : 'OK'
-  ].join('|');
+  return [navigator.cookieEnabled ? '1' : '0', navigator.doNotTrack || '0', 'ontouchstart' in window ? '1' : '0', typeof Notification !== 'undefined' ? Notification.permission : 'na', navigator.pdfViewerEnabled ? '1' : '0', navigator.webdriver ? 'WD' : 'OK'].join('|');
 }
 async function buildFingerprint() {
   const pId = await getOrCreatePersistentId();
@@ -1734,7 +1845,6 @@ async function buildFingerprint() {
     getHardwareFingerprint(),
     getScreenFingerprint(),
     getLocaleFingerprint(),
-    getFontsFingerprint(),
     getMiscFingerprint()
   ].join('::');
   const hash = await sha256(composite);
@@ -1742,19 +1852,20 @@ async function buildFingerprint() {
   return { fingerprint: hash, persistentId: pId };
 }
 
+/* ═══ Device check ═══ */
 async function checkDeviceAlreadyRegistered(fp, pId) {
   const results = { blocked: false, existingStore: null, reason: null };
   try {
     const byFp = await db.collection(STORES_COLLECTION).where('device_fingerprint', '==', fp).limit(1).get();
     if (!byFp.empty) {
       results.blocked = true;
-      results.existingStore = { id: byFp.docs[0].id, ...byFp.docs[0].data() };
+      results.existingStore = Object.assign({ id: byFp.docs[0].id }, byFp.docs[0].data());
       return results;
     }
     const byDid = await db.collection(STORES_COLLECTION).where('device_id', '==', pId).limit(1).get();
     if (!byDid.empty) {
       results.blocked = true;
-      results.existingStore = { id: byDid.docs[0].id, ...byDid.docs[0].data() };
+      results.existingStore = Object.assign({ id: byDid.docs[0].id }, byDid.docs[0].data());
       return results;
     }
     const byReg = await db.collection(DEVICES_COLLECTION).doc(fp).get();
@@ -1763,7 +1874,7 @@ async function checkDeviceAlreadyRegistered(fp, pId) {
       const sid = byReg.data().storeId;
       try {
         const sdoc = await db.collection(STORES_COLLECTION).doc(sid).get();
-        if (sdoc.exists) results.existingStore = { id: sid, ...sdoc.data() };
+        if (sdoc.exists) results.existingStore = Object.assign({ id: sid }, sdoc.data());
       } catch(e){}
     }
     return results;
@@ -1773,8 +1884,9 @@ async function checkDeviceAlreadyRegistered(fp, pId) {
   }
 }
 
-function showError(id) { $(id)?.classList.add('show'); }
-function hideError(id) { $(id)?.classList.remove('show'); }
+/* ═══ UI helpers ═══ */
+function showError(id) { const el = $(id); if (el) el.classList.add('show'); }
+function hideError(id) { const el = $(id); if (el) el.classList.remove('show'); }
 function setFieldState(wrapId, s) {
   const el = $(wrapId);
   if (!el) return;
@@ -1790,6 +1902,7 @@ function doneProgress() {
   setTimeout(() => { b.classList.remove('done'); b.style.transform = ''; }, 400);
 }
 
+/* ═══ Image ═══ */
 function compressImage(file, maxW, quality) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -1797,13 +1910,13 @@ function compressImage(file, maxW, quality) {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        let { width, height } = img;
-        if (width > maxW) { height = Math.round((maxW / width) * height); width = maxW; }
-        canvas.width = width; canvas.height = height;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round((maxW / w) * h); w = maxW; }
+        canvas.width = w; canvas.height = h;
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingQuality = 'high';
-        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(img, 0, 0, width, height);
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
         canvas.toBlob(b => b ? resolve(b) : reject(new Error('compress_failed')), 'image/jpeg', quality);
       };
       img.onerror = reject;
@@ -1818,10 +1931,7 @@ async function uploadToCloudinary(blob) {
   fd.append('file', blob);
   fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
   fd.append('folder', 'branzar/stores');
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-    { method: 'POST', body: fd }
-  );
+  const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD_NAME + '/image/upload', { method: 'POST', body: fd });
   if (!res.ok) throw new Error('upload_http_' + res.status);
   const data = await res.json();
   if (!data.secure_url) throw new Error('no_url');
@@ -1840,30 +1950,29 @@ function isValidImageHeader(bytes) {
   if (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) return true;
   if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) return true;
   if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) return true;
-  if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46
-      && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) return true;
+  if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) return true;
   return false;
 }
 function setupImageUpload(opts) {
-  const { zoneEl, inputEl, previewEl, progressEl, onLoaded, isLogo } = opts;
+  const zoneEl = opts.zoneEl, inputEl = opts.inputEl, previewEl = opts.previewEl, progressEl = opts.progressEl, onLoaded = opts.onLoaded, isLogo = opts.isLogo;
   if (!zoneEl || !inputEl) return;
   const open = () => inputEl.click();
   zoneEl.addEventListener('click', open);
   zoneEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
   ['dragenter','dragover'].forEach(ev => zoneEl.addEventListener(ev, e => { e.preventDefault(); zoneEl.classList.add('dragging'); }));
   ['dragleave','drop'].forEach(ev => zoneEl.addEventListener(ev, e => { e.preventDefault(); zoneEl.classList.remove('dragging'); }));
-  zoneEl.addEventListener('drop', e => { const f = e.dataTransfer?.files?.[0]; if (f) handle(f); });
-  inputEl.addEventListener('change', e => { const f = e.target.files?.[0]; if (f) handle(f); inputEl.value = ''; });
+  zoneEl.addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) handle(f); });
+  inputEl.addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (f) handle(f); inputEl.value = ''; });
 
   async function handle(file) {
-    if (!file.type || !file.type.startsWith('image/')) { showToast('يجب اختيار ملف صورة', 'error'); return; }
+    if (!file.type || file.type.indexOf('image/') !== 0) { showToast('يجب اختيار ملف صورة', 'error'); return; }
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowed.includes(file.type)) { showToast('الصيغة غير مدعومة', 'error'); return; }
+    if (allowed.indexOf(file.type) === -1) { showToast('الصيغة غير مدعومة', 'error'); return; }
     if (file.size > 8 * 1024 * 1024) { showToast('الحجم أكبر من 8 ميجا', 'error'); return; }
     const header = await readHeader(file);
     if (!isValidImageHeader(header)) { showToast('الملف ليس صورة صالحة', 'error'); return; }
 
-    progressEl?.classList.add('active');
+    if (progressEl) progressEl.classList.add('active');
     haptic('light');
     try {
       const maxW = isLogo ? 800 : 1600;
@@ -1873,23 +1982,23 @@ function setupImageUpload(opts) {
       previewEl.src = url;
       previewEl.onload = () => previewEl.classList.add('loaded');
       zoneEl.classList.add('has-image');
-      onLoaded({ file, blob, url });
+      onLoaded({ file: file, blob: blob, url: url });
       showToast('✅ تم رفع الصورة', 'success');
       haptic('medium');
     } catch (err) {
       console.error('[Upload]', err);
       showToast('تعذر رفع الصورة', 'error');
     } finally {
-      progressEl?.classList.remove('active');
+      if (progressEl) progressEl.classList.remove('active');
     }
   }
 }
 
 function updatePreview() {
   const pc = $('previewCover'), pl = $('previewLogo');
-  if (state.coverUrl) { pc.style.backgroundImage = `url(${state.coverUrl})`; pc.classList.add('has-image'); }
+  if (state.coverUrl) { pc.style.backgroundImage = 'url(' + state.coverUrl + ')'; pc.classList.add('has-image'); }
   else { pc.style.backgroundImage = ''; pc.classList.remove('has-image'); }
-  if (state.logoUrl) { pl.style.backgroundImage = `url(${state.logoUrl})`; pl.classList.add('has-image'); }
+  if (state.logoUrl) { pl.style.backgroundImage = 'url(' + state.logoUrl + ')'; pl.classList.add('has-image'); }
   else { pl.style.backgroundImage = ''; pl.classList.remove('has-image'); }
   $('previewName').textContent = $('storeName').value.trim() || 'اسم متجرك';
   $('previewCat').textContent = state.selectedCategory || 'الفئة';
@@ -1899,15 +2008,12 @@ function updatePreview() {
   $('previewLoc').textContent = locClean || 'الموقع';
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ⭐ Categories — عرض الفئات الثابتة فقط (بدون إضافة)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ Categories ═══ */
 function renderCategories() {
   const grid = $('catsGrid');
   if (!grid) return;
   grid.innerHTML = '';
   const frag = document.createDocumentFragment();
-
   FIXED_CATEGORIES.forEach(cat => {
     const chip = document.createElement('button');
     chip.type = 'button';
@@ -1915,16 +2021,12 @@ function renderCategories() {
     chip.dataset.cat = cat.name;
     chip.dataset.id = cat.id;
     chip.setAttribute('aria-label', cat.name);
-    chip.innerHTML =
-      '<span class="cat-emoji" aria-hidden="true">' + cat.emoji + '</span>' +
-      '<span>' + escapeHtml(cat.name) + '</span>';
+    chip.innerHTML = '<span class="cat-emoji" aria-hidden="true">' + cat.emoji + '</span><span>' + escapeHtml(cat.name) + '</span>';
     chip.addEventListener('click', () => selectCategory(cat.name));
     frag.appendChild(chip);
   });
-
   grid.appendChild(frag);
 }
-
 function selectCategory(catName) {
   state.selectedCategory = catName;
   document.querySelectorAll('.cat-chip').forEach(c => {
@@ -1936,38 +2038,158 @@ function selectCategory(catName) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Location — Single Field Input
+   📧 EMAIL VERIFICATION
    ═══════════════════════════════════════════════════════════ */
+function showEmailError(text) {
+  const errEl = $('emailError');
+  const txtEl = $('emailErrorText');
+  if (txtEl) txtEl.textContent = text;
+  if (errEl) errEl.classList.add('show');
+}
+function hideEmailError() {
+  const errEl = $('emailError');
+  if (errEl) errEl.classList.remove('show');
+}
+
+async function sendVerificationEmail(email) {
+  const tempPassword = generateTempPassword();
+  let user;
+  try {
+    // حاول تسجيل الدخول أولاً إن كان موجودًا
+    try {
+      const cred = await auth.signInWithEmailAndPassword(email, tempPassword);
+      user = cred.user;
+    } catch (signInErr) {
+      // إن لم يوجد أو كلمة المرور خطأ، أنشئ حسابًا جديدًا
+      const cred = await auth.createUserWithEmailAndPassword(email, tempPassword);
+      user = cred.user;
+    }
+  } catch (createErr) {
+    // إذا الحساب موجود بكلمة مرور أخرى، استخدم إعادة إرسال بدون مصادقة جديدة
+    if (createErr.code === 'auth/email-already-in-use') {
+      // الحساب موجود — نحاول إرسال رابط تحقق فقط
+      try {
+        // لا يمكن إرسال تحقق بدون تسجيل دخول
+        // نستخدم createUserWithEmailAndPassword فشل، لكن نحتاج signInWithEmailAndPassword
+        // الحل: اطلب من المستخدم استخدام نفس البريد بشكل آخر، أو أنشئ حسابًا جديدًا
+        throw new Error('email_in_use');
+      } catch(e) { throw e; }
+    }
+    throw createErr;
+  }
+
+  state.emailUser = user;
+
+  // تحقق إن كان البريد موثقًا مسبقًا
+  if (user.emailVerified) {
+    return { user: user, alreadyVerified: true };
+  }
+
+  // أرسل رابط التحقق
+  const actionCodeSettings = {
+    url: window.location.origin + window.location.pathname + '?verified=1',
+    handleCodeInApp: false
+  };
+  await user.sendEmailVerification(actionCodeSettings);
+  return { user: user, alreadyVerified: false };
+}
+
+async function checkEmailVerifiedNow() {
+  if (!state.emailUser && !auth.currentUser) return false;
+  const user = auth.currentUser || state.emailUser;
+  if (!user) return false;
+  try {
+    await user.reload();
+  } catch (e) {}
+  return !!user.emailVerified;
+}
+
+function startVerificationPolling() {
+  stopVerificationPolling();
+  let attempts = 0;
+  const MAX_ATTEMPTS = 100; // 100 * 3s = 5 دقائق
+  state.pollTimer = setInterval(async () => {
+    attempts++;
+    const verified = await checkEmailVerifiedNow();
+    if (verified) {
+      stopVerificationPolling();
+      onEmailVerifiedSuccess();
+      return;
+    }
+    if (attempts >= MAX_ATTEMPTS) {
+      stopVerificationPolling();
+      const stepsEl = $('waitingSteps');
+      if (stepsEl) stepsEl.textContent = 'لم يتم التحقق بعد. اضغط "تحققت من البريد الآن" يدويًا.';
+    }
+  }, 3000);
+}
+
+function stopVerificationPolling() {
+  if (state.pollTimer) {
+    clearInterval(state.pollTimer);
+    state.pollTimer = null;
+  }
+}
+
+async function onEmailVerifiedSuccess() {
+  const email = (state.pendingEmail || (auth.currentUser && auth.currentUser.email) || '').toLowerCase();
+  state.emailVerified = true;
+  saveVerifiedEmail(email);
+  haptic('heavy');
+
+  // إظهار المحتوى الرئيسي
+  updateGateStep && updateGateStep('✅ تم التحقق بنجاح');
+  setTimeout(() => {
+    showGate('appContainer');
+    state.checkPassed = true;
+    renderCategories();
+    updatePreview();
+    showToast('🎉 تم التحقق من بريدك بنجاح', 'success');
+  }, 500);
+}
+
+function showGateEmail() {
+  showGate('gateEmail');
+  const inputEl = $('verifyEmailInput');
+  if (inputEl) setTimeout(() => inputEl.focus(), 300);
+}
+
+function showGateWaiting(email) {
+  const emailEl = $('waitingEmail');
+  if (emailEl) emailEl.textContent = email;
+  const stepsEl = $('waitingSteps');
+  if (stepsEl) stepsEl.textContent = 'بانتظار تأكيد البريد...';
+  showGate('gateWaiting');
+  startVerificationPolling();
+}
+
+/* ═══ Form Handlers ═══ */
 const locationInput = $('locationInput');
+if (locationInput) {
+  locationInput.addEventListener('input', (e) => {
+    let val = e.target.value.replace(/[<>"`\\]/g, '');
+    if (e.target.value !== val) e.target.value = val;
+    const inputType = e.inputType || '';
+    const isDeleting = inputType.indexOf('delete') === 0;
+    const trimmed = val.trim();
+    if (!isDeleting && SUDAN_STATES.indexOf(trimmed) > -1 && !val.endsWith(' - ')) {
+      val = trimmed + ' - ';
+      e.target.value = val;
+    }
+    state.location = val.trim();
+    const cleanForValidation = val.replace(/\s*-\s*$/, '').trim();
+    if (cleanForValidation.length >= 3 && LOCATION_REGEX.test(cleanForValidation)) {
+      hideError('locationError');
+      setFieldState('locationWrap', 'valid');
+    } else if (cleanForValidation.length > 0) {
+      setFieldState('locationWrap', null);
+    } else {
+      setFieldState('locationWrap', null);
+    }
+    updatePreview();
+  });
+}
 
-locationInput?.addEventListener('input', (e) => {
-  let val = e.target.value.replace(/[<>"`\\]/g, '');
-  if (e.target.value !== val) e.target.value = val;
-
-  const inputType = e.inputType || '';
-  const isDeleting = inputType.startsWith('delete');
-  const trimmed = val.trim();
-
-  if (!isDeleting && SUDAN_STATES.includes(trimmed) && !val.endsWith(' - ')) {
-    val = trimmed + ' - ';
-    e.target.value = val;
-  }
-
-  state.location = val.trim();
-
-  const cleanForValidation = val.replace(/\s*-\s*$/, '').trim();
-  if (cleanForValidation.length >= 3 && LOCATION_REGEX.test(cleanForValidation)) {
-    hideError('locationError');
-    setFieldState('locationWrap', 'valid');
-  } else if (cleanForValidation.length > 0) {
-    setFieldState('locationWrap', null);
-  } else {
-    setFieldState('locationWrap', null);
-  }
-  updatePreview();
-});
-
-/* Form handlers */
 const nameInput = $('storeName');
 const waInput = $('whatsapp');
 const phoneInput = $('phone');
@@ -1975,67 +2197,85 @@ const descInput = $('storeDescription');
 const pwdInput = $('password');
 const pwdConfirmInput = $('confirmPassword');
 
-nameInput?.addEventListener('input', (e) => {
-  const val = e.target.value;
-  const clean = val.replace(/[<>"`\\]/g, '');
-  if (val !== clean) e.target.value = clean;
-  $('nameCount').textContent = clean.length;
-  if (clean.trim().length >= 3) { hideError('nameError'); setFieldState('nameWrap', 'valid'); }
-  updatePreview();
-});
-descInput?.addEventListener('input', (e) => {
-  const len = e.target.value.length;
-  $('descCount').textContent = len;
-  const c = $('descCount').parentElement;
-  c.classList.toggle('warn', len > 400);
-  c.classList.toggle('limit', len >= 500);
-});
+if (nameInput) {
+  nameInput.addEventListener('input', (e) => {
+    const val = e.target.value;
+    const clean = val.replace(/[<>"`\\]/g, '');
+    if (val !== clean) e.target.value = clean;
+    $('nameCount').textContent = clean.length;
+    if (clean.trim().length >= 3) { hideError('nameError'); setFieldState('nameWrap', 'valid'); }
+    updatePreview();
+  });
+}
+if (descInput) {
+  descInput.addEventListener('input', (e) => {
+    const len = e.target.value.length;
+    $('descCount').textContent = len;
+    const c = $('descCount').parentElement;
+    c.classList.toggle('warn', len > 400);
+    c.classList.toggle('limit', len >= 500);
+  });
+}
 [waInput, phoneInput].forEach(inp => {
-  inp?.addEventListener('input', (e) => {
+  if (!inp) return;
+  inp.addEventListener('input', (e) => {
     e.target.value = e.target.value.replace(/[^\d+]/g, '');
     const wrap = inp === waInput ? 'waWrap' : 'phoneWrap';
     const err = inp === waInput ? 'waError' : 'phoneError';
     if (inp.value && isValidPhone(inp.value)) { hideError(err); setFieldState(wrap, 'valid'); }
   });
 });
-$('togglePwd')?.addEventListener('click', () => {
-  const isPwd = pwdInput.type === 'password';
-  pwdInput.type = isPwd ? 'text' : 'password';
-  document.querySelector('#togglePwd i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
-});
-$('togglePwdConfirm')?.addEventListener('click', () => {
-  const isPwd = pwdConfirmInput.type === 'password';
-  pwdConfirmInput.type = isPwd ? 'text' : 'password';
-  document.querySelector('#togglePwdConfirm i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
-});
-pwdInput?.addEventListener('input', () => {
-  const pwd = pwdInput.value;
-  const el = $('pwdStrength');
-  if (!pwd) { el.classList.remove('show'); return; }
-  el.classList.add('show');
-  let score = 0;
-  if (pwd.length >= 6) score++;
-  if (pwd.length >= 10) score++;
-  if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
-  if (/\d/.test(pwd)) score++;
-  if (/[^A-Za-z0-9]/.test(pwd)) score++;
-  score = Math.min(score, 4);
-  const colors = ['#EF4444','#F59E0B','#F59E0B','#10B981','#10B981'];
-  const labels = ['ضعيفة جدًا','ضعيفة','متوسطة','قوية','قوية جدًا'];
-  document.querySelectorAll('.pwd-bar').forEach((b, i) => {
-    b.style.background = i < score ? colors[score] : 'var(--c-surface-3)';
+const togglePwdBtn = $('togglePwd');
+if (togglePwdBtn) {
+  togglePwdBtn.addEventListener('click', () => {
+    const isPwd = pwdInput.type === 'password';
+    pwdInput.type = isPwd ? 'text' : 'password';
+    document.querySelector('#togglePwd i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
   });
-  const txt = $('pwdStrengthText');
-  txt.textContent = labels[score] || '';
-  txt.style.color = colors[score] || '';
-  if (pwd.length >= 6) { hideError('pwdError'); setFieldState('pwdWrap', 'valid'); }
-});
-pwdConfirmInput?.addEventListener('input', () => {
-  if (pwdConfirmInput.value && pwdConfirmInput.value === pwdInput.value) {
-    hideError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid');
-  }
-});
-$('termsCheck')?.addEventListener('change', () => { if ($('termsCheck').checked) hideError('termsError'); });
+}
+const togglePwdConfirmBtn = $('togglePwdConfirm');
+if (togglePwdConfirmBtn) {
+  togglePwdConfirmBtn.addEventListener('click', () => {
+    const isPwd = pwdConfirmInput.type === 'password';
+    pwdConfirmInput.type = isPwd ? 'text' : 'password';
+    document.querySelector('#togglePwdConfirm i').className = isPwd ? 'fas fa-eye-slash' : 'fas fa-eye';
+  });
+}
+if (pwdInput) {
+  pwdInput.addEventListener('input', () => {
+    const pwd = pwdInput.value;
+    const el = $('pwdStrength');
+    if (!pwd) { el.classList.remove('show'); return; }
+    el.classList.add('show');
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 10) score++;
+    if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+    score = Math.min(score, 4);
+    const colors = ['#EF4444','#F59E0B','#F59E0B','#10B981','#10B981'];
+    const labels = ['ضعيفة جدًا','ضعيفة','متوسطة','قوية','قوية جدًا'];
+    document.querySelectorAll('.pwd-bar').forEach((b, i) => {
+      b.style.background = i < score ? colors[score] : 'var(--c-surface-3)';
+    });
+    const txt = $('pwdStrengthText');
+    txt.textContent = labels[score] || '';
+    txt.style.color = colors[score] || '';
+    if (pwd.length >= 6) { hideError('pwdError'); setFieldState('pwdWrap', 'valid'); }
+  });
+}
+if (pwdConfirmInput) {
+  pwdConfirmInput.addEventListener('input', () => {
+    if (pwdConfirmInput.value && pwdConfirmInput.value === pwdInput.value) {
+      hideError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid');
+    }
+  });
+}
+const termsCheck = $('termsCheck');
+if (termsCheck) {
+  termsCheck.addEventListener('change', () => { if (termsCheck.checked) hideError('termsError'); });
+}
 
 setupImageUpload({
   zoneEl: $('coverUpload'), inputEl: $('coverInput'),
@@ -2050,6 +2290,7 @@ setupImageUpload({
   isLogo: true
 });
 
+/* ═══ Validation ═══ */
 function validateForm() {
   let ok = true, firstError = null;
 
@@ -2096,7 +2337,7 @@ function validateForm() {
     ok = false; firstError = firstError || 'confirmPassword';
   } else { hideError('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid'); }
 
-  if (!$('termsCheck').checked) {
+  if (!termsCheck.checked) {
     showError('termsError'); ok = false; firstError = firstError || 'termsCheck';
   } else hideError('termsError');
 
@@ -2110,12 +2351,12 @@ function validateForm() {
 
 function isRateLimited() {
   try {
-    const last = parseInt(localStorage.getItem(SUBMIT_LOCK_KEY) || '0');
+    const last = parseInt(localStorage.getItem(SUBMIT_LOCK_KEY) || '0', 10);
     if (!last) return false;
     const elapsed = Date.now() - last;
     if (elapsed < RATE_LIMIT_MS) {
       const remain = Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
-      showToast(`انتظر ${remain} ثانية قبل المحاولة مجددًا`, 'warning');
+      showToast('انتظر ' + remain + ' ثانية قبل المحاولة مجددًا', 'warning');
       return true;
     }
   } catch (e) {}
@@ -2123,125 +2364,132 @@ function isRateLimited() {
 }
 function setRateLimit() { try { localStorage.setItem(SUBMIT_LOCK_KEY, Date.now().toString()); } catch(e){} }
 
+/* ═══ Submit ═══ */
 const submitBtn = $('submitBtn');
+if (submitBtn) {
+  submitBtn.addEventListener('click', async () => {
+    if (state.alreadyRegistered) { showToast('لديك متجر بالفعل', 'warning'); return; }
+    if (state.submitting) return;
+    if (isRateLimited()) return;
+    if ($('website').value) return;
+    if (!validateForm()) { showToast('يرجى تصحيح الحقول المطلوبة', 'error'); return; }
 
-submitBtn?.addEventListener('click', async () => {
-  if (state.alreadyRegistered) { showToast('لديك متجر بالفعل', 'warning'); return; }
-  if (state.submitting) return;
-  if (isRateLimited()) return;
-  if ($('website').value) return;
-  if (!validateForm()) { showToast('يرجى تصحيح الحقول المطلوبة', 'error'); return; }
-
-  state.submitting = true;
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري التحقق...</span>';
-  startProgress();
-  haptic('medium');
-
-  try {
-    const user = await ensureAnonymousAuth();
-    const uid = user.uid;
-    submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري إنشاء المتجر...</span>';
-
-    const finalCheck = await checkDeviceAlreadyRegistered(state.deviceFingerprint, state.persistentId);
-    if (finalCheck.blocked) throw new Error('device_already_registered');
-
-    const nameCheck = await db.collection(STORES_COLLECTION)
-      .where('name', '==', sanitize(nameInput.value, 60)).limit(1).get();
-    if (!nameCheck.empty) throw new Error('store_name_exists');
-
-    const waCheck = await db.collection(STORES_COLLECTION)
-      .where('whatsapp_number', '==', normalizePhone(waInput.value)).limit(1).get();
-    if (!waCheck.empty) throw new Error('whatsapp_exists');
-
-    const locationValue = sanitizeLocation(locationInput.value);
-
-    const now = Date.now();
-    const storeData = {
-      name: sanitize(nameInput.value, 60),
-      login_username: sanitize(nameInput.value, 60),
-      login_password: pwdInput.value,
-      category: sanitize(state.selectedCategory, 40),
-      categories: [],
-      description: sanitize(descInput.value, 500),
-      location: locationValue,
-      whatsapp_number: normalizePhone(waInput.value),
-      phone_number: phoneInput.value ? normalizePhone(phoneInput.value) : null,
-      logo_url: state.logoUrl,
-      cover_url: state.coverUrl,
-      followers: 1,
-      is_verified: false,
-      is_subscribed: false,
-      products_count: 0,
-      device_fingerprint: state.deviceFingerprint,
-      device_id: state.persistentId,
-      owner_uid: uid,
-      user_agent_short: (navigator.userAgent || '').slice(0, 120),
-      created_at: now,
-      updated_at: now
-    };
-
-    const ref = await db.collection(STORES_COLLECTION).add(storeData);
+    state.submitting = true;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري التحقق...</span>';
+    startProgress();
+    haptic('medium');
 
     try {
-      await db.collection(DEVICES_COLLECTION).doc(state.deviceFingerprint).set({
-        storeId: ref.id,
-        deviceId: state.persistentId,
+      const user = auth.currentUser;
+      if (!user) throw new Error('auth_failed:no_user');
+      const uid = user.uid;
+
+      submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري إنشاء المتجر...</span>';
+
+      const finalCheck = await checkDeviceAlreadyRegistered(state.deviceFingerprint, state.persistentId);
+      if (finalCheck.blocked) throw new Error('device_already_registered');
+
+      const nameCheck = await db.collection(STORES_COLLECTION).where('name', '==', sanitize(nameInput.value, 60)).limit(1).get();
+      if (!nameCheck.empty) throw new Error('store_name_exists');
+
+      const waCheck = await db.collection(STORES_COLLECTION).where('whatsapp_number', '==', normalizePhone(waInput.value)).limit(1).get();
+      if (!waCheck.empty) throw new Error('whatsapp_exists');
+
+      const locationValue = sanitizeLocation(locationInput.value);
+      const verifiedEmail = readVerifiedEmail();
+      const now = Date.now();
+      const storeData = {
+        name: sanitize(nameInput.value, 60),
+        login_username: sanitize(nameInput.value, 60),
+        login_password: pwdInput.value,
+        category: sanitize(state.selectedCategory, 40),
+        categories: [],
+        description: sanitize(descInput.value, 500),
+        location: locationValue,
+        whatsapp_number: normalizePhone(waInput.value),
+        phone_number: phoneInput.value ? normalizePhone(phoneInput.value) : null,
+        owner_email: verifiedEmail ? verifiedEmail.email : (user.email || null),
+        email_verified: true,
+        logo_url: state.logoUrl,
+        cover_url: state.coverUrl,
+        followers: 1,
+        is_verified: false,
+        is_subscribed: false,
+        products_count: 0,
+        device_fingerprint: state.deviceFingerprint,
+        device_id: state.persistentId,
         owner_uid: uid,
-        registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
-        fingerprint: state.deviceFingerprint
-      });
-    } catch (e) {}
+        user_agent_short: (navigator.userAgent || '').slice(0, 120),
+        created_at: now,
+        updated_at: now
+      };
 
-    await saveRegStatus(true, { id: ref.id, name: storeData.name });
+      const ref = await db.collection(STORES_COLLECTION).add(storeData);
 
-    doneProgress();
-    haptic('heavy');
-    showToast('🎉 تم إنشاء متجرك بنجاح!', 'success');
+      try {
+        await db.collection(DEVICES_COLLECTION).doc(state.deviceFingerprint).set({
+          storeId: ref.id,
+          deviceId: state.persistentId,
+          owner_uid: uid,
+          owner_email: storeData.owner_email,
+          registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
+          fingerprint: state.deviceFingerprint
+        });
+      } catch (e) {}
 
-    try {
-      localStorage.setItem('branzar_onboarding_seen', 'true');
-      localStorage.setItem('branzar_created_store', ref.id);
-      localStorage.setItem('branzar_created_username', storeData.name);
-    } catch (e) {}
+      await saveRegStatus(true, { id: ref.id, name: storeData.name });
 
-    setTimeout(() => {
-      window.location.href = '/a.html?welcome=1&username=' + encodeURIComponent(storeData.name);
-    }, 1400);
+      doneProgress();
+      haptic('heavy');
+      showToast('🎉 تم إنشاء متجرك بنجاح!', 'success');
 
-  } catch (err) {
-    console.error('[Submit]', err);
-    doneProgress();
-    let msg = 'تعذر إنشاء المتجر — حاول مرة أخرى';
-    if (err.message === 'device_already_registered') msg = 'هذا الجهاز مسجّل مسبقًا';
-    else if (err.message === 'store_name_exists') msg = 'اسم المتجر مستخدم بالفعل';
-    else if (err.message === 'whatsapp_exists') msg = 'رقم الواتساب مستخدم بالفعل';
-    else if (err.message.startsWith('auth_failed')) msg = 'تعذر إنشاء جلسة آمنة';
-    else if (err.code === 'permission-denied') msg = 'لا تملك صلاحية الإنشاء';
-    else if (err.code === 'unavailable' || err.code === 'network-request-failed') msg = 'تحقق من اتصالك بالإنترنت';
+      try {
+        localStorage.setItem('branzar_onboarding_seen', 'true');
+        localStorage.setItem('branzar_created_store', ref.id);
+        localStorage.setItem('branzar_created_username', storeData.name);
+      } catch (e) {}
 
-    showToast(msg, 'error');
-    if (err.message === 'device_already_registered') {
-      setTimeout(async () => {
-        const check = await checkDeviceAlreadyRegistered(state.deviceFingerprint, state.persistentId);
-        if (check.existingStore) await saveRegStatus(true, check.existingStore);
-        state.alreadyRegistered = true;
-        showGateBlocked(check.existingStore);
-      }, 800);
+      setTimeout(() => {
+        window.location.href = '/a.html?welcome=1&username=' + encodeURIComponent(storeData.name);
+      }, 1400);
+
+    } catch (err) {
+      console.error('[Submit]', err);
+      doneProgress();
+      let msg = 'تعذر إنشاء المتجر — حاول مرة أخرى';
+      if (err.message === 'device_already_registered') msg = 'هذا الجهاز مسجّل مسبقًا';
+      else if (err.message === 'store_name_exists') msg = 'اسم المتجر مستخدم بالفعل';
+      else if (err.message === 'whatsapp_exists') msg = 'رقم الواتساب مستخدم بالفعل';
+      else if (err.message && err.message.indexOf('auth_failed') === 0) msg = 'تعذر إنشاء جلسة آمنة';
+      else if (err.code === 'permission-denied') msg = 'لا تملك صلاحية الإنشاء';
+      else if (err.code === 'unavailable' || err.code === 'network-request-failed') msg = 'تحقق من اتصالك بالإنترنت';
+
+      showToast(msg, 'error');
+      if (err.message === 'device_already_registered') {
+        setTimeout(async () => {
+          const check = await checkDeviceAlreadyRegistered(state.deviceFingerprint, state.persistentId);
+          if (check.existingStore) await saveRegStatus(true, check.existingStore);
+          state.alreadyRegistered = true;
+          showGateBlocked(check.existingStore);
+        }, 800);
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>';
+      state.submitting = false;
     }
-
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>';
-    state.submitting = false;
-  }
-});
+  });
+}
 
 /* ═══ Gates ═══ */
 function showGate(gateId) {
-  ['gateCheck', 'gateBlocked', 'gateError', 'appContainer'].forEach(id => {
+  ['gateEmail', 'gateWaiting', 'gateCheck', 'gateBlocked', 'gateError', 'appContainer'].forEach(id => {
     const el = $(id);
     if (el) el.classList.toggle('hidden', id !== gateId);
   });
+  // إيقاف polling عند مغادرة gateWaiting
+  if (gateId !== 'gateWaiting') stopVerificationPolling();
 }
 function showGateBlocked(existingStore) {
   state.alreadyRegistered = true;
@@ -2260,11 +2508,131 @@ function updateGateStep(text) {
   if (el) { el.style.opacity = '0'; setTimeout(() => { el.textContent = text; el.style.opacity = '1'; }, 150); }
 }
 
+/* ═══ Email Gate Buttons ═══ */
+const sendVerifyBtn = $('sendVerifyBtn');
+if (sendVerifyBtn) {
+  sendVerifyBtn.addEventListener('click', async () => {
+    const email = ($('verifyEmailInput').value || '').trim().toLowerCase();
+    hideEmailError();
+
+    if (!email) { showEmailError('يرجى إدخال البريد الإلكتروني'); haptic('heavy'); return; }
+    if (!isValidEmail(email)) { showEmailError('صيغة البريد الإلكتروني غير صحيحة'); haptic('heavy'); return; }
+
+    sendVerifyBtn.disabled = true;
+    sendVerifyBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري الإرسال...</span>';
+    state.pendingEmail = email;
+    haptic('medium');
+
+    try {
+      const result = await sendVerificationEmail(email);
+      if (result.alreadyVerified) {
+        // البريد موثق مسبقًا
+        state.emailVerified = true;
+        saveVerifiedEmail(email);
+        showToast('✅ البريد موثق مسبقًا', 'success');
+        onEmailVerifiedSuccess();
+        return;
+      }
+      state.lastResendAt = Date.now();
+      showToast('📧 تم إرسال رابط التحقق', 'success');
+      showGateWaiting(email);
+    } catch (err) {
+      console.error('[Verify]', err);
+      let msg = 'تعذر إرسال رابط التحقق';
+      if (err.code === 'auth/invalid-email') msg = 'البريد الإلكتروني غير صحيح';
+      else if (err.code === 'auth/too-many-requests') msg = 'طلبات كثيرة — حاول لاحقًا';
+      else if (err.code === 'auth/network-request-failed') msg = 'تحقق من اتصالك بالإنترنت';
+      else if (err.message === 'email_in_use') msg = 'البريد مستخدم بالفعل. تواصل مع الدعم.';
+      showEmailError(msg);
+      haptic('heavy');
+    } finally {
+      sendVerifyBtn.disabled = false;
+      sendVerifyBtn.innerHTML = '<i class="fas fa-paper-plane"></i><span>إرسال رابط التحقق</span>';
+    }
+  });
+}
+
+const checkVerifyBtn = $('checkVerifyBtn');
+if (checkVerifyBtn) {
+  checkVerifyBtn.addEventListener('click', async () => {
+    checkVerifyBtn.disabled = true;
+    checkVerifyBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري التحقق...</span>';
+    try {
+      const verified = await checkEmailVerifiedNow();
+      if (verified) {
+        onEmailVerifiedSuccess();
+        return;
+      }
+      showToast('لم يتم التحقق بعد — تفقد بريدك', 'warning');
+      const stepsEl = $('waitingSteps');
+      if (stepsEl) stepsEl.textContent = 'لم يتم التحقق بعد. تفقد صندوق الوارد والمهملات.';
+    } catch (e) {
+      showToast('تعذر التحقق — حاول مجددًا', 'error');
+    } finally {
+      checkVerifyBtn.disabled = false;
+      checkVerifyBtn.innerHTML = '<i class="fas fa-check-circle"></i><span>تحققت من البريد الآن</span>';
+    }
+  });
+}
+
+const resendVerifyBtn = $('resendVerifyBtn');
+if (resendVerifyBtn) {
+  resendVerifyBtn.addEventListener('click', async () => {
+    const now = Date.now();
+    if (now - state.lastResendAt < RESEND_COOLDOWN_MS) {
+      const remain = Math.ceil((RESEND_COOLDOWN_MS - (now - state.lastResendAt)) / 1000);
+      showToast('انتظر ' + remain + ' ثانية قبل إعادة الإرسال', 'warning');
+      return;
+    }
+    const user = auth.currentUser || state.emailUser;
+    if (!user) { showToast('تعذر إعادة الإرسال — أعد المحاولة', 'error'); return; }
+
+    resendVerifyBtn.disabled = true;
+    resendVerifyBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i><span>جاري الإرسال...</span>';
+    try {
+      const actionCodeSettings = {
+        url: window.location.origin + window.location.pathname + '?verified=1',
+        handleCodeInApp: false
+      };
+      await user.sendEmailVerification(actionCodeSettings);
+      state.lastResendAt = Date.now();
+      showToast('📧 تم إعادة إرسال الرابط', 'success');
+    } catch (err) {
+      let msg = 'تعذر إعادة الإرسال';
+      if (err.code === 'auth/too-many-requests') msg = 'طلبات كثيرة — حاول بعد قليل';
+      showToast(msg, 'error');
+    } finally {
+      resendVerifyBtn.disabled = false;
+      resendVerifyBtn.innerHTML = '<i class="fas fa-redo"></i><span>إعادة إرسال الرابط</span>';
+    }
+  });
+}
+
+const changeEmailBtn = $('changeEmailBtn');
+if (changeEmailBtn) {
+  changeEmailBtn.addEventListener('click', async () => {
+    stopVerificationPolling();
+    try {
+      if (auth.currentUser) await auth.signOut();
+    } catch (e) {}
+    state.emailUser = null;
+    state.pendingEmail = null;
+    hideEmailError();
+    showGateEmail();
+  });
+}
+
+/* ═══ Bootstrap ═══ */
 async function bootstrap() {
+  // في البداية أخفِ كل شيء
+  showGate('gateCheck');
+
   try {
     updateGateStep('تحضير...');
     await new Promise(r => setTimeout(r, 150));
 
+    // الخطوة 1: فحص تسجيل الجهاز
+    updateGateStep('جارٍ التحقق من الجهاز...');
     const cached = await readRegStatus();
 
     if (cached && cached.registered) {
@@ -2275,10 +2643,41 @@ async function bootstrap() {
       return;
     }
 
+    let deviceChecked = false;
     if (cached && !cached.registered && cached.checkedAt) {
       const elapsed = Date.now() - cached.checkedAt;
       if (elapsed < CHECK_COOLDOWN_MS) {
         console.log('[Cache] Skipping DB check (cooldown active)');
+        deviceChecked = true;
+      }
+    }
+
+    if (!deviceChecked) {
+      updateGateStep('جارٍ التحقق من الجهاز...');
+      const fp = await buildFingerprint();
+      const check = await checkDeviceAlreadyRegistered(fp.fingerprint, fp.persistentId);
+
+      if (check.blocked) {
+        await saveRegStatus(true, check.existingStore);
+        updateGateStep('جارٍ فتح لوحة الإدارة...');
+        await new Promise(r => setTimeout(r, 500));
+        showGateBlocked(check.existingStore);
+        return;
+      }
+      await saveRegStatus(false, null);
+    }
+
+    // الخطوة 2: التحقق من البريد الإلكتروني
+    updateGateStep('جارٍ فحص البريد...');
+    await new Promise(r => setTimeout(r, 200));
+
+    // 2a: هل البريد موثق محليًا؟
+    const localVerified = readVerifiedEmail();
+    if (localVerified && localVerified.email) {
+      // تأكد أن Firebase Auth لا يزال مسجلًا
+      if (auth.currentUser && auth.currentUser.emailVerified) {
+        state.emailVerified = true;
+        state.pendingEmail = localVerified.email;
         updateGateStep('✅ يمكنك المتابعة');
         await new Promise(r => setTimeout(r, 300));
         showGate('appContainer');
@@ -2287,27 +2686,47 @@ async function bootstrap() {
         updatePreview();
         return;
       }
+      // إن كان مسجلًا ولم يوجد emailVerified، حاول إعادة التحقق
+      if (auth.currentUser && !auth.currentUser.emailVerified) {
+        try { await auth.currentUser.reload(); } catch(e){}
+        if (auth.currentUser.emailVerified) {
+          state.emailVerified = true;
+          updateGateStep('✅ يمكنك المتابعة');
+          await new Promise(r => setTimeout(r, 300));
+          showGate('appContainer');
+          state.checkPassed = true;
+          renderCategories();
+          updatePreview();
+          return;
+        }
+      }
+      // إذا لم يوجد auth user، امسح الكاش واطلب التحقق من جديد
+      if (!auth.currentUser) clearVerifiedEmail();
     }
 
-    updateGateStep('جارٍ التحقق من حسابك...');
-    const { fingerprint, persistentId } = await buildFingerprint();
-    const check = await checkDeviceAlreadyRegistered(fingerprint, persistentId);
-
-    if (check.blocked) {
-      await saveRegStatus(true, check.existingStore);
-      updateGateStep('جارٍ فتح لوحة الإدارة...');
-      await new Promise(r => setTimeout(r, 500));
-      showGateBlocked(check.existingStore);
-      return;
+    // 2b: هل يوجد مستخدم Firebase Auth بحساب موثق؟
+    if (auth.currentUser) {
+      state.emailUser = auth.currentUser;
+      if (auth.currentUser.emailVerified) {
+        saveVerifiedEmail(auth.currentUser.email);
+        state.emailVerified = true;
+        updateGateStep('✅ يمكنك المتابعة');
+        await new Promise(r => setTimeout(r, 300));
+        showGate('appContainer');
+        state.checkPassed = true;
+        renderCategories();
+        updatePreview();
+        return;
+      } else {
+        // بريده غير موثق — أظهره في gateWaiting مباشرة
+        state.pendingEmail = auth.currentUser.email;
+        showGateWaiting(auth.currentUser.email);
+        return;
+      }
     }
 
-    await saveRegStatus(false, null);
-    updateGateStep('✅ يمكنك المتابعة');
-    await new Promise(r => setTimeout(r, 300));
-    showGate('appContainer');
-    state.checkPassed = true;
-    renderCategories();
-    updatePreview();
+    // 2c: لا يوجد مستخدم — اطلب البريد
+    showGateEmail();
 
   } catch (err) {
     console.error('[Bootstrap]', err);
@@ -2317,22 +2736,32 @@ async function bootstrap() {
   }
 }
 
-$('retryCheckBtn')?.addEventListener('click', () => { showGate('gateCheck'); setTimeout(bootstrap, 400); });
-$('backBtn')?.addEventListener('click', () => {
-  haptic('light');
-  if (document.referrer && document.referrer.includes(location.hostname)) history.back();
-  else window.location.href = 'index.html';
-});
-$('signupForm')?.addEventListener('submit', (e) => { e.preventDefault(); submitBtn?.click(); });
-$('signupForm')?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
-});
+/* ═══ Global Buttons ═══ */
+const retryCheckBtn = $('retryCheckBtn');
+if (retryCheckBtn) {
+  retryCheckBtn.addEventListener('click', () => { showGate('gateCheck'); setTimeout(bootstrap, 400); });
+}
+const backBtn = $('backBtn');
+if (backBtn) {
+  backBtn.addEventListener('click', () => {
+    haptic('light');
+    if (document.referrer && document.referrer.indexOf(location.hostname) > -1) history.back();
+    else window.location.href = 'index.html';
+  });
+}
+const signupForm = $('signupForm');
+if (signupForm) {
+  signupForm.addEventListener('submit', (e) => { e.preventDefault(); if (submitBtn) submitBtn.click(); });
+  signupForm.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+  });
+}
 window.addEventListener('beforeunload', (e) => {
   if (state.submitting) { e.preventDefault(); e.returnValue = ''; }
 });
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup.html loaded ✅ v3.0.0 — Fixed Local Categories (16)');
+console.log('[BZR] signup.html loaded ✅ v4.0.0 — Email Verification + 17 Categories');
 </script>
 
 </body>
