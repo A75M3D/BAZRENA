@@ -459,91 +459,79 @@ input, textarea, select { outline: none; }
 .pwd-bar { flex: 1; height: 4px; background: var(--c-surface-3); border-radius: 2px; transition: all 0.3s; }
 .pwd-strength-text { font-size: 0.74rem; font-weight: 800; color: var(--c-text-soft); }
 
-/* ═══ Categories ═══ */
-.cat-loading {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 22px 16px; color: var(--c-text-soft);
-  font-size: 0.85rem; font-weight: 700;
-  background: var(--c-surface-2); border-radius: var(--radius-md);
-}
-.cat-loading .spinner {
-  width: 20px; height: 20px;
-  border: 2.5px solid var(--c-surface-3);
-  border-top-color: var(--c-primary);
-  border-radius: 50%; animation: spin 0.8s linear infinite;
-}
-
-.cat-empty {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 12px; padding: 28px 20px; text-align: center;
-  background: var(--c-surface-2); border-radius: var(--radius-md);
-  border: 2px dashed var(--c-border);
-}
-.cat-empty-icon {
-  width: 56px; height: 56px; border-radius: 50%;
-  background: var(--c-primary-soft); color: var(--c-primary);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem;
-}
-.cat-empty-title { font-size: 0.9rem; font-weight: 800; color: var(--c-text); }
-.cat-empty-text { font-size: 0.78rem; font-weight: 600; color: var(--c-text-soft); line-height: 1.6; max-width: 320px; }
-
+/* ═══ Categories (Fixed Local) ═══ */
 .cats-grid {
-  display: flex; flex-wrap: wrap; gap: 8px;
-  padding: 4px 0; max-height: 300px; overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 4px 0;
+  max-height: 420px;
+  overflow-y: auto;
+}
+@media (min-width: 560px) {
+  .cats-grid { grid-template-columns: repeat(3, 1fr); }
 }
 .cat-chip {
-  padding: 10px 18px; background: var(--c-surface);
-  border: 2px solid var(--c-border); border-radius: var(--radius-full);
-  font-size: 0.85rem; font-weight: 800; color: var(--c-text);
-  cursor: pointer; transition: all 0.2s;
-  display: inline-flex; align-items: center; gap: 7px;
-  user-select: none; position: relative;
+  padding: 14px 12px;
+  background: var(--c-surface);
+  border: 2px solid var(--c-border);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--c-text);
+  cursor: pointer;
+  transition: all 0.22s var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+  position: relative;
+  text-align: center;
+  min-height: 92px;
+  font-family: inherit;
+  line-height: 1.35;
+}
+.cat-chip .cat-emoji {
+  font-size: 1.6rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+  transition: transform 0.25s var(--transition);
 }
 .cat-chip:hover {
-  background: var(--c-primary-soft); color: var(--c-primary);
-  border-color: var(--c-primary); transform: translateY(-1px);
-}
-.cat-chip.active {
-  background: var(--c-primary-gradient); color: #fff;
-  box-shadow: var(--shadow-primary); border-color: var(--c-primary-dark);
-}
-.cat-chip.active::after {
-  content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-  font-size: 0.7rem; margin-inline-start: 4px;
-}
-.cat-chip.custom {
-  border-style: dashed;
-  border-color: var(--c-primary);
+  background: var(--c-primary-soft);
   color: var(--c-primary);
-  background: transparent;
+  border-color: var(--c-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -4px rgba(255,122,0,0.25);
 }
-.cat-chip.custom.active {
+.cat-chip:hover .cat-emoji { transform: scale(1.15); }
+.cat-chip.active {
   background: var(--c-primary-gradient);
   color: #fff;
-  border-style: solid;
+  box-shadow: var(--shadow-primary);
+  border-color: var(--c-primary-dark);
+  transform: translateY(-2px);
 }
-.new-cat-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 10px 18px; background: transparent;
-  border: 2px dashed var(--c-primary); border-radius: var(--radius-full);
-  font-size: 0.85rem; font-weight: 800; color: var(--c-primary);
-  cursor: pointer; transition: all 0.2s; font-family: inherit;
+.cat-chip.active .cat-emoji { transform: scale(1.1); }
+.cat-chip.active::after {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: 0.7rem;
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
 }
-.new-cat-btn:hover { background: var(--c-primary-soft); transform: translateY(-1px); }
-.new-cat-wrap { display: none; margin-top: 12px; animation: fadeInUp 0.25s ease; }
-.new-cat-wrap.show { display: block; }
-.new-cat-actions { display: flex; gap: 8px; margin-top: 10px; }
-.new-cat-actions button {
-  flex: 1; padding: 12px; border-radius: var(--radius-md);
-  font-weight: 800; font-size: 0.85rem; cursor: pointer;
-  border: none; font-family: inherit;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: all 0.2s;
-}
-.btn-save-cat { background: var(--c-primary-gradient); color: #fff; box-shadow: var(--shadow-primary); }
-.btn-cancel-cat { background: var(--c-surface-2); color: var(--c-text); }
-.btn-cancel-cat:hover { background: var(--c-surface-3); }
 
 /* ═══ Image Upload ═══ */
 .upload-cover {
@@ -762,6 +750,8 @@ input, textarea, select { outline: none; }
   .bzr-secure-pill span { display: none; }
   .gate-card { padding: 36px 22px 28px; }
   .gate-title { font-size: 1.25rem; }
+  .cat-chip { min-height: 84px; padding: 12px 8px; font-size: 0.78rem; }
+  .cat-chip .cat-emoji { font-size: 1.4rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -933,41 +923,13 @@ input, textarea, select { outline: none; }
           <div class="field-helper">
             <i class="fas fa-circle-info"></i>
             <span>
-              <strong>اختر الفئة المناسبة لمتجرك.</strong> ستساعد هذه الفئة العملاء في العثور عليك بسهولة عند التصفح أو البحث. إذا لم تجد فئة تناسب نشاطك، اضغط على <strong>«فئة مخصصة»</strong> لإضافتها بنفسك.
+              <strong>اختر الفئة المناسبة لمتجرك.</strong> ستساعد هذه الفئة العملاء في العثور عليك بسهولة عند التصفح أو البحث.
             </span>
           </div>
-          <div id="catsLoader" class="cat-loading">
-            <div class="spinner"></div>
-            <span>جارٍ تحميل الفئات...</span>
-          </div>
-          <div id="catsGrid" class="cats-grid" style="display:none;"></div>
-          <div id="catsEmpty" class="cat-empty" style="display:none;">
-            <div class="cat-empty-icon"><i class="fas fa-tags"></i></div>
-            <div class="cat-empty-title">لا توجد فئات متاحة بعد</div>
-            <div class="cat-empty-text">كن أول من ينشئ فئة على المنصة — أضف فئة جديدة من الزر أدناه</div>
-          </div>
+          <div id="catsGrid" class="cats-grid"></div>
           <div class="error-msg" id="catError">
             <i class="fas fa-exclamation-circle"></i>
             <span>يرجى اختيار فئة</span>
-          </div>
-          <button type="button" class="new-cat-btn" id="addCatBtn" style="margin-top:10px;">
-            <i class="fas fa-plus"></i>
-            <span>فئة مخصصة</span>
-          </button>
-          <div class="new-cat-wrap" id="newCatWrap">
-            <div class="input-wrap">
-              <div class="input-icon"><i class="fas fa-folder-plus"></i></div>
-              <input class="input" type="text" id="newCatInput"
-                placeholder="اكتب اسم الفئة الجديدة" maxlength="40" autocomplete="off">
-            </div>
-            <div class="new-cat-actions">
-              <button type="button" class="btn-save-cat" id="saveCatBtn">
-                <i class="fas fa-check"></i> إضافة
-              </button>
-              <button type="button" class="btn-cancel-cat" id="cancelCatBtn">
-                <i class="fas fa-times"></i> إلغاء
-              </button>
-            </div>
           </div>
         </div>
 
@@ -1325,6 +1287,28 @@ const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
 /* ═══════════════════════════════════════════════════════════
+   ⭐ الفئات الثابتة المحلية (16 فئة) — لا يمكن إضافة فئات جديدة
+   ═══════════════════════════════════════════════════════════ */
+const FIXED_CATEGORIES = [
+  { id: 'electronics',  name: 'إلكترونيات وتقنية',   emoji: '📱' },
+  { id: 'fashion',      name: 'أزياء وموضة',         emoji: '👗' },
+  { id: 'beauty',       name: 'جمال وعناية',         emoji: '💄' },
+  { id: 'home',         name: 'منزل وديكور',         emoji: '🏠' },
+  { id: 'food',         name: 'أطعمة ومشروبات',      emoji: '🍔' },
+  { id: 'supermarket',  name: 'سوبرماركت ومواد',     emoji: '🛒' },
+  { id: 'cars',         name: 'سيارات وقطع',         emoji: '🚗' },
+  { id: 'kids',         name: 'أطفال ومواليد',       emoji: '👶' },
+  { id: 'gifts',        name: 'هدايا وإكسسوارات',    emoji: '🎁' },
+  { id: 'sports',       name: 'رياضة ولياقة',        emoji: '🏋️' },
+  { id: 'construction', name: 'بناء ومعدات',         emoji: '🏗️' },
+  { id: 'agriculture',  name: 'زراعة ومنتجات',       emoji: '🌾' },
+  { id: 'education',    name: 'تعليم وكتب',          emoji: '📚' },
+  { id: 'services',     name: 'خدمات وأعمال',        emoji: '💼' },
+  { id: 'transport',    name: 'نقل وتوصيل',          emoji: '🚚' },
+  { id: 'travel',       name: 'سفر وسياحة',          emoji: '✈️' }
+];
+
+/* ═══════════════════════════════════════════════════════════
    Cache Config
    ═══════════════════════════════════════════════════════════ */
 const DID_KEY = 'bzr_device_id_v2';
@@ -1372,8 +1356,6 @@ const state = {
   persistentId: null,
   anonUid: null,
   selectedCategory: null,
-  categoriesList: [],
-  customCategories: [],
   location: null,
   coverUrl: null,
   logoUrl: null,
@@ -1417,7 +1399,6 @@ function sanitize(str, maxLen = 500) {
     .trim()
     .slice(0, maxLen);
 }
-// ⭐ تنظيف الموقع وإزالة الشرطة الزائدة في النهاية
 function sanitizeLocation(loc) {
   if (!loc) return '';
   let clean = String(loc)
@@ -1919,132 +1900,39 @@ function updatePreview() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Categories
+   ⭐ Categories — عرض الفئات الثابتة فقط (بدون إضافة)
    ═══════════════════════════════════════════════════════════ */
-async function loadCategories() {
-  const loader = $('catsLoader');
-  const grid = $('catsGrid');
-  const empty = $('catsEmpty');
-
-  try {
-    startProgress();
-    const snap = await db.collection(STORES_COLLECTION).limit(500).get();
-    const cats = new Set();
-
-    snap.docs.forEach(d => {
-      const data = d.data();
-      if (data.category && String(data.category).trim()) {
-        const clean = sanitize(String(data.category).trim(), 40);
-        if (clean) cats.add(clean);
-      }
-    });
-
-    state.categoriesList = Array.from(cats).filter(Boolean).sort();
-    state.customCategories = [];
-
-  } catch (err) {
-    console.warn('[Categories] Failed to load:', err);
-    state.categoriesList = [];
-    state.customCategories = [];
-  } finally {
-    doneProgress();
-    loader.style.display = 'none';
-
-    if (state.categoriesList.length === 0) {
-      grid.style.display = 'none';
-      empty.style.display = 'flex';
-    } else {
-      grid.style.display = 'flex';
-      empty.style.display = 'none';
-      renderCategories();
-    }
-  }
-}
-
 function renderCategories() {
   const grid = $('catsGrid');
-  const empty = $('catsEmpty');
+  if (!grid) return;
   grid.innerHTML = '';
   const frag = document.createDocumentFragment();
 
-  const allCats = [...state.categoriesList, ...state.customCategories];
-
-  allCats.forEach(cat => {
-    const isCustom = state.customCategories.includes(cat);
+  FIXED_CATEGORIES.forEach(cat => {
     const chip = document.createElement('button');
     chip.type = 'button';
-    chip.className = 'cat-chip' + (isCustom ? ' custom' : '') + (state.selectedCategory === cat ? ' active' : '');
-    chip.dataset.cat = cat;
-    chip.innerHTML = (isCustom ? '<i class="fas fa-star"></i>' : '<i class="fas fa-tag"></i>') + '<span>' + escapeHtml(cat) + '</span>';
-    chip.addEventListener('click', () => selectCategory(cat));
+    chip.className = 'cat-chip' + (state.selectedCategory === cat.name ? ' active' : '');
+    chip.dataset.cat = cat.name;
+    chip.dataset.id = cat.id;
+    chip.setAttribute('aria-label', cat.name);
+    chip.innerHTML =
+      '<span class="cat-emoji" aria-hidden="true">' + cat.emoji + '</span>' +
+      '<span>' + escapeHtml(cat.name) + '</span>';
+    chip.addEventListener('click', () => selectCategory(cat.name));
     frag.appendChild(chip);
   });
 
   grid.appendChild(frag);
-
-  if (allCats.length === 0) {
-    grid.style.display = 'none';
-    empty.style.display = 'flex';
-  } else {
-    grid.style.display = 'flex';
-    empty.style.display = 'none';
-  }
 }
 
-function selectCategory(cat) {
-  state.selectedCategory = cat;
+function selectCategory(catName) {
+  state.selectedCategory = catName;
   document.querySelectorAll('.cat-chip').forEach(c => {
-    c.classList.toggle('active', c.dataset.cat === cat);
+    c.classList.toggle('active', c.dataset.cat === catName);
   });
   hideError('catError');
   updatePreview();
   haptic('light');
-}
-
-$('addCatBtn')?.addEventListener('click', () => {
-  $('newCatWrap').classList.add('show');
-  $('newCatInput').focus();
-  haptic('light');
-});
-$('cancelCatBtn')?.addEventListener('click', () => {
-  $('newCatWrap').classList.remove('show');
-  $('newCatInput').value = '';
-});
-$('saveCatBtn')?.addEventListener('click', saveCustomCategory);
-$('newCatInput')?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); saveCustomCategory(); }
-});
-
-function saveCustomCategory() {
-  const val = sanitize($('newCatInput').value, 40);
-  if (val.length < 2) { showToast('اسم الفئة قصير جدًا', 'error'); return; }
-  if (!NAME_REGEX.test(val)) { showToast('يحتوي على رموز غير مسموحة', 'error'); return; }
-
-  const existsInFirestore = state.categoriesList.some(c => c.toLowerCase() === val.toLowerCase());
-  const existsInCustom = state.customCategories.some(c => c.toLowerCase() === val.toLowerCase());
-
-  if (existsInFirestore) {
-    selectCategory(state.categoriesList.find(c => c.toLowerCase() === val.toLowerCase()));
-    $('newCatWrap').classList.remove('show');
-    $('newCatInput').value = '';
-    showToast('هذه الفئة موجودة بالفعل', 'warning');
-    return;
-  }
-  if (existsInCustom) {
-    selectCategory(state.customCategories.find(c => c.toLowerCase() === val.toLowerCase()));
-    $('newCatWrap').classList.remove('show');
-    $('newCatInput').value = '';
-    showToast('هذه الفئة مضافة بالفعل', 'warning');
-    return;
-  }
-
-  state.customCategories.unshift(val);
-  renderCategories();
-  selectCategory(val);
-  $('newCatWrap').classList.remove('show');
-  $('newCatInput').value = '';
-  showToast('✅ تمت إضافة الفئة', 'success');
-  haptic('medium');
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -2053,7 +1941,6 @@ function saveCustomCategory() {
 const locationInput = $('locationInput');
 
 locationInput?.addEventListener('input', (e) => {
-  // تنظيف أولي من الرموز الخطيرة
   let val = e.target.value.replace(/[<>"`\\]/g, '');
   if (e.target.value !== val) e.target.value = val;
 
@@ -2061,7 +1948,6 @@ locationInput?.addEventListener('input', (e) => {
   const isDeleting = inputType.startsWith('delete');
   const trimmed = val.trim();
 
-  // ⭐ عند اختيار ولاية كاملة (من الاقتراحات أو بالكتابة) → نضيف " - " تلقائيًا
   if (!isDeleting && SUDAN_STATES.includes(trimmed) && !val.endsWith(' - ')) {
     val = trimmed + ' - ';
     e.target.value = val;
@@ -2177,7 +2063,6 @@ function validateForm() {
     showError('catError'); ok = false; firstError = firstError || 'catsGrid';
   } else hideError('catError');
 
-  // ⭐ التحقق من الموقع (حقل واحد)
   const locClean = sanitizeLocation(locationInput.value);
   if (locClean.length < 3 || !LOCATION_REGEX.test(locClean)) {
     showError('locationError'); setFieldState('locationWrap', 'error');
@@ -2269,7 +2154,6 @@ submitBtn?.addEventListener('click', async () => {
       .where('whatsapp_number', '==', normalizePhone(waInput.value)).limit(1).get();
     if (!waCheck.empty) throw new Error('whatsapp_exists');
 
-    // ⭐ الموقع — حقل واحد نظيف
     const locationValue = sanitizeLocation(locationInput.value);
 
     const now = Date.now();
@@ -2280,10 +2164,7 @@ submitBtn?.addEventListener('click', async () => {
       category: sanitize(state.selectedCategory, 40),
       categories: [],
       description: sanitize(descInput.value, 500),
-
-      // ⭐ حقل الموقع الواحد (نصي)
       location: locationValue,
-
       whatsapp_number: normalizePhone(waInput.value),
       phone_number: phoneInput.value ? normalizePhone(phoneInput.value) : null,
       logo_url: state.logoUrl,
@@ -2402,7 +2283,7 @@ async function bootstrap() {
         await new Promise(r => setTimeout(r, 300));
         showGate('appContainer');
         state.checkPassed = true;
-        loadCategories();
+        renderCategories();
         updatePreview();
         return;
       }
@@ -2425,7 +2306,7 @@ async function bootstrap() {
     await new Promise(r => setTimeout(r, 300));
     showGate('appContainer');
     state.checkPassed = true;
-    loadCategories();
+    renderCategories();
     updatePreview();
 
   } catch (err) {
@@ -2451,7 +2332,7 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup.html loaded ✅ v2.6.0 — Single Location Field');
+console.log('[BZR] signup.html loaded ✅ v3.0.0 — Fixed Local Categories (16)');
 </script>
 
 </body>
