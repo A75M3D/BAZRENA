@@ -106,6 +106,21 @@
         .tab-item .count-badge { background: rgba(255,255,255,0.35); color: #fff; padding: 0.1rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; min-width: 22px; text-align: center; }
         .tab-item:not(.active) .count-badge { background: #FFEDD5; color: #C2410C; }
 
+        /* 🧾 زر إنشاء الفاتورة */
+        .invoice-card { display: flex; align-items: center; gap: 14px; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; padding: 1.05rem 1.15rem; border-radius: 1.35rem; margin-bottom: 1.25rem; cursor: pointer; box-shadow: 0 14px 32px -10px rgba(255,122,0,0.7), inset 0 1px 0 rgba(255,255,255,0.25); transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1); position: relative; overflow: hidden; border: none; width: 100%; font-family: 'Cairo', sans-serif; }
+        .invoice-card::before { content: ''; position: absolute; top: -50px; right: -50px; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%); pointer-events: none; }
+        .invoice-card::after { content: ''; position: absolute; bottom: -60px; left: -50px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%); pointer-events: none; }
+        .invoice-card:hover { transform: translateY(-4px); box-shadow: 0 22px 44px -12px rgba(255,122,0,0.9), inset 0 1px 0 rgba(255,255,255,0.3); }
+        .invoice-card:active { transform: translateY(-1px) scale(0.985); }
+        .invoice-card-icon { width: 52px; height: 52px; border-radius: 15px; background: rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.35); backdrop-filter: blur(10px); position: relative; z-index: 2; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .invoice-card-text { flex: 1; min-width: 0; position: relative; z-index: 2; text-align: right; }
+        .invoice-card-title { font-size: 1.05rem; font-weight: 900; margin-bottom: 0.2rem; letter-spacing: -0.2px; display: flex; align-items: center; gap: 6px; }
+        .invoice-card-title .new-tag { font-size: 0.6rem; background: #fff; color: #FF7A00; padding: 0.15rem 0.5rem; border-radius: 9999px; font-weight: 900; letter-spacing: 0.5px; }
+        .invoice-card-sub { font-size: 0.78rem; font-weight: 700; opacity: 0.92; line-height: 1.45; }
+        .invoice-card-arrow { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; transition: all 0.28s; position: relative; z-index: 2; border: 1.5px solid rgba(255,255,255,0.35); backdrop-filter: blur(10px); }
+        .invoice-card:hover .invoice-card-arrow { transform: translateX(-6px); background: rgba(255,255,255,0.35); }
+        @media (max-width: 380px) { .invoice-card { gap: 10px; padding: 0.9rem 0.95rem; } .invoice-card-icon { width: 46px; height: 46px; font-size: 1.2rem; } .invoice-card-title { font-size: 0.95rem; } .invoice-card-sub { font-size: 0.72rem; } .invoice-card-arrow { width: 34px; height: 34px; } }
+
         .card { background: #fff; border-radius: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.04); overflow: hidden; border: 1px solid rgba(0,0,0,0.03); }
         .card + .card { margin-top: 1rem; }
         .card-body { padding: 1.25rem; }
@@ -136,7 +151,6 @@
         .form-input::placeholder { color: #9CA3AF; font-weight: 500; }
         textarea.form-input { resize: vertical; min-height: 80px; line-height: 1.6; }
 
-        /* 🔒 حقل مقفل — للقراءة فقط */
         .field-locked {
             background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%) !important;
             color: #6B7280 !important;
@@ -150,13 +164,11 @@
         }
         .field-locked:focus { border-color: #E5E7EB !important; box-shadow: none !important; }
 
-        /* 🔓 تجاوز القفل عند وجود زر toggle */
         .input-with-toggle .form-input.field-locked {
             background-image: none !important;
             padding-left: 3rem !important;
         }
 
-        /* 🚫 بانر المعلومات (يظهر عند الضغط على زر الحفظ) */
         .info-banner {
             background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
             border: 1.5px solid #FECACA;
@@ -354,7 +366,6 @@
         .rate-limit-bar { background: linear-gradient(135deg, #FEF2F2, #FEE2E2); border: 1.5px solid #FECACA; border-radius: 0.9rem; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.82rem; font-weight: 800; color: #991B1B; display: none; align-items: center; gap: 10px; line-height: 1.6; }
         .rate-limit-bar.show { display: flex; }
 
-        /* 💬 زر واتساب العائم */
         .support-float { position: fixed; bottom: 24px; left: 24px; width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.85rem; cursor: pointer; z-index: 8000; box-shadow: 0 10px 30px -8px rgba(37,211,102,0.7), 0 0 0 0 rgba(37,211,102,0.5); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); animation: waPulse 2.4s ease-in-out infinite; border: none; }
         .support-float:hover { transform: scale(1.1) translateY(-3px); }
         .support-float:active { transform: scale(0.94); }
@@ -366,7 +377,6 @@
         .support-tooltip.show { opacity: 1; transform: translateX(0); }
         @media (max-width: 480px) { .support-float { bottom: 20px; left: 16px; width: 58px; height: 58px; font-size: 1.7rem; } .support-tooltip { display: none; } }
 
-        /* 🪟 النوافذ المنبثقة */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 50000; overflow-y: auto; animation: modalOverlayIn 0.3s ease; }
         @keyframes modalOverlayIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-card { background: #fff; border-radius: 1.75rem; max-width: 480px; width: 100%; overflow: hidden; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5); animation: modalCardIn 0.5s cubic-bezier(0.34,1.56,0.64,1); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; }
@@ -522,6 +532,23 @@
                     <span id="productsCountBadge" class="count-badge">0</span>
                 </button>
             </div>
+
+            <!-- 🧾 زر إنشاء الفاتورة -->
+            <button type="button" class="invoice-card" onclick="openInvoiceApp()" aria-label="إنشاء فاتورة جديدة">
+                <div class="invoice-card-icon">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <div class="invoice-card-text">
+                    <div class="invoice-card-title">
+                        إنشاء فاتورة
+                        <span class="new-tag">جديد</span>
+                    </div>
+                    <div class="invoice-card-sub">أنشئ فاتورة احترافية لعملائك بسهولة وسرعة</div>
+                </div>
+                <div class="invoice-card-arrow">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+            </button>
 
             <!-- ═══ قسم المتجر ═══ -->
             <div id="storeSection" class="tab-content">
@@ -963,6 +990,16 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════
+   🧾 رابط إنشاء الفاتورة
+   ═══════════════════════════════════════════════════════════════ */
+const INVOICE_APP_URL = 'https://lovable.dev/preview/6QGM9BBoS9NqxhcVV01ecsxaBkqKAj6F';
+function openInvoiceApp() {
+    try { window.open(INVOICE_APP_URL, '_blank', 'noopener,noreferrer'); }
+    catch (e) { window.location.href = INVOICE_APP_URL; }
+}
+window.openInvoiceApp = openInvoiceApp;
+
 /* ═══════════════════════════════════════════════════════════════
    🛡️ SECURITY MODULE
    ═══════════════════════════════════════════════════════════════ */
@@ -1570,17 +1607,12 @@ function fillStoreForm(store) {
 
 /* 🚫 زر التواصل مع خدمة العملاء (بدلاً من حفظ البيانات) */
 $('storeSubmitBtn').addEventListener('click', () => {
-    // إظهار البانر
     const banner = $('updateNoticeBanner');
     if (banner) {
         banner.style.display = 'flex';
         banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-    // فتح واتساب بعد لحظة قصيرة
-    setTimeout(() => {
-        openSupportChat('update_store');
-    }, 800);
-    // إظهار إشعار
+    setTimeout(() => { openSupportChat('update_store'); }, 800);
     showToast('💬 جارٍ فتح محادثة خدمة العملاء...', 'info');
 });
 
@@ -1752,7 +1784,6 @@ function addColorRow(name = '', image = '') {
 }
 document.getElementById('addColorBtn').addEventListener('click', () => addColorRow());
 
-/* ✅ عداد الأحرف لحقل وصف المنتج */
 (function setupProductDescCounter() {
     const input = $('product_description');
     const counter = $('productDescCounter');
