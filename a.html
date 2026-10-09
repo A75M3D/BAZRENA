@@ -1151,6 +1151,8 @@ let storeUnsubscribe = null;
 let isFirstProductsSnapshot = true;
 let lastProductsFingerprint = '';
 let _rateLimitTicker = null;
+let _allCategoriesCache = null;
+let _allCategoriesLoading = null;
 
 const $ = id => document.getElementById(id);
 
@@ -1310,6 +1312,74 @@ function canAddProductToCategory(category, excludeId) {
     return { allowed: true, isMainCategory: isMain, current: count, limit, remaining: limit - count };
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   📚 تحميل كل الفئات المتاحة من قاعدة البيانات
+   ═══════════════════════════════════════════════════════════════ */
+async function loadAllCategories(forceRefresh = false) {
+    if (_allCategoriesCache && !forceRefresh) return _allCategoriesCache;
+    if (_allCategoriesLoading && !forceRefresh) return _allCategoriesLoading;
+
+    if (!forceRefresh) {
+        const cached = cacheManager.get('all_categories_v1');
+        if (Array.isArray(cached) && cached.length > 0) {
+            _allCategoriesCache = cached;
+            return cached;
+        }
+    }
+
+    _allCategoriesLoading = (async () => {
+        let cats = [];
+
+        // 1) محاولة القراءة من مجموعة 'categories' (إن وُجدت)
+        try {
+            const snap = await db.collection('categories').get();
+            if (!snap.empty) {
+                snap.docs.forEach(d => {
+                    const data = d.data() || {};
+                    const name = String(
+                        data.name || data.title || data.category_name || data.category || ''
+                    ).trim();
+                    if (name) cats.push({ id: d.id, name });
+                });
+            }
+        } catch (_) { /* المجموعة غير موجودة — نتجاهل */ }
+
+        // 2) استخراج تلقائي من كل المتاجر
+        if (cats.length === 0) {
+            try {
+                const storesSnap = await db.collection(storesTableName).get();
+                const set = new Set();
+                storesSnap.docs.forEach(d => {
+                    const data = d.data() || {};
+                    if (data.category) set.add(String(data.category).trim());
+                    if (Array.isArray(data.categories)) {
+                        data.categories.forEach(c => { if (c) set.add(String(c).trim()); });
+                    }
+                });
+                cats = Array.from(set).filter(Boolean).map(n => ({ name: n }));
+            } catch (_) {}
+        }
+
+        // 3) إزالة التكرار + ترتيب أبجدي
+        const seen = new Set();
+        cats = cats
+            .filter(c => {
+                const k = String(c.name || '').trim().toLowerCase();
+                if (!k || seen.has(k)) return false;
+                seen.add(k);
+                return true;
+            })
+            .sort((a, b) => String(a.name).localeCompare(String(b.name), 'ar'));
+
+        _allCategoriesCache = cats;
+        _allCategoriesLoading = null;
+        try { cacheManager.set('all_categories_v1', cats); } catch (_) {}
+        return cats;
+    })();
+
+    return _allCategoriesLoading;
+}
+
 function renderExtraCategoriesDisplay() {
     const display = $('extraCatsDisplay'), hint = $('subscriptionHint');
     if (!display) return;
@@ -1326,39 +1396,98 @@ function renderExtraCategoriesDisplay() {
     }
 }
 
-function populateProductCategories(preserveValue) {
-    const select = $('product_category'), hint = $('productCategoryHint');
+/* ═══════════════════════════════════════════════════════════════
+   📂 تعبئة قائمة الفئات (كل الفئات من DB + الرئيسية افتراضياً)
+   ═══════════════════════════════════════════════════════════════ */
+async function populateProductCategories(preserveValue) {
+    const select = $('product_category');
+    const hint = $('productCategoryHint');
     if (!select || !currentStore) return;
+
     const curVal = preserveValue !== undefined ? preserveValue : select.value;
-    const mainCat = getStoreMainCategory(), extras = getStoreExtraCategories(), sub = isStoreSubscribed();
+    const mainCat = getStoreMainCategory();
+
+    // حالة التحميل
+    select.disabled = true;
+    if (hint) hint.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ تحميل الفئات...';
+
+    const allCats = await loadAllCategories();
+
+    // دمج: الفئة الرئيسية أولاً ثم باقي الفئات (بدون تكرار)
+    const combined = [];
+    const seen = new Set();
+
+    if (mainCat) {
+        combined.push({ name: mainCat, isMain: true });
+        seen.add(mainCat.toLowerCase());
+    }
+
+    allCats.forEach(c => {
+        const n = String(c.name || '').trim();
+        if (!n) return;
+        const k = n.toLowerCase();
+        if (seen.has(k)) return;
+        seen.add(k);
+        combined.push({ name: n, isMain: false });
+    });
+
+    // تنظيف القائمة
     select.innerHTML = '';
-    if (!mainCat && extras.length === 0) {
-        const o = document.createElement('option'); o.value = ''; o.textContent = '⚠️ لم تُعيَّن فئات بعد'; select.appendChild(o); select.disabled = true;
-        if (hint) { hint.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F59E0B;"></i> تواصل مع الإدارة لتعيين فئات متجرك'; hint.style.color = '#92400E'; }
+
+    // في حال لا توجد أي فئات
+    if (combined.length === 0) {
+        const o = document.createElement('option');
+        o.value = '';
+        o.textContent = '⚠️ لا توجد فئات في قاعدة البيانات';
+        select.appendChild(o);
+        select.disabled = true;
+        if (hint) {
+            hint.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F59E0B;"></i> تواصل مع الإدارة لإضافة فئات';
+            hint.style.color = '#92400E';
+        }
         return;
     }
+
     select.disabled = false;
-    if (hint) { hint.innerHTML = '<i class="fas fa-info-circle"></i> اختر الفئة المناسبة للمنتج'; hint.style.color = ''; }
-    const ph = document.createElement('option'); ph.value = ''; ph.textContent = '— اختر الفئة —'; ph.disabled = true; select.appendChild(ph);
-    if (mainCat) { const o = document.createElement('option'); o.value = mainCat; o.textContent = '🟢 ' + mainCat + ' (رئيسية - مجانية)'; select.appendChild(o); }
-    extras.forEach(cat => {
-        const o = document.createElement('option'); o.value = cat;
-        if (sub) o.textContent = '⭐ ' + cat + ' (مفتوحة)';
-        else { o.textContent = '🔒 ' + cat + ' (مقفلة)'; o.disabled = true; }
+
+    // Placeholder
+    const ph = document.createElement('option');
+    ph.value = '';
+    ph.textContent = '— اختر الفئة —';
+    ph.disabled = true;
+    select.appendChild(ph);
+
+    // تعبئة الخيارات
+    combined.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c.name;
+        o.textContent = c.isMain
+            ? '⭐ ' + c.name + ' (رئيسية - افتراضية)'
+            : '📁 ' + c.name;
+        if (c.isMain) o.dataset.isMain = 'true';
         select.appendChild(o);
     });
-    if (curVal) { const f = Array.from(select.options).find(o => o.value === curVal && !o.disabled); select.value = f ? curVal : (mainCat || ''); }
-    else select.value = '';
 
-    const editingId = $('product_id').value;
-    Array.from(select.options).forEach(o => {
-        if (!o.value || o.disabled) return;
-        const isMain = !o.value || o.value === mainCat;
-        const limit = isMain ? PRODUCT_LIMITS.MAIN_CATEGORY_MAX : PRODUCT_LIMITS.ADDITIONAL_CATEGORY_MAX;
-        const cnt = isMain ? getMainCategoryProductsCount() : getAdditionalCategoryProductsCount(o.value);
-        if (editingId && select.value === o.value) return;
-        if (cnt >= limit) { o.disabled = true; o.textContent = `🔒 ${o.value} (مكتمل ${limit}/${limit})`; }
-    });
+    // تحديد القيمة: حافظ على القيمة السابقة، وإلا اختر الفئة الرئيسية افتراضياً
+    let finalValue = '';
+    if (curVal && combined.some(c => c.name === curVal)) {
+        finalValue = curVal;
+    } else if (mainCat && combined.some(c => c.name === mainCat)) {
+        finalValue = mainCat;
+    } else if (combined.length > 0) {
+        finalValue = combined[0].name;
+    }
+    select.value = finalValue;
+
+    // تلميح
+    if (hint) {
+        if (mainCat) {
+            hint.innerHTML = `<i class="fas fa-info-circle"></i> الافتراضي: <strong>${escapeHtml(mainCat)}</strong> — يمكنك اختيار أي فئة أخرى من القائمة`;
+        } else {
+            hint.innerHTML = '<i class="fas fa-info-circle"></i> اختر الفئة المناسبة للمنتج';
+        }
+        hint.style.color = '';
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1537,7 +1666,8 @@ async function enterDashboard() {
     $('welcomeStoreName').textContent = currentStore.name;
     updateHeaderLogo(currentStore);
     fillStoreForm(currentStore);
-    populateProductCategories();
+    await loadAllCategories();          // ← تحميل الفئات مسبقاً
+    await populateProductCategories();
     renderExtraCategoriesDisplay();
     $('product_store_name').value = currentStore.name;
     $('product_store_name_display').value = currentStore.name;
@@ -1886,7 +2016,7 @@ window.editProduct = async id => {
         $('product_img_url').value = d.img_url || '';
         const counter = $('productDescCounter');
         if (counter) counter.textContent = `${(d.description || '').length} / ${PRODUCT_DESC_MAX}`;
-        populateProductCategories(d.category || '');
+        await populateProductCategories(d.category || '');
         if (d.img_url) { $('product_img_preview').src = d.img_url; $('product_img_preview').classList.remove('hidden'); }
         else $('product_img_preview').classList.add('hidden');
         const c = document.getElementById('productColorsContainer'); c.innerHTML = '';
