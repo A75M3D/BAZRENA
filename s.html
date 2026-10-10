@@ -31,7 +31,7 @@
   --c-danger: #EF4444;
   --c-warning: #F59E0B;
   --c-info: #3B82F6;
-  --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-sm: 0 1px 3px rgba(15,23,42,0.06);
   --shadow-md: 0 4px 14px rgba(15,23,42,0.08);
   --shadow-primary: 0 8px 24px rgba(255,122,0,0.28);
   --shadow-primary-lg: 0 16px 40px -10px rgba(255,122,0,0.55);
@@ -39,16 +39,14 @@
   --radius-lg: 20px;
   --radius-xl: 28px;
   --radius-full: 9999px;
-  --transition: cubic-bezier(0.4, 0, 0.2, 1);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+  font-family: 'Cairo', system-ui, sans-serif;
   background: var(--c-bg); color: var(--c-text);
   min-height: 100vh; line-height: 1.6; overflow-x: hidden;
-  padding-bottom: 140px;
-  -webkit-font-smoothing: antialiased;
+  padding-bottom: 140px; -webkit-font-smoothing: antialiased;
 }
 button, input, textarea, select { font-family: inherit; }
 input, textarea, select { outline: none; }
@@ -56,7 +54,6 @@ input, textarea, select { outline: none; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--c-surface-3); border-radius: 4px; }
 
-/* ═══ Gates ═══ */
 .gate-overlay {
   position: fixed; inset: 0; z-index: 99999;
   background:
@@ -128,7 +125,7 @@ input, textarea, select { outline: none; }
   transition: all 0.25s; width: 100%;
 }
 .gate-btn-primary { background: var(--c-primary-gradient); color: #fff; box-shadow: var(--shadow-primary); }
-.gate-btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-primary-lg); }
+.gate-btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
 .gate-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 .gate-btn-secondary {
   background: rgba(255,255,255,0.06); color: #d1d5db;
@@ -167,13 +164,11 @@ input, textarea, select { outline: none; }
 }
 .gate-step-text { color: #d1d5db; font-size: 0.8rem; font-weight: 600; line-height: 1.6; }
 
-/* ═══ Header ═══ */
 .bzr-header {
   position: sticky; top: 0; z-index: 100;
   height: 64px;
   background: rgba(255,255,255,0.88);
   backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--c-border);
   display: flex; align-items: center;
   padding: 0 16px; gap: 12px;
@@ -185,7 +180,6 @@ input, textarea, select { outline: none; }
   display: flex; align-items: center; justify-content: center;
   color: var(--c-text); font-size: 1rem; flex-shrink: 0;
 }
-.bzr-back-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
 .bzr-logo-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 .bzr-logo-mark {
   width: 40px; height: 40px; border-radius: 12px;
@@ -194,7 +188,7 @@ input, textarea, select { outline: none; }
   box-shadow: var(--shadow-primary); flex-shrink: 0;
 }
 .bzr-logo-mark svg { width: 24px; height: 24px; }
-.bzr-brand-text { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
+.bzr-brand-text { display: flex; flex-direction: column; line-height: 1.1; }
 .bzr-brand-text b { font-size: 1.05rem; font-weight: 900; color: var(--c-text); }
 .bzr-brand-text span { font-size: 0.68rem; font-weight: 700; color: var(--c-primary); }
 .bzr-secure-pill {
@@ -206,9 +200,8 @@ input, textarea, select { outline: none; }
   flex-shrink: 0;
 }
 
-/* ═══ Page ═══ */
 .bzr-page { max-width: 780px; margin: 0 auto; padding: 20px 16px 40px; }
-.hero { text-align: center; padding: 24px 12px 28px; position: relative; }
+.hero { text-align: center; padding: 24px 12px 28px; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 6px;
   background: var(--c-primary-soft); color: var(--c-primary);
@@ -232,7 +225,6 @@ input, textarea, select { outline: none; }
   line-height: 1.75; font-weight: 500;
 }
 
-/* ═══ Cards ═══ */
 .bzr-card {
   background: var(--c-surface);
   border-radius: var(--radius-lg);
@@ -259,7 +251,6 @@ input, textarea, select { outline: none; }
   border-radius: var(--radius-full);
 }
 
-/* ═══ Form ═══ */
 .form-field { margin-bottom: 18px; }
 .form-field:last-child { margin-bottom: 0; }
 .form-label {
@@ -283,7 +274,7 @@ input, textarea, select { outline: none; }
   background: var(--c-surface);
   border: 2px solid var(--c-border);
   border-radius: var(--radius-md);
-  transition: all 0.2s var(--transition);
+  transition: all 0.2s;
   overflow: hidden;
 }
 .input-wrap:hover { border-color: #cbd5e1; }
@@ -319,7 +310,6 @@ input, textarea, select { outline: none; }
   color: var(--c-text-soft); font-size: 0.88rem;
   display: flex; align-items: center; justify-content: center;
 }
-.input-icon-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
 .error-msg {
   display: none; align-items: center; gap: 5px;
   font-size: 0.76rem; font-weight: 700;
@@ -350,7 +340,7 @@ input, textarea, select { outline: none; }
   padding: 14px 12px; background: var(--c-surface);
   border: 2px solid var(--c-border); border-radius: var(--radius-md);
   font-size: 0.82rem; font-weight: 800; color: var(--c-text);
-  cursor: pointer; transition: all 0.22s var(--transition);
+  cursor: pointer; transition: all 0.22s;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 8px; user-select: none; position: relative;
   text-align: center; min-height: 92px; font-family: inherit; line-height: 1.35;
@@ -493,7 +483,6 @@ input, textarea, select { outline: none; }
 <div id="topProgressBar"></div>
 <div id="toast"></div>
 
-<!-- GATE: Check -->
 <div id="gateCheck" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon"><i class="fas fa-shield-halved"></i></div>
@@ -504,7 +493,6 @@ input, textarea, select { outline: none; }
   </div>
 </div>
 
-<!-- GATE: Waiting for email verification -->
 <div id="gateWaiting" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon info"><i class="fas fa-envelope-open-text"></i></div>
@@ -532,7 +520,6 @@ input, textarea, select { outline: none; }
   </div>
 </div>
 
-<!-- GATE: Verified — redirect -->
 <div id="gateVerified" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon success"><i class="fas fa-check-circle"></i></div>
@@ -543,12 +530,11 @@ input, textarea, select { outline: none; }
   </div>
 </div>
 
-<!-- GATE: Blocked — device already used -->
 <div id="gateBlocked" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon info"><i class="fas fa-store"></i></div>
     <h2 class="gate-title">هذا الجهاز مسجَّل مسبقًا</h2>
-    <p class="gate-text">لا يمكن إنشاء أكثر من متجر واحد من نفس الجهاز.<br>سجّل الدخول بحسابك الأصلي لإدارة متجرك.</p>
+    <p class="gate-text">لقد تم إنشاء متجر مسبقًا من هذا الجهاز.<br>لا يمكنك إنشاء حساب جديد من نفس الجهاز.<br>سجّل الدخول بحسابك الأصلي.</p>
     <div id="blockedStoreCard" style="background:rgba(255,122,0,0.06);border:1px solid rgba(255,122,0,0.2);border-radius:14px;padding:14px 16px;margin-bottom:22px;display:none;text-align:right;">
       <div style="font-size:0.72rem;color:#9ca3af;font-weight:700;margin-bottom:2px;">متجرك</div>
       <div style="font-size:1rem;color:#fff;font-weight:900;" id="blockedStoreName">—</div>
@@ -558,7 +544,6 @@ input, textarea, select { outline: none; }
   </div>
 </div>
 
-<!-- GATE: Error -->
 <div id="gateError" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon danger"><i class="fas fa-exclamation-triangle"></i></div>
@@ -569,9 +554,6 @@ input, textarea, select { outline: none; }
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     MAIN APP
-     ═══════════════════════════════════════════════════════ -->
 <div id="appContainer" class="hidden">
 
   <header class="bzr-header">
@@ -614,7 +596,6 @@ input, textarea, select { outline: none; }
 
     <form id="signupForm" novalidate autocomplete="off">
 
-      <!-- 1. المعلومات الأساسية -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-store"></i></div>
@@ -657,7 +638,6 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
-      <!-- 2. الموقع -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-map-location-dot"></i></div>
@@ -686,7 +666,6 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
-      <!-- 3. التواصل -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-address-book"></i></div>
@@ -720,7 +699,6 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
-      <!-- 4. الصور -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-image"></i></div>
@@ -762,7 +740,6 @@ input, textarea, select { outline: none; }
         <input type="file" id="logoInput" accept="image/*" hidden>
       </div>
 
-      <!-- 5. الحساب -->
       <div class="bzr-card">
         <div class="bzr-card-head">
           <div class="bzr-card-head-icon"><i class="fas fa-lock"></i></div>
@@ -818,7 +795,6 @@ input, textarea, select { outline: none; }
         </div>
       </div>
 
-      <!-- شروط -->
       <div class="bzr-card">
         <label class="terms-wrap">
           <input type="checkbox" id="termsCheck">
@@ -854,9 +830,6 @@ input, textarea, select { outline: none; }
 <script>
 'use strict';
 
-/* ═══════════════════════════════════════════════════════
-   Firebase
-   ═══════════════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
   authDomain: "bazarena-725e4.firebaseapp.com",
@@ -878,9 +851,6 @@ const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 const RESEND_COOLDOWN_MS = 60 * 1000;
 
-/* ═══════════════════════════════════════════════════════
-   الفئات الثابتة
-   ═══════════════════════════════════════════════════════ */
 const FIXED_CATEGORIES = [
   { id: 'electronics',  name: 'إلكترونيات وتقنية',   emoji: '📱' },
   { id: 'fashion',      name: 'أزياء وموضة',         emoji: '👗' },
@@ -901,9 +871,6 @@ const FIXED_CATEGORIES = [
   { id: 'travel',       name: 'سفر وسياحة',          emoji: '✈️' }
 ];
 
-/* ═══════════════════════════════════════════════════════
-   State
-   ═══════════════════════════════════════════════════════ */
 const state = {
   deviceFingerprint: null,
   persistentId: null,
@@ -916,7 +883,8 @@ const state = {
   pendingEmail: null,
   pendingStoreId: null,
   pollTimer: null,
-  lastResendAt: 0
+  lastResendAt: 0,
+  blockingStore: null
 };
 
 const $ = id => document.getElementById(id);
@@ -969,10 +937,9 @@ function mapFbError(err) {
   const map = {
     'auth/email-already-in-use': 'البريد الإلكتروني مستخدم بالفعل',
     'auth/invalid-email': 'البريد الإلكتروني غير صحيح',
-    'auth/weak-password': 'كلمة المرور ضعيفة (6 أحرف على الأقل)',
+    'auth/weak-password': 'كلمة المرور ضعيفة',
     'auth/network-request-failed': 'تحقق من اتصالك بالإنترنت',
     'auth/too-many-requests': 'طلبات كثيرة، حاول لاحقاً',
-    'auth/operation-not-allowed': 'طريقة التسجيل معطّلة',
     'permission-denied': 'لا تملك صلاحية تنفيذ هذه العملية',
     'unavailable': 'الخدمة غير متاحة مؤقتاً'
   };
@@ -1054,14 +1021,51 @@ async function buildFingerprint() {
 }
 
 /* ═══════════════════════════════════════════════════════
-   فحص الجهاز المسجّل
+   🔍 الفحص الشامل للجهاز — 3 مصادر
    ═══════════════════════════════════════════════════════ */
-async function isDeviceAlreadyRegistered(fingerprint) {
+async function checkDeviceRegistration(fingerprint, persistentId) {
+  const result = { blocked: false, store: null, source: null };
+
+  /* 1) فحص device_registry/{fingerprint} */
   try {
-    const doc = await db.collection(DEVICES).doc(fingerprint).get();
-    if (doc.exists) return { registered: true, data: doc.data() };
-  } catch (e) { console.warn('[Device check]', e); }
-  return { registered: false, data: null };
+    const dreg = await db.collection(DEVICES).doc(fingerprint).get();
+    if (dreg.exists) {
+      const data = dreg.data();
+      result.blocked = true;
+      result.source = 'device_registry';
+      if (data.storeId) {
+        try {
+          const sdoc = await db.collection(STORES).doc(data.storeId).get();
+          if (sdoc.exists) result.store = { id: sdoc.id, ...sdoc.data() };
+        } catch(e) {}
+      }
+      if (result.store) return result;
+    }
+  } catch (e) { console.warn('[check 1]', e); }
+
+  /* 2) فحص stores WHERE device_fingerprint == fingerprint */
+  try {
+    const byFp = await db.collection(STORES).where('device_fingerprint', '==', fingerprint).limit(1).get();
+    if (!byFp.empty) {
+      result.blocked = true;
+      result.source = 'stores.device_fingerprint';
+      result.store = { id: byFp.docs[0].id, ...byFp.docs[0].data() };
+      return result;
+    }
+  } catch (e) { console.warn('[check 2]', e); }
+
+  /* 3) فحص stores WHERE device_id == persistentId */
+  try {
+    const byDid = await db.collection(STORES).where('device_id', '==', persistentId).limit(1).get();
+    if (!byDid.empty) {
+      result.blocked = true;
+      result.source = 'stores.device_id';
+      result.store = { id: byDid.docs[0].id, ...byDid.docs[0].data() };
+      return result;
+    }
+  } catch (e) { console.warn('[check 3]', e); }
+
+  return result;
 }
 
 async function showBlockedGate(storeInfo) {
@@ -1069,6 +1073,8 @@ async function showBlockedGate(storeInfo) {
   if (card && nameEl && storeInfo && storeInfo.name) {
     nameEl.textContent = storeInfo.name;
     card.style.display = 'block';
+  } else if (card) {
+    card.style.display = 'none';
   }
   showGate('gateBlocked');
 }
@@ -1184,9 +1190,7 @@ if ($('storeName')) {
   });
 }
 if ($('storeDescription')) {
-  $('storeDescription').addEventListener('input', e => {
-    $('descCount').textContent = e.target.value.length;
-  });
+  $('storeDescription').addEventListener('input', e => { $('descCount').textContent = e.target.value.length; });
 }
 if ($('locationInput')) {
   const SUDAN = ['الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','سنار','النيل الأبيض','النيل الأزرق','نهر النيل','الشمالية','شمال كردفان','جنوب كردفان','غرب كردفان','شمال دارفور','جنوب دارفور','غرب دارفور','شرق دارفور','وسط دارفور'];
@@ -1316,7 +1320,7 @@ function validateForm() {
 }
 
 /* ═══════════════════════════════════════════════════════
-   Submit — إنشاء المتجر
+   Submit
    ═══════════════════════════════════════════════════════ */
 $('submitBtn').addEventListener('click', async () => {
   if (state.alreadyRegistered) { showToast('لديك متجر بالفعل', 'warning'); return; }
@@ -1341,28 +1345,21 @@ $('submitBtn').addEventListener('click', async () => {
   let createdUser = null;
 
   try {
-    /* ═══ 1) فحص مسبق للجهاز ═══ */
-    const deviceCheck = await isDeviceAlreadyRegistered(state.deviceFingerprint);
-    if (deviceCheck.registered) {
-      let existingStore = null;
-      if (deviceCheck.data && deviceCheck.data.storeId) {
-        try {
-          const sdoc = await db.collection(STORES).doc(deviceCheck.data.storeId).get();
-          if (sdoc.exists) existingStore = { id: sdoc.id, ...sdoc.data() };
-        } catch(e) {}
-      }
-      await showBlockedGate(existingStore);
+    /* 1) فحص مسبق شامل للجهاز (3 مصادر) */
+    const deviceCheck = await checkDeviceRegistration(state.deviceFingerprint, state.persistentId);
+    if (deviceCheck.blocked) {
+      await showBlockedGate(deviceCheck.store);
       setButtonLoading(btn, false, '', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
       state.submitting = false;
       return;
     }
 
-    /* ═══ 2) إنشاء حساب Firebase Auth ═══ */
+    /* 2) إنشاء حساب Firebase Auth */
     setButtonLoading(btn, true, 'جارٍ إنشاء الحساب...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const cred = await auth.createUserWithEmailAndPassword(email, password);
     createdUser = cred.user;
 
-    /* ═══ 3) فحص اسم المتجر والواتساب ═══ */
+    /* 3) فحص اسم المتجر والواتساب */
     setButtonLoading(btn, true, 'جارٍ التحقق من البيانات...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const nameCheck = await db.collection(STORES).where('name', '==', storeName).limit(1).get();
     if (!nameCheck.empty) {
@@ -1375,7 +1372,7 @@ $('submitBtn').addEventListener('click', async () => {
       throw new Error('whatsapp_exists');
     }
 
-    /* ═══ 4) بناء مستندات المتجر والجهاز ═══ */
+    /* 4) بناء المستندات */
     const now = Date.now();
     const storeRef = db.collection(STORES).doc();
     const deviceRef = db.collection(DEVICES).doc(state.deviceFingerprint);
@@ -1411,7 +1408,7 @@ $('submitBtn').addEventListener('click', async () => {
       registeredAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    /* ═══ 5) Batch Write ذري ═══ */
+    /* 5) Batch Write ذري */
     setButtonLoading(btn, true, 'جارٍ إنشاء المتجر...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const batch = db.batch();
     batch.set(deviceRef, deviceData);
@@ -1421,15 +1418,13 @@ $('submitBtn').addEventListener('click', async () => {
       await batch.commit();
     } catch (batchErr) {
       try { await createdUser.delete(); } catch(e){}
-      if (batchErr.code === 'permission-denied') {
-        throw new Error('device_blocked');
-      }
+      if (batchErr.code === 'permission-denied') throw new Error('device_blocked');
       throw batchErr;
     }
 
     state.pendingStoreId = storeRef.id;
 
-    /* ═══ 6) إرسال رابط التحقق ═══ */
+    /* 6) إرسال رابط التحقق (آخر خطوة) */
     setButtonLoading(btn, true, 'جارٍ إرسال رابط التحقق...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const actionCodeSettings = {
       url: window.location.origin + window.location.pathname + '?verified=1',
@@ -1442,7 +1437,6 @@ $('submitBtn').addEventListener('click', async () => {
       verificationSent = true;
     } catch (emailErr) {
       console.warn('[Verification email failed]', emailErr);
-      // المتجر + device_registry أُنشئا بنجاح — نكمل على أي حال
     }
 
     state.pendingUser = createdUser;
@@ -1482,15 +1476,8 @@ $('submitBtn').addEventListener('click', async () => {
 
     if (err.message === 'device_blocked') {
       setTimeout(async () => {
-        const check = await isDeviceAlreadyRegistered(state.deviceFingerprint);
-        let existingStore = null;
-        if (check.data && check.data.storeId) {
-          try {
-            const sdoc = await db.collection(STORES).doc(check.data.storeId).get();
-            if (sdoc.exists) existingStore = { id: sdoc.id, ...sdoc.data() };
-          } catch(e) {}
-        }
-        await showBlockedGate(existingStore);
+        const check = await checkDeviceRegistration(state.deviceFingerprint, state.persistentId);
+        await showBlockedGate(check.store);
       }, 800);
     }
 
@@ -1609,30 +1596,25 @@ $('backBtn').addEventListener('click', () => {
 });
 
 /* ═══════════════════════════════════════════════════════
-   Bootstrap — عرض النموذج أو حجب الجهاز
+   🚀 BOOTSTRAP — الفحص الكامل للجهاز أولاً
    ═══════════════════════════════════════════════════════ */
 async function bootstrap() {
   showGate('gateCheck');
   try {
-    updateGateStep('جارٍ التحقق من الجهاز...');
-    await new Promise(r => setTimeout(r, 200));
-
     /* 1) بناء fingerprint */
+    updateGateStep('جارٍ التحقق من هوية الجهاز...');
+    await new Promise(r => setTimeout(r, 200));
     await buildFingerprint();
 
-    /* 2) فحص device_registry — الحاجز الأساسي */
-    const deviceCheck = await isDeviceAlreadyRegistered(state.deviceFingerprint);
-    if (deviceCheck.registered) {
-      let existingStore = null;
-      if (deviceCheck.data && deviceCheck.data.storeId) {
-        try {
-          const sdoc = await db.collection(STORES).doc(deviceCheck.data.storeId).get();
-          if (sdoc.exists) existingStore = { id: sdoc.id, ...sdoc.data() };
-        } catch(e) {}
-      }
+    /* 2) الفحص الشامل للجهاز (3 مصادر) */
+    updateGateStep('جارٍ فحص سجل الجهاز...');
+    const deviceCheck = await checkDeviceRegistration(state.deviceFingerprint, state.persistentId);
+
+    if (deviceCheck.blocked) {
+      /* 🔒 الجهاز مسجَّل → لا يُسمح بأي إدخال بيانات */
       updateGateStep('هذا الجهاز مسجّل مسبقًا');
       await new Promise(r => setTimeout(r, 400));
-      await showBlockedGate(existingStore);
+      await showBlockedGate(deviceCheck.store);
       return;
     }
 
@@ -1662,7 +1644,7 @@ async function bootstrap() {
       }
     }
 
-    /* 4) كل شيء نظيف → اعرض النموذج */
+    /* 4) الجهاز نظيف → اعرض النموذج */
     updateGateStep('جاهز للتسجيل ✅');
     await new Promise(r => setTimeout(r, 250));
     showGate('appContainer');
@@ -1676,7 +1658,7 @@ async function bootstrap() {
 }
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup v7.1.0 — نموذج أولاً، تحقق بعد الإنشاء ✅');
+console.log('[BZR] signup v8.0.0 — فحص شامل للجهاز + تحقق إيميل في النهاية ✅');
 </script>
 
 </body>
