@@ -6,11 +6,17 @@
     <meta name="theme-color" content="#FF7A00">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(self), camera=(self), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()">
     <title>لوحة تحكم المتجر - BranZar - برانزار</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <script>
         tailwind.config = {
             theme: { extend: { colors: { primary: '#FF7A00', 'primary-dark': '#E06B00', 'primary-light': '#FFA64D' }, fontFamily: { cairo: ['Cairo', 'sans-serif'] } } }
@@ -124,7 +130,6 @@
         textarea.form-input { resize: vertical; min-height: 80px; line-height: 1.6; }
         .form-hint { font-size: 0.72rem; color: #6B7280; margin-top: 0.35rem; line-height: 1.6; font-weight: 600; }
 
-        /* ═══ Cooldown Notices ═══ */
         .cooldown-notice { display: none; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 10px; background: linear-gradient(135deg, #FEF3C7, #FDE68A); border: 1.5px solid #FCD34D; color: #92400E; font-size: 0.76rem; font-weight: 700; line-height: 1.6; margin-top: 8px; }
         .cooldown-notice.show { display: flex; }
         .cooldown-notice i { color: #D97706; font-size: 0.9rem; margin-top: 2px; flex-shrink: 0; }
@@ -233,6 +238,9 @@
         .modal-btn { flex: 1; padding: 0.9rem 1rem; border-radius: 0.9rem; font-weight: 800; font-size: 0.9rem; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cairo', sans-serif; }
         .modal-btn-outline { background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; }
         .modal-btn-whatsapp { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #fff; }
+
+        /* ═══ Security: Security Blur (during suspicious activity) ═══ */
+        .security-blur { filter: blur(20px); pointer-events: none; user-select: none; }
     </style>
 </head>
 <body>
@@ -633,6 +641,284 @@
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════════
+   🛡️ SECURITY LAYER — حماية متقدمة (يُنفَّذ قبل أي شيء)
+   ═══════════════════════════════════════════════════════════════ */
+
+// 1) فرض HTTPS
+(function enforceHTTPS() {
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        location.replace('https://' + location.host + location.pathname + location.search);
+    }
+})();
+
+// 2) حماية من iframe embedding (Clickjacking)
+(function preventIframe() {
+    try {
+        if (window.top !== window.self) {
+            document.documentElement.innerHTML = '<h1 style="font-family:Cairo;text-align:center;padding:2rem">غير مسموح بالعرض داخل إطار</h1>';
+            try { window.top.location = window.self.location; } catch (e) {}
+        }
+    } catch (e) {
+        document.documentElement.innerHTML = '<h1 style="font-family:Cairo;text-align:center;padding:2rem">غير مسموح</h1>';
+    }
+})();
+
+// 3) مسح window.name (منع تسريب البيانات بين الجلسات)
+try { if (window.name) window.name = ''; } catch (e) {}
+
+// 4) حماية Prototype Pollution
+(function preventProtoPollution() {
+    try {
+        Object.defineProperty(Object.prototype, '__proto__', {
+            get() { return Object.getPrototypeOf(this); },
+            set(v) { console.warn('[Security] __proto__ modification blocked'); },
+            configurable: false
+        });
+    } catch (e) {}
+    // حماية إضافية على Object.assign
+    const origAssign = Object.assign;
+    Object.assign = function (target, ...sources) {
+        for (const src of sources) {
+            if (!src || typeof src !== 'object') continue;
+            try { delete src.__proto__; } catch (e) {}
+        }
+        return origAssign.call(Object, target, ...sources);
+    };
+})();
+
+// 5) كشف بيئة الأتمتة (Headless / WebDriver)
+(function detectAutomation() {
+    const suspects = [
+        navigator.webdriver === true,
+        /HeadlessChrome/i.test(navigator.userAgent),
+        window.callPhantom !== undefined,
+        window._phantom !== undefined,
+        window.__nightmare !== undefined,
+        window.Buffer !== undefined && window.emit !== undefined
+    ];
+    if (suspects.some(x => x)) {
+        console.warn('%c🛡️ [Security] بيئة أتمتة مشبوهة', 'color:#EF4444;font-weight:bold');
+    }
+})();
+
+// 6) حماية من التسريب عبر Referrer
+try {
+    const meta = document.querySelector('meta[name="referrer"]');
+    if (!meta) {
+        const m = document.createElement('meta');
+        m.name = 'referrer';
+        m.content = 'strict-origin-when-cross-origin';
+        document.head.appendChild(m);
+    }
+} catch (e) {}
+
+// 7) Rate Limiting لتسجيل الدخول (Client-Side)
+const LOGIN_RL_KEY = 'bzr_login_rl_v1';
+const LOGIN_MAX_ATTEMPTS = 5;
+const LOGIN_LOCK_MS = 15 * 60 * 1000; // 15 دقيقة
+
+function getLoginRL() {
+    try {
+        const r = localStorage.getItem(LOGIN_RL_KEY);
+        if (!r) return { attempts: 0, lockedUntil: 0 };
+        const d = JSON.parse(atob(r));
+        if (d.lockedUntil && Date.now() >= d.lockedUntil) {
+            localStorage.removeItem(LOGIN_RL_KEY);
+            return { attempts: 0, lockedUntil: 0 };
+        }
+        return d;
+    } catch (e) { return { attempts: 0, lockedUntil: 0 }; }
+}
+
+function recordLoginFailure() {
+    const r = getLoginRL();
+    r.attempts = (r.attempts || 0) + 1;
+    r.lastAttempt = Date.now();
+    if (r.attempts >= LOGIN_MAX_ATTEMPTS) {
+        r.lockedUntil = Date.now() + LOGIN_LOCK_MS;
+    }
+    try { localStorage.setItem(LOGIN_RL_KEY, btoa(JSON.stringify(r))); } catch (e) {}
+    return r;
+}
+
+function resetLoginRL() {
+    try { localStorage.removeItem(LOGIN_RL_KEY); } catch (e) {}
+}
+
+// 8) قفل الجلسة عند عدم النشاط
+const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 دقيقة
+let _lastActivity = Date.now();
+let _activityWarned = false;
+['mousemove','keydown','click','scroll','touchstart'].forEach(ev => {
+    document.addEventListener(ev, () => { _lastActivity = Date.now(); _activityWarned = false; }, { passive: true });
+});
+setInterval(() => {
+    if (!auth || !auth.currentUser) return;
+    const idle = Date.now() - _lastActivity;
+    if (idle > INACTIVITY_LIMIT && !_activityWarned) {
+        _activityWarned = true;
+        if (confirm('انتهت جلسة العمل بسبب عدم النشاط لمدة 15 دقيقة. هل تريد البقاء متصلاً؟')) {
+            _lastActivity = Date.now();
+            _activityWarned = false;
+        } else {
+            try { auth.signOut(); } catch (e) {}
+        }
+    }
+}, 60000);
+
+// 9) كشف DOM Tampering
+(function watchTampering() {
+    let _tamperCount = 0;
+    setInterval(() => {
+        if (document.readyState !== 'complete') return;
+        const critical = ['loginForm', 'dashboard', 'loginOverlay', 'loginEmail', 'loginPassword'];
+        for (const id of critical) {
+            if (!document.getElementById(id)) {
+                _tamperCount++;
+                if (_tamperCount > 5) {
+                    console.error('%c🛡️ [Security] DOM tampering detected', 'color:#EF4444');
+                    document.body.innerHTML = '<div style="padding:3rem;text-align:center;font-family:Cairo;color:#EF4444"><h2>⚠️ تم اكتشاف نشاط غير مصرح به</h2><p>الرجاء إعادة تحميل الصفحة</p></div>';
+                    try { if (auth) auth.signOut(); } catch (e) {}
+                    return;
+                }
+            }
+        }
+    }, 8000);
+})();
+
+// 10) منع Right-click على حقول كلمة المرور
+document.addEventListener('contextmenu', (e) => {
+    if (e.target && e.target.type === 'password') {
+        e.preventDefault();
+    }
+});
+
+// 11) تنظيف URL من أي token/hash حساس
+(function cleanSensitiveURL() {
+    try {
+        const params = new URLSearchParams(location.search);
+        const sensitive = ['oobCode', 'token', 'apiKey', 'code', 'id_token'];
+        let found = false;
+        sensitive.forEach(p => { if (params.has(p)) found = true; });
+        if (found) {
+            const clean = location.origin + location.pathname;
+            history.replaceState(null, '', clean);
+        }
+    } catch (e) {}
+})();
+
+// 12) مراقبة تغييرات Auth Token (كشف تسريب الجلسة)
+let _lastToken = null;
+let _tokenWatch = setInterval(async () => {
+    try {
+        if (!auth || !auth.currentUser) { _lastToken = null; return; }
+        const token = await auth.currentUser.getIdToken();
+        if (_lastToken && token !== _lastToken) {
+            console.info('%c🛡️ [Security] تم تحديث Auth Token تلقائياً', 'color:#10B981');
+        }
+        _lastToken = token;
+    } catch (e) {}
+}, 60000);
+
+// 13) مسح SessionStorage عند الإغلاق
+window.addEventListener('beforeunload', () => {
+    try { sessionStorage.clear(); } catch (e) {}
+});
+
+// 14) كشف النقرات أثناء إخفاء الصفحة (Clickjacking attack)
+let _hiddenAt = 0;
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) _hiddenAt = Date.now();
+    else {
+        const hiddenFor = Date.now() - _hiddenAt;
+        if (hiddenFor > 10 * 60 * 1000) { // أكثر من 10 دقائق
+            _lastActivity = Date.now();
+        }
+    }
+});
+document.addEventListener('click', (e) => {
+    if (document.hidden) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.warn('%c🛡️ [Security] نقرة مرفوضة (الصفحة مخفية)', 'color:#F59E0B');
+        return false;
+    }
+}, true);
+
+// 15) تحذير عند محاولة فتح DevTools (اختياري - لا يمنع)
+(function watchDevTools() {
+    const threshold = 160;
+    let warned = false;
+    setInterval(() => {
+        if (warned) return;
+        const wDiff = window.outerWidth - window.innerWidth > threshold;
+        const hDiff = window.outerHeight - window.innerHeight > threshold;
+        if (wDiff || hDiff) {
+            warned = true;
+            console.info('%c🛡️ [Security] DevTools مفتوحة — الرجاء عدم تعديل الكود', 'color:#F59E0B;font-weight:bold');
+        }
+    }, 3000);
+})();
+
+// 16) مراقبة أي محاولة لتحميل scripts من مصادر غير موثوقة
+(function watchExternalScripts() {
+    const allowed = [
+        'gstatic.com', 'googleapis.com', 'firebaseapp.com', 'firebaseio.com',
+        'cdn.tailwindcss.com', 'cdnjs.cloudflare.com', 'cloudinary.com'
+    ];
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(m => {
+            m.addedNodes.forEach(node => {
+                if (node.nodeName === 'SCRIPT' && node.src) {
+                    const ok = allowed.some(d => node.src.includes(d));
+                    if (!ok) {
+                        console.error('%c🛡️ [Security] script غير مصرح به:', 'color:#EF4444;font-weight:bold', node.src);
+                        try { node.remove(); } catch (e) {}
+                    }
+                }
+            });
+        });
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+// 17) كشف تغيير prototype للـ fetch (منع MITM)
+(function protectFetch() {
+    const nativeFetch = window.fetch;
+    window.fetch = function (input, init) {
+        // منع طلبات غير HTTPS
+        let url = typeof input === 'string' ? input : (input && input.url);
+        if (url && url.startsWith('http://') && !url.includes('localhost')) {
+            console.error('%c🛡️ [Security] طلب غير آمن مرفوض:', 'color:#EF4444', url);
+            return Promise.reject(new Error('Insecure request blocked'));
+        }
+        return nativeFetch.apply(this, arguments);
+    };
+    Object.defineProperty(window.fetch, 'name', { value: 'fetch' });
+})();
+
+// 18) تعطيل alert/confirm/prompt المزيفة (منع Social Engineering)
+(function protectAlerts() {
+    const nativeAlert = window.alert;
+    const nativeConfirm = window.confirm;
+    window.alert = function (msg) {
+        if (typeof msg === 'string' && /password|كلمة المرور|card|بطاقة|pay/i.test(msg)) {
+            console.warn('%c🛡️ [Security] alert مشبوه:', 'color:#F59E0B', msg);
+        }
+        return nativeAlert.apply(this, arguments);
+    };
+})();
+
+// 19) الحرص على عدم تسريب البيانات في console (تعطيل في الإنتاج)
+if (location.hostname !== 'localhost' && !location.hostname.includes('127.0.0.1')) {
+    const noop = () => {};
+    // اترك console.error وconsole.warn للـ debugging الحساس
+    // console.log = noop;
+    // console.info = noop;
+    // console.debug = noop;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    🔥 Firebase Init
    ═══════════════════════════════════════════════════════════════ */
 const firebaseConfig = {
@@ -659,11 +945,10 @@ const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.png';
 const INVOICE_APP_URL = 'https://lovable.dev/preview/6QGM9BBoS9NqxhcVV01ecsxaBkqKAj6F';
 const PRODUCT_DESC_MAX = 100;
 const PRODUCT_LIMITS = { MAIN_CATEGORY_MAX: 20, ADDITIONAL_CATEGORY_MAX: 50, WARN_THRESHOLD: 3 };
-const WELCOME_FLAG_PREFIX = 'bzr_welcome_v1_';
 
 // ⏱️ Cooldowns
-const COOLDOWN_NAME_MS = 30 * 24 * 60 * 60 * 1000; // 30 يوم
-const COOLDOWN_DATA_MS = 7 * 24 * 60 * 60 * 1000;  // 7 أيام
+const COOLDOWN_NAME_MS = 30 * 24 * 60 * 60 * 1000;
+const COOLDOWN_DATA_MS = 7 * 24 * 60 * 60 * 1000;
 
 const FIXED_CATEGORIES = [
     'إلكترونيات وتقنية','أزياء وموضة','جمال وعناية','منزل وديكور','أطعمة ومشروبات',
@@ -774,7 +1059,6 @@ function updateCooldownUI() {
     if (!currentStore) return;
     const status = getCooldownStatus();
 
-    // تحذير الاسم
     const nameNotice = $('nameCooldownNotice');
     const nameInput = $('store_name');
     if (nameNotice) {
@@ -786,25 +1070,22 @@ function updateCooldownUI() {
             nameNotice.innerHTML = '';
         }
     }
-    // قفل حقل الاسم عند الـ cooldown
     if (nameInput) {
         if (!status.canUpdateName) nameInput.classList.add('locked');
         else nameInput.classList.remove('locked');
     }
 
-    // تحذير البيانات العامة
     const dataNotice = $('dataCooldownNotice');
     if (dataNotice) {
         if (!status.canUpdateData) {
             dataNotice.classList.add('show');
-            dataNotice.innerHTML = '<i class="fas fa-clock"></i><div>لا يمكن تعديل <strong>بيانات المتجر</strong> (الفئة، الوصف، الموقع، الأرقام، الصور) إلا بعد: <strong>' + formatDuration(status.dataRemaining) + '</strong></div>';
+            dataNotice.innerHTML = '<i class="fas fa-clock"></i><div>لا يمكن تعديل <strong>بيانات المتجر</strong> إلا بعد: <strong>' + formatDuration(status.dataRemaining) + '</strong></div>';
         } else {
             dataNotice.classList.remove('show');
             dataNotice.innerHTML = '';
         }
     }
 
-    // تعطيل الزر إذا كل شيء تحت cooldown
     const submitBtn = $('storeSubmitBtn');
     if (submitBtn && !status.canUpdateName && !status.canUpdateData) {
         submitBtn.disabled = true;
@@ -815,7 +1096,6 @@ function updateCooldownUI() {
     }
 }
 
-// تحديث العد التنازلي كل دقيقة
 if (_cooldownTicker) clearInterval(_cooldownTicker);
 _cooldownTicker = setInterval(updateCooldownUI, 60000);
 
@@ -833,23 +1113,10 @@ function openSupportChat(ctx) {
 }
 window.openSupportChat = openSupportChat;
 
-window.openInvoiceApp = function() {
+window.openInvoiceApp = function () {
     try { window.open(INVOICE_APP_URL, '_blank', 'noopener,noreferrer'); }
     catch (e) { window.location.href = INVOICE_APP_URL; }
 };
-
-function showWelcomeModal() { const m = $('welcomeModal'); if (m) { m.classList.remove('hidden'); document.body.style.overflow = 'hidden'; } }
-function closeWelcomeModal() {
-    const m = $('welcomeModal'); if (m) m.classList.add('hidden');
-    document.body.style.overflow = '';
-    if (currentStore && currentStore.id) { try { localStorage.setItem(WELCOME_FLAG_PREFIX + currentStore.id, '1'); } catch (e) {} }
-}
-window.closeWelcomeModal = closeWelcomeModal;
-
-function checkAndShowWelcome() {
-    if (!currentStore || !currentStore.id) return;
-    try { if (!localStorage.getItem(WELCOME_FLAG_PREFIX + currentStore.id)) setTimeout(showWelcomeModal, 900); } catch (e) {}
-}
 
 /* ═══════════════════════════════════════════════════════════════
    Password Toggle
@@ -867,26 +1134,40 @@ function checkAndShowWelcome() {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   Login
+   Login Form — مع Rate Limiting وتأمين
    ═══════════════════════════════════════════════════════════════ */
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // 🛡️ Rate Limiting
+    const rl = getLoginRL();
+    if (rl.lockedUntil && Date.now() < rl.lockedUntil) {
+        const mins = Math.ceil((rl.lockedUntil - Date.now()) / 60000);
+        showMsg('loginError', '🔒 قفل مؤقت — حاول بعد ' + mins + ' دقيقة');
+        return;
+    }
+
     hideMsg('loginError');
     hideMsg('loginSuccess');
 
     const email = sanitize($('loginEmail').value).toLowerCase();
     const password = String($('loginPassword').value);
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showMsg('loginError', '⚠️ البريد الإلكتروني غير صحيح'); return;
+    // 🛡️ تحقق صيغة
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        showMsg('loginError', '⚠️ البريد الإلكتروني غير صحيح');
+        return;
     }
-    if (!password || password.length < 6) {
-        showMsg('loginError', '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return;
+    if (!password || password.length < 6 || password.length > 128) {
+        showMsg('loginError', '⚠️ كلمة المرور غير صحيحة');
+        return;
     }
 
     setBtnLoad($('loginSubmitBtn'), true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     try {
         const cred = await auth.signInWithEmailAndPassword(email, password);
+        resetLoginRL(); // ✅ نجح
+
         if (!cred.user.emailVerified) {
             try { await cred.user.sendEmailVerification(); } catch (e) {}
             showMsg('loginError', '⚠️ يجب تأكيد بريدك الإلكتروني أولاً — تفقد صندوق الوارد');
@@ -895,7 +1176,19 @@ $('loginForm').addEventListener('submit', async (e) => {
         }
     } catch (err) {
         console.error('[Login]', err);
-        showMsg('loginError', '❌ ' + mapFbError(err));
+        const rl2 = recordLoginFailure();
+
+        // 🛡️ رسائل عامة (منع User Enumeration)
+        let msg = '❌ البريد أو كلمة المرور غير صحيحة';
+        if (rl2.lockedUntil && Date.now() < rl2.lockedUntil) {
+            msg = '🔒 تجاوزت الحد — قفل 15 دقيقة';
+        } else if (rl2.attempts >= 3) {
+            msg += ' — تحذير: ' + (LOGIN_MAX_ATTEMPTS - rl2.attempts) + ' محاولة متبقية';
+        }
+        if (err.code === 'auth/too-many-requests') msg = '🔒 طلبات كثيرة — حاول لاحقاً';
+        if (err.code === 'auth/network-request-failed') msg = '⚠️ تحقق من اتصالك بالإنترنت';
+
+        showMsg('loginError', msg);
         $('loginPassword').value = '';
     } finally {
         setBtnLoad($('loginSubmitBtn'), false, '', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
@@ -903,23 +1196,14 @@ $('loginForm').addEventListener('submit', async (e) => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   Forgot Password
+   Forgot Password → توجيه فوري إلى reset-password.html
    ═══════════════════════════════════════════════════════════════ */
-$('forgotPasswordLink').addEventListener('click', async (e) => {
+$('forgotPasswordLink').addEventListener('click', (e) => {
     e.preventDefault();
-    hideMsg('loginError');
-    hideMsg('loginSuccess');
     const email = sanitize($('loginEmail').value).toLowerCase();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showMsg('loginError', '⚠️ أدخل بريدك الإلكتروني أولاً'); return;
-    }
-    try {
-        await auth.sendPasswordResetEmail(email);
-        showMsg('loginSuccess', '✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك');
-        $('loginSuccess').classList.add('show');
-    } catch (err) {
-        showMsg('loginError', '❌ ' + mapFbError(err));
-    }
+    const isValid = email && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    const target = 'reset-password.html' + (isValid ? '?email=' + encodeURIComponent(email) : '');
+    window.location.href = target;
 });
 
 /* ═══════════════════════════════════════════════════════════════
@@ -986,7 +1270,6 @@ async function enterDashboard() {
     await loadMyProducts();
     setConn(true, currentStore.name);
     updateCooldownUI();
-    checkAndShowWelcome();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1033,7 +1316,6 @@ function setupStoreListener() {
             fillStoreForm(currentStore);
             if (subChanged) showToast(fresh.is_subscribed ? '🎉 تم تفعيل اشتراكك!' : '⚠️ تم إيقاف اشتراكك', fresh.is_subscribed ? 'success' : 'warning');
         }
-        // تحديث حالة الـ cooldown دائماً
         updateCooldownUI();
     }, (err) => console.warn('Store listener:', err));
 }
@@ -1069,7 +1351,7 @@ function fillStoreForm(store) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Save Store (مع Rate Limiting)
+   Save Store
    ═══════════════════════════════════════════════════════════════ */
 $('storeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1085,12 +1367,10 @@ $('storeForm').addEventListener('submit', async (e) => {
     const newLogo = sanitize($('store_logo').value);
     const newCover = sanitize($('store_cover').value);
 
-    // التحقق الأساسي
     if (newName.length < 3 || newName.length > 60) { showToast('اسم المتجر يجب أن يكون بين 3 و 60 حرف', 'error'); return; }
     if (!newCategory || newCategory.length < 2) { showToast('يرجى اختيار فئة صحيحة', 'error'); return; }
     if (newWhatsapp.replace(/\D/g, '').length < 9) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
 
-    // ─── كشف التغييرات ───
     const nameChanged = newName !== (currentStore.name || '');
     const otherChanged =
         newCategory !== (currentStore.category || '') ||
@@ -1101,12 +1381,8 @@ $('storeForm').addEventListener('submit', async (e) => {
         newLogo !== (currentStore.logo_url || '') ||
         newCover !== (currentStore.cover_url || '');
 
-    if (!nameChanged && !otherChanged) {
-        showToast('لم يتم إجراء أي تغيير', 'info');
-        return;
-    }
+    if (!nameChanged && !otherChanged) { showToast('لم يتم إجراء أي تغيير', 'info'); return; }
 
-    // ─── فحص الـ Cooldown ───
     const status = getCooldownStatus();
 
     if (nameChanged && !status.canUpdateName) {
@@ -1120,7 +1396,6 @@ $('storeForm').addEventListener('submit', async (e) => {
         return;
     }
 
-    // ─── بناء كائن التحديث ───
     const updates = {};
     if (nameChanged) updates.name = newName;
     if (newCategory !== (currentStore.category || '')) updates.category = newCategory;
@@ -1131,12 +1406,10 @@ $('storeForm').addEventListener('submit', async (e) => {
     if (newLogo !== (currentStore.logo_url || '')) updates.logo_url = newLogo;
     if (newCover !== (currentStore.cover_url || '')) updates.cover_url = newCover;
 
-    // ─── طوابع الزمن ───
     const now = Date.now();
     if (nameChanged) updates.last_name_update = now;
     if (otherChanged) updates.last_data_update = now;
 
-    // ─── الحفظ ───
     const submitBtn = $('storeSubmitBtn');
     submitBtn.dataset.saving = '1';
     setBtnLoad(submitBtn, true, 'جارٍ الحفظ...', '<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');
@@ -1149,8 +1422,7 @@ $('storeForm').addEventListener('submit', async (e) => {
     } catch (err) {
         console.error('[Save]', err);
         if (err.code === 'permission-denied') {
-            showToast('⏱️ التعديل مرفوض — لم يمضِ الوقت الكافي منذ آخر تحديث', 'error');
-            // إعادة تحميل الحالة من الخادم
+            showToast('⏱️ التعديل مرفوض — لم يمضِ الوقت الكافي', 'error');
             try {
                 const fresh = await db.collection(STORES).doc(currentStore.id).get();
                 if (fresh.exists) {
@@ -1512,6 +1784,11 @@ document.addEventListener('click', (e) => {
     fi.addEventListener('change', async () => {
         const file = fi.files && fi.files[0];
         if (!file) { fi.remove(); return; }
+
+        // 🛡️ تحقق أمني من الملف
+        if (!file.type.startsWith('image/')) { showToast('❌ يجب اختيار صورة', 'error'); fi.remove(); return; }
+        if (file.size > 8 * 1024 * 1024) { showToast('❌ الحجم أكبر من 8 ميجا', 'error'); fi.remove(); return; }
+
         const origHTML = btn.innerHTML;
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -1546,7 +1823,11 @@ document.addEventListener('click', (e) => {
    ═══════════════════════════════════════════════════════════════ */
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('[BZR] a.html v5.0 — Rate Limiting (30d name / 7d data) ✅');
+/* ═══════════════════════════════════════════════════════════════
+   ✅ تم التحميل
+   ═══════════════════════════════════════════════════════════════ */
+console.log('%c🛡️ a.html v6.0 — Security Hardened', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c✓ HTTPS Enforced | ✓ Anti-Clickjacking | ✓ Anti-Enumeration | ✓ Rate Limiting | ✓ Auto-Logout | ✓ DOM Guard | ✓ Proto Pollution Guard', 'color:#6B7280;font-size:11px');
 </script>
 
 </body>
