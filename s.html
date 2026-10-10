@@ -830,6 +830,9 @@ input, textarea, select { outline: none; }
 <script>
 'use strict';
 
+/* ═══════════════════════════════════════════════════════
+   Firebase Init
+   ═══════════════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
   authDomain: "bazarena-725e4.firebaseapp.com",
@@ -851,6 +854,9 @@ const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 const RESEND_COOLDOWN_MS = 60 * 1000;
 
+/* ═══════════════════════════════════════════════════════
+   الفئات الثابتة
+   ═══════════════════════════════════════════════════════ */
 const FIXED_CATEGORIES = [
   { id: 'electronics',  name: 'إلكترونيات وتقنية',   emoji: '📱' },
   { id: 'fashion',      name: 'أزياء وموضة',         emoji: '👗' },
@@ -872,8 +878,8 @@ const FIXED_CATEGORIES = [
 ];
 
 const state = {
-  deviceFingerprint: null,
   persistentId: null,
+  deviceFingerprint: null,
   selectedCategory: null,
   coverUrl: null,
   logoUrl: null,
@@ -883,8 +889,7 @@ const state = {
   pendingEmail: null,
   pendingStoreId: null,
   pollTimer: null,
-  lastResendAt: 0,
-  blockingStore: null
+  lastResendAt: 0
 };
 
 const $ = id => document.getElementById(id);
@@ -947,9 +952,13 @@ function mapFbError(err) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   Device Fingerprint
+   🔑 Persistent ID — مستقر في 4 أماكن
    ═══════════════════════════════════════════════════════ */
-const DID_KEY = 'bzr_device_id_v4';
+const PID_KEY = 'bzr_pid_v5';
+const PID_COOKIE = 'bzr_pid_v5';
+const PID_IDB_NAME = 'bzr_guard_v5';
+const PID_IDB_STORE = 'ids';
+
 function uuid() {
   if (crypto.randomUUID) { try { return crypto.randomUUID(); } catch(e){} }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -957,6 +966,102 @@ function uuid() {
     return (c === 'x' ? r : ((r & 0x3) | 0x8)).toString(16);
   });
 }
+
+function setCookie(name, value, days) {
+  try {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    const secure = location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; SameSite=Lax' + secure;
+  } catch(e){}
+}
+function getCookie(name) {
+  try {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
+  } catch(e){ return null; }
+}
+
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    try {
+      const req = indexedDB.open(PID_IDB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const d = req.result;
+        if (!d.objectStoreNames.contains(PID_IDB_STORE)) d.createObjectStore(PID_IDB_STORE);
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    } catch(e){ reject(e); }
+  });
+}
+async function idbGet(key) {
+  try {
+    const d = await openIDB();
+    return new Promise(resolve => {
+      const tx = d.transaction(PID_IDB_STORE, 'readonly');
+      const r = tx.objectStore(PID_IDB_STORE).get(key);
+      r.onsuccess = () => resolve(r.result || null);
+      r.onerror = () => resolve(null);
+    });
+  } catch(e){ return null; }
+}
+async function idbSet(key, value) {
+  try {
+    const d = await openIDB();
+    return new Promise(resolve => {
+      const tx = d.transaction(PID_IDB_STORE, 'readwrite');
+      tx.objectStore(PID_IDB_STORE).put(value, key);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  } catch(e){ return false; }
+}
+
+async function getOrCreatePersistentId() {
+  /* 1. localStorage */
+  try {
+    const v = localStorage.getItem(PID_KEY);
+    if (v && v.length >= 10) return v;
+  } catch(e){}
+
+  /* 2. Cookie */
+  const c = getCookie(PID_COOKIE);
+  if (c && c.length >= 10) {
+    try { localStorage.setItem(PID_KEY, c); } catch(e){}
+    return c;
+  }
+
+  /* 3. IndexedDB */
+  const idb = await idbGet('pid');
+  if (idb && typeof idb === 'string' && idb.length >= 10) {
+    try { localStorage.setItem(PID_KEY, idb); } catch(e){}
+    setCookie(PID_COOKIE, idb, 3650);
+    return idb;
+  }
+
+  /* 4. sessionStorage */
+  try {
+    const s = sessionStorage.getItem(PID_KEY);
+    if (s && s.length >= 10) {
+      try { localStorage.setItem(PID_KEY, s); } catch(e){}
+      setCookie(PID_COOKIE, s, 3650);
+      await idbSet('pid', s);
+      return s;
+    }
+  } catch(e){}
+
+  /* 5. إنشاء جديد + حفظه في كل الأماكن */
+  const newId = 'pid_' + uuid().replace(/-/g,'') + Date.now().toString(36);
+  try { localStorage.setItem(PID_KEY, newId); } catch(e){}
+  try { sessionStorage.setItem(PID_KEY, newId); } catch(e){}
+  setCookie(PID_COOKIE, newId, 3650);
+  await idbSet('pid', newId);
+  return newId;
+}
+
+/* ═══════════════════════════════════════════════════════
+   🔒 البصمة الثابتة (تعتمد على pid + خصائص نادرة التغير فقط)
+   ═══════════════════════════════════════════════════════ */
 async function sha256(str) {
   try {
     const buf = new TextEncoder().encode(str);
@@ -968,102 +1073,93 @@ async function sha256(str) {
     return 'fb_' + Math.abs(h).toString(36) + '_' + str.length;
   }
 }
-function getOrCreatePersistentId() {
-  try {
-    let id = localStorage.getItem(DID_KEY);
-    if (id) return id;
-    id = 'did_' + uuid() + '_' + Date.now().toString(36);
-    localStorage.setItem(DID_KEY, id);
-    return id;
-  } catch (e) { return 'did_' + uuid(); }
-}
-function getCanvasFingerprint() {
-  try {
-    const canvas = document.createElement('canvas');
-    canvas.width = 240; canvas.height = 60;
-    const ctx = canvas.getContext('2d');
-    ctx.textBaseline = 'top';
-    ctx.font = '14px "Arial"';
-    ctx.fillStyle = '#f60'; ctx.fillRect(125, 1, 62, 20);
-    ctx.fillStyle = '#069'; ctx.fillText('BranZar 🎨,١٢٣', 2, 15);
-    ctx.fillStyle = 'rgba(102,204,0,0.7)'; ctx.fillText('BranZar 🎨,١٢٣', 4, 17);
-    return canvas.toDataURL();
-  } catch (e) { return 'no_canvas'; }
-}
-function getWebGLFingerprint() {
-  try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return 'no_webgl';
-    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
-    const vendor = dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
-    const renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
-    return vendor + '|' + renderer;
-  } catch (e) { return 'no_webgl'; }
-}
+
 async function buildFingerprint() {
-  const pId = getOrCreatePersistentId();
-  state.persistentId = pId;
-  const composite = [
-    'v4', pId,
-    getCanvasFingerprint(),
-    getWebGLFingerprint(),
-    navigator.hardwareConcurrency || 0,
-    navigator.maxTouchPoints || 0,
+  const pid = await getOrCreatePersistentId();
+  state.persistentId = pid;
+
+  /* بصمة ثابتة: تعتمد أساساً على pid + خصائص نادرة التغيير */
+  const parts = [
+    'v5',
+    pid,
     screen.width + 'x' + screen.height,
     screen.colorDepth || 0,
     new Date().getTimezoneOffset(),
-    navigator.language || ''
-  ].join('::');
-  const hash = await sha256(composite);
-  state.deviceFingerprint = hash;
-  return hash;
+    navigator.language || 'na',
+    navigator.platform || 'na',
+    navigator.hardwareConcurrency || 0
+  ];
+
+  const fp = await sha256(parts.join('|'));
+  state.deviceFingerprint = fp;
+  return fp;
 }
 
 /* ═══════════════════════════════════════════════════════
-   🔍 الفحص الشامل للجهاز — 3 مصادر
+   🔍 الفحص الشامل للجهاز — 4 مصادر
    ═══════════════════════════════════════════════════════ */
-async function checkDeviceRegistration(fingerprint, persistentId) {
+async function checkDeviceRegistration(persistentId, fingerprint) {
   const result = { blocked: false, store: null, source: null };
 
-  /* 1) فحص device_registry/{fingerprint} */
+  /* ── 1. device_registry/{persistentId} ← المفتاح الأساسي الجديد ── */
   try {
-    const dreg = await db.collection(DEVICES).doc(fingerprint).get();
-    if (dreg.exists) {
-      const data = dreg.data();
+    const d = await db.collection(DEVICES).doc(persistentId).get();
+    if (d.exists) {
+      const data = d.data() || {};
       result.blocked = true;
-      result.source = 'device_registry';
+      result.source = 'registry_pid';
       if (data.storeId) {
         try {
-          const sdoc = await db.collection(STORES).doc(data.storeId).get();
-          if (sdoc.exists) result.store = { id: sdoc.id, ...sdoc.data() };
-        } catch(e) {}
+          const s = await db.collection(STORES).doc(data.storeId).get();
+          if (s.exists) result.store = { id: s.id, ...s.data() };
+        } catch(e){}
       }
-      if (result.store) return result;
-    }
-  } catch (e) { console.warn('[check 1]', e); }
-
-  /* 2) فحص stores WHERE device_fingerprint == fingerprint */
-  try {
-    const byFp = await db.collection(STORES).where('device_fingerprint', '==', fingerprint).limit(1).get();
-    if (!byFp.empty) {
-      result.blocked = true;
-      result.source = 'stores.device_fingerprint';
-      result.store = { id: byFp.docs[0].id, ...byFp.docs[0].data() };
       return result;
     }
-  } catch (e) { console.warn('[check 2]', e); }
+  } catch(e) { console.warn('[check 1]', e); }
 
-  /* 3) فحص stores WHERE device_id == persistentId */
+  /* ── 2. device_registry/{fingerprint} ← توافق مع القديم ── */
+  if (fingerprint) {
+    try {
+      const d = await db.collection(DEVICES).doc(fingerprint).get();
+      if (d.exists) {
+        const data = d.data() || {};
+        result.blocked = true;
+        result.source = 'registry_fp';
+        if (data.storeId) {
+          try {
+            const s = await db.collection(STORES).doc(data.storeId).get();
+            if (s.exists) result.store = { id: s.id, ...s.data() };
+          } catch(e){}
+        }
+        return result;
+      }
+    } catch(e) { console.warn('[check 2]', e); }
+  }
+
+  /* ── 3. stores WHERE device_id == persistentId ── */
   try {
-    const byDid = await db.collection(STORES).where('device_id', '==', persistentId).limit(1).get();
-    if (!byDid.empty) {
+    const s = await db.collection(STORES).where('device_id', '==', persistentId).limit(1).get();
+    if (!s.empty) {
       result.blocked = true;
-      result.source = 'stores.device_id';
-      result.store = { id: byDid.docs[0].id, ...byDid.docs[0].data() };
+      result.source = 'stores_pid';
+      result.store = { id: s.docs[0].id, ...s.docs[0].data() };
       return result;
     }
-  } catch (e) { console.warn('[check 3]', e); }
+  } catch(e) { console.warn('[check 3]', e); }
+
+  /* ── 4. stores WHERE device_fingerprint == fingerprint ── */
+  if (fingerprint) {
+    try {
+      const s = await db.collection(STORES).where('device_fingerprint', '==', fingerprint).limit(1).get();
+      if (!s.empty) {
+        result.blocked = true;
+        result.source = 'stores_fp';
+        result.store = { id: s.docs[0].id, ...s.docs[0].data() };
+        return result;
+      }
+    } catch(e) { console.warn('[check 4]', e); }
+  }
 
   return result;
 }
@@ -1320,7 +1416,7 @@ function validateForm() {
 }
 
 /* ═══════════════════════════════════════════════════════
-   Submit
+   Submit — إنشاء المتجر
    ═══════════════════════════════════════════════════════ */
 $('submitBtn').addEventListener('click', async () => {
   if (state.alreadyRegistered) { showToast('لديك متجر بالفعل', 'warning'); return; }
@@ -1345,8 +1441,8 @@ $('submitBtn').addEventListener('click', async () => {
   let createdUser = null;
 
   try {
-    /* 1) فحص مسبق شامل للجهاز (3 مصادر) */
-    const deviceCheck = await checkDeviceRegistration(state.deviceFingerprint, state.persistentId);
+    /* ── طبقة أمان ثانية: إعادة فحص الجهاز قبل الإنشاء ── */
+    const deviceCheck = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
     if (deviceCheck.blocked) {
       await showBlockedGate(deviceCheck.store);
       setButtonLoading(btn, false, '', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
@@ -1354,12 +1450,12 @@ $('submitBtn').addEventListener('click', async () => {
       return;
     }
 
-    /* 2) إنشاء حساب Firebase Auth */
+    /* ── إنشاء حساب Firebase Auth ── */
     setButtonLoading(btn, true, 'جارٍ إنشاء الحساب...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const cred = await auth.createUserWithEmailAndPassword(email, password);
     createdUser = cred.user;
 
-    /* 3) فحص اسم المتجر والواتساب */
+    /* ── فحص التكرار (اسم / واتساب) ── */
     setButtonLoading(btn, true, 'جارٍ التحقق من البيانات...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const nameCheck = await db.collection(STORES).where('name', '==', storeName).limit(1).get();
     if (!nameCheck.empty) {
@@ -1372,10 +1468,10 @@ $('submitBtn').addEventListener('click', async () => {
       throw new Error('whatsapp_exists');
     }
 
-    /* 4) بناء المستندات */
+    /* ── بناء المستندات ── */
     const now = Date.now();
     const storeRef = db.collection(STORES).doc();
-    const deviceRef = db.collection(DEVICES).doc(state.deviceFingerprint);
+    const deviceRef = db.collection(DEVICES).doc(state.persistentId); /* ← المفتاح = pid */
 
     const storeData = {
       name: storeName,
@@ -1408,7 +1504,7 @@ $('submitBtn').addEventListener('click', async () => {
       registeredAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    /* 5) Batch Write ذري */
+    /* ── Batch Write ذري ── */
     setButtonLoading(btn, true, 'جارٍ إنشاء المتجر...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const batch = db.batch();
     batch.set(deviceRef, deviceData);
@@ -1424,7 +1520,7 @@ $('submitBtn').addEventListener('click', async () => {
 
     state.pendingStoreId = storeRef.id;
 
-    /* 6) إرسال رابط التحقق (آخر خطوة) */
+    /* ── إرسال رابط التحقق (الخطوة الأخيرة) ── */
     setButtonLoading(btn, true, 'جارٍ إرسال رابط التحقق...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const actionCodeSettings = {
       url: window.location.origin + window.location.pathname + '?verified=1',
@@ -1435,9 +1531,7 @@ $('submitBtn').addEventListener('click', async () => {
     try {
       await createdUser.sendEmailVerification(actionCodeSettings);
       verificationSent = true;
-    } catch (emailErr) {
-      console.warn('[Verification email failed]', emailErr);
-    }
+    } catch (emailErr) { console.warn('[Verification email failed]', emailErr); }
 
     state.pendingUser = createdUser;
     state.pendingEmail = email;
@@ -1476,7 +1570,7 @@ $('submitBtn').addEventListener('click', async () => {
 
     if (err.message === 'device_blocked') {
       setTimeout(async () => {
-        const check = await checkDeviceRegistration(state.deviceFingerprint, state.persistentId);
+        const check = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
         await showBlockedGate(check.store);
       }, 800);
     }
@@ -1580,7 +1674,7 @@ $('cancelSignupBtn').addEventListener('click', async () => {
       if (state.pendingStoreId) {
         try { await db.collection(STORES).doc(state.pendingStoreId).delete(); } catch(e){}
       }
-      try { await db.collection(DEVICES).doc(state.deviceFingerprint).delete(); } catch(e){}
+      try { await db.collection(DEVICES).doc(state.persistentId).delete(); } catch(e){}
       try { await user.delete(); } catch(e){}
     }
   } catch (e) {}
@@ -1596,55 +1690,51 @@ $('backBtn').addEventListener('click', () => {
 });
 
 /* ═══════════════════════════════════════════════════════
-   🚀 BOOTSTRAP — الفحص الكامل للجهاز أولاً
+   🚀 BOOTSTRAP — الفحص الشامل قبل عرض أي حقل
    ═══════════════════════════════════════════════════════ */
 async function bootstrap() {
   showGate('gateCheck');
   try {
-    /* 1) بناء fingerprint */
+    /* 1) بناء الهوية المستقرة */
     updateGateStep('جارٍ التحقق من هوية الجهاز...');
     await new Promise(r => setTimeout(r, 200));
     await buildFingerprint();
 
-    /* 2) الفحص الشامل للجهاز (3 مصادر) */
+    /* 2) الفحص الشامل (4 مصادر) — قبل أي شيء */
     updateGateStep('جارٍ فحص سجل الجهاز...');
-    const deviceCheck = await checkDeviceRegistration(state.deviceFingerprint, state.persistentId);
+    const deviceCheck = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
 
     if (deviceCheck.blocked) {
-      /* 🔒 الجهاز مسجَّل → لا يُسمح بأي إدخال بيانات */
+      /* 🔒 الجهاز مسجَّل → لا يُسمح بأي إدخال */
       updateGateStep('هذا الجهاز مسجّل مسبقًا');
       await new Promise(r => setTimeout(r, 400));
       await showBlockedGate(deviceCheck.store);
       return;
     }
 
-    /* 3) تنظيف أي حساب auth معلّق (بدون متجر) */
+    /* 3) تنظيف أي حساب auth معلّق */
     if (auth.currentUser) {
       if (auth.currentUser.emailVerified) {
-        // حساب فعّال → وجّهه لصفحة الدخول
         updateGateStep('لديك حساب فعّال — جارٍ التوجيه...');
         try { await auth.signOut(); } catch(e){}
         window.location.href = 'a.html?already=1';
         return;
       }
-      // حساب معلّق: تحقق إن كان له متجر فعلاً
       try {
         const snap = await db.collection(STORES).where('owner_uid', '==', auth.currentUser.uid).limit(1).get();
         if (!snap.empty) {
-          // له متجر فعلاً — وجّهه لصفحة a.html ليكمل التحقق
           updateGateStep('لديك متجر — جارٍ التوجيه...');
           try { await auth.signOut(); } catch(e){}
           window.location.href = 'a.html?verify_pending=1';
           return;
         }
-        // لا متجر → احذف الحساب المعلّق
         await auth.currentUser.delete();
       } catch (e) {
         try { await auth.signOut(); } catch(_){}
       }
     }
 
-    /* 4) الجهاز نظيف → اعرض النموذج */
+    /* 4) الجهاز نظيف → عرض النموذج */
     updateGateStep('جاهز للتسجيل ✅');
     await new Promise(r => setTimeout(r, 250));
     showGate('appContainer');
@@ -1658,7 +1748,7 @@ async function bootstrap() {
 }
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup v8.0.0 — فحص شامل للجهاز + تحقق إيميل في النهاية ✅');
+console.log('[BZR] signup v9.0.0 — pid مستقر + 4 مصادر فحص ✅');
 </script>
 
 </body>
