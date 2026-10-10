@@ -1194,16 +1194,12 @@ $('loginForm').addEventListener('submit', async (e) => {
         setBtnLoad($('loginSubmitBtn'), false, '', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     }
 });
-
 /* ═══════════════════════════════════════════════════════════════
-   Forgot Password → توجيه فوري إلى reset-password.html
+   Forgot Password → توجيه مباشر فقط لـ reset-password.html
    ═══════════════════════════════════════════════════════════════ */
 $('forgotPasswordLink').addEventListener('click', (e) => {
     e.preventDefault();
-    const email = sanitize($('loginEmail').value).toLowerCase();
-    const isValid = email && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-    const target = 'reset-password.html' + (isValid ? '?email=' + encodeURIComponent(email) : '');
-    window.location.href = target;
+    window.location.href = 'reset-password.html';
 });
 
 /* ═══════════════════════════════════════════════════════════════
