@@ -119,10 +119,16 @@
         .form-label .req { color: #EF4444; }
         .form-input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.92rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif; box-sizing: border-box; }
         .form-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
-        .form-input:disabled { background: #F9FAFB; cursor: not-allowed; color: #6B7280; }
+        .form-input:disabled, .form-input.locked { background: #F9FAFB; cursor: not-allowed; color: #6B7280; }
         .form-input::placeholder { color: #9CA3AF; font-weight: 500; }
         textarea.form-input { resize: vertical; min-height: 80px; line-height: 1.6; }
         .form-hint { font-size: 0.72rem; color: #6B7280; margin-top: 0.35rem; line-height: 1.6; font-weight: 600; }
+
+        /* ═══ Cooldown Notices ═══ */
+        .cooldown-notice { display: none; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 10px; background: linear-gradient(135deg, #FEF3C7, #FDE68A); border: 1.5px solid #FCD34D; color: #92400E; font-size: 0.76rem; font-weight: 700; line-height: 1.6; margin-top: 8px; }
+        .cooldown-notice.show { display: flex; }
+        .cooldown-notice i { color: #D97706; font-size: 0.9rem; margin-top: 2px; flex-shrink: 0; }
+        .cooldown-notice strong { color: #7C2D12; font-weight: 900; }
 
         .section-divider { display: flex; align-items: center; gap: 10px; margin: 1.5rem 0 1rem; font-size: 0.85rem; font-weight: 900; color: #6B7280; }
         .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to left, transparent, #E5E7EB, transparent); }
@@ -130,7 +136,7 @@
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.9rem 1.25rem; border-radius: 0.95rem; font-weight: 800; font-size: 0.92rem; cursor: pointer; transition: all 0.22s; border: none; width: 100%; font-family: 'Cairo', sans-serif; }
         .btn-primary { background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; box-shadow: 0 12px 28px -10px rgba(255,122,0,0.65); }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
-        .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+        .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; background: linear-gradient(135deg, #94A3B8, #64748B); box-shadow: none; }
         .btn-danger { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #fff; }
         .btn-row { display: flex; gap: 0.6rem; }
         .btn-row .btn { flex: 1; width: auto; }
@@ -207,7 +213,6 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 50000; overflow-y: auto; }
         .modal-card { background: #fff; border-radius: 1.75rem; max-width: 480px; width: 100%; overflow: hidden; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; }
         .modal-hero { padding: 2rem 1.5rem 1.5rem; text-align: center; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; }
-        .modal-hero-upgrade { background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%); }
         .modal-hero-icon { font-size: 3rem; margin-bottom: 0.5rem; display: inline-block; line-height: 1; }
         .modal-hero-title { font-size: 1.35rem; font-weight: 900; margin: 0 0 0.35rem; color: #fff; }
         .modal-hero-subtitle { font-size: 0.85rem; font-weight: 700; opacity: 0.95; margin: 0; color: #fff; }
@@ -224,12 +229,6 @@
         .upgrade-hint > i { color: #8B5CF6; font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
         .upgrade-hint strong { display: block; color: #1E40AF; font-size: 0.85rem; margin-bottom: 0.25rem; font-weight: 900; }
         .upgrade-hint p { margin: 0; font-size: 0.78rem; color: #1E40AF; line-height: 1.65; font-weight: 600; }
-        .benefits-title { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 900; color: #1F2937; margin-bottom: 0.85rem; }
-        .benefits-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-        .benefits-list li { display: flex; align-items: center; gap: 12px; padding: 0.75rem 0.9rem; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 0.9rem; }
-        .benefit-icon { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #8B5CF6, #A855F7); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-        .benefits-list strong { display: block; font-size: 0.85rem; color: #1F2937; font-weight: 900; margin-bottom: 0.15rem; }
-        .benefits-list p { margin: 0; font-size: 0.75rem; color: #6B7280; font-weight: 600; line-height: 1.55; }
         .modal-footer { padding: 1rem 1.5rem 1.25rem; display: flex; gap: 0.6rem; border-top: 1px solid #F3F4F6; background: #FAFAFA; flex-shrink: 0; }
         .modal-btn { flex: 1; padding: 0.9rem 1rem; border-radius: 0.9rem; font-weight: 800; font-size: 0.9rem; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cairo', sans-serif; }
         .modal-btn-outline { background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; }
@@ -239,7 +238,7 @@
 <body>
 
 <!-- ═══════════════════════════════════════════════════════
-     🔐 شاشة تسجيل الدخول (بالبريد الإلكتروني)
+     🔐 شاشة تسجيل الدخول
      ═══════════════════════════════════════════════════════ -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
@@ -275,17 +274,11 @@
             </a>
         </form>
         <div class="login-footer-hint">
-            <a href="signup.html">
-                <i class="fas fa-user-plus"></i> ليس لديك متجر؟ أنشئ واحداً الآن
-            </a>
+            <a href="signup.html"><i class="fas fa-user-plus"></i> ليس لديك متجر؟ أنشئ واحداً الآن</a>
             <br>
-            <a href="https://wa.me/249908280115" target="_blank" rel="noopener noreferrer" style="margin-top: 0.6rem;">
-                <i class="fab fa-whatsapp"></i> تواصل مع الدعم +249 908 280 115
-            </a>
+            <a href="https://wa.me/249908280115" target="_blank" rel="noopener noreferrer" style="margin-top: 0.6rem;"><i class="fab fa-whatsapp"></i> تواصل مع الدعم +249 908 280 115</a>
             <br>
-            <a href="index.html" style="margin-top: 0.6rem;">
-                <i class="fas fa-arrow-right"></i> العودة للصفحة الرئيسية
-            </a>
+            <a href="index.html" style="margin-top: 0.6rem;"><i class="fas fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
         </div>
     </div>
 </div>
@@ -338,19 +331,12 @@
             </div>
 
             <button type="button" class="invoice-card" onclick="openInvoiceApp()" aria-label="إنشاء فاتورة جديدة">
-                <div class="invoice-card-icon">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                </div>
+                <div class="invoice-card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                 <div class="invoice-card-text">
-                    <div class="invoice-card-title">
-                        إنشاء فاتورة
-                        <span class="new-tag">جديد</span>
-                    </div>
+                    <div class="invoice-card-title">إنشاء فاتورة <span class="new-tag">جديد</span></div>
                     <div class="invoice-card-sub">أنشئ فاتورة احترافية لعملائك بسهولة وسرعة</div>
                 </div>
-                <div class="invoice-card-arrow">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
+                <div class="invoice-card-arrow"><i class="fas fa-arrow-left"></i></div>
             </button>
 
             <!-- ═══ قسم المتجر ═══ -->
@@ -377,7 +363,7 @@
                     <div class="card-body">
                         <div class="card-title">
                             <div class="card-title-icon"><i class="fas fa-store"></i></div>
-                            <span>معلومات المتجر (قابلة للتعديل)</span>
+                            <span>معلومات المتجر</span>
                         </div>
 
                         <form id="storeForm">
@@ -390,6 +376,7 @@
                                     <span class="req">*</span>
                                 </label>
                                 <input type="text" id="store_name" class="form-input" required maxlength="60">
+                                <div id="nameCooldownNotice" class="cooldown-notice"></div>
                             </div>
 
                             <div class="form-group">
@@ -401,9 +388,6 @@
                                 <select id="store_category" class="form-input" required>
                                     <option value="">— اختر الفئة —</option>
                                 </select>
-                                <div class="form-hint">
-                                    <i class="fas fa-info-circle"></i> يمكنك تغيير فئة متجرك في أي وقت
-                                </div>
                             </div>
 
                             <div class="form-group">
@@ -479,13 +463,15 @@
                                 <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.style.display='none'">
                             </div>
 
+                            <div id="dataCooldownNotice" class="cooldown-notice"></div>
+
                             <div style="padding-top: 0.5rem;">
                                 <button type="submit" id="storeSubmitBtn" class="btn btn-primary">
                                     <i class="fas fa-save"></i>
                                     <span>حفظ التعديلات</span>
                                 </button>
                                 <div class="form-hint" style="text-align:center;margin-top:0.6rem;">
-                                    <i class="fas fa-shield-alt"></i> لا يمكنك تعديل: المتابعون، التوثيق، الاشتراك، عدد المنتجات
+                                    <i class="fas fa-clock"></i> الاسم: كل 30 يوماً • باقي البيانات: كل 7 أيام
                                 </div>
                             </div>
                         </form>
@@ -524,9 +510,7 @@
                                     </label>
                                     <textarea id="product_description" class="form-input" rows="2" placeholder="وصف مختصر للمنتج..." maxlength="100"></textarea>
                                     <div class="char-counter">
-                                        <span style="font-size:0.68rem;color:#9CA3AF;font-weight:700;">
-                                            <i class="fas fa-info-circle"></i> الحد الأقصى 100 حرف
-                                        </span>
+                                        <span style="font-size:0.68rem;color:#9CA3AF;font-weight:700;"><i class="fas fa-info-circle"></i> الحد الأقصى 100 حرف</span>
                                         <span class="count" id="productDescCounter">0 / 100</span>
                                     </div>
                                 </div>
@@ -552,9 +536,7 @@
                                     </label>
                                     <input type="text" id="product_store_name_display" class="form-input" disabled>
                                     <input type="hidden" id="product_store_name">
-                                    <div class="form-hint">
-                                        <i class="fas fa-lock"></i> المنتج يضاف لمتجرك تلقائياً
-                                    </div>
+                                    <div class="form-hint"><i class="fas fa-lock"></i> المنتج يضاف لمتجرك تلقائياً</div>
                                 </div>
 
                                 <div class="form-group">
@@ -632,49 +614,6 @@
             </div>
         </div>
     </div>
-
-    <!-- 🎉 نافذة الترحيب -->
-    <div id="welcomeModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
-        <div class="modal-card">
-            <div class="modal-hero">
-                <div class="modal-hero-icon">🎉</div>
-                <h2 class="modal-hero-title">أهلاً بك في BranZar</h2>
-                <p class="modal-hero-subtitle">تم تفعيل حسابك بنجاح — لنبدأ رحلتك!</p>
-            </div>
-            <div class="modal-body">
-                <p class="modal-lead">
-                    يسعدنا انضمامك إلى عائلة <strong>BranZar</strong>!<br>
-                    يمكنك الآن إدارة متجرك بحرية كاملة.
-                </p>
-                <div class="plan-card">
-                    <div class="plan-card-header">
-                        <span class="plan-badge">🆓 الخطة المجانية</span>
-                        <span class="plan-price">0 ج.س</span>
-                    </div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check-circle"></i> حتى <strong>20 منتجاً</strong> في الفئة الرئيسية</li>
-                        <li><i class="fas fa-check-circle"></i> تعديل حر لبيانات متجرك</li>
-                        <li><i class="fas fa-check-circle"></i> عرض منتجاتك للعملاء في المنصة</li>
-                    </ul>
-                </div>
-                <div class="upgrade-hint">
-                    <i class="fas fa-crown"></i>
-                    <div>
-                        <strong>هل ترغب بالمزيد؟</strong>
-                        <p>لإضافة <strong>فئات إضافية</strong> أو <strong>توثيق حسابك</strong>، تواصل مع خدمة العملاء.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="modal-btn modal-btn-outline" onclick="closeWelcomeModal()">
-                    <i class="fas fa-clock"></i> لاحقاً
-                </button>
-                <button type="button" class="modal-btn modal-btn-whatsapp" onclick="openSupportChat('welcome')">
-                    <i class="fab fa-whatsapp"></i> تواصل معنا الآن
-                </button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <datalist id="colorList">
@@ -684,26 +623,6 @@
     <option value="وردي"></option><option value="بني"></option><option value="ذهبي"></option>
     <option value="فضي"></option><option value="كحلي"></option><option value="بيج"></option>
     <option value="تركواز"></option><option value="نبيتي"></option><option value="خمري"></option>
-</datalist>
-
-<datalist id="categoryList">
-    <option value="إلكترونيات وتقنية"></option>
-    <option value="أزياء وموضة"></option>
-    <option value="جمال وعناية"></option>
-    <option value="منزل وديكور"></option>
-    <option value="أطعمة ومشروبات"></option>
-    <option value="سوبرماركت ومواد"></option>
-    <option value="سيارات وقطع"></option>
-    <option value="أطفال ومواليد"></option>
-    <option value="هدايا وإكسسوارات"></option>
-    <option value="رياضة ولياقة"></option>
-    <option value="بناء ومعدات"></option>
-    <option value="زراعة ومنتجات"></option>
-    <option value="تعليم وكتب"></option>
-    <option value="تعليم وتطوير"></option>
-    <option value="خدمات وأعمال"></option>
-    <option value="نقل وتوصيل"></option>
-    <option value="سفر وسياحة"></option>
 </datalist>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -742,6 +661,10 @@ const PRODUCT_DESC_MAX = 100;
 const PRODUCT_LIMITS = { MAIN_CATEGORY_MAX: 20, ADDITIONAL_CATEGORY_MAX: 50, WARN_THRESHOLD: 3 };
 const WELCOME_FLAG_PREFIX = 'bzr_welcome_v1_';
 
+// ⏱️ Cooldowns
+const COOLDOWN_NAME_MS = 30 * 24 * 60 * 60 * 1000; // 30 يوم
+const COOLDOWN_DATA_MS = 7 * 24 * 60 * 60 * 1000;  // 7 أيام
+
 const FIXED_CATEGORIES = [
     'إلكترونيات وتقنية','أزياء وموضة','جمال وعناية','منزل وديكور','أطعمة ومشروبات',
     'سوبرماركت ومواد','سيارات وقطع','أطفال ومواليد','هدايا وإكسسوارات','رياضة ولياقة',
@@ -759,6 +682,7 @@ let isSavingProduct = false;
 let productsUnsubscribe = null;
 let storeUnsubscribe = null;
 let lastProductsFingerprint = '';
+let _cooldownTicker = null;
 
 const $ = id => document.getElementById(id);
 const escapeHtml = s => { if (s == null) return ''; const d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; };
@@ -820,14 +744,89 @@ function mapFbError(err) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Support / Welcome / Invoice
+   ⏱️ Rate Limiting Utilities
+   ═══════════════════════════════════════════════════════════════ */
+function formatDuration(ms) {
+    if (ms <= 0) return '';
+    const days = Math.floor(ms / 86400000);
+    const hours = Math.floor((ms % 86400000) / 3600000);
+    const minutes = Math.floor((ms % 3600000) / 60000);
+    if (days > 0) return days + ' يوم' + (hours > 0 ? ' و' + hours + ' ساعة' : '');
+    if (hours > 0) return hours + ' ساعة' + (minutes > 0 ? ' و' + minutes + ' دقيقة' : '');
+    return Math.max(1, minutes) + ' دقيقة';
+}
+
+function getCooldownStatus() {
+    const now = Date.now();
+    const last_name = currentStore && currentStore.last_name_update ? Number(currentStore.last_name_update) : 0;
+    const last_data = currentStore && currentStore.last_data_update ? Number(currentStore.last_data_update) : 0;
+    const nameRemaining = Math.max(0, last_name + COOLDOWN_NAME_MS - now);
+    const dataRemaining = Math.max(0, last_data + COOLDOWN_DATA_MS - now);
+    return {
+        canUpdateName: nameRemaining <= 0,
+        canUpdateData: dataRemaining <= 0,
+        nameRemaining,
+        dataRemaining
+    };
+}
+
+function updateCooldownUI() {
+    if (!currentStore) return;
+    const status = getCooldownStatus();
+
+    // تحذير الاسم
+    const nameNotice = $('nameCooldownNotice');
+    const nameInput = $('store_name');
+    if (nameNotice) {
+        if (!status.canUpdateName) {
+            nameNotice.classList.add('show');
+            nameNotice.innerHTML = '<i class="fas fa-clock"></i><div>لا يمكن تغيير <strong>اسم المتجر</strong> إلا بعد: <strong>' + formatDuration(status.nameRemaining) + '</strong></div>';
+        } else {
+            nameNotice.classList.remove('show');
+            nameNotice.innerHTML = '';
+        }
+    }
+    // قفل حقل الاسم عند الـ cooldown
+    if (nameInput) {
+        if (!status.canUpdateName) nameInput.classList.add('locked');
+        else nameInput.classList.remove('locked');
+    }
+
+    // تحذير البيانات العامة
+    const dataNotice = $('dataCooldownNotice');
+    if (dataNotice) {
+        if (!status.canUpdateData) {
+            dataNotice.classList.add('show');
+            dataNotice.innerHTML = '<i class="fas fa-clock"></i><div>لا يمكن تعديل <strong>بيانات المتجر</strong> (الفئة، الوصف، الموقع، الأرقام، الصور) إلا بعد: <strong>' + formatDuration(status.dataRemaining) + '</strong></div>';
+        } else {
+            dataNotice.classList.remove('show');
+            dataNotice.innerHTML = '';
+        }
+    }
+
+    // تعطيل الزر إذا كل شيء تحت cooldown
+    const submitBtn = $('storeSubmitBtn');
+    if (submitBtn && !status.canUpdateName && !status.canUpdateData) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-lock"></i><span>التعديل مقفل مؤقتاً</span>';
+    } else if (submitBtn && !submitBtn.dataset.saving) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save"></i><span>حفظ التعديلات</span>';
+    }
+}
+
+// تحديث العد التنازلي كل دقيقة
+if (_cooldownTicker) clearInterval(_cooldownTicker);
+_cooldownTicker = setInterval(updateCooldownUI, 60000);
+
+/* ═══════════════════════════════════════════════════════════════
+   Support / Invoice
    ═══════════════════════════════════════════════════════════════ */
 function openSupportChat(ctx) {
     const msgs = {
         general: 'السلام عليكم ورحمة الله 👋\nأرغب بالتواصل مع خدمة عملاء BranZar.',
-        welcome: 'السلام عليكم ورحمة الله 👋\nأنا صاحب متجر على BranZar وأرغب بالاستفسار عن الفئات الإضافية والتوثيق.',
-        subscribe: 'السلام عليكم ورحمة الله 👋\nوصلت إلى الحد الأقصى في الخطة المجانية وأرغب بالاشتراك.',
-        limit: 'السلام عليكم ورحمة الله 👋\nوصلت إلى الحد الأقصى للمنتجات وأرغب بالترقية.'
+        welcome: 'السلام عليكم ورحمة الله 👋\nأنا صاحب متجر على BranZar.',
+        limit: 'السلام عليكم ورحمة الله 👋\nوصلت إلى الحد الأقصى للمنتجات.'
     };
     const m = msgs[ctx] || msgs.general;
     window.open('https://wa.me/' + WHATSAPP_SUPPORT + '?text=' + encodeURIComponent(m), '_blank', 'noopener,noreferrer');
@@ -868,7 +867,7 @@ function checkAndShowWelcome() {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   Login Form
+   Login
    ═══════════════════════════════════════════════════════════════ */
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -879,26 +878,21 @@ $('loginForm').addEventListener('submit', async (e) => {
     const password = String($('loginPassword').value);
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showMsg('loginError', '⚠️ البريد الإلكتروني غير صحيح');
-        return;
+        showMsg('loginError', '⚠️ البريد الإلكتروني غير صحيح'); return;
     }
     if (!password || password.length < 6) {
-        showMsg('loginError', '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل');
-        return;
+        showMsg('loginError', '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل'); return;
     }
 
     setBtnLoad($('loginSubmitBtn'), true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     try {
         const cred = await auth.signInWithEmailAndPassword(email, password);
-
         if (!cred.user.emailVerified) {
             try { await cred.user.sendEmailVerification(); } catch (e) {}
-            showMsg('loginError', '⚠️ يجب تأكيد بريدك الإلكتروني أولاً — تفقد صندوق الوارد ثم أعد المحاولة');
+            showMsg('loginError', '⚠️ يجب تأكيد بريدك الإلكتروني أولاً — تفقد صندوق الوارد');
             await auth.signOut();
             return;
         }
-
-        // ✅ onAuthStateChanged سيتولى فتح اللوحة
     } catch (err) {
         console.error('[Login]', err);
         showMsg('loginError', '❌ ' + mapFbError(err));
@@ -917,8 +911,7 @@ $('forgotPasswordLink').addEventListener('click', async (e) => {
     hideMsg('loginSuccess');
     const email = sanitize($('loginEmail').value).toLowerCase();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showMsg('loginError', '⚠️ أدخل بريدك الإلكتروني أولاً');
-        return;
+        showMsg('loginError', '⚠️ أدخل بريدك الإلكتروني أولاً'); return;
     }
     try {
         await auth.sendPasswordResetEmail(email);
@@ -940,7 +933,7 @@ $('logoutBtn').addEventListener('click', async () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   Store lookup by owner_uid
+   Find store by owner_uid
    ═══════════════════════════════════════════════════════════════ */
 async function findStoreByUid(uid) {
     const snap = await db.collection(STORES).where('owner_uid', '==', uid).limit(1).get();
@@ -949,12 +942,11 @@ async function findStoreByUid(uid) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Auth state listener
+   Auth State
    ═══════════════════════════════════════════════════════════════ */
 auth.onAuthStateChanged(async (user) => {
     if (!user) {
-        currentUser = null;
-        currentStore = null;
+        currentUser = null; currentStore = null;
         $('loginOverlay').classList.remove('hidden');
         $('dashboard').classList.add('hidden');
         return;
@@ -993,6 +985,7 @@ async function enterDashboard() {
     setupStoreListener();
     await loadMyProducts();
     setConn(true, currentStore.name);
+    updateCooldownUI();
     checkAndShowWelcome();
 }
 
@@ -1007,7 +1000,7 @@ function updateHeaderLogo(store) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Category Select Population
+   Category Select
    ═══════════════════════════════════════════════════════════════ */
 function populateCategorySelect() {
     const sel = $('store_category'); if (!sel) return;
@@ -1024,7 +1017,7 @@ function populateCategorySelect() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Realtime Store Listener
+   Store Listener
    ═══════════════════════════════════════════════════════════════ */
 function setupStoreListener() {
     if (!currentStore || storeUnsubscribe) return;
@@ -1040,6 +1033,8 @@ function setupStoreListener() {
             fillStoreForm(currentStore);
             if (subChanged) showToast(fresh.is_subscribed ? '🎉 تم تفعيل اشتراكك!' : '⚠️ تم إيقاف اشتراكك', fresh.is_subscribed ? 'success' : 'warning');
         }
+        // تحديث حالة الـ cooldown دائماً
+        updateCooldownUI();
     }, (err) => console.warn('Store listener:', err));
 }
 
@@ -1070,61 +1065,113 @@ function fillStoreForm(store) {
     else $('store_cover_preview').classList.add('hidden');
 
     updateHeaderLogo(store);
+    updateCooldownUI();
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Save Store
+   Save Store (مع Rate Limiting)
    ═══════════════════════════════════════════════════════════════ */
 $('storeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!currentStore || !currentUser) { showToast('يجب تسجيل الدخول', 'error'); return; }
     if (currentStore.owner_uid !== currentUser.uid) { showToast('لا تملك صلاحية التعديل', 'error'); return; }
 
-    const name = sanitize($('store_name').value);
-    const category = sanitize($('store_category').value);
-    const description = sanitize($('store_description').value).slice(0, 500);
-    const location = sanitize($('store_location').value).slice(0, 100);
-    const whatsapp = sanitize($('store_whatsapp').value).replace(/[^\d+]/g, '');
-    const phone = sanitize($('store_phone').value).replace(/[^\d+]/g, '');
-    const logoUrl = sanitize($('store_logo').value);
-    const coverUrl = sanitize($('store_cover').value);
+    const newName = sanitize($('store_name').value);
+    const newCategory = sanitize($('store_category').value);
+    const newDescription = sanitize($('store_description').value).slice(0, 500);
+    const newLocation = sanitize($('store_location').value).slice(0, 100);
+    const newWhatsapp = sanitize($('store_whatsapp').value).replace(/[^\d+]/g, '');
+    const newPhone = sanitize($('store_phone').value).replace(/[^\d+]/g, '');
+    const newLogo = sanitize($('store_logo').value);
+    const newCover = sanitize($('store_cover').value);
 
-    if (name.length < 3 || name.length > 60) { showToast('اسم المتجر يجب أن يكون بين 3 و 60 حرف', 'error'); return; }
-    if (!category || category.length < 2) { showToast('يرجى اختيار فئة صحيحة', 'error'); return; }
-    if (whatsapp.replace(/\D/g, '').length < 9) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
+    // التحقق الأساسي
+    if (newName.length < 3 || newName.length > 60) { showToast('اسم المتجر يجب أن يكون بين 3 و 60 حرف', 'error'); return; }
+    if (!newCategory || newCategory.length < 2) { showToast('يرجى اختيار فئة صحيحة', 'error'); return; }
+    if (newWhatsapp.replace(/\D/g, '').length < 9) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
 
-    // ✅ فقط الحقول المسموح بها في firestore.rules
-    const updates = {
-        name,
-        category,
-        description,
-        location,
-        whatsapp_number: whatsapp,
-        phone_number: phone,
-        logo_url: logoUrl,
-        cover_url: coverUrl
-    };
+    // ─── كشف التغييرات ───
+    const nameChanged = newName !== (currentStore.name || '');
+    const otherChanged =
+        newCategory !== (currentStore.category || '') ||
+        newDescription !== (currentStore.description || '') ||
+        newLocation !== (currentStore.location || '') ||
+        newWhatsapp !== (currentStore.whatsapp_number || '') ||
+        newPhone !== (currentStore.phone_number || '') ||
+        newLogo !== (currentStore.logo_url || '') ||
+        newCover !== (currentStore.cover_url || '');
 
-    setBtnLoad($('storeSubmitBtn'), true, 'جارٍ الحفظ...', '<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');
+    if (!nameChanged && !otherChanged) {
+        showToast('لم يتم إجراء أي تغيير', 'info');
+        return;
+    }
+
+    // ─── فحص الـ Cooldown ───
+    const status = getCooldownStatus();
+
+    if (nameChanged && !status.canUpdateName) {
+        showToast('⏱️ لا يمكن تغيير اسم المتجر إلا بعد ' + formatDuration(status.nameRemaining), 'error');
+        updateCooldownUI();
+        return;
+    }
+    if (otherChanged && !status.canUpdateData) {
+        showToast('⏱️ لا يمكن تعديل بيانات المتجر إلا بعد ' + formatDuration(status.dataRemaining), 'error');
+        updateCooldownUI();
+        return;
+    }
+
+    // ─── بناء كائن التحديث ───
+    const updates = {};
+    if (nameChanged) updates.name = newName;
+    if (newCategory !== (currentStore.category || '')) updates.category = newCategory;
+    if (newDescription !== (currentStore.description || '')) updates.description = newDescription;
+    if (newLocation !== (currentStore.location || '')) updates.location = newLocation;
+    if (newWhatsapp !== (currentStore.whatsapp_number || '')) updates.whatsapp_number = newWhatsapp;
+    if (newPhone !== (currentStore.phone_number || '')) updates.phone_number = newPhone;
+    if (newLogo !== (currentStore.logo_url || '')) updates.logo_url = newLogo;
+    if (newCover !== (currentStore.cover_url || '')) updates.cover_url = newCover;
+
+    // ─── طوابع الزمن ───
+    const now = Date.now();
+    if (nameChanged) updates.last_name_update = now;
+    if (otherChanged) updates.last_data_update = now;
+
+    // ─── الحفظ ───
+    const submitBtn = $('storeSubmitBtn');
+    submitBtn.dataset.saving = '1';
+    setBtnLoad(submitBtn, true, 'جارٍ الحفظ...', '<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');
     try {
         await db.collection(STORES).doc(currentStore.id).update(updates);
         currentStore = { ...currentStore, ...updates };
         updateHeaderLogo(currentStore);
+        updateCooldownUI();
         showToast('✅ تم حفظ التعديلات بنجاح');
     } catch (err) {
         console.error('[Save]', err);
-        showToast('فشل الحفظ: ' + mapFbError(err), 'error');
+        if (err.code === 'permission-denied') {
+            showToast('⏱️ التعديل مرفوض — لم يمضِ الوقت الكافي منذ آخر تحديث', 'error');
+            // إعادة تحميل الحالة من الخادم
+            try {
+                const fresh = await db.collection(STORES).doc(currentStore.id).get();
+                if (fresh.exists) {
+                    currentStore = { id: fresh.id, ...fresh.data() };
+                    fillStoreForm(currentStore);
+                }
+            } catch (e) {}
+        } else {
+            showToast('فشل الحفظ: ' + mapFbError(err), 'error');
+        }
     } finally {
-        setBtnLoad($('storeSubmitBtn'), false, '', '<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');
+        submitBtn.dataset.saving = '';
+        setBtnLoad(submitBtn, false, '', '<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');
+        updateCooldownUI();
     }
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   Category Helpers
+   Categories Helpers
    ═══════════════════════════════════════════════════════════════ */
-function getMainCat() {
-    return currentStore && currentStore.category ? String(currentStore.category).trim() : '';
-}
+function getMainCat() { return currentStore && currentStore.category ? String(currentStore.category).trim() : ''; }
 function getExtraCats() {
     if (!currentStore) return [];
     const main = getMainCat();
@@ -1141,13 +1188,9 @@ function getMainProductsCount() {
     if (!main) return 0;
     return productsData.filter(p => { const c = String(p.category || '').trim(); return !c || c === main; }).length;
 }
-function getExtraProductsCount(cat) {
-    if (!currentStore || !cat) return 0;
-    return productsData.filter(p => String(p.category || '').trim() === String(cat).trim()).length;
-}
 
 /* ═══════════════════════════════════════════════════════════════
-   Product Category Select
+   Product Categories
    ═══════════════════════════════════════════════════════════════ */
 function populateProductCategories(preserve) {
     const sel = $('product_category'); if (!sel || !currentStore) return;
@@ -1157,7 +1200,6 @@ function populateProductCategories(preserve) {
     const sub = isSubscribed();
 
     sel.innerHTML = '';
-
     if (!main && extras.length === 0) {
         const o = document.createElement('option'); o.value = ''; o.textContent = '⚠️ لا توجد فئات';
         sel.appendChild(o); sel.disabled = true; return;
@@ -1169,8 +1211,7 @@ function populateProductCategories(preserve) {
 
     if (main) {
         const o = document.createElement('option');
-        o.value = main;
-        o.textContent = '🟢 ' + main + ' (رئيسية)';
+        o.value = main; o.textContent = '🟢 ' + main + ' (رئيسية)';
         sel.appendChild(o);
     }
     extras.forEach(c => {
@@ -1185,7 +1226,7 @@ function populateProductCategories(preserve) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Products Loading & Real-time
+   Products
    ═══════════════════════════════════════════════════════════════ */
 async function loadMyProducts() {
     if (!currentStore) return;
@@ -1263,14 +1304,12 @@ function renderProductsList() {
             ? '<span class="product-category-badge" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);color:#059669;border-color:#A7F3D0;"><i class="fas fa-star" style="font-size:.6rem;"></i> ' + escapeHtml(main || 'رئيسية') + '</span>'
             : (p.category ? '<span class="product-category-badge"><i class="fas fa-tag" style="font-size:.6rem;"></i> ' + escapeHtml(p.category) + '</span>' : '');
         html +=
-            '<div class="product-row">' +
-                thumb +
+            '<div class="product-row">' + thumb +
                 '<div class="product-info">' +
                     '<div class="product-name">' + escapeHtml(p.name) + '</div>' +
                     (p.description ? '<div class="product-description">' + escapeHtml(p.description) + '</div>' : '') +
                     '<div class="product-meta">' +
-                        '<span class="product-price">' + price.toLocaleString() + ' ج.س</span>' +
-                        catBadge +
+                        '<span class="product-price">' + price.toLocaleString() + ' ج.س</span>' + catBadge +
                     '</div>' +
                 '</div>' +
                 '<div class="product-actions">' +
@@ -1310,7 +1349,6 @@ function addColorRow(name, image) {
     row.querySelector('.remove-color-btn').addEventListener('click', () => row.remove());
     c.appendChild(row);
 }
-
 if ($('addColorBtn')) $('addColorBtn').addEventListener('click', () => addColorRow());
 
 if ($('product_description')) {
@@ -1343,9 +1381,7 @@ $('productForm').addEventListener('submit', async (e) => {
     });
 
     const data = {
-        name,
-        description,
-        category,
+        name, description, category,
         store_name: currentStore.name,
         store_id: currentStore.id,
         owner_uid: currentUser.uid,
@@ -1387,7 +1423,6 @@ function resetProductForm() {
     $('productDescCounter').textContent = '0 / ' + PRODUCT_DESC_MAX;
     populateProductCategories('');
 }
-
 if ($('cancelEditProduct')) $('cancelEditProduct').addEventListener('click', resetProductForm);
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1485,9 +1520,7 @@ document.addEventListener('click', (e) => {
             fd.append('file', file);
             fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
             fd.append('folder', 'branzar/stores');
-            const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD_NAME + '/image/upload', {
-                method: 'POST', body: fd
-            });
+            const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD_NAME + '/image/upload', { method: 'POST', body: fd });
             if (!res.ok) throw new Error('upload_failed');
             const data = await res.json();
             if (!data.secure_url) throw new Error('no_url');
@@ -1513,10 +1546,7 @@ document.addEventListener('click', (e) => {
    ═══════════════════════════════════════════════════════════════ */
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-/* ═══════════════════════════════════════════════════════════════
-   Bootstrap
-   ═══════════════════════════════════════════════════════════════ */
-console.log('[BZR] a.html v4.0 — Firebase Auth (email+password) + editable store ✅');
+console.log('[BZR] a.html v5.0 — Rate Limiting (30d name / 7d data) ✅');
 </script>
 
 </body>
