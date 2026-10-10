@@ -6,17 +6,19 @@
     <meta name="theme-color" content="#FF7A00">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta name="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
     <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(self), camera=(self), microphone=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(self), camera=(self), microphone=(), payment=(), usb=()">
     <title>لوحة تحكم المتجر - BranZar - برانزار</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://i.ibb.co">
+    <link rel="preconnect" href="https://res.cloudinary.com">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             theme: { extend: { colors: { primary: '#FF7A00', 'primary-dark': '#E06B00', 'primary-light': '#FFA64D' }, fontFamily: { cairo: ['Cairo', 'sans-serif'] } } }
@@ -34,9 +36,9 @@
         .login-card { position: relative; z-index: 2; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1.5px solid #FFE0BD; border-radius: 2rem; padding: 2.25rem 1.5rem; max-width: 440px; width: 100%; box-shadow: 0 30px 70px -25px rgba(255,122,0,0.4), 0 10px 30px rgba(0,0,0,0.05); animation: loginCardIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
         @media (min-width: 640px) { .login-card { padding: 3rem 2.5rem; border-radius: 2.25rem; } }
         @keyframes loginCardIn { from { transform: translateY(40px) scale(0.92); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-        .login-logo { width: 88px; height: 88px; border-radius: 50%; background: #fff; padding: 6px; box-shadow: 0 14px 40px -10px rgba(255,122,0,0.65), 0 0 0 6px rgba(255,122,0,0.08); margin: 0 auto 1.5rem; }
+        .login-logo { width: 88px; height: 88px; border-radius: 50%; background: #fff; padding: 6px; box-shadow: 0 14px 40px -10px rgba(255,122,0,0.65), 0 0 0 6px rgba(255,122,0,0.08); margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         @media (min-width: 640px) { .login-logo { width: 104px; height: 104px; } }
-        .login-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+        .login-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; display: block; }
         .login-title { font-size: 1.5rem; font-weight: 900; color: #1A1A1A; text-align: center; margin-bottom: 0.5rem; letter-spacing: -0.3px; }
         @media (min-width: 640px) { .login-title { font-size: 1.75rem; } }
         .login-subtitle { text-align: center; color: #6B7280; font-size: 0.88rem; margin-bottom: 1.75rem; line-height: 1.7; }
@@ -149,7 +151,7 @@
         .products-list { display: flex; flex-direction: column; gap: 0.75rem; }
         .product-row { background: #fff; border: 1.5px solid #F3F4F6; border-radius: 1rem; padding: 0.85rem; display: flex; align-items: center; gap: 0.85rem; transition: all 0.22s; }
         .product-row:hover { border-color: #FFE0BD; box-shadow: 0 6px 18px -8px rgba(255,122,0,0.25); }
-        .product-thumb { width: 56px; height: 56px; border-radius: 0.85rem; object-fit: cover; background: #F9FAFB; flex-shrink: 0; border: 1px solid #F0F0F0; }
+        .product-thumb { width: 56px; height: 56px; border-radius: 0.85rem; object-fit: cover; background: #F9FAFB; flex-shrink: 0; border: 1px solid #F0F0F0; display: block; }
         @media (min-width: 640px) { .product-thumb { width: 64px; height: 64px; } }
         .product-thumb-placeholder { display: flex; align-items: center; justify-content: center; color: #D1D5DB; font-size: 1.3rem; }
         .product-info { flex: 1; min-width: 0; }
@@ -206,52 +208,21 @@
 
         .char-counter { display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem; font-size: 0.74rem; font-weight: 800; }
 
-        .extra-cats-display { display: flex; flex-wrap: wrap; gap: 8px; padding: 0.75rem; background: #F9FAFB; border-radius: 0.9rem; border: 1.5px solid #E5E7EB; min-height: 50px; }
-        .extra-cat-chip { display: inline-flex; align-items: center; gap: 5px; padding: 0.35rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.78rem; white-space: nowrap; }
-        .extra-cat-chip.subscribed { background: linear-gradient(135deg, #ECFDF5, #D1FAE5); color: #059669; border: 1.5px solid #A7F3D0; }
-        .extra-cat-chip.locked { background: linear-gradient(135deg, #F3F4F6, #E5E7EB); color: #6B7280; border: 1.5px solid #D1D5DB; }
-        .no-extra-cats { color: #9CA3AF; font-size: 0.8rem; font-weight: 700; padding: 0.3rem; }
-
         .support-float { position: fixed; bottom: 24px; left: 24px; width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.85rem; cursor: pointer; z-index: 8000; box-shadow: 0 10px 30px -8px rgba(37,211,102,0.7); border: none; }
         .support-badge { position: absolute; top: -2px; right: -2px; width: 22px; height: 22px; border-radius: 50%; background: #EF4444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; border: 2.5px solid #fff; }
-
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 50000; overflow-y: auto; }
-        .modal-card { background: #fff; border-radius: 1.75rem; max-width: 480px; width: 100%; overflow: hidden; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.5); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; }
-        .modal-hero { padding: 2rem 1.5rem 1.5rem; text-align: center; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; }
-        .modal-hero-icon { font-size: 3rem; margin-bottom: 0.5rem; display: inline-block; line-height: 1; }
-        .modal-hero-title { font-size: 1.35rem; font-weight: 900; margin: 0 0 0.35rem; color: #fff; }
-        .modal-hero-subtitle { font-size: 0.85rem; font-weight: 700; opacity: 0.95; margin: 0; color: #fff; }
-        .modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
-        .modal-lead { font-size: 0.9rem; color: #374151; line-height: 1.8; margin: 0 0 1.1rem; text-align: center; font-weight: 600; }
-        .plan-card { background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border: 1.5px solid #FFE0BD; border-radius: 1rem; padding: 1rem 1.1rem; margin-bottom: 1.1rem; }
-        .plan-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; }
-        .plan-badge { background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.3rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 900; }
-        .plan-price { font-size: 1rem; font-weight: 900; color: #FF7A00; }
-        .plan-features { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
-        .plan-features li { display: flex; align-items: center; gap: 8px; font-size: 0.83rem; color: #1F2937; font-weight: 700; }
-        .plan-features i { color: #10B981; font-size: 0.9rem; }
-        .upgrade-hint { display: flex; align-items: flex-start; gap: 12px; background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%); border: 1.5px solid #BFDBFE; border-radius: 1rem; padding: 0.9rem 1rem; }
-        .upgrade-hint > i { color: #8B5CF6; font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
-        .upgrade-hint strong { display: block; color: #1E40AF; font-size: 0.85rem; margin-bottom: 0.25rem; font-weight: 900; }
-        .upgrade-hint p { margin: 0; font-size: 0.78rem; color: #1E40AF; line-height: 1.65; font-weight: 600; }
-        .modal-footer { padding: 1rem 1.5rem 1.25rem; display: flex; gap: 0.6rem; border-top: 1px solid #F3F4F6; background: #FAFAFA; flex-shrink: 0; }
-        .modal-btn { flex: 1; padding: 0.9rem 1rem; border-radius: 0.9rem; font-weight: 800; font-size: 0.9rem; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Cairo', sans-serif; }
-        .modal-btn-outline { background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; }
-        .modal-btn-whatsapp { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #fff; }
-
-        /* ═══ Security: Security Blur (during suspicious activity) ═══ */
-        .security-blur { filter: blur(20px); pointer-events: none; user-select: none; }
     </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════
-     🔐 شاشة تسجيل الدخول
-     ═══════════════════════════════════════════════════════ -->
+<!-- ═══ LOGIN ═══ -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
         <div class="login-logo">
-            <img src="file_00000000b5e881f6a653c6d272e68de7.png" alt="BranZar" onerror="this.parentElement.innerHTML='<i class=\'fas fa-store\' style=\'color:#FF7A00;font-size:2rem;\'></i>'">
+            <img id="loginLogoImg" 
+                 src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" 
+                 alt="BranZar"
+                 loading="eager"
+                 decoding="async">
         </div>
         <h1 class="login-title">لوحة تحكم المتجر</h1>
         <p class="login-subtitle">
@@ -291,9 +262,7 @@
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     📊 لوحة التحكم
-     ═══════════════════════════════════════════════════════ -->
+<!-- ═══ DASHBOARD ═══ -->
 <div id="dashboard" class="hidden">
     <div id="toast" class="toast"></div>
 
@@ -307,7 +276,11 @@
             <div class="header-top">
                 <div class="header-brand">
                     <div class="header-brand-logo" id="headerBrandLogo">
-                        <img id="headerStoreLogo" src="file_00000000b5e881f6a653c6d272e68de7.png" alt="شعار المتجر">
+                        <img id="headerStoreLogo" 
+                             src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" 
+                             alt="شعار المتجر"
+                             loading="eager"
+                             decoding="async">
                     </div>
                     <div class="header-brand-text">
                         <div class="header-brand-title">مرحباً بك 👋</div>
@@ -338,7 +311,7 @@
                 </button>
             </div>
 
-            <button type="button" class="invoice-card" onclick="openInvoiceApp()" aria-label="إنشاء فاتورة جديدة">
+            <button type="button" class="invoice-card" onclick="openInvoiceApp()">
                 <div class="invoice-card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                 <div class="invoice-card-text">
                     <div class="invoice-card-title">إنشاء فاتورة <span class="new-tag">جديد</span></div>
@@ -347,7 +320,6 @@
                 <div class="invoice-card-arrow"><i class="fas fa-arrow-left"></i></div>
             </button>
 
-            <!-- ═══ قسم المتجر ═══ -->
             <div id="storeSection" class="tab-content">
                 <div class="stats-grid">
                     <div class="stat-box">
@@ -453,7 +425,7 @@
                                         <span>رفع</span>
                                     </button>
                                 </div>
-                                <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار" onerror="this.style.display='none'">
+                                <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار">
                             </div>
 
                             <div class="form-group">
@@ -468,7 +440,7 @@
                                         <span>رفع</span>
                                     </button>
                                 </div>
-                                <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.style.display='none'">
+                                <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف">
                             </div>
 
                             <div id="dataCooldownNotice" class="cooldown-notice"></div>
@@ -487,7 +459,6 @@
                 </div>
             </div>
 
-            <!-- ═══ قسم المنتجات ═══ -->
             <div id="productsSection" class="tab-content hidden">
                 <div id="categoryLimitsInfo" style="margin-bottom: 1rem;"></div>
 
@@ -514,9 +485,8 @@
                                     <label class="form-label">
                                         <i class="fas fa-align-right"></i>
                                         <span>وصف المنتج</span>
-                                        <span style="margin-right:auto;font-size:0.68rem;color:#9CA3AF;font-weight:900;">اختياري</span>
                                     </label>
-                                    <textarea id="product_description" class="form-input" rows="2" placeholder="وصف مختصر للمنتج..." maxlength="100"></textarea>
+                                    <textarea id="product_description" class="form-input" rows="2" placeholder="وصف مختصر..." maxlength="100"></textarea>
                                     <div class="char-counter">
                                         <span style="font-size:0.68rem;color:#9CA3AF;font-weight:700;"><i class="fas fa-info-circle"></i> الحد الأقصى 100 حرف</span>
                                         <span class="count" id="productDescCounter">0 / 100</span>
@@ -532,9 +502,6 @@
                                     <select id="product_category" class="form-input" required>
                                         <option value="">— اختر الفئة —</option>
                                     </select>
-                                    <div id="productCategoryHint" class="form-hint">
-                                        <i class="fas fa-info-circle"></i> الفئات متاحة من متجرك
-                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -544,7 +511,6 @@
                                     </label>
                                     <input type="text" id="product_store_name_display" class="form-input" disabled>
                                     <input type="hidden" id="product_store_name">
-                                    <div class="form-hint"><i class="fas fa-lock"></i> المنتج يضاف لمتجرك تلقائياً</div>
                                 </div>
 
                                 <div class="form-group">
@@ -562,13 +528,13 @@
                                         <span>رابط الصورة الأساسية</span>
                                     </label>
                                     <div class="url-upload-group">
-                                        <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
+                                        <input type="url" id="product_img_url" class="form-input" placeholder="https://..." dir="ltr" style="text-align: left;">
                                         <button type="button" class="upload-btn" data-upload-target="product_img_url">
                                             <i class="fas fa-cloud-upload-alt"></i>
                                             <span>رفع</span>
                                         </button>
                                     </div>
-                                    <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج" onerror="this.style.display='none'">
+                                    <img id="product_img_preview" class="image-preview hidden" alt="معاينة المنتج">
                                 </div>
 
                                 <div class="section-divider">
@@ -581,9 +547,6 @@
                                         <i class="fas fa-plus-circle"></i>
                                         <span>إضافة لون جديد</span>
                                     </button>
-                                    <div class="form-hint" style="margin-top: 0.5rem;">
-                                        <i class="fas fa-info-circle"></i> اكتب اسم اللون أو اختره من القائمة.
-                                    </div>
                                 </div>
 
                                 <div class="btn-row">
@@ -641,81 +604,82 @@
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════════
-   🛡️ SECURITY LAYER — حماية متقدمة (يُنفَّذ قبل أي شيء)
+   🖼️ IMAGE FALLBACK SYSTEM
    ═══════════════════════════════════════════════════════════════ */
+const FALLBACK_LOGO = 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png';
+const FALLBACK_ICON_SVG = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
+    '<rect width="100" height="100" fill="#FFF7ED"/>' +
+    '<path d="M25 40 L25 35 C25 28 30 23 37 23 L63 23 C70 23 75 28 75 35 L75 40" stroke="#FF7A00" stroke-width="5" fill="none" stroke-linecap="round"/>' +
+    '<rect x="25" y="40" width="50" height="42" rx="4" fill="#FF7A00"/>' +
+    '<circle cx="40" cy="55" r="3" fill="white"/>' +
+    '<circle cx="60" cy="55" r="3" fill="white"/>' +
+    '</svg>'
+);
 
-// 1) فرض HTTPS
+function applyImageFallback(img) {
+    if (!img || img.dataset.fallbackApplied === '1') return;
+    img.dataset.fallbackApplied = '1';
+    const isLogo = img.id === 'headerStoreLogo' || img.id === 'loginLogoImg'
+                || img.closest('.login-logo') || img.closest('.header-brand-logo');
+    img.src = isLogo ? FALLBACK_LOGO : FALLBACK_ICON_SVG;
+    img.onerror = null;
+    img.classList.add('loaded');
+}
+
+function setupImageFallbacks() {
+    document.querySelectorAll('img').forEach(img => {
+        if (img.dataset.fallbackSetup === '1') return;
+        img.dataset.fallbackSetup = '1';
+        img.addEventListener('error', () => applyImageFallback(img), { once: false });
+        if (img.complete && img.naturalWidth === 0 && img.src) applyImageFallback(img);
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setupImageFallbacks();
+        setTimeout(setupImageFallbacks, 500);
+        setTimeout(setupImageFallbacks, 1500);
+    });
+} else {
+    setupImageFallbacks();
+    setTimeout(setupImageFallbacks, 500);
+    setTimeout(setupImageFallbacks, 1500);
+}
+
+try {
+    new MutationObserver(() => setTimeout(setupImageFallbacks, 50))
+        .observe(document.documentElement, { childList: true, subtree: true });
+} catch (e) {}
+
+window.applyImageFallback = applyImageFallback;
+window.setupImageFallbacks = setupImageFallbacks;
+window.FALLBACK_LOGO = FALLBACK_LOGO;
+
+/* ═══════════════════════════════════════════════════════════════
+   🛡️ SECURITY LAYER
+   ═══════════════════════════════════════════════════════════════ */
 (function enforceHTTPS() {
     if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
         location.replace('https://' + location.host + location.pathname + location.search);
     }
 })();
 
-// 2) حماية من iframe embedding (Clickjacking)
 (function preventIframe() {
     try {
         if (window.top !== window.self) {
-            document.documentElement.innerHTML = '<h1 style="font-family:Cairo;text-align:center;padding:2rem">غير مسموح بالعرض داخل إطار</h1>';
+            document.documentElement.innerHTML = '<h1 style="font-family:Cairo;text-align:center;padding:2rem">غير مسموح</h1>';
             try { window.top.location = window.self.location; } catch (e) {}
         }
-    } catch (e) {
-        document.documentElement.innerHTML = '<h1 style="font-family:Cairo;text-align:center;padding:2rem">غير مسموح</h1>';
-    }
+    } catch (e) {}
 })();
 
-// 3) مسح window.name (منع تسريب البيانات بين الجلسات)
 try { if (window.name) window.name = ''; } catch (e) {}
 
-// 4) حماية Prototype Pollution
-(function preventProtoPollution() {
-    try {
-        Object.defineProperty(Object.prototype, '__proto__', {
-            get() { return Object.getPrototypeOf(this); },
-            set(v) { console.warn('[Security] __proto__ modification blocked'); },
-            configurable: false
-        });
-    } catch (e) {}
-    // حماية إضافية على Object.assign
-    const origAssign = Object.assign;
-    Object.assign = function (target, ...sources) {
-        for (const src of sources) {
-            if (!src || typeof src !== 'object') continue;
-            try { delete src.__proto__; } catch (e) {}
-        }
-        return origAssign.call(Object, target, ...sources);
-    };
-})();
-
-// 5) كشف بيئة الأتمتة (Headless / WebDriver)
-(function detectAutomation() {
-    const suspects = [
-        navigator.webdriver === true,
-        /HeadlessChrome/i.test(navigator.userAgent),
-        window.callPhantom !== undefined,
-        window._phantom !== undefined,
-        window.__nightmare !== undefined,
-        window.Buffer !== undefined && window.emit !== undefined
-    ];
-    if (suspects.some(x => x)) {
-        console.warn('%c🛡️ [Security] بيئة أتمتة مشبوهة', 'color:#EF4444;font-weight:bold');
-    }
-})();
-
-// 6) حماية من التسريب عبر Referrer
-try {
-    const meta = document.querySelector('meta[name="referrer"]');
-    if (!meta) {
-        const m = document.createElement('meta');
-        m.name = 'referrer';
-        m.content = 'strict-origin-when-cross-origin';
-        document.head.appendChild(m);
-    }
-} catch (e) {}
-
-// 7) Rate Limiting لتسجيل الدخول (Client-Side)
 const LOGIN_RL_KEY = 'bzr_login_rl_v1';
 const LOGIN_MAX_ATTEMPTS = 5;
-const LOGIN_LOCK_MS = 15 * 60 * 1000; // 15 دقيقة
+const LOGIN_LOCK_MS = 15 * 60 * 1000;
 
 function getLoginRL() {
     try {
@@ -734,189 +698,16 @@ function recordLoginFailure() {
     const r = getLoginRL();
     r.attempts = (r.attempts || 0) + 1;
     r.lastAttempt = Date.now();
-    if (r.attempts >= LOGIN_MAX_ATTEMPTS) {
-        r.lockedUntil = Date.now() + LOGIN_LOCK_MS;
-    }
+    if (r.attempts >= LOGIN_MAX_ATTEMPTS) r.lockedUntil = Date.now() + LOGIN_LOCK_MS;
     try { localStorage.setItem(LOGIN_RL_KEY, btoa(JSON.stringify(r))); } catch (e) {}
     return r;
 }
 
-function resetLoginRL() {
-    try { localStorage.removeItem(LOGIN_RL_KEY); } catch (e) {}
-}
+function resetLoginRL() { try { localStorage.removeItem(LOGIN_RL_KEY); } catch (e) {} }
 
-// 8) قفل الجلسة عند عدم النشاط
-const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 دقيقة
-let _lastActivity = Date.now();
-let _activityWarned = false;
-['mousemove','keydown','click','scroll','touchstart'].forEach(ev => {
-    document.addEventListener(ev, () => { _lastActivity = Date.now(); _activityWarned = false; }, { passive: true });
-});
-setInterval(() => {
-    if (!auth || !auth.currentUser) return;
-    const idle = Date.now() - _lastActivity;
-    if (idle > INACTIVITY_LIMIT && !_activityWarned) {
-        _activityWarned = true;
-        if (confirm('انتهت جلسة العمل بسبب عدم النشاط لمدة 15 دقيقة. هل تريد البقاء متصلاً؟')) {
-            _lastActivity = Date.now();
-            _activityWarned = false;
-        } else {
-            try { auth.signOut(); } catch (e) {}
-        }
-    }
-}, 60000);
-
-// 9) كشف DOM Tampering
-(function watchTampering() {
-    let _tamperCount = 0;
-    setInterval(() => {
-        if (document.readyState !== 'complete') return;
-        const critical = ['loginForm', 'dashboard', 'loginOverlay', 'loginEmail', 'loginPassword'];
-        for (const id of critical) {
-            if (!document.getElementById(id)) {
-                _tamperCount++;
-                if (_tamperCount > 5) {
-                    console.error('%c🛡️ [Security] DOM tampering detected', 'color:#EF4444');
-                    document.body.innerHTML = '<div style="padding:3rem;text-align:center;font-family:Cairo;color:#EF4444"><h2>⚠️ تم اكتشاف نشاط غير مصرح به</h2><p>الرجاء إعادة تحميل الصفحة</p></div>';
-                    try { if (auth) auth.signOut(); } catch (e) {}
-                    return;
-                }
-            }
-        }
-    }, 8000);
-})();
-
-// 10) منع Right-click على حقول كلمة المرور
 document.addEventListener('contextmenu', (e) => {
-    if (e.target && e.target.type === 'password') {
-        e.preventDefault();
-    }
+    if (e.target && e.target.type === 'password') e.preventDefault();
 });
-
-// 11) تنظيف URL من أي token/hash حساس
-(function cleanSensitiveURL() {
-    try {
-        const params = new URLSearchParams(location.search);
-        const sensitive = ['oobCode', 'token', 'apiKey', 'code', 'id_token'];
-        let found = false;
-        sensitive.forEach(p => { if (params.has(p)) found = true; });
-        if (found) {
-            const clean = location.origin + location.pathname;
-            history.replaceState(null, '', clean);
-        }
-    } catch (e) {}
-})();
-
-// 12) مراقبة تغييرات Auth Token (كشف تسريب الجلسة)
-let _lastToken = null;
-let _tokenWatch = setInterval(async () => {
-    try {
-        if (!auth || !auth.currentUser) { _lastToken = null; return; }
-        const token = await auth.currentUser.getIdToken();
-        if (_lastToken && token !== _lastToken) {
-            console.info('%c🛡️ [Security] تم تحديث Auth Token تلقائياً', 'color:#10B981');
-        }
-        _lastToken = token;
-    } catch (e) {}
-}, 60000);
-
-// 13) مسح SessionStorage عند الإغلاق
-window.addEventListener('beforeunload', () => {
-    try { sessionStorage.clear(); } catch (e) {}
-});
-
-// 14) كشف النقرات أثناء إخفاء الصفحة (Clickjacking attack)
-let _hiddenAt = 0;
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) _hiddenAt = Date.now();
-    else {
-        const hiddenFor = Date.now() - _hiddenAt;
-        if (hiddenFor > 10 * 60 * 1000) { // أكثر من 10 دقائق
-            _lastActivity = Date.now();
-        }
-    }
-});
-document.addEventListener('click', (e) => {
-    if (document.hidden) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.warn('%c🛡️ [Security] نقرة مرفوضة (الصفحة مخفية)', 'color:#F59E0B');
-        return false;
-    }
-}, true);
-
-// 15) تحذير عند محاولة فتح DevTools (اختياري - لا يمنع)
-(function watchDevTools() {
-    const threshold = 160;
-    let warned = false;
-    setInterval(() => {
-        if (warned) return;
-        const wDiff = window.outerWidth - window.innerWidth > threshold;
-        const hDiff = window.outerHeight - window.innerHeight > threshold;
-        if (wDiff || hDiff) {
-            warned = true;
-            console.info('%c🛡️ [Security] DevTools مفتوحة — الرجاء عدم تعديل الكود', 'color:#F59E0B;font-weight:bold');
-        }
-    }, 3000);
-})();
-
-// 16) مراقبة أي محاولة لتحميل scripts من مصادر غير موثوقة
-(function watchExternalScripts() {
-    const allowed = [
-        'gstatic.com', 'googleapis.com', 'firebaseapp.com', 'firebaseio.com',
-        'cdn.tailwindcss.com', 'cdnjs.cloudflare.com', 'cloudinary.com'
-    ];
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach(m => {
-            m.addedNodes.forEach(node => {
-                if (node.nodeName === 'SCRIPT' && node.src) {
-                    const ok = allowed.some(d => node.src.includes(d));
-                    if (!ok) {
-                        console.error('%c🛡️ [Security] script غير مصرح به:', 'color:#EF4444;font-weight:bold', node.src);
-                        try { node.remove(); } catch (e) {}
-                    }
-                }
-            });
-        });
-    });
-    observer.observe(document.documentElement, { childList: true, subtree: true });
-})();
-
-// 17) كشف تغيير prototype للـ fetch (منع MITM)
-(function protectFetch() {
-    const nativeFetch = window.fetch;
-    window.fetch = function (input, init) {
-        // منع طلبات غير HTTPS
-        let url = typeof input === 'string' ? input : (input && input.url);
-        if (url && url.startsWith('http://') && !url.includes('localhost')) {
-            console.error('%c🛡️ [Security] طلب غير آمن مرفوض:', 'color:#EF4444', url);
-            return Promise.reject(new Error('Insecure request blocked'));
-        }
-        return nativeFetch.apply(this, arguments);
-    };
-    Object.defineProperty(window.fetch, 'name', { value: 'fetch' });
-})();
-
-// 18) تعطيل alert/confirm/prompt المزيفة (منع Social Engineering)
-(function protectAlerts() {
-    const nativeAlert = window.alert;
-    const nativeConfirm = window.confirm;
-    window.alert = function (msg) {
-        if (typeof msg === 'string' && /password|كلمة المرور|card|بطاقة|pay/i.test(msg)) {
-            console.warn('%c🛡️ [Security] alert مشبوه:', 'color:#F59E0B', msg);
-        }
-        return nativeAlert.apply(this, arguments);
-    };
-})();
-
-// 19) الحرص على عدم تسريب البيانات في console (تعطيل في الإنتاج)
-if (location.hostname !== 'localhost' && !location.hostname.includes('127.0.0.1')) {
-    const noop = () => {};
-    // اترك console.error وconsole.warn للـ debugging الحساس
-    // console.log = noop;
-    // console.info = noop;
-    // console.debug = noop;
-}
 
 /* ═══════════════════════════════════════════════════════════════
    🔥 Firebase Init
@@ -941,12 +732,11 @@ const PRODUCTS = 'products';
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 const WHATSAPP_SUPPORT = '249908280115';
-const DEFAULT_LOGO = 'file_00000000b5e881f6a653c6d272e68de7.png';
+const DEFAULT_LOGO = FALLBACK_LOGO;
 const INVOICE_APP_URL = 'https://lovable.dev/preview/6QGM9BBoS9NqxhcVV01ecsxaBkqKAj6F';
 const PRODUCT_DESC_MAX = 100;
 const PRODUCT_LIMITS = { MAIN_CATEGORY_MAX: 20, ADDITIONAL_CATEGORY_MAX: 50, WARN_THRESHOLD: 3 };
 
-// ⏱️ Cooldowns
 const COOLDOWN_NAME_MS = 30 * 24 * 60 * 60 * 1000;
 const COOLDOWN_DATA_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -957,9 +747,6 @@ const FIXED_CATEGORIES = [
     'نقل وتوصيل','سفر وسياحة'
 ];
 
-/* ═══════════════════════════════════════════════════════════════
-   State
-   ═══════════════════════════════════════════════════════════════ */
 let currentStore = null;
 let currentUser = null;
 let productsData = [];
@@ -975,9 +762,6 @@ const sanitize = s => !s ? '' : String(s).replace(/<[^>]*>/g, '').trim();
 const toNumber = (v, d = 0) => { const n = parseFloat(v); return isNaN(n) ? d : n; };
 const getFp = ps => ps.map(p => p.id).sort().join('|');
 
-/* ═══════════════════════════════════════════════════════════════
-   UI Helpers
-   ═══════════════════════════════════════════════════════════════ */
 function showToast(msg, type = 'success') {
     const t = $('toast'); if (!t) return;
     t.textContent = msg; t.className = 'toast show';
@@ -1028,9 +812,6 @@ function mapFbError(err) {
     return m[c] || (err && err.message) || 'حدث خطأ غير متوقع';
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ⏱️ Rate Limiting Utilities
-   ═══════════════════════════════════════════════════════════════ */
 function formatDuration(ms) {
     if (ms <= 0) return '';
     const days = Math.floor(ms / 86400000);
@@ -1047,12 +828,7 @@ function getCooldownStatus() {
     const last_data = currentStore && currentStore.last_data_update ? Number(currentStore.last_data_update) : 0;
     const nameRemaining = Math.max(0, last_name + COOLDOWN_NAME_MS - now);
     const dataRemaining = Math.max(0, last_data + COOLDOWN_DATA_MS - now);
-    return {
-        canUpdateName: nameRemaining <= 0,
-        canUpdateData: dataRemaining <= 0,
-        nameRemaining,
-        dataRemaining
-    };
+    return { canUpdateName: nameRemaining <= 0, canUpdateData: dataRemaining <= 0, nameRemaining, dataRemaining };
 }
 
 function updateCooldownUI() {
@@ -1065,25 +841,16 @@ function updateCooldownUI() {
         if (!status.canUpdateName) {
             nameNotice.classList.add('show');
             nameNotice.innerHTML = '<i class="fas fa-clock"></i><div>لا يمكن تغيير <strong>اسم المتجر</strong> إلا بعد: <strong>' + formatDuration(status.nameRemaining) + '</strong></div>';
-        } else {
-            nameNotice.classList.remove('show');
-            nameNotice.innerHTML = '';
-        }
+        } else { nameNotice.classList.remove('show'); nameNotice.innerHTML = ''; }
     }
-    if (nameInput) {
-        if (!status.canUpdateName) nameInput.classList.add('locked');
-        else nameInput.classList.remove('locked');
-    }
+    if (nameInput) nameInput.classList.toggle('locked', !status.canUpdateName);
 
     const dataNotice = $('dataCooldownNotice');
     if (dataNotice) {
         if (!status.canUpdateData) {
             dataNotice.classList.add('show');
             dataNotice.innerHTML = '<i class="fas fa-clock"></i><div>لا يمكن تعديل <strong>بيانات المتجر</strong> إلا بعد: <strong>' + formatDuration(status.dataRemaining) + '</strong></div>';
-        } else {
-            dataNotice.classList.remove('show');
-            dataNotice.innerHTML = '';
-        }
+        } else { dataNotice.classList.remove('show'); dataNotice.innerHTML = ''; }
     }
 
     const submitBtn = $('storeSubmitBtn');
@@ -1099,9 +866,6 @@ function updateCooldownUI() {
 if (_cooldownTicker) clearInterval(_cooldownTicker);
 _cooldownTicker = setInterval(updateCooldownUI, 60000);
 
-/* ═══════════════════════════════════════════════════════════════
-   Support / Invoice
-   ═══════════════════════════════════════════════════════════════ */
 function openSupportChat(ctx) {
     const msgs = {
         general: 'السلام عليكم ورحمة الله 👋\nأرغب بالتواصل مع خدمة عملاء BranZar.',
@@ -1118,9 +882,6 @@ window.openInvoiceApp = function () {
     catch (e) { window.location.href = INVOICE_APP_URL; }
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   Password Toggle
-   ═══════════════════════════════════════════════════════════════ */
 (function setupPasswordToggle() {
     const i = $('loginPassword'), b = $('loginPasswordToggle'), ic = $('loginPasswordToggleIcon');
     if (!i || !b || !ic) return;
@@ -1134,12 +895,10 @@ window.openInvoiceApp = function () {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   Login Form — مع Rate Limiting وتأمين
+   Login
    ═══════════════════════════════════════════════════════════════ */
 $('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    // 🛡️ Rate Limiting
     const rl = getLoginRL();
     if (rl.lockedUntil && Date.now() < rl.lockedUntil) {
         const mins = Math.ceil((rl.lockedUntil - Date.now()) / 60000);
@@ -1153,21 +912,13 @@ $('loginForm').addEventListener('submit', async (e) => {
     const email = sanitize($('loginEmail').value).toLowerCase();
     const password = String($('loginPassword').value);
 
-    // 🛡️ تحقق صيغة
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-        showMsg('loginError', '⚠️ البريد الإلكتروني غير صحيح');
-        return;
-    }
-    if (!password || password.length < 6 || password.length > 128) {
-        showMsg('loginError', '⚠️ كلمة المرور غير صحيحة');
-        return;
-    }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { showMsg('loginError', '⚠️ البريد الإلكتروني غير صحيح'); return; }
+    if (!password || password.length < 6 || password.length > 128) { showMsg('loginError', '⚠️ كلمة المرور غير صحيحة'); return; }
 
     setBtnLoad($('loginSubmitBtn'), true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     try {
         const cred = await auth.signInWithEmailAndPassword(email, password);
-        resetLoginRL(); // ✅ نجح
-
+        resetLoginRL();
         if (!cred.user.emailVerified) {
             try { await cred.user.sendEmailVerification(); } catch (e) {}
             showMsg('loginError', '⚠️ يجب تأكيد بريدك الإلكتروني أولاً — تفقد صندوق الوارد');
@@ -1177,34 +928,23 @@ $('loginForm').addEventListener('submit', async (e) => {
     } catch (err) {
         console.error('[Login]', err);
         const rl2 = recordLoginFailure();
-
-        // 🛡️ رسائل عامة (منع User Enumeration)
         let msg = '❌ البريد أو كلمة المرور غير صحيحة';
-        if (rl2.lockedUntil && Date.now() < rl2.lockedUntil) {
-            msg = '🔒 تجاوزت الحد — قفل 15 دقيقة';
-        } else if (rl2.attempts >= 3) {
-            msg += ' — تحذير: ' + (LOGIN_MAX_ATTEMPTS - rl2.attempts) + ' محاولة متبقية';
-        }
+        if (rl2.lockedUntil && Date.now() < rl2.lockedUntil) msg = '🔒 تجاوزت الحد — قفل 15 دقيقة';
+        else if (rl2.attempts >= 3) msg += ' — تحذير: ' + (LOGIN_MAX_ATTEMPTS - rl2.attempts) + ' محاولة متبقية';
         if (err.code === 'auth/too-many-requests') msg = '🔒 طلبات كثيرة — حاول لاحقاً';
         if (err.code === 'auth/network-request-failed') msg = '⚠️ تحقق من اتصالك بالإنترنت';
-
         showMsg('loginError', msg);
         $('loginPassword').value = '';
     } finally {
         setBtnLoad($('loginSubmitBtn'), false, '', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     }
 });
-/* ═══════════════════════════════════════════════════════════════
-   Forgot Password → توجيه مباشر فقط لـ reset-password.html
-   ═══════════════════════════════════════════════════════════════ */
+
 $('forgotPasswordLink').addEventListener('click', (e) => {
     e.preventDefault();
     window.location.href = 'reset-password.html';
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   Logout
-   ═══════════════════════════════════════════════════════════════ */
 $('logoutBtn').addEventListener('click', async () => {
     if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
     if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
@@ -1212,18 +952,12 @@ $('logoutBtn').addEventListener('click', async () => {
     try { await auth.signOut(); } catch (e) { console.warn(e); }
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   Find store by owner_uid
-   ═══════════════════════════════════════════════════════════════ */
 async function findStoreByUid(uid) {
     const snap = await db.collection(STORES).where('owner_uid', '==', uid).limit(1).get();
     if (snap.empty) return null;
     return { id: snap.docs[0].id, ...snap.docs[0].data() };
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Auth State
-   ═══════════════════════════════════════════════════════════════ */
 auth.onAuthStateChanged(async (user) => {
     if (!user) {
         currentUser = null; currentStore = null;
@@ -1233,14 +967,9 @@ auth.onAuthStateChanged(async (user) => {
     }
     currentUser = user;
     setConn(true, user.email || '');
-
     try {
         const store = await findStoreByUid(user.uid);
-        if (!store) {
-            showMsg('loginError', '❌ لا يوجد متجر مرتبط بهذا الحساب');
-            await auth.signOut();
-            return;
-        }
+        if (!store) { showMsg('loginError', '❌ لا يوجد متجر مرتبط بهذا الحساب'); await auth.signOut(); return; }
         currentStore = store;
         $('loginOverlay').classList.add('hidden');
         $('dashboard').classList.remove('hidden');
@@ -1252,9 +981,6 @@ auth.onAuthStateChanged(async (user) => {
     }
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   Enter Dashboard
-   ═══════════════════════════════════════════════════════════════ */
 async function enterDashboard() {
     $('welcomeStoreName').textContent = currentStore.name || '—';
     updateHeaderLogo(currentStore);
@@ -1266,21 +992,27 @@ async function enterDashboard() {
     await loadMyProducts();
     setConn(true, currentStore.name);
     updateCooldownUI();
+    setTimeout(setupImageFallbacks, 200);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Header Logo
-   ═══════════════════════════════════════════════════════════════ */
 function updateHeaderLogo(store) {
     const im = $('headerStoreLogo'); if (!im) return;
     const url = store && store.logo_url ? String(store.logo_url).trim() : '';
-    im.src = url || DEFAULT_LOGO;
-    im.onerror = () => { im.src = DEFAULT_LOGO; im.onerror = null; };
+    delete im.dataset.fallbackApplied;
+    if (url) {
+        im.src = url;
+        im.onerror = () => {
+            if (im.dataset.fallbackApplied === '1') return;
+            im.dataset.fallbackApplied = '1';
+            im.src = FALLBACK_LOGO;
+            im.onerror = null;
+        };
+    } else {
+        im.src = FALLBACK_LOGO;
+        im.onerror = null;
+    }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Category Select
-   ═══════════════════════════════════════════════════════════════ */
 function populateCategorySelect() {
     const sel = $('store_category'); if (!sel) return;
     const current = currentStore && currentStore.category ? String(currentStore.category).trim() : '';
@@ -1295,9 +1027,6 @@ function populateCategorySelect() {
     if (current) sel.value = current;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Store Listener
-   ═══════════════════════════════════════════════════════════════ */
 function setupStoreListener() {
     if (!currentStore || storeUnsubscribe) return;
     storeUnsubscribe = db.collection(STORES).doc(currentStore.id).onSnapshot((doc) => {
@@ -1316,9 +1045,6 @@ function setupStoreListener() {
     }, (err) => console.warn('Store listener:', err));
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Fill Store Form
-   ═══════════════════════════════════════════════════════════════ */
 function fillStoreForm(store) {
     if (!store) return;
     $('store_id').value = store.id || '';
@@ -1337,18 +1063,25 @@ function fillStoreForm(store) {
         ? '<i class="fas fa-check-circle" style="color:#10B981;"></i> موثّق'
         : '<i class="fas fa-circle-xmark" style="color:#9CA3AF;"></i> غير موثّق';
 
-    if (store.logo_url) { $('store_logo_preview').src = store.logo_url; $('store_logo_preview').classList.remove('hidden'); }
-    else $('store_logo_preview').classList.add('hidden');
-    if (store.cover_url) { $('store_cover_preview').src = store.cover_url; $('store_cover_preview').classList.remove('hidden'); }
-    else $('store_cover_preview').classList.add('hidden');
+    const lp = $('store_logo_preview');
+    if (store.logo_url) {
+        lp.src = store.logo_url;
+        lp.classList.remove('hidden');
+        lp.onerror = () => { lp.src = FALLBACK_ICON_SVG; lp.onerror = null; };
+    } else { lp.classList.add('hidden'); }
+
+    const cp = $('store_cover_preview');
+    if (store.cover_url) {
+        cp.src = store.cover_url;
+        cp.classList.remove('hidden');
+        cp.onerror = () => { cp.src = FALLBACK_ICON_SVG; cp.onerror = null; };
+    } else { cp.classList.add('hidden'); }
 
     updateHeaderLogo(store);
     updateCooldownUI();
+    setTimeout(setupImageFallbacks, 100);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Save Store
-   ═══════════════════════════════════════════════════════════════ */
 $('storeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!currentStore || !currentUser) { showToast('يجب تسجيل الدخول', 'error'); return; }
@@ -1363,34 +1096,21 @@ $('storeForm').addEventListener('submit', async (e) => {
     const newLogo = sanitize($('store_logo').value);
     const newCover = sanitize($('store_cover').value);
 
-    if (newName.length < 3 || newName.length > 60) { showToast('اسم المتجر يجب أن يكون بين 3 و 60 حرف', 'error'); return; }
-    if (!newCategory || newCategory.length < 2) { showToast('يرجى اختيار فئة صحيحة', 'error'); return; }
+    if (newName.length < 3 || newName.length > 60) { showToast('اسم المتجر بين 3 و 60 حرف', 'error'); return; }
+    if (!newCategory || newCategory.length < 2) { showToast('اختر فئة صحيحة', 'error'); return; }
     if (newWhatsapp.replace(/\D/g, '').length < 9) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
 
     const nameChanged = newName !== (currentStore.name || '');
-    const otherChanged =
-        newCategory !== (currentStore.category || '') ||
-        newDescription !== (currentStore.description || '') ||
-        newLocation !== (currentStore.location || '') ||
-        newWhatsapp !== (currentStore.whatsapp_number || '') ||
-        newPhone !== (currentStore.phone_number || '') ||
-        newLogo !== (currentStore.logo_url || '') ||
-        newCover !== (currentStore.cover_url || '');
+    const otherChanged = newCategory !== (currentStore.category || '') || newDescription !== (currentStore.description || '')
+        || newLocation !== (currentStore.location || '') || newWhatsapp !== (currentStore.whatsapp_number || '')
+        || newPhone !== (currentStore.phone_number || '') || newLogo !== (currentStore.logo_url || '')
+        || newCover !== (currentStore.cover_url || '');
 
     if (!nameChanged && !otherChanged) { showToast('لم يتم إجراء أي تغيير', 'info'); return; }
 
     const status = getCooldownStatus();
-
-    if (nameChanged && !status.canUpdateName) {
-        showToast('⏱️ لا يمكن تغيير اسم المتجر إلا بعد ' + formatDuration(status.nameRemaining), 'error');
-        updateCooldownUI();
-        return;
-    }
-    if (otherChanged && !status.canUpdateData) {
-        showToast('⏱️ لا يمكن تعديل بيانات المتجر إلا بعد ' + formatDuration(status.dataRemaining), 'error');
-        updateCooldownUI();
-        return;
-    }
+    if (nameChanged && !status.canUpdateName) { showToast('⏱️ لا يمكن تغيير اسم المتجر إلا بعد ' + formatDuration(status.nameRemaining), 'error'); updateCooldownUI(); return; }
+    if (otherChanged && !status.canUpdateData) { showToast('⏱️ لا يمكن تعديل بيانات المتجر إلا بعد ' + formatDuration(status.dataRemaining), 'error'); updateCooldownUI(); return; }
 
     const updates = {};
     if (nameChanged) updates.name = newName;
@@ -1418,17 +1138,12 @@ $('storeForm').addEventListener('submit', async (e) => {
     } catch (err) {
         console.error('[Save]', err);
         if (err.code === 'permission-denied') {
-            showToast('⏱️ التعديل مرفوض — لم يمضِ الوقت الكافي', 'error');
+            showToast('⏱️ التعديل مرفوض', 'error');
             try {
                 const fresh = await db.collection(STORES).doc(currentStore.id).get();
-                if (fresh.exists) {
-                    currentStore = { id: fresh.id, ...fresh.data() };
-                    fillStoreForm(currentStore);
-                }
+                if (fresh.exists) { currentStore = { id: fresh.id, ...fresh.data() }; fillStoreForm(currentStore); }
             } catch (e) {}
-        } else {
-            showToast('فشل الحفظ: ' + mapFbError(err), 'error');
-        }
+        } else showToast('فشل الحفظ: ' + mapFbError(err), 'error');
     } finally {
         submitBtn.dataset.saving = '';
         setBtnLoad(submitBtn, false, '', '<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');
@@ -1436,10 +1151,8 @@ $('storeForm').addEventListener('submit', async (e) => {
     }
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   Categories Helpers
-   ═══════════════════════════════════════════════════════════════ */
 function getMainCat() { return currentStore && currentStore.category ? String(currentStore.category).trim() : ''; }
+function isSubscribed() { return !!(currentStore && currentStore.is_subscribed === true); }
 function getExtraCats() {
     if (!currentStore) return [];
     const main = getMainCat();
@@ -1448,8 +1161,6 @@ function getExtraCats() {
         .filter(c => c && c.toLowerCase() !== main.toLowerCase())
         .filter((c, i, a) => a.findIndex(x => x.toLowerCase() === c.toLowerCase()) === i);
 }
-function isSubscribed() { return !!(currentStore && currentStore.is_subscribed === true); }
-
 function getMainProductsCount() {
     if (!currentStore || !productsData.length) return 0;
     const main = getMainCat();
@@ -1457,9 +1168,6 @@ function getMainProductsCount() {
     return productsData.filter(p => { const c = String(p.category || '').trim(); return !c || c === main; }).length;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Product Categories
-   ═══════════════════════════════════════════════════════════════ */
 function populateProductCategories(preserve) {
     const sel = $('product_category'); if (!sel || !currentStore) return;
     const cur = preserve !== undefined ? preserve : sel.value;
@@ -1473,29 +1181,17 @@ function populateProductCategories(preserve) {
         sel.appendChild(o); sel.disabled = true; return;
     }
     sel.disabled = false;
-    const ph = document.createElement('option');
-    ph.value = ''; ph.textContent = '— اختر الفئة —'; ph.disabled = true;
-    sel.appendChild(ph);
-
-    if (main) {
-        const o = document.createElement('option');
-        o.value = main; o.textContent = '🟢 ' + main + ' (رئيسية)';
-        sel.appendChild(o);
-    }
+    const ph = document.createElement('option'); ph.value = ''; ph.textContent = '— اختر الفئة —'; ph.disabled = true; sel.appendChild(ph);
+    if (main) { const o = document.createElement('option'); o.value = main; o.textContent = '🟢 ' + main + ' (رئيسية)'; sel.appendChild(o); }
     extras.forEach(c => {
-        const o = document.createElement('option');
-        o.value = c;
+        const o = document.createElement('option'); o.value = c;
         if (sub) o.textContent = '⭐ ' + c;
         else { o.textContent = '🔒 ' + c; o.disabled = true; }
         sel.appendChild(o);
     });
-
     sel.value = cur || main || '';
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Products
-   ═══════════════════════════════════════════════════════════════ */
 async function loadMyProducts() {
     if (!currentStore) return;
     try {
@@ -1541,16 +1237,10 @@ function updateLimitsUI() {
     let color = '#10B981';
     if (cnt >= lim) color = '#EF4444';
     else if (cnt >= lim - PRODUCT_LIMITS.WARN_THRESHOLD) color = '#F59E0B';
-    c.innerHTML =
-        '<div style="background:#fff;border:1.5px solid ' + (cnt >= lim ? '#FECACA' : '#E5E7EB') + ';border-radius:.9rem;padding:.85rem;margin-bottom:.75rem;">' +
-            '<div style="display:flex;justify-content:space-between;margin-bottom:6px;">' +
-                '<strong style="font-size:.85rem;">' + escapeHtml(main || 'الفئة الرئيسية') + '</strong>' +
-                '<span style="font-size:.78rem;font-weight:900;color:' + color + ';">' + cnt + ' / ' + lim + '</span>' +
-            '</div>' +
-            '<div style="background:#F3F4F6;height:6px;border-radius:6px;overflow:hidden;">' +
-                '<div style="background:' + color + ';height:100%;width:' + pct + '%;border-radius:6px;"></div>' +
-            '</div>' +
-        '</div>';
+    c.innerHTML = '<div style="background:#fff;border:1.5px solid ' + (cnt >= lim ? '#FECACA' : '#E5E7EB') + ';border-radius:.9rem;padding:.85rem;margin-bottom:.75rem;">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="font-size:.85rem;">' + escapeHtml(main || 'الفئة الرئيسية') + '</strong>' +
+        '<span style="font-size:.78rem;font-weight:900;color:' + color + ';">' + cnt + ' / ' + lim + '</span></div>' +
+        '<div style="background:#F3F4F6;height:6px;border-radius:6px;overflow:hidden;"><div style="background:' + color + ';height:100%;width:' + pct + '%;border-radius:6px;"></div></div></div>';
     const b = $('mainLimitBadge'), t = $('mainLimitText');
     if (b && t && main) { t.textContent = cnt + '/' + lim; b.style.display = 'inline-flex'; }
 }
@@ -1564,49 +1254,35 @@ function renderProductsList() {
     let html = '';
     productsData.forEach(p => {
         const price = parseFloat(p.price || 0);
-        const thumb = p.img_url
-            ? '<img src="' + escapeHtml(p.img_url) + '" class="product-thumb" alt="" onerror="this.outerHTML=\'<div class=&quot;product-thumb product-thumb-placeholder&quot;><i class=&quot;fas fa-box&quot;></i></div>\'">'
+        const hasImg = p.img_url && String(p.img_url).trim();
+        const thumb = hasImg
+            ? '<img src="' + escapeHtml(p.img_url) + '" class="product-thumb" alt="" loading="lazy" decoding="async">'
             : '<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>';
         const isMain = !p.category || String(p.category).trim() === main;
         const catBadge = isMain
             ? '<span class="product-category-badge" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);color:#059669;border-color:#A7F3D0;"><i class="fas fa-star" style="font-size:.6rem;"></i> ' + escapeHtml(main || 'رئيسية') + '</span>'
             : (p.category ? '<span class="product-category-badge"><i class="fas fa-tag" style="font-size:.6rem;"></i> ' + escapeHtml(p.category) + '</span>' : '');
-        html +=
-            '<div class="product-row">' + thumb +
-                '<div class="product-info">' +
-                    '<div class="product-name">' + escapeHtml(p.name) + '</div>' +
-                    (p.description ? '<div class="product-description">' + escapeHtml(p.description) + '</div>' : '') +
-                    '<div class="product-meta">' +
-                        '<span class="product-price">' + price.toLocaleString() + ' ج.س</span>' + catBadge +
-                    '</div>' +
-                '</div>' +
-                '<div class="product-actions">' +
-                    '<button type="button" class="icon-btn icon-btn-edit" onclick="editProduct(\'' + p.id + '\')"><i class="fas fa-pen"></i></button>' +
-                    '<button type="button" class="icon-btn icon-btn-delete" onclick="deleteProduct(\'' + p.id + '\')"><i class="fas fa-trash"></i></button>' +
-                '</div>' +
-            '</div>';
+        html += '<div class="product-row">' + thumb +
+            '<div class="product-info"><div class="product-name">' + escapeHtml(p.name) + '</div>' +
+            (p.description ? '<div class="product-description">' + escapeHtml(p.description) + '</div>' : '') +
+            '<div class="product-meta"><span class="product-price">' + price.toLocaleString() + ' ج.س</span>' + catBadge + '</div></div>' +
+            '<div class="product-actions"><button type="button" class="icon-btn icon-btn-edit" onclick="editProduct(\'' + p.id + '\')"><i class="fas fa-pen"></i></button>' +
+            '<button type="button" class="icon-btn icon-btn-delete" onclick="deleteProduct(\'' + p.id + '\')"><i class="fas fa-trash"></i></button></div></div>';
     });
     $('productsList').innerHTML = html;
+    setTimeout(setupImageFallbacks, 50);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Colors
-   ═══════════════════════════════════════════════════════════════ */
 function addColorRow(name, image) {
     const c = $('productColorsContainer'); if (!c) return;
     const row = document.createElement('div');
     row.className = 'color-row';
     const uid = 'ci_' + Date.now() + '_' + Math.floor(Math.random() * 9999);
-    row.innerHTML =
-        '<div class="color-row-top">' +
-            '<div class="color-dot-preview"></div>' +
-            '<input type="text" class="color-name" list="colorList" placeholder="اسم اللون" autocomplete="off">' +
-            '<button type="button" class="remove-color-btn"><i class="fas fa-times"></i></button>' +
-        '</div>' +
-        '<div class="color-row-bottom">' +
-            '<input type="url" id="' + uid + '" class="color-image" placeholder="رابط صورة اللون (اختياري)" dir="ltr">' +
-            '<button type="button" class="color-upload-btn" data-upload-target="' + uid + '"><i class="fas fa-cloud-upload-alt"></i></button>' +
-        '</div>';
+    row.innerHTML = '<div class="color-row-top"><div class="color-dot-preview"></div>' +
+        '<input type="text" class="color-name" list="colorList" placeholder="اسم اللون" autocomplete="off">' +
+        '<button type="button" class="remove-color-btn"><i class="fas fa-times"></i></button></div>' +
+        '<div class="color-row-bottom"><input type="url" id="' + uid + '" class="color-image" placeholder="رابط صورة اللون (اختياري)" dir="ltr">' +
+        '<button type="button" class="color-upload-btn" data-upload-target="' + uid + '"><i class="fas fa-cloud-upload-alt"></i></button></div>';
     const n = row.querySelector('.color-name');
     const im = row.querySelector('.color-image');
     const d = row.querySelector('.color-dot-preview');
@@ -1617,17 +1293,14 @@ function addColorRow(name, image) {
     row.querySelector('.remove-color-btn').addEventListener('click', () => row.remove());
     c.appendChild(row);
 }
-if ($('addColorBtn')) $('addColorBtn').addEventListener('click', () => addColorRow());
 
+if ($('addColorBtn')) $('addColorBtn').addEventListener('click', () => addColorRow());
 if ($('product_description')) {
     $('product_description').addEventListener('input', (e) => {
         $('productDescCounter').textContent = e.target.value.length + ' / ' + PRODUCT_DESC_MAX;
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Product Submit
-   ═══════════════════════════════════════════════════════════════ */
 $('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSavingProduct || !currentStore || !currentUser) return;
@@ -1639,7 +1312,7 @@ $('productForm').addEventListener('submit', async (e) => {
 
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (!category) { showToast('اختر الفئة', 'error'); return; }
-    if (price <= 0) { showToast('السعر يجب أن يكون أكبر من صفر', 'error'); return; }
+    if (price <= 0) { showToast('السعر > صفر', 'error'); return; }
 
     const colors = [];
     document.querySelectorAll('#productColorsContainer .color-row').forEach((r) => {
@@ -1693,9 +1366,6 @@ function resetProductForm() {
 }
 if ($('cancelEditProduct')) $('cancelEditProduct').addEventListener('click', resetProductForm);
 
-/* ═══════════════════════════════════════════════════════════════
-   Edit / Delete Product
-   ═══════════════════════════════════════════════════════════════ */
 window.editProduct = async (id) => {
     try {
         const s = await db.collection(PRODUCTS).doc(id).get();
@@ -1708,15 +1378,13 @@ window.editProduct = async (id) => {
         $('product_img_url').value = d.img_url || '';
         $('productDescCounter').textContent = (d.description || '').length + ' / ' + PRODUCT_DESC_MAX;
         populateProductCategories(d.category || '');
-        if (d.img_url) { $('product_img_preview').src = d.img_url; $('product_img_preview').classList.remove('hidden'); }
+        if (d.img_url) { $('product_img_preview').src = d.img_url; $('product_img_preview').classList.remove('hidden'); $('product_img_preview').onerror = function(){ this.src = FALLBACK_ICON_SVG; this.onerror = null; }; }
         $('productColorsContainer').innerHTML = '';
         if (Array.isArray(d.colors)) d.colors.forEach(x => addColorRow(x.name, x.image));
         $('productFormTitle').textContent = 'تعديل: ' + d.name;
         $('cancelEditProduct').classList.remove('hidden');
         $('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (err) {
-        showToast('فشل: ' + mapFbError(err), 'error');
-    }
+    } catch (err) { showToast('فشل: ' + mapFbError(err), 'error'); }
 };
 
 window.deleteProduct = async (id) => {
@@ -1726,14 +1394,9 @@ window.deleteProduct = async (id) => {
         if (!s.exists || s.data().store_name !== currentStore.name) throw new Error('no_permission');
         await db.collection(PRODUCTS).doc(id).delete();
         showToast('تم حذف المنتج ✅');
-    } catch (err) {
-        showToast('فشل: ' + mapFbError(err), 'error');
-    }
+    } catch (err) { showToast('فشل: ' + mapFbError(err), 'error'); }
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   Tabs
-   ═══════════════════════════════════════════════════════════════ */
 $('tabStore').addEventListener('click', () => {
     $('tabStore').classList.add('active');
     $('tabProducts').classList.remove('active');
@@ -1751,21 +1414,18 @@ $('tabProducts').addEventListener('click', () => {
     updateLimitsUI();
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   Image Previews
-   ═══════════════════════════════════════════════════════════════ */
 ['store_logo', 'store_cover', 'product_img_url'].forEach((id) => {
     const inp = $(id); if (!inp) return;
     inp.addEventListener('input', (e) => {
         const p = $(id + '_preview'); if (!p) return;
-        if (e.target.value) { p.src = e.target.value; p.classList.remove('hidden'); }
-        else p.classList.add('hidden');
+        if (e.target.value) {
+            p.src = e.target.value;
+            p.classList.remove('hidden');
+            p.onerror = () => { p.src = FALLBACK_ICON_SVG; p.onerror = null; };
+        } else p.classList.add('hidden');
     });
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   Upload Buttons (Cloudinary)
-   ═══════════════════════════════════════════════════════════════ */
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-upload-target]');
     if (!btn) return;
@@ -1780,8 +1440,6 @@ document.addEventListener('click', (e) => {
     fi.addEventListener('change', async () => {
         const file = fi.files && fi.files[0];
         if (!file) { fi.remove(); return; }
-
-        // 🛡️ تحقق أمني من الملف
         if (!file.type.startsWith('image/')) { showToast('❌ يجب اختيار صورة', 'error'); fi.remove(); return; }
         if (file.size > 8 * 1024 * 1024) { showToast('❌ الحجم أكبر من 8 ميجا', 'error'); fi.remove(); return; }
 
@@ -1802,7 +1460,7 @@ document.addEventListener('click', (e) => {
             showToast('✅ تم رفع الصورة');
         } catch (err) {
             console.error('[Upload]', err);
-            showToast('❌ فشل الرفع — حاول مجددًا', 'error');
+            showToast('❌ فشل الرفع', 'error');
         } finally {
             btn.disabled = false;
             btn.innerHTML = origHTML;
@@ -1814,16 +1472,9 @@ document.addEventListener('click', (e) => {
     fi.click();
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   Support Float
-   ═══════════════════════════════════════════════════════════════ */
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-/* ═══════════════════════════════════════════════════════════════
-   ✅ تم التحميل
-   ═══════════════════════════════════════════════════════════════ */
-console.log('%c🛡️ a.html v6.0 — Security Hardened', 'color:#10B981;font-weight:bold;font-size:14px');
-console.log('%c✓ HTTPS Enforced | ✓ Anti-Clickjacking | ✓ Anti-Enumeration | ✓ Rate Limiting | ✓ Auto-Logout | ✓ DOM Guard | ✓ Proto Pollution Guard', 'color:#6B7280;font-size:11px');
+console.log('%c🛡️ a.html v7.0 — Fixed Images + Security', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
