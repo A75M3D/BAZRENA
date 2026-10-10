@@ -320,7 +320,6 @@ input, textarea, select { outline: none; }
   display: flex; align-items: center; justify-content: center;
 }
 .input-icon-btn:hover { background: var(--c-primary-soft); color: var(--c-primary); }
-
 .error-msg {
   display: none; align-items: center; gap: 5px;
   font-size: 0.76rem; font-weight: 700;
@@ -434,6 +433,7 @@ input, textarea, select { outline: none; }
 }
 .terms-wrap input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; accent-color: var(--c-primary); }
 .terms-text { font-size: 0.82rem; font-weight: 700; color: #92400E; line-height: 1.65; }
+.terms-text a { color: var(--c-primary-dark); text-decoration: underline; font-weight: 800; }
 
 .bzr-footer {
   position: fixed; bottom: 0; left: 0; right: 0;
@@ -548,7 +548,7 @@ input, textarea, select { outline: none; }
   <div class="gate-card">
     <div class="gate-icon info"><i class="fas fa-store"></i></div>
     <h2 class="gate-title">هذا الجهاز مسجَّل مسبقًا</h2>
-    <p class="gate-text">لا يمكن إنشاء أكثر من متجر واحد من نفس الجهاز.<br>يمكنك تسجيل الدخول بحسابك الأصلي.</p>
+    <p class="gate-text">لا يمكن إنشاء أكثر من متجر واحد من نفس الجهاز.<br>سجّل الدخول بحسابك الأصلي لإدارة متجرك.</p>
     <div id="blockedStoreCard" style="background:rgba(255,122,0,0.06);border:1px solid rgba(255,122,0,0.2);border-radius:14px;padding:14px 16px;margin-bottom:22px;display:none;text-align:right;">
       <div style="font-size:0.72rem;color:#9ca3af;font-weight:700;margin-bottom:2px;">متجرك</div>
       <div style="font-size:1rem;color:#fff;font-weight:900;" id="blockedStoreName">—</div>
@@ -1341,9 +1341,7 @@ $('submitBtn').addEventListener('click', async () => {
   let createdUser = null;
 
   try {
-    /* ═══════════════════════════════════════════════
-       1) فحص مسبق للجهاز
-       ═══════════════════════════════════════════════ */
+    /* ═══ 1) فحص مسبق للجهاز ═══ */
     const deviceCheck = await isDeviceAlreadyRegistered(state.deviceFingerprint);
     if (deviceCheck.registered) {
       let existingStore = null;
@@ -1359,16 +1357,12 @@ $('submitBtn').addEventListener('click', async () => {
       return;
     }
 
-    /* ═══════════════════════════════════════════════
-       2) إنشاء حساب Firebase Auth
-       ═══════════════════════════════════════════════ */
+    /* ═══ 2) إنشاء حساب Firebase Auth ═══ */
     setButtonLoading(btn, true, 'جارٍ إنشاء الحساب...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const cred = await auth.createUserWithEmailAndPassword(email, password);
     createdUser = cred.user;
 
-    /* ═══════════════════════════════════════════════
-       3) فحص اسم المتجر والواتساب
-       ═══════════════════════════════════════════════ */
+    /* ═══ 3) فحص اسم المتجر والواتساب ═══ */
     setButtonLoading(btn, true, 'جارٍ التحقق من البيانات...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const nameCheck = await db.collection(STORES).where('name', '==', storeName).limit(1).get();
     if (!nameCheck.empty) {
@@ -1381,9 +1375,7 @@ $('submitBtn').addEventListener('click', async () => {
       throw new Error('whatsapp_exists');
     }
 
-    /* ═══════════════════════════════════════════════
-       4) بناء مستندات المتجر والجهاز
-       ═══════════════════════════════════════════════ */
+    /* ═══ 4) بناء مستندات المتجر والجهاز ═══ */
     const now = Date.now();
     const storeRef = db.collection(STORES).doc();
     const deviceRef = db.collection(DEVICES).doc(state.deviceFingerprint);
@@ -1419,9 +1411,7 @@ $('submitBtn').addEventListener('click', async () => {
       registeredAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    /* ═══════════════════════════════════════════════
-       5) Batch Write ذري
-       ═══════════════════════════════════════════════ */
+    /* ═══ 5) Batch Write ذري ═══ */
     setButtonLoading(btn, true, 'جارٍ إنشاء المتجر...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const batch = db.batch();
     batch.set(deviceRef, deviceData);
@@ -1439,23 +1429,34 @@ $('submitBtn').addEventListener('click', async () => {
 
     state.pendingStoreId = storeRef.id;
 
-    /* ═══════════════════════════════════════════════
-       6) إرسال رابط التحقق
-       ═══════════════════════════════════════════════ */
+    /* ═══ 6) إرسال رابط التحقق ═══ */
     setButtonLoading(btn, true, 'جارٍ إرسال رابط التحقق...', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const actionCodeSettings = {
       url: window.location.origin + window.location.pathname + '?verified=1',
       handleCodeInApp: false
     };
-    await createdUser.sendEmailVerification(actionCodeSettings);
+
+    let verificationSent = false;
+    try {
+      await createdUser.sendEmailVerification(actionCodeSettings);
+      verificationSent = true;
+    } catch (emailErr) {
+      console.warn('[Verification email failed]', emailErr);
+      // المتجر + device_registry أُنشئا بنجاح — نكمل على أي حال
+    }
 
     state.pendingUser = createdUser;
     state.pendingEmail = email;
-    state.lastResendAt = Date.now();
+    state.lastResendAt = verificationSent ? Date.now() : 0;
 
     doneProgress();
     haptic('heavy');
-    showToast('📧 تم إرسال رابط التحقق إلى بريدك', 'success');
+
+    if (verificationSent) {
+      showToast('📧 تم إرسال رابط التحقق إلى بريدك', 'success');
+    } else {
+      showToast('⚠️ تعذر إرسال الرابط — اضغط "إعادة إرسال"', 'warning');
+    }
 
     const emailEl = $('waitingEmail');
     if (emailEl) emailEl.textContent = email;
@@ -1608,7 +1609,7 @@ $('backBtn').addEventListener('click', () => {
 });
 
 /* ═══════════════════════════════════════════════════════
-   Bootstrap
+   Bootstrap — عرض النموذج أو حجب الجهاز
    ═══════════════════════════════════════════════════════ */
 async function bootstrap() {
   showGate('gateCheck');
@@ -1619,7 +1620,7 @@ async function bootstrap() {
     /* 1) بناء fingerprint */
     await buildFingerprint();
 
-    /* 2) فحص device_registry */
+    /* 2) فحص device_registry — الحاجز الأساسي */
     const deviceCheck = await isDeviceAlreadyRegistered(state.deviceFingerprint);
     if (deviceCheck.registered) {
       let existingStore = null;
@@ -1635,28 +1636,33 @@ async function bootstrap() {
       return;
     }
 
-    /* 3) إذا يوجد مستخدم مسجّل لكن غير مفعّل → gateWaiting */
-    if (auth.currentUser && !auth.currentUser.emailVerified) {
-      state.pendingUser = auth.currentUser;
-      state.pendingEmail = auth.currentUser.email;
-      const emailEl = $('waitingEmail');
-      if (emailEl) emailEl.textContent = auth.currentUser.email;
-      updateGateStep('لديك حساب بانتظار التفعيل');
-      await new Promise(r => setTimeout(r, 400));
-      showGate('gateWaiting');
-      startVerifyPolling();
-      return;
+    /* 3) تنظيف أي حساب auth معلّق (بدون متجر) */
+    if (auth.currentUser) {
+      if (auth.currentUser.emailVerified) {
+        // حساب فعّال → وجّهه لصفحة الدخول
+        updateGateStep('لديك حساب فعّال — جارٍ التوجيه...');
+        try { await auth.signOut(); } catch(e){}
+        window.location.href = 'a.html?already=1';
+        return;
+      }
+      // حساب معلّق: تحقق إن كان له متجر فعلاً
+      try {
+        const snap = await db.collection(STORES).where('owner_uid', '==', auth.currentUser.uid).limit(1).get();
+        if (!snap.empty) {
+          // له متجر فعلاً — وجّهه لصفحة a.html ليكمل التحقق
+          updateGateStep('لديك متجر — جارٍ التوجيه...');
+          try { await auth.signOut(); } catch(e){}
+          window.location.href = 'a.html?verify_pending=1';
+          return;
+        }
+        // لا متجر → احذف الحساب المعلّق
+        await auth.currentUser.delete();
+      } catch (e) {
+        try { await auth.signOut(); } catch(_){}
+      }
     }
 
-    /* 4) إذا يوجد مستخدم مفعّل → وجّهه إلى a.html */
-    if (auth.currentUser && auth.currentUser.emailVerified) {
-      updateGateStep('لديك حساب — جارٍ التوجيه...');
-      await auth.signOut();
-      window.location.href = 'a.html?already=1';
-      return;
-    }
-
-    /* 5) الجديد → عرض النموذج */
+    /* 4) كل شيء نظيف → اعرض النموذج */
     updateGateStep('جاهز للتسجيل ✅');
     await new Promise(r => setTimeout(r, 250));
     showGate('appContainer');
@@ -1670,7 +1676,7 @@ async function bootstrap() {
 }
 
 document.addEventListener('DOMContentLoaded', bootstrap);
-console.log('[BZR] signup v7.0.0 — device_registry + email verify ✅');
+console.log('[BZR] signup v7.1.0 — نموذج أولاً، تحقق بعد الإنشاء ✅');
 </script>
 
 </body>
