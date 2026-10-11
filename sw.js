@@ -38,7 +38,22 @@ try {
   });
 } catch (e) { console.warn('[SW] FCM init failed (non-fatal):', e); }
 
-const STATIC_ASSETS = ['./', './index.html', './offline.html', './manifest.json', './styles.css', './app.js','onboarding.html',];
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/onboarding.html',
+  '/manifest.json',
+  '/sw.js',
+  '/js/core.js',
+  '/js/store-limits.js',
+  '/js/data.js',
+  '/js/ui.js',
+  '/js/app.js',
+  '/privacy.html',
+'/terms.html',
+'/about.html'
+
+];
 
 function shouldBypass(url) {
   const h = url.hostname;
