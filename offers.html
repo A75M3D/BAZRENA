@@ -5,28 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <meta name="theme-color" content="#FF7A00">
 
-<meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  base-uri 'self';
-  object-src 'none';
-  frame-ancestors 'none';
-  form-action 'self' https://wa.me;
-  img-src 'self' data: https://i.ibb.co;
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
-  font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
-  script-src 'self' 'unsafe-inline';
-  connect-src 'self';
-  upgrade-insecure-requests;
-">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://wa.me; img-src 'self' data: https://i.ibb.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; upgrade-insecure-requests;">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-<meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=()">
-<meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
-
-<meta name="description" content="باقات BranZar لأصحاب البراندات والمتاجر — أدوات احترافية، توثيق رسمي، ولوحة تحكم كاملة.">
+<meta name="description" content="باقات BranZar لأصحاب البراندات والمتاجر — متجر احترافي، توثيق رسمي، وحضور قوي على كل المنصات.">
 <title>الباقات والأسعار | BranZar برانزار</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://i.ibb.co">
@@ -51,7 +35,6 @@
   --shadow-sm:0 2px 8px rgba(15,23,42,.05);
   --shadow-md:0 8px 24px -6px rgba(15,23,42,.08);
   --shadow-lg:0 24px 48px -16px rgba(15,23,42,.12);
-  --shadow-orange:0 12px 32px -8px rgba(255,122,0,.4);
   --r-sm:12px;--r-md:18px;--r-lg:26px;--r-xl:34px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Cairo',system-ui,-apple-system,sans-serif}
@@ -112,7 +95,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 @media(min-width:640px){.sec-head p{font-size:.98rem}}
 .sec-kicker{display:inline-flex;align-items:center;gap:6px;background:var(--orange-soft);color:var(--orange);padding:5px 14px;border-radius:100px;font-size:.72rem;font-weight:900;margin-bottom:14px;border:1px solid var(--orange-3)}
 
-/* VISITOR STRIP (زر بسيط جداً — بدون كلام عن "الزبون") */
+/* VISITOR STRIP */
 .visitor-strip{padding:14px 16px;background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .vs-in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
 .vs-in span{font-size:.82rem;color:var(--text-2);font-weight:700}
@@ -211,20 +194,76 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 .verify-note i{color:#5AC8FA}
 
 /* PRICING */
-.pricing{padding:60px 16px 20px;max-width:1280px;margin:0 auto}
-.plans{display:grid;grid-template-columns:1fr;gap:18px}
-@media(min-width:640px){.plans{grid-template-columns:repeat(2,1fr);gap:20px}}
-@media(min-width:1024px){.plans{grid-template-columns:repeat(4,1fr);gap:18px}}
-.plan{position:relative;background:#fff;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:26px 20px 22px;display:flex;flex-direction:column;transition:all .35s cubic-bezier(.4,0,.2,1);overflow:hidden;box-shadow:var(--shadow-sm)}
-.plan::before{content:'';position:absolute;top:0;left:0;right:0;height:0;background:var(--orange-gradient);transition:height .3s}
+.pricing{padding:70px 16px 20px;max-width:1280px;margin:0 auto}
+.plans{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:640px){.plans{grid-template-columns:repeat(2,1fr);gap:22px}}
+@media(min-width:1024px){.plans{grid-template-columns:repeat(4,1fr);gap:18px;align-items:start}}
+
+.plan{position:relative;background:#fff;border:1.5px solid var(--border);border-radius:var(--r-lg);padding:26px 20px 22px;display:flex;flex-direction:column;transition:all .35s cubic-bezier(.4,0,.2,1);box-shadow:var(--shadow-sm);overflow:visible}
 .plan:hover{border-color:var(--orange-3);transform:translateY(-4px);box-shadow:0 20px 40px -12px rgba(15,23,42,.15)}
-.plan:hover::before{height:3px}
-.plan.featured{background:linear-gradient(180deg,#FFFFFF 0%,#FFFCF7 100%);border:2px solid var(--orange);box-shadow:0 20px 50px -14px var(--orange-glow),0 0 0 4px rgba(255,122,0,.06);transform:scale(1.015);z-index:2}
-.plan.featured::before{height:4px}
-.plan.featured:hover{transform:translateY(-6px) scale(1.015)}
-.plan-badge{position:absolute;top:-13px;right:20px;display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:100px;background:var(--gold-gradient);color:#fff;font-size:.68rem;font-weight:900;letter-spacing:.3px;box-shadow:0 10px 24px -6px rgba(245,179,1,.65);animation:badgeGlow 2.5s ease-in-out infinite;z-index:3}
-@keyframes badgeGlow{0%,100%{box-shadow:0 10px 24px -6px rgba(245,179,1,.65)}50%{box-shadow:0 14px 32px -4px rgba(245,179,1,.95)}}
-.plan-badge i{font-size:.65rem}
+
+.plan.featured{
+  background:linear-gradient(180deg,#FFFFFF 0%,#FFFCF7 100%);
+  border:2px solid var(--orange);
+  box-shadow:0 24px 56px -18px var(--orange-glow),0 0 0 5px rgba(255,122,0,.08);
+  transform:scale(1.02);
+  z-index:3;
+  margin-top:20px;
+}
+@media(min-width:1024px){
+  .plan.featured{
+    transform:scale(1.04);
+    margin-top:28px;
+    padding:34px 22px 26px;
+  }
+}
+.plan.featured:hover{transform:scale(1.02) translateY(-4px)}
+@media(min-width:1024px){.plan.featured:hover{transform:scale(1.04) translateY(-6px)}}
+
+.plan-badge{
+  position:absolute;
+  top:-16px;
+  left:50%;
+  transform:translateX(-50%);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 18px;
+  border-radius:100px;
+  background:linear-gradient(135deg,#F5B301 0%,#FFD966 50%,#F5B301 100%);
+  background-size:200% 100%;
+  color:#7C4A00;
+  font-size:.78rem;
+  font-weight:900;
+  letter-spacing:.2px;
+  white-space:nowrap;
+  box-shadow:
+    0 10px 24px -6px rgba(245,179,1,.7),
+    0 0 0 3px #fff,
+    0 0 0 5px rgba(245,179,1,.35);
+  animation:badgeShine 3s ease-in-out infinite, badgeFloat 2.5s ease-in-out infinite;
+  z-index:10;
+}
+@keyframes badgeShine{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+@keyframes badgeFloat{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(-3px)}
+}
+.plan-badge i{font-size:.75rem;color:#B45309}
+.plan-badge::before{
+  content:'';
+  position:absolute;
+  inset:-8px;
+  border-radius:100px;
+  background:radial-gradient(circle,rgba(245,179,1,.3) 0%,transparent 70%);
+  z-index:-1;
+  animation:badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+
 .plan-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff;margin-bottom:14px;box-shadow:0 10px 22px -8px rgba(15,23,42,.25)}
 .plan-icon.monthly{background:linear-gradient(135deg,#3B82F6 0%,#60A5FA 100%);box-shadow:0 10px 22px -8px rgba(59,130,246,.5)}
 .plan-icon.quarterly{background:linear-gradient(135deg,#8B5CF6 0%,#A78BFA 100%);box-shadow:0 10px 22px -8px rgba(139,92,246,.5)}
@@ -251,20 +290,21 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 .plan-cta:hover{transform:translateY(-2px);box-shadow:0 18px 36px -8px rgba(37,211,102,.75)}
 .plan-cta i,.plan-cta span{position:relative;z-index:2}
 .plan-cta i{font-size:1.15rem}
-.plan.featured .plan-cta{background:var(--orange-gradient);box-shadow:0 12px 28px -8px var(--orange-glow)}
+.plan.featured .plan-cta{background:var(--orange-gradient);box-shadow:0 14px 32px -8px var(--orange-glow)}
+.plan.featured .plan-cta:hover{box-shadow:0 22px 44px -8px var(--orange-glow)}
 
 /* COMPARISON */
 .compare{background:linear-gradient(180deg,#FBFBFD 0%,#F4F5F8 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.compare-wrap{max-width:820px;margin:0 auto;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-lg);border:1.5px solid var(--border)}
+.compare-wrap{max-width:880px;margin:0 auto;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-lg);border:1.5px solid var(--border)}
 .compare-head{display:grid;grid-template-columns:1fr 1fr;background:#fff}
-.compare-head div{padding:18px 14px;text-align:center;font-weight:900;font-size:.88rem;letter-spacing:-.2px;display:flex;align-items:center;justify-content:center;gap:8px}
-@media(min-width:640px){.compare-head div{padding:20px;font-size:1rem}}
+.compare-head div{padding:18px 12px;text-align:center;font-weight:900;font-size:.82rem;letter-spacing:-.2px;display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.3}
+@media(min-width:640px){.compare-head div{padding:20px;font-size:.98rem}}
 .compare-head .ch-bad{color:#991B1B;background:linear-gradient(180deg,#FFF5F5,#FFFFFF);border-inline-end:1px solid var(--border)}
 .compare-head .ch-good{color:#047857;background:linear-gradient(180deg,#F0FDF4,#FFFFFF)}
-.compare-head i{font-size:.85rem}
+.compare-head i{font-size:.9rem;flex-shrink:0}
 .compare-row{display:grid;grid-template-columns:1fr 1fr;background:#fff;border-top:1px solid var(--border)}
-.compare-row .cr-cell{padding:16px 14px;font-size:.82rem;font-weight:700;line-height:1.6;display:flex;align-items:center;gap:9px;color:var(--text)}
-@media(min-width:640px){.compare-row .cr-cell{padding:18px 20px;font-size:.88rem}}
+.compare-row .cr-cell{padding:16px 12px;font-size:.78rem;font-weight:700;line-height:1.6;display:flex;align-items:center;gap:9px;color:var(--text)}
+@media(min-width:640px){.compare-row .cr-cell{padding:18px 20px;font-size:.86rem}}
 .compare-row .cr-bad{border-inline-end:1px solid var(--border);color:#64748B;background:rgba(254,226,226,.15)}
 .compare-row .cr-bad i{color:#EF4444;font-size:.85rem;flex-shrink:0}
 .compare-row .cr-good{color:var(--text);background:rgba(220,252,231,.25)}
@@ -311,18 +351,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 .community-note{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.75rem;color:var(--text-3);font-weight:700;justify-content:center}
 @media(min-width:768px){.community-note{justify-content:flex-start}}
 .community-note i{color:#25D366;font-size:.8rem}
-
-/* SECURITY */
-.security-sec{padding:50px 16px;background:linear-gradient(180deg,#F4F5F8 0%,#FBFBFD 100%);border-top:1px solid var(--border)}
-.security-in{max-width:1100px;margin:0 auto}
-.security-grid{display:grid;grid-template-columns:1fr;gap:14px}
-@media(min-width:640px){.security-grid{grid-template-columns:repeat(2,1fr);gap:16px}}
-@media(min-width:1024px){.security-grid{grid-template-columns:repeat(4,1fr)}}
-.sec-item{background:#fff;border:1.5px solid var(--border);border-radius:var(--r-md);padding:22px 18px;transition:all .28s;position:relative;overflow:hidden}
-.sec-item:hover{border-color:#86EFAC;box-shadow:0 12px 32px -12px rgba(16,185,129,.22);transform:translateY(-3px)}
-.sec-item-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#DCFCE7,#BBF7D0);color:#047857;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:12px;border:1px solid #86EFAC}
-.sec-item h4{font-size:.94rem;font-weight:900;color:var(--text);margin-bottom:6px}
-.sec-item p{font-size:.78rem;color:var(--text-2);font-weight:600;line-height:1.7}
 
 /* FAQ */
 .faq-sec{padding:50px 16px;max-width:760px;margin:0 auto}
@@ -374,7 +402,16 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 @keyframes badgePop{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
 @media(max-width:640px){.float-wa{top:auto;bottom:88px;left:16px;transform:none;width:56px;height:56px;font-size:1.6rem}.float-wa:hover{transform:scale(1.1)}}
 
-@media(max-width:380px){.hero h1{font-size:1.65rem}.hero-logo-wrap{width:140px;height:140px;margin-bottom:22px}.plan-price .num{font-size:2.4rem}.plan{padding:22px 16px 18px}.plan-name{font-size:1rem}.plan-feats li{font-size:.8rem}.vb-inner i{font-size:4.5rem}}
+@media(max-width:380px){
+  .hero h1{font-size:1.65rem}
+  .hero-logo-wrap{width:140px;height:140px;margin-bottom:22px}
+  .plan-price .num{font-size:2.4rem}
+  .plan{padding:22px 16px 18px}
+  .plan-name{font-size:1rem}
+  .plan-feats li{font-size:.8rem}
+  .vb-inner i{font-size:4.5rem}
+  .plan-badge{font-size:.7rem;padding:7px 14px}
+}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-offset:3px;border-radius:8px}
 </style>
@@ -395,7 +432,7 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
     </a>
     <a href="https://wa.me/249908280115?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%F0%9F%91%8B%0A%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%A5%D8%AD%D8%AF%D9%89%20%D8%A8%D8%A7%D9%82%D8%A7%D8%AA%20BranZar." target="_blank" rel="noopener noreferrer" class="nav-cta">
       <i class="fab fa-whatsapp" aria-hidden="true"></i>
-      <span>اختر باقتك</span>
+      <span>الباقات</span>
     </a>
   </div>
 </nav>
@@ -415,12 +452,12 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
     </div>
 
     <h1>
-      حضور تجاري احترافي<br>
-      <span class="grad">يبدأ من هنا</span>
+      براندك يستحق<br>
+      <span class="grad">متجراً احترافياً</span>
     </h1>
 
     <p class="hero-sub">
-      BranZar يمنحك <strong>أدوات المتاجر الكبرى</strong> — تصميم راقٍ، لوحة تحكم كاملة، فواتير احترافية، وتوثيق رسمي لمتجرك.
+      بدلاً من نشر الصور على فيسبوك وواتساب — امتلك <strong>متجراً كاملاً</strong> بهوية راقية، لوحة تحكم، فواتير، وتوثيق رسمي.
     </p>
 
     <div class="hero-feats">
@@ -433,14 +470,14 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
         <span>توثيق رسمي</span>
       </div>
       <div class="hero-feat">
-        <i class="fas fa-headset" aria-hidden="true"></i>
-        <span>دعم مباشر</span>
+        <i class="fas fa-share-nodes" aria-hidden="true"></i>
+        <span>حضور على كل المنصات</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════ VISITOR STRIP (رابط بسيط للمتاجر — بدون كلام عن الزبون) ═══════ -->
+<!-- ═══════ VISITOR STRIP ═══════ -->
 <section class="visitor-strip">
   <div class="vs-in">
     <span>هل تبحث عن منتجات؟</span>
@@ -451,44 +488,46 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
   </div>
 </section>
 
-<!-- ═══════ PAIN vs GAIN (بلغة التاجر لا الزبون) ═══════ -->
+<!-- ═══════ PAIN vs GAIN ═══════ -->
 <section class="section pain-pleasure">
   <div class="sec-head">
     <div class="sec-kicker"><i class="fas fa-chart-simple" aria-hidden="true"></i> الفرق واضح من النظرة الأولى</div>
-    <h2>التاجر العادي يعمل بجهد<br>... والتاجر المحترف يعمل <span style="color:var(--orange)">بأدوات</span></h2>
+    <h2>نشر صور على فيسبوك ≠<br>امتلاك <span style="color:var(--orange)">متجر احترافي</span></h2>
     <p>الفرق بين من يبدأ من الصفر، ومن يبدأ من مكان متقدم — <strong>ليس في الحظ، بل في الأدوات</strong>.</p>
   </div>
 
   <div class="pp-grid">
     <div class="pp-card pain">
-      <div class="pp-tag"><i class="fas fa-circle-minus" aria-hidden="true"></i> بدون BranZar</div>
+      <div class="pp-tag"><i class="fas fa-circle-minus" aria-hidden="true"></i> بيع على فيسبوك وواتساب</div>
       <h3>ما الذي ينقصك فعلاً؟</h3>
       <ul class="pp-list">
-        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>لا توجد <strong>هوية بصرية</strong> تليق بمنتجاتك</span></li>
-        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>عرض منتجاتك في قوائم عادية لا تميّزك</span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>صور متناثرة في منشورات — <strong>تضيع بعد يومين</strong></span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>لا توجد <strong>هوية بصرية</strong> تجمع منتجاتك</span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>كل استفسار يبدأ من الصفر: "بكم؟ متوفر؟"</span></li>
         <li><i class="fas fa-xmark" aria-hidden="true"></i><span>لا توجد <strong>أدوات تحليل</strong> لمعرفة ما يتحرك</span></li>
         <li><i class="fas fa-xmark" aria-hidden="true"></i><span>فواتير عشوائية أو غير موجودة أصلاً</span></li>
-        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>عمل منفرد — بدون <strong>شبكة تجار</strong> تتبادل معها الخبرة</span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>لا يوجد رابط واحد تشاركه في كل مكان</span></li>
       </ul>
-      <div class="pp-foot"><i class="fas fa-circle-info" aria-hidden="true"></i> نقاط تتكرر في ملاحظات تجار السوق</div>
+      <div class="pp-foot"><i class="fas fa-circle-info" aria-hidden="true"></i> طريقة تقليدية — ممتازة للبداية فقط</div>
     </div>
 
     <div class="pp-card gain">
       <div class="pp-tag"><i class="fas fa-circle-plus" aria-hidden="true"></i> مع BranZar</div>
       <h3>ما الذي تكسبه كتاجر؟</h3>
       <ul class="pp-list">
+        <li><i class="fas fa-check" aria-hidden="true"></i><span><strong>متجر واحد</strong> يجمع كل منتجاتك منظّمة</span></li>
         <li><i class="fas fa-check" aria-hidden="true"></i><span><strong>هوية بصرية احترافية</strong> بمظهر براند عالمي</span></li>
-        <li><i class="fas fa-check" aria-hidden="true"></i><span>عرض منتجاتك بطريقة تليق بجودتها</span></li>
+        <li><i class="fas fa-check" aria-hidden="true"></i><span>رابط واحد تشاركه في <strong>إنستغرام، فيسبوك، واتساب، تيك توك</strong></span></li>
         <li><i class="fas fa-check" aria-hidden="true"></i><span><strong>لوحة تحكم كاملة</strong> تعطيك الأرقام والقرارات</span></li>
         <li><i class="fas fa-check" aria-hidden="true"></i><span>فواتير احترافية بضغطة زر</span></li>
         <li><i class="fas fa-check" aria-hidden="true"></i><span>انضمام لشبكة تجار BranZar وتبادل الخبرات</span></li>
       </ul>
-      <div class="pp-foot"><i class="fas fa-lightbulb" aria-hidden="true"></i> أدوات حقيقية — لا وعود بلا أساس</div>
+      <div class="pp-foot"><i class="fas fa-lightbulb" aria-hidden="true"></i> طريقة احترافية — تصنع حضوراً دائماً</div>
     </div>
   </div>
 </section>
 
-<!-- ═══════ BENEFITS (كلها عن التاجر وأدواته) ═══════ -->
+<!-- ═══════ BENEFITS ═══════ -->
 <section class="section" style="padding-top:60px">
   <div class="sec-head">
     <div class="sec-kicker"><i class="fas fa-gem" aria-hidden="true"></i> لماذا يستثمر التجار الناجحون؟</div>
@@ -500,15 +539,15 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
     <div class="benefit">
       <div class="benefit-icon i1"><i class="fas fa-store" aria-hidden="true"></i></div>
       <h3>متجر بهوية تليق بك</h3>
-      <p>لا تعرض منتجاتك في قائمة عادية. BranZar يمنحك <strong>متجراً بهوية راقية</strong> — تصميم مدروس، تنسيق احترافي، وتجربة تتشرف بعرض منتجاتك.</p>
+      <p>لا تعرض منتجاتك في منشورات متناثرة. BranZar يمنحك <strong>متجراً بهوية راقية</strong> — تصميم مدروس، تنسيق احترافي، وتجربة تشرّف براندك.</p>
       <div class="benefit-note"><i class="fas fa-palette" aria-hidden="true"></i> هوية بصرية متكاملة</div>
     </div>
 
     <div class="benefit">
-      <div class="benefit-icon i2"><i class="fas fa-crown" aria-hidden="true"></i></div>
-      <h3>أدوات المتاجر الكبرى</h3>
-      <p>لوحة تحكم كاملة، إدارة فئات ومنتجات، تقارير، فواتير، وتخصيصات — كل ما تحتاجه <strong>كصاحب براند حقيقي</strong> في لوحة واحدة.</p>
-      <div class="benefit-note"><i class="fas fa-sliders" aria-hidden="true"></i> تحكم كامل بلا تعقيد</div>
+      <div class="benefit-icon i2"><i class="fas fa-share-nodes" aria-hidden="true"></i></div>
+      <h3>حضور احترافي على كل المنصات</h3>
+      <p>رابط واحد لمتجرك تشاركه على <strong>فيسبوك، إنستغرام، واتساب، تيك توك</strong> — بمظهر احترافي يليق ببراندك، لا مجرد صور متناثرة.</p>
+      <div class="benefit-note"><i class="fas fa-link" aria-hidden="true"></i> رابط واحد لكل المنصات</div>
     </div>
 
     <div class="benefit">
@@ -522,7 +561,7 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
       <div class="benefit-icon i4"><i class="fas fa-file-invoice" aria-hidden="true"></i></div>
       <h3>فواتير احترافية باسمك</h3>
       <p>كل فاتورة تصدر من متجرك تحمل <strong>هويتك التجارية</strong> — بضغطة زر، وبمظهر احترافي يليق بتعاملك مع عملائك.</p>
-      <div class="benefit-note"><i class="fas fa-print" aria-hidden="true"></i> تعامل تجاري منظم</div>
+      <div class="benefit-note"><i class="fas fa-print" aria-hidden="true"></i> تعامل تجاري منظّم</div>
     </div>
 
     <div class="benefit">
@@ -541,7 +580,7 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
   </div>
 </section>
 
-<!-- ═══════ VERIFICATION (بلغة الجودة لا "ثقة الزبون") ═══════ -->
+<!-- ═══════ VERIFICATION ═══════ -->
 <section class="verify-sec">
   <div class="verify-in">
     <div class="verify-head">
@@ -727,19 +766,27 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
 <section class="section compare" style="max-width:100%;padding:60px 16px">
   <div class="sec-head">
     <div class="sec-kicker"><i class="fas fa-scale-balanced" aria-hidden="true"></i> مقارنة صادقة</div>
-    <h2>الفرق واضح... قبل أن تجرّب</h2>
-    <p>ما الذي يتغير فعلياً عندما تنضم إلى BranZar؟</p>
+    <h2>البيع على فيسبوك وواتساب<br>vs. <span style="color:var(--orange)">متجر BranZar</span></h2>
+    <p>الفرق واضح — قبل أن تجرّب</p>
   </div>
 
   <div class="compare-wrap">
     <div class="compare-head">
-      <div class="ch-bad"><i class="fas fa-circle-xmark" aria-hidden="true"></i> بدون BranZar</div>
-      <div class="ch-good"><i class="fas fa-circle-check" aria-hidden="true"></i> مع BranZar</div>
+      <div class="ch-bad"><i class="fas fa-comment-dots" aria-hidden="true"></i> فيسبوك / واتساب</div>
+      <div class="ch-good"><i class="fas fa-store" aria-hidden="true"></i> متجر BranZar</div>
     </div>
 
     <div class="compare-row">
-      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>صفحة عادية بلا هوية</span></div>
-      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>متجر احترافي</strong> بمظهر براند</span></div>
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>صور متناثرة في منشورات</span></div>
+      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>متجر منظم</strong> بهوية بصرية كاملة</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>المنشور يضيع بعد يومين</span></div>
+      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>رابط دائم</strong> يعمل في كل وقت</span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>لا يوجد رابط رسمي لمتجرك</span></div>
+      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>رابط واحد</strong> لإنستغرام، فيسبوك، تيك توك</span></div>
     </div>
     <div class="compare-row">
       <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>لا يوجد توثيق رسمي</span></div>
@@ -750,16 +797,20 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
       <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>لوحة تحكم</strong> تعطيك الأرقام</span></div>
     </div>
     <div class="compare-row">
-      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>فواتير عشوائية أو بدونها</span></div>
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>فواتير يدوية أو غير موجودة</span></div>
       <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>فواتير احترافية</strong> بضغطة زر</span></div>
     </div>
     <div class="compare-row">
-      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>لا يوجد متابعة أو تحليل</span></div>
-      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>تقارير ومتابعة</strong> مستمرة</span></div>
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>"بكم؟ متوفر؟" — كل مرة من الصفر</span></div>
+      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span>أسعار وتفاصيل <strong>واضحة في المتجر</strong></span></div>
+    </div>
+    <div class="compare-row">
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>مظهر عادي لا يميّزك</span></div>
+      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>مظهر براند احترافي</strong> يليق بك</span></div>
     </div>
     <div class="compare-row">
       <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>عمل منفرد — بدون مجتمع</span></div>
-      <div class="cr-cell good"><i class="fas fa-check" aria-hidden="true"></i><span>انضمام لـ <strong>شبكة التجار</strong></span></div>
+      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span>انضمام لـ <strong>شبكة التجار</strong></span></div>
     </div>
   </div>
 </section>
@@ -823,40 +874,6 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
   </div>
 </section>
 
-<!-- ═══════ SECURITY ═══════ -->
-<section class="security-sec">
-  <div class="security-in">
-    <div class="sec-head">
-      <div class="sec-kicker"><i class="fas fa-lock" aria-hidden="true"></i> الأمان في BranZar</div>
-      <h2>بياناتك ومتجرك محميّان</h2>
-      <p>نطبّق ممارسات أمان حديثة لحماية تجارنا وزبائنهم</p>
-    </div>
-
-    <div class="security-grid">
-      <div class="sec-item">
-        <div class="sec-item-icon"><i class="fas fa-shield-halved" aria-hidden="true"></i></div>
-        <h4>اتصال مشفّر HTTPS</h4>
-        <p>جميع البيانات بين متصفحك وخوادمنا تُنقل عبر قناة مشفّرة بالكامل</p>
-      </div>
-      <div class="sec-item">
-        <div class="sec-item-icon"><i class="fas fa-user-shield" aria-hidden="true"></i></div>
-        <h4>حماية من الاختراق</h4>
-        <p>رؤوس أمان صارمة (CSP، X-Frame-Options) تحمي من Clickjacking و XSS</p>
-      </div>
-      <div class="sec-item">
-        <div class="sec-item-icon"><i class="fas fa-database" aria-hidden="true"></i></div>
-        <h4>عزل البيانات</h4>
-        <p>بيانات كل متجر معزولة عن الآخرين — لا وصول متقاطع بين التجار</p>
-      </div>
-      <div class="sec-item">
-        <div class="sec-item-icon"><i class="fas fa-lock" aria-hidden="true"></i></div>
-        <h4>خصوصية محفوظة</h4>
-        <p>لا نشارك بياناتك مع أي طرف ثالث. سياسة خصوصية واضحة وشفافة</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══════ FAQ ═══════ -->
 <section class="faq-sec">
   <div class="sec-head">
@@ -910,6 +927,18 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
       <div class="faq-a">
         <div class="faq-a-in">
           تواصل معنا عبر واتساب، وسيقوم فريقنا بإرشادك خلال الدفع الآمن، ثم يتم التفعيل <strong>فوراً</strong> خلال دقائق.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq">
+      <button class="faq-q" type="button" aria-expanded="false">
+        <span>هل يمكنني مشاركة رابط متجري على السوشيال ميديا؟</span>
+        <span class="ci"><i class="fas fa-chevron-down" aria-hidden="true"></i></span>
+      </button>
+      <div class="faq-a">
+        <div class="faq-a-in">
+          نعم — بل هذا هو الهدف! ستحصل على <strong>رابط واحد لمتجرك</strong> تشاركه في البايو على إنستغرام، وفيسبوك، وتيك توك، وواتساب. أينما ذهب جمهورك، يجد متجرك بمظهر احترافي.
         </div>
       </div>
     </div>
@@ -982,28 +1011,21 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
 <script>
 'use strict';
 
-/* ═══════════════════════════════════════════════════════════════
-   🔐 SECURITY UTILITIES
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════ SECURITY ═══════ */
 const ALLOWED_ORIGINS = ['https://wa.me', 'https://chat.whatsapp.com', 'https://i.ibb.co'];
-
 function isSafeUrl(url){
   try{
     const u = new URL(url, window.location.origin);
     return ALLOWED_ORIGINS.some(o => u.origin === o) || u.origin === window.location.origin;
   }catch{ return false; }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('a[href]').forEach(a => {
     const href = a.getAttribute('href');
     if(!href) return;
     if(href.startsWith('#')) return;
     if((href.startsWith('http://') || href.startsWith('https://')) && !isSafeUrl(href)){
-      console.warn('[Security] Blocked unsafe link:', href);
-      a.removeAttribute('href');
-      a.style.pointerEvents = 'none';
-      a.style.opacity = '.5';
+      a.removeAttribute('href'); a.style.pointerEvents = 'none'; a.style.opacity = '.5';
     }
     if(href.startsWith('http')){
       a.setAttribute('rel', 'noopener noreferrer nofollow');
@@ -1012,46 +1034,30 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   🖼️ Image Fallback
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════ IMAGE FALLBACK ═══════ */
 const FALLBACK_SVG = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
-  '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-  '<stop offset="0%" stop-color="#FF7A00"/><stop offset="100%" stop-color="#FFA64D"/>' +
-  '</linearGradient></defs>' +
-  '<circle cx="50" cy="50" r="50" fill="url(#g)"/>' +
-  '<path d="M30 45 L50 28 L70 45 L70 70 L30 70 Z" fill="white" opacity="0.95"/>' +
-  '</svg>'
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF7A00"/><stop offset="100%" stop-color="#FFA64D"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="url(#g)"/><path d="M30 45 L50 28 L70 45 L70 70 L30 70 Z" fill="white" opacity="0.95"/></svg>'
 );
-
 function safeFallback(img){
   if(!img || img.dataset.fb === '1') return;
-  img.dataset.fb = '1';
-  img.src = FALLBACK_SVG;
-  img.onerror = null;
+  img.dataset.fb = '1'; img.src = FALLBACK_SVG; img.onerror = null;
 }
-
 document.querySelectorAll('img').forEach(img => {
   img.addEventListener('error', () => safeFallback(img), { once: true });
   if(img.complete && img.naturalWidth === 0 && img.src) safeFallback(img);
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   📂 FAQ Accordion
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════ FAQ ═══════ */
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.addEventListener('click', () => {
     const item = btn.closest('.faq');
     if(!item) return;
     const wasOpen = item.classList.contains('open');
-
     document.querySelectorAll('.faq').forEach(i => {
       i.classList.remove('open');
       const q = i.querySelector('.faq-q');
       if(q) q.setAttribute('aria-expanded', 'false');
     });
-
     if(!wasOpen){
       item.classList.add('open');
       btn.setAttribute('aria-expanded', 'true');
@@ -1059,9 +1065,7 @@ document.querySelectorAll('.faq-q').forEach(btn => {
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   🎯 Sticky CTA
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════ STICKY ═══════ */
 const stickyCta = document.getElementById('stickyCta');
 if(stickyCta){
   let ticking = false;
@@ -1072,29 +1076,11 @@ if(stickyCta){
     ticking = false;
   };
   window.addEventListener('scroll', () => {
-    if(!ticking){
-      requestAnimationFrame(onScroll);
-      ticking = true;
-    }
+    if(!ticking){ requestAnimationFrame(onScroll); ticking = true; }
   }, { passive: true });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   📊 Analytics
-   ═══════════════════════════════════════════════════════════════ */
-const PLAN_NAMES = ['monthly','quarterly','half-year','yearly'];
-document.querySelectorAll('.plan-cta').forEach((btn, i) => {
-  btn.addEventListener('click', () => {
-    if(typeof window.gtag === 'function'){
-      window.gtag('event', 'subscribe_click', { plan: PLAN_NAMES[i] || 'unknown' });
-    }
-  });
-});
-
-console.log(
-  '%c🛡️ BranZar',
-  'color:#FF7A00;font-weight:900;font-size:16px;padding:6px 12px;background:#FFF7ED;border-radius:8px;border:1px solid #FFD9B3'
-);
+console.log('%c🛡️ BranZar','color:#FF7A00;font-weight:900;font-size:16px;padding:6px 12px;background:#FFF7ED;border-radius:8px;border:1px solid #FFD9B3');
 </script>
 
 </body>
