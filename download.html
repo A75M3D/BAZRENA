@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حمّل تطبيق BranZar الآن – أنشئ متجرك مجاناً</title>
+<meta name="description" content="حمّل تطبيق BranZar الرسمي وابدأ نشاطك التجاري مجاناً. قوّي حضورك الرقمي وضاعف مبيعاتك اليوم.">
+<meta name="theme-color" content="#FF7A00">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" href="https://cdn.jsdelivr.net/gh/A75M3D/BAZRENA@main/file_0000000072408210b10e441c56a8683e.png">
+
+<style>
+:root{
+  --brand:#FF7A00;
+  --brand-dark:#E56A00;
+  --brand-deep:#C45700;
+  --brand-light:#FFB15C;
+  --brand-soft:#FFF4E8;
+  --dark:#0B1220;
+  --text:#0F172A;
+  --text-soft:#5A6B85;
+  --border:#F0E4D6;
+  --wa:#25D366;
+  --wa-dark:#128C7E;
+  --fb:#1877F2;
+  --fb-dark:#0D5BC7;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Cairo',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:linear-gradient(180deg,#FFF9F2 0%,#FFFFFF 40%,#FFF4E8 100%);
+  color:var(--text);
+  line-height:1.7;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:32px 20px 40px;
+  overflow-x:hidden;
+  position:relative;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+/* خلفيات هالات */
+body::before{
+  content:'';
+  position:fixed;
+  top:-45%;left:50%;transform:translateX(-50%);
+  width:1000px;height:1000px;
+  background:radial-gradient(circle,rgba(255,122,0,.18) 0%,transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+body::after{
+  content:'';
+  position:fixed;
+  bottom:-45%;right:-25%;
+  width:700px;height:700px;
+  background:radial-gradient(circle,rgba(255,122,0,.15) 0%,transparent 65%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* الحلقات الزخرفية */
+.ring{
+  position:fixed;
+  border-radius:50%;
+  border:2px dashed rgba(255,122,0,.15);
+  pointer-events:none;
+  z-index:0;
+}
+.ring.r1{width:280px;height:280px;top:8%;left:-80px;animation:spin 40s linear infinite}
+.ring.r2{width:180px;height:180px;bottom:10%;right:-60px;animation:spin 30s linear infinite reverse}
+.ring.r3{width:120px;height:120px;top:60%;left:5%;animation:spin 25s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ Wrapper رئيسي ============ */
+.wrapper{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:520px;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+/* ============================================================
+   البطاقة الرئيسية
+   ============================================================ */
+.card{
+  position:relative;
+  background:#FFFFFF;
+  border:1px solid var(--border);
+  border-radius:36px;
+  padding:48px 40px 44px;
+  text-align:center;
+  box-shadow:
+    0 35px 70px -30px rgba(255,122,0,.28),
+    0 15px 30px -20px rgba(15,23,42,.12),
+    0 0 0 1px rgba(255,122,0,.04);
+  cursor:pointer;
+  transition:transform .3s ease;
+}
+.card:hover{transform:translateY(-4px)}
+.card::before{
+  content:'';
+  position:absolute;
+  top:0;left:20%;right:20%;
+  height:4px;
+  background:linear-gradient(90deg,transparent,var(--brand),var(--brand-light),var(--brand),transparent);
+  border-radius:0 0 8px 8px;
+}
+
+/* ====== الأيقونة الدائرية ====== */
+.app-icon{
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  margin:0 auto 24px;
+  object-fit:cover;
+  display:block;
+  background:#fff;
+  padding:10px;
+  box-shadow:
+    0 28px 55px -15px rgba(255,122,0,.45),
+    0 0 0 8px rgba(255,122,0,.10),
+    0 0 0 18px rgba(255,122,0,.04),
+    0 0 0 1px rgba(255,122,0,.08) inset;
+  animation:iconFloat 6s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes iconFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+/* ====== العنوان ====== */
+.title{
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:-.03em;
+  line-height:1.2;
+  margin-bottom:12px;
+  color:var(--dark);
+}
+.title em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 50%,var(--brand-dark) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.hook{
+  font-size:17px;
+  color:var(--text);
+  font-weight:700;
+  line-height:1.65;
+  margin-bottom:10px;
+}
+.hook strong{color:var(--brand-dark);font-weight:900}
+
+.subtitle{
+  font-size:14.5px;
+  color:var(--text-soft);
+  font-weight:500;
+  margin-bottom:26px;
+  line-height:1.75;
+  max-width:400px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* ====== الفوائد ====== */
+.benefits{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:14px;
+  padding:18px 20px;
+  background:linear-gradient(135deg,#FFF9F2 0%,#FFF4E8 100%);
+  border:1px solid #FFE4C7;
+  border-radius:18px;
+  text-align:right;
+  pointer-events:none;
+}
+.benefit{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:14px;
+  font-weight:700;
+  color:var(--text);
+  line-height:1.5;
+}
+.benefit .check{
+  width:22px;height:22px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+  display:grid;place-items:center;
+  color:#fff;
+  flex-shrink:0;
+  box-shadow:0 4px 10px -2px rgba(255,122,0,.5);
+}
+.benefit .check svg{width:12px;height:12px}
+
+/* ====== السهم + التحميل السريع ====== */
+.arrow-cta{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin:4px auto 6px;
+  pointer-events:none;
+  width:fit-content;
+}
+.arrow-text{
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:-.01em;
+  background:linear-gradient(135deg,var(--brand) 0%,var(--brand-light) 50%,var(--brand-dark) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  display:inline-block;
+  margin-bottom:2px;
+  animation:arrowTextGlow 2s ease-in-out infinite;
+  filter:drop-shadow(0 2px 8px rgba(255,122,0,.25));
+}
+@keyframes arrowTextGlow{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-2px) scale(1.03);}
+}
+.arrow-svg{
+  width:38px;height:58px;
+  color:var(--brand);
+  display:block;
+  animation:arrowBounce 1.6s ease-in-out infinite;
+  filter:drop-shadow(0 4px 8px rgba(255,122,0,.35));
+  transform-origin:center top;
+}
+@keyframes arrowBounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(10px)}
+}
+.arrow-svg .arrow-head{
+  animation:headPulse 1.6s ease-in-out infinite;
+  transform-origin:center;
+}
+@keyframes headPulse{
+  0%,100%{opacity:1}
+  50%{opacity:.65}
+}
+
+/* ====== زر Google Play ====== */
+.gp-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  width:100%;
+  background:#000;
+  color:#fff;
+  padding:16px 28px;
+  border-radius:18px;
+  text-decoration:none;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:
+    0 18px 35px -12px rgba(0,0,0,.35),
+    0 0 0 1px rgba(255,255,255,.06) inset;
+  position:relative;
+  overflow:hidden;
+  pointer-events:none;
+}
+.gp-btn::after{
+  content:'';
+  position:absolute;
+  top:0;left:-120%;
+  width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+  animation:shine 3s ease-in-out infinite;
+}
+@keyframes shine{
+  0%,100%{left:-120%}
+  50%{left:120%}
+}
+.gp-icon{width:36px;height:36px;flex-shrink:0}
+.gp-text{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  line-height:1.1;
+  text-align:left;
+  direction:ltr;
+  font-family:-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+.gp-text small{
+  font-size:10.5px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:600;
+  opacity:.75;
+}
+.gp-text strong{
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.01em;
+}
+
+/* ====== شريط الإلحاح ====== */
+.urgency{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:18px;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--brand-deep);
+  padding:7px 14px;
+  background:#FFF4E8;
+  border-radius:100px;
+  border:1px solid #FFE4C7;
+  pointer-events:none;
+}
+.urgency .dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#EF4444;
+  box-shadow:0 0 0 3px rgba(239,68,68,.18);
+  animation:redPulse 1.6s infinite;
+}
+@keyframes redPulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(239,68,68,.18)}
+  50%{box-shadow:0 0 0 6px rgba(239,68,68,.05)}
+}
+
+/* ============================================================
+   قسم لقطات الشاشة
+   ============================================================ */
+.screens-section{
+  background:#FFFFFF;
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:28px 0 22px;
+  box-shadow:
+    0 25px 50px -25px rgba(15,23,42,.12),
+    0 0 0 1px rgba(255,122,0,.03);
+  overflow:hidden;
+}
+.screens-header{
+  text-align:center;
+  padding:0 24px 18px;
+}
+.screens-kicker{
+  display:inline-block;
+  padding:5px 14px;
+  border-radius:100px;
+  background:var(--brand-soft);
+  color:var(--brand-deep);
+  font-weight:800;
+  font-size:11.5px;
+  letter-spacing:.04em;
+  margin-bottom:8px;
+}
+.screens-header h2{
+  font-size:19px;
+  font-weight:900;
+  color:var(--dark);
+  letter-spacing:-.02em;
+  line-height:1.3;
+}
+
+/* 🔻🔻🔻 شريط اللقطات الأفقي 🔻🔻🔻 */
+.screens-track{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding:6px 24px 16px;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.screens-track::-webkit-scrollbar{display:none}
+
+.screen-item{
+  flex:0 0 170px;
+  scroll-snap-align:center;
+  border-radius:20px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:
+    0 12px 26px -12px rgba(15,23,42,.22),
+    0 0 0 1px rgba(0,0,0,.05);
+  transition:transform .3s ease;
+}
+.screen-item:hover{transform:translateY(-4px)}
+.screen-item img{
+  width:100%;
+  aspect-ratio:9/16;
+  object-fit:cover;
+  display:block;
+  background:linear-gradient(135deg,#FFF9F2,#FFF4E8);
+}
+/* 🔺🔺🔺 نهاية شريط اللقطات 🔺🔺🔺 */
+
+/* ============================================================
+   قسم التواصل
+   ============================================================ */
+.social-section{
+  background:#FFFFFF;
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:28px 24px 24px;
+  text-align:center;
+  box-shadow:
+    0 25px 50px -25px rgba(15,23,42,.12),
+    0 0 0 1px rgba(255,122,0,.03);
+}
+.social-header{
+  margin-bottom:18px;
+}
+.social-header .kicker{
+  display:inline-block;
+  padding:5px 14px;
+  border-radius:100px;
+  background:var(--brand-soft);
+  color:var(--brand-deep);
+  font-weight:800;
+  font-size:11.5px;
+  letter-spacing:.04em;
+  margin-bottom:8px;
+}
+.social-header h2{
+  font-size:19px;
+  font-weight:900;
+  color:var(--dark);
+  letter-spacing:-.02em;
+  line-height:1.3;
+  margin-bottom:6px;
+}
+.social-header p{
+  font-size:13.5px;
+  color:var(--text-soft);
+  font-weight:500;
+  line-height:1.7;
+}
+.social-header p strong{
+  color:var(--brand-deep);
+  font-weight:800;
+}
+
+.social-btns{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.social-btn{
+  flex:1 1 130px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:14px 20px;
+  border-radius:16px;
+  text-decoration:none;
+  font-weight:800;
+  font-size:14.5px;
+  color:#fff;
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+  overflow:hidden;
+}
+.social-btn:hover{
+  transform:translateY(-3px);
+}
+.social-btn:active{transform:translateY(-1px)}
+.social-btn svg{
+  width:22px;
+  height:22px;
+  flex-shrink:0;
+}
+.social-btn.whatsapp{
+  background:linear-gradient(135deg,var(--wa),var(--wa-dark));
+  box-shadow:0 12px 24px -10px rgba(37,211,102,.55);
+}
+.social-btn.whatsapp:hover{
+  box-shadow:0 18px 32px -10px rgba(37,211,102,.75);
+}
+.social-btn.facebook{
+  background:linear-gradient(135deg,var(--fb),var(--fb-dark));
+  box-shadow:0 12px 24px -10px rgba(24,119,242,.55);
+}
+.social-btn.facebook:hover{
+  box-shadow:0 18px 32px -10px rgba(24,119,242,.75);
+}
+
+/* ملاحظة أسفل الأزرار */
+.social-note{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px dashed #F0E4D6;
+  font-size:12.5px;
+  color:var(--text-soft);
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+.social-note svg{
+  width:14px;
+  height:14px;
+  color:var(--wa);
+}
+
+/* ====== Responsive ====== */
+@media (max-width:480px){
+  body{padding:20px 14px 32px}
+  .wrapper{gap:22px}
+  .card{
+    padding:38px 24px 34px;
+    border-radius:28px;
+  }
+  .card::before{left:15%;right:15%}
+  .app-icon{
+    width:130px;height:130px;
+    margin-bottom:20px;padding:8px;
+  }
+  .title{font-size:24px;margin-bottom:10px}
+  .hook{font-size:15px;margin-bottom:8px}
+  .subtitle{font-size:13.5px;margin-bottom:22px}
+  .benefits{padding:14px 16px;gap:8px;margin-bottom:12px}
+  .benefit{font-size:13px;gap:8px}
+  .benefit .check{width:20px;height:20px}
+  .benefit .check svg{width:11px;height:11px}
+  .arrow-text{font-size:17px}
+  .arrow-svg{width:32px;height:48px}
+  .gp-btn{padding:14px 22px;border-radius:16px;gap:12px}
+  .gp-icon{width:32px;height:32px}
+  .gp-text strong{font-size:18px}
+  .gp-text small{font-size:10px}
+  .urgency{font-size:11.5px;padding:6px 12px}
+
+  .screens-section{padding:22px 0 18px;border-radius:24px}
+  .screens-header{padding:0 20px 14px}
+  .screens-header h2{font-size:17px}
+  .screens-track{padding:6px 18px 14px;gap:12px}
+  .screen-item{flex:0 0 145px;border-radius:16px}
+
+  .social-section{padding:22px 18px 20px;border-radius:24px}
+  .social-header h2{font-size:17px}
+  .social-header p{font-size:12.5px}
+  .social-btn{padding:12px 16px;font-size:13.5px;gap:8px;border-radius:14px}
+  .social-btn svg{width:20px;height:20px}
+  .social-note{font-size:11.5px}
+
+  .ring.r1{width:200px;height:200px}
+  .ring.r2{width:130px;height:130px}
+  .ring.r3{display:none}
+}
+</style>
+</head>
+<body id="pageBody">
+
+<div class="ring r1"></div>
+<div class="ring r2"></div>
+<div class="ring r3"></div>
+
+<div class="wrapper">
+
+  <!-- ============================================================
+       البطاقة الرئيسية
+       ============================================================ -->
+  <div class="card">
+
+    <img
+      src="https://cdn.jsdelivr.net/gh/A75M3D/BAZRENA@main/file_0000000072408210b10e441c56a8683e.png"
+      alt="أيقونة تطبيق BranZar"
+      class="app-icon">
+
+    <h1 class="title">تطبيق <em>BranZar</em></h1>
+
+    <p class="hook"><strong>حمّل التطبيق الآن</strong> وابدأ رحلتك نحو النجاح</p>
+
+    <p class="subtitle">خطوتك الأولى لبناء مشروعك الرقمي تبدأ من هنا — في أقل من دقيقة</p>
+
+    <div class="benefits">
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        أنشئ متجرك الإلكتروني مجاناً
+      </div>
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        ابدأ نشاطك التجاري فوراً
+      </div>
+      <div class="benefit">
+        <span class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        قوِّ حضورك الرقمي وضاعف مبيعاتك
+      </div>
+    </div>
+
+    <div class="arrow-cta">
+      <span class="arrow-text">التحميل السريع</span>
+      <svg class="arrow-svg" viewBox="0 0 40 70" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none">
+        <path d="M20 6 Q 22 32 20 54" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+        <path class="arrow-head" d="M8 46 L20 60 L32 46" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <a href="#" id="googlePlayBtn" class="gp-btn" target="_blank" rel="noopener" aria-label="تحميل التطبيق من Google Play">
+      <svg class="gp-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="gpBlue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00D2FF"/><stop offset="100%" stop-color="#00A0FF"/></linearGradient>
+          <linearGradient id="gpGreen" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00E676"/><stop offset="100%" stop-color="#00B85C"/></linearGradient>
+          <linearGradient id="gpYellow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#FFB300"/></linearGradient>
+          <linearGradient id="gpRed" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF5252"/><stop offset="100%" stop-color="#E53935"/></linearGradient>
+        </defs>
+        <path fill="url(#gpBlue)" d="M47.5 12.4c-3.9 3.2-6.5 8.1-6.5 14.5v458.2c0 6.4 2.6 11.3 6.5 14.5l.9.7L294 256 47.5 12.4z"/>
+        <path fill="url(#gpGreen)" d="M294 256l62.5-62.5L98.1 9.1c-6.6-3.8-13.7-4.4-20.3-2l216.2 248.9z"/>
+        <path fill="url(#gpYellow)" d="M294 256l62.6 62.5-258.4 146.4c-6.6 2.4-13.8 1.7-20.4-2.1L294 256z"/>
+        <path fill="url(#gpRed)" d="M356.6 193.5l84.8 48c22.3 12.6 22.3 44.3 0 56.9l-84.8 48L293.9 256l62.7-62.5z"/>
+      </svg>
+      <span class="gp-text">
+        <small>GET IT ON</small>
+        <strong>Google Play</strong>
+      </span>
+    </a>
+
+    <div class="urgency">
+      <span class="dot"></span>
+      انطلق اليوم مجاناً — بدون رسوم
+    </div>
+  </div>
+
+  <!-- ============================================================
+       قسم لقطات الشاشة
+       🔻 استبدل روابط الصور الأربع برقم صورك
+       ============================================================ -->
+  <section class="screens-section">
+    <div class="screens-header">
+      <span class="screens-kicker">من داخل التطبيق</span>
+      <h2>لمحة سريعة عن التجربة</h2>
+    </div>
+
+    <div class="screens-track">
+
+      <!-- لقطة 1 -->
+      <div class="screen-item">
+        <img src="https://placehold.co/540x960/FF7A00/FFFFFF?text=الصفحة+الرئيسية&font=cairo" alt="لقطة 1" loading="lazy">
+      </div>
+
+      <!-- لقطة 2 -->
+      <div class="screen-item">
+        <img src="https://placehold.co/540x960/0B1220/FF7A00?text=تصفح+المنتجات&font=cairo" alt="لقطة 2" loading="lazy">
+      </div>
+
+      <!-- لقطة 3 -->
+      <div class="screen-item">
+        <img src="https://placehold.co/540x960/FFB15C/0B1220?text=تفاصيل+المنتج&font=cairo" alt="لقطة 3" loading="lazy">
+      </div>
+
+      <!-- لقطة 4 -->
+      <div class="screen-item">
+        <img src="https://placehold.co/540x960/E56A00/FFFFFF?text=إتمام+الشراء&font=cairo" alt="لقطة 4" loading="lazy">
+      </div>
+
+      <!-- لقطة 5 (اختيارية) -->
+      <div class="screen-item">
+        <img src="https://placehold.co/540x960/FFF4E8/FF7A00?text=لوحة+التحكم&font=cairo" alt="لقطة 5" loading="lazy">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       قسم التواصل الاجتماعي
+       🔻 ضع رقم الواتساب و رابط صفحة الفيسبوك في JavaScript
+       ============================================================ -->
+  <section class="social-section">
+    <div class="social-header">
+      <span class="kicker">تواصل معنا</span>
+      <h2>خدمة العملاء والدعم</h2>
+      <p>فريقنا جاهز لمساعدتك في أي وقت — <strong>على مدار الساعة</strong></p>
+    </div>
+
+    <div class="social-btns">
+
+      <!-- زر واتساب -->
+      <a href="#" id="whatsappBtn" class="social-btn whatsapp" target="_blank" rel="noopener" aria-label="تواصل عبر واتساب">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        واتساب
+      </a>
+
+      <!-- زر فيسبوك -->
+      <a href="#" id="facebookBtn" class="social-btn facebook" target="_blank" rel="noopener" aria-label="تابعنا على فيسبوك">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+        فيسبوك
+      </a>
+
+    </div>
+
+    <div class="social-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      متوسط وقت الرد أقل من 5 دقائق
+    </div>
+
+  </section>
+
+</div>
+
+<script>
+/* ============================================================
+   🎯 1) رابط تطبيقك على Google Play
+   ============================================================ */
+const GOOGLE_PLAY_URL = "#";
+// مثال:
+// const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.branzar.app";
+
+
+/* ============================================================
+   🎯 2) رقم واتساب خدمة العملاء (بالصيغة الدولية بدون +)
+   ============================================================ */
+const WHATSAPP_NUMBER = "249000000000";
+// مثال لرقم سوداني: "249912345678"
+
+
+/* ============================================================
+   🎯 3) رابط صفحة الفيسبوك
+   ============================================================ */
+const FACEBOOK_URL = "https://facebook.com/branzar";
+// مثال: "https://www.facebook.com/yourpage"
+
+
+/* ============================================================
+   🎯 4) نص رسالة واتساب الافتراضية (اختياري)
+   ============================================================ */
+const WHATSAPP_MESSAGE = "مرحباً، أرغب بالاستفسار عن تطبيق BranZar";
+
+
+/* ================== تطبيق الروابط ================== */
+document.getElementById('googlePlayBtn').href = GOOGLE_PLAY_URL;
+
+document.getElementById('whatsappBtn').href =
+  "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(WHATSAPP_MESSAGE);
+
+document.getElementById('facebookBtn').href = FACEBOOK_URL;
+
+
+/* ============================================================
+   🖱️ النقر في أي مكان في الصفحة → يفتح Google Play
+   (يُستثنى: أزرار التواصل واتساب/فيسبوك)
+   ============================================================ */
+document.addEventListener('click', function(e){
+  const link = e.target.closest('a');
+
+  // إذا كان الرابط خارجياً حقيقياً (واتساب/فيسبوك) → اتركه يعمل
+  if (link && link.href && !link.href.endsWith('#')) return;
+
+  // غير ذلك → افتح Google Play
+  e.preventDefault();
+  window.open(GOOGLE_PLAY_URL, '_blank', 'noopener');
+}, false);
+</script>
+
+</body>
+</html>
