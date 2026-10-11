@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <meta name="theme-color" content="#FF7A00">
 
-<!-- ═══════════════════════════════════════════════════
-     🔐 SECURITY HEADERS (Meta fallback — لا تغني عن إعدادات السيرفر)
-     ═══════════════════════════════════════════════════ -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   base-uri 'self';
@@ -19,17 +16,15 @@
   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
   script-src 'self' 'unsafe-inline';
   connect-src 'self';
-  manifest-src 'self';
   upgrade-insecure-requests;
 ">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-<meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()">
+<meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=(), usb=()">
 <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
-<meta http-equiv="Cross-Origin-Resource-Policy" content="same-origin">
 
-<meta name="description" content="BranZar — المتجر الاحترافي لأصحاب البراندات. توثيق، ثقة، ومبيعات أكثر.">
+<meta name="description" content="باقات BranZar لأصحاب البراندات والمتاجر — أدوات احترافية، توثيق رسمي، ولوحة تحكم كاملة.">
 <title>الباقات والأسعار | BranZar برانزار</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -117,6 +112,14 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 @media(min-width:640px){.sec-head p{font-size:.98rem}}
 .sec-kicker{display:inline-flex;align-items:center;gap:6px;background:var(--orange-soft);color:var(--orange);padding:5px 14px;border-radius:100px;font-size:.72rem;font-weight:900;margin-bottom:14px;border:1px solid var(--orange-3)}
 
+/* VISITOR STRIP (زر بسيط جداً — بدون كلام عن "الزبون") */
+.visitor-strip{padding:14px 16px;background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.vs-in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.vs-in span{font-size:.82rem;color:var(--text-2);font-weight:700}
+.vs-in a{display:inline-flex;align-items:center;gap:6px;color:var(--orange);font-size:.82rem;font-weight:900;text-decoration:none;padding:4px 10px;border-radius:100px;background:var(--orange-soft);border:1px solid var(--orange-3);transition:all .2s}
+.vs-in a:hover{background:var(--orange-gradient);color:#fff;border-color:transparent}
+.vs-in i{font-size:.72rem}
+
 /* PAIN / PLEASURE */
 .pain-pleasure{background:linear-gradient(180deg,#FFFFFF 0%,#FFFBF5 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
 .pain-pleasure::before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,0,.06) 0%,transparent 70%);pointer-events:none}
@@ -170,7 +173,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 .verify-head h2{font-size:1.6rem;font-weight:900;line-height:1.25;letter-spacing:-.5px;margin-bottom:14px;color:#fff}
 @media(min-width:640px){.verify-head h2{font-size:2.4rem}}
 .verify-head h2 .grad-blue{background:linear-gradient(135deg,#5AC8FA 0%,#0A84FF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block}
-.verify-head p{font-size:.92rem;color:#94A3B8;font-weight:600;max-width:580px;margin:0 auto;line-height:1.85}
+.verify-head p{font-size:.92rem;color:#94A3B8;font-weight:600;max-width:600px;margin:0 auto;line-height:1.85}
 @media(min-width:640px){.verify-head p{font-size:1.02rem}}
 .verify-head p strong{color:#5AC8FA;font-weight:900}
 .verify-card{display:grid;grid-template-columns:1fr;gap:24px;align-items:center;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:var(--r-xl);padding:32px 24px;backdrop-filter:blur(20px);box-shadow:0 40px 80px -20px rgba(0,0,0,.4)}
@@ -192,7 +195,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 @keyframes sparkFloat{0%,100%{transform:translateY(0) scale(1);opacity:.8}50%{transform:translateY(-14px) scale(1.2);opacity:1}}
 .verify-content h3{font-size:1.3rem;font-weight:900;margin-bottom:16px;color:#fff;line-height:1.35;letter-spacing:-.3px}
 @media(min-width:640px){.verify-content h3{font-size:1.55rem}}
-.verify-content h3 .usd{background:linear-gradient(135deg,#5AC8FA 0%,#0A84FF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-size:1.4em;font-weight:900}
+.verify-content h3 .usd{background:linear-gradient(135deg,#5AC8FA 0%,#0A84FF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
 .verify-benefits{list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:26px}
 .verify-benefits li{display:flex;gap:12px;align-items:flex-start;font-size:.88rem;color:#CBD5E1;font-weight:600;line-height:1.7}
 .verify-benefits li .vck{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#0A84FF,#5AC8FA);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;margin-top:2px;box-shadow:0 6px 16px -4px rgba(10,132,255,.6)}
@@ -279,7 +282,37 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 .trust-txt h3{font-size:.94rem;font-weight:900;margin-bottom:3px;color:var(--text)}
 .trust-txt p{font-size:.78rem;color:var(--text-2);font-weight:600;line-height:1.6}
 
-/* SECURITY SECTION */
+/* COMMUNITY */
+.community-sec{padding:60px 16px;background:linear-gradient(135deg,#FFF7ED 0%,#FFFBF5 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.community-sec::before{content:'';position:absolute;top:-150px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(37,211,102,.1) 0%,transparent 70%);pointer-events:none}
+.community-in{max-width:880px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:28px;align-items:center;background:#fff;border:1.5px solid var(--orange-3);border-radius:var(--r-xl);padding:32px 24px;box-shadow:0 24px 48px -16px rgba(255,122,0,.15);position:relative;z-index:2}
+@media(min-width:768px){.community-in{grid-template-columns:auto 1fr;gap:36px;padding:40px 36px}}
+.community-visual{position:relative;display:flex;justify-content:center;align-items:center}
+.community-icon-wrap{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,#25D366 0%,#128C7E 100%);display:flex;align-items:center;justify-content:center;font-size:4rem;color:#fff;box-shadow:0 20px 50px -12px rgba(37,211,102,.6),0 0 0 10px rgba(37,211,102,.1);position:relative;animation:floatBadge 4s ease-in-out infinite}
+@media(min-width:768px){.community-icon-wrap{width:160px;height:160px;font-size:4.5rem}}
+.community-spark{position:absolute;border-radius:50%;background:#FFD966;box-shadow:0 0 20px #FFD966;width:14px;height:14px}
+.community-spark.cs1{top:-10px;right:20%;animation:sparkFloat 3s ease-in-out infinite}
+.community-spark.cs2{bottom:10%;left:10%;background:#FF7A00;box-shadow:0 0 20px #FF7A00;animation:sparkFloat 3s ease-in-out infinite .8s}
+.community-content{text-align:center}
+@media(min-width:768px){.community-content{text-align:right}}
+.community-kicker{display:inline-flex;align-items:center;gap:7px;background:rgba(37,211,102,.12);color:#047857;padding:6px 14px;border-radius:100px;font-size:.72rem;font-weight:900;margin-bottom:14px;border:1px solid rgba(37,211,102,.25)}
+.community-kicker i{font-size:.75rem}
+.community-content h2{font-size:1.35rem;font-weight:900;color:var(--text);letter-spacing:-.4px;line-height:1.3;margin-bottom:12px}
+@media(min-width:640px){.community-content h2{font-size:1.7rem}}
+.community-content p{font-size:.88rem;color:var(--text-2);font-weight:600;line-height:1.8;margin-bottom:22px;max-width:520px}
+@media(min-width:768px){.community-content p{margin-inline-start:0;margin-inline-end:auto}}
+.community-content p strong{color:var(--orange);font-weight:900}
+.community-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 26px;background:linear-gradient(135deg,#25D366 0%,#128C7E 100%);color:#fff;border-radius:16px;font-weight:900;font-size:.92rem;text-decoration:none;box-shadow:0 14px 32px -8px rgba(37,211,102,.55);transition:all .28s;position:relative;overflow:hidden;width:100%}
+@media(min-width:640px){.community-btn{width:auto}}
+.community-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.25),transparent 55%);pointer-events:none}
+.community-btn:hover{transform:translateY(-3px);box-shadow:0 22px 44px -8px rgba(37,211,102,.75)}
+.community-btn i{position:relative;z-index:2;font-size:1.05rem}
+.community-btn span{position:relative;z-index:2}
+.community-note{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.75rem;color:var(--text-3);font-weight:700;justify-content:center}
+@media(min-width:768px){.community-note{justify-content:flex-start}}
+.community-note i{color:#25D366;font-size:.8rem}
+
+/* SECURITY */
 .security-sec{padding:50px 16px;background:linear-gradient(180deg,#F4F5F8 0%,#FBFBFD 100%);border-top:1px solid var(--border)}
 .security-in{max-width:1100px;margin:0 auto}
 .security-grid{display:grid;grid-template-columns:1fr;gap:14px}
@@ -314,10 +347,14 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;d
 .footer-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .footer-brand{font-size:1.25rem;font-weight:900;margin-bottom:6px;letter-spacing:-.3px}
 .footer-tag{font-size:.8rem;color:#9CA3AF;font-weight:600;margin-bottom:22px}
-.footer-wa{display:inline-flex;align-items:center;gap:9px;padding:12px 22px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:100px;color:#fff;text-decoration:none;font-weight:800;font-size:.87rem;transition:all .25s;margin-bottom:22px}
+.footer-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.footer-wa{display:inline-flex;align-items:center;gap:9px;padding:12px 22px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:100px;color:#fff;text-decoration:none;font-weight:800;font-size:.87rem;transition:all .25s}
 .footer-wa:hover{background:var(--whatsapp);border-color:var(--whatsapp);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(37,211,102,.6)}
 .footer-wa i{color:var(--whatsapp);font-size:1.15rem}
 .footer-wa:hover i{color:#fff}
+.footer-community{display:inline-flex;align-items:center;gap:9px;padding:12px 22px;background:rgba(37,211,102,.1);border:1.5px solid rgba(37,211,102,.3);border-radius:100px;color:#25D366;text-decoration:none;font-weight:800;font-size:.87rem;transition:all .25s}
+.footer-community:hover{background:#25D366;color:#fff;border-color:#25D366;transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(37,211,102,.6)}
+.footer-community i{font-size:1.05rem}
 .footer-cp{font-size:.72rem;color:#6B7280;font-weight:600;padding-top:18px;border-top:1px solid rgba(255,255,255,.08)}
 
 /* STICKY & FLOAT */
@@ -358,7 +395,7 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
     </a>
     <a href="https://wa.me/249908280115?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%F0%9F%91%8B%0A%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%A5%D8%AD%D8%AF%D9%89%20%D8%A8%D8%A7%D9%82%D8%A7%D8%AA%20BranZar." target="_blank" rel="noopener noreferrer" class="nav-cta">
       <i class="fab fa-whatsapp" aria-hidden="true"></i>
-      <span>اشترك الآن</span>
+      <span>اختر باقتك</span>
     </a>
   </div>
 </nav>
@@ -374,16 +411,16 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
 
     <div class="hero-badge">
       <i class="fas fa-crown" aria-hidden="true"></i>
-      <span>منصة التجار لأصحاب البراندات</span>
+      <span>باقات لأصحاب البراندات والمتاجر</span>
     </div>
 
     <h1>
-      متجرك يستحق مظهراً<br>
-      <span class="grad">يبيع نيابة عنك</span>
+      حضور تجاري احترافي<br>
+      <span class="grad">يبدأ من هنا</span>
     </h1>
 
     <p class="hero-sub">
-      عندما يثق الزبون في متجرك، <strong>يشتري بسرعة</strong>. BranZar يمنحك الأدوات التي تجعل متجرك يبدو احترافياً — من التصميم حتى التوثيق.
+      BranZar يمنحك <strong>أدوات المتاجر الكبرى</strong> — تصميم راقٍ، لوحة تحكم كاملة، فواتير احترافية، وتوثيق رسمي لمتجرك.
     </p>
 
     <div class="hero-feats">
@@ -403,107 +440,118 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
   </div>
 </section>
 
-<!-- ═══════ PAIN vs PLEASURE ═══════ -->
+<!-- ═══════ VISITOR STRIP (رابط بسيط للمتاجر — بدون كلام عن الزبون) ═══════ -->
+<section class="visitor-strip">
+  <div class="vs-in">
+    <span>هل تبحث عن منتجات؟</span>
+    <a href="index.html">
+      <i class="fas fa-bag-shopping" aria-hidden="true"></i>
+      تصفّح المتاجر
+    </a>
+  </div>
+</section>
+
+<!-- ═══════ PAIN vs GAIN (بلغة التاجر لا الزبون) ═══════ -->
 <section class="section pain-pleasure">
   <div class="sec-head">
-    <div class="sec-kicker"><i class="fas fa-brain" aria-hidden="true"></i> الحقيقة التي يتجاهلها كثير من التجار</div>
-    <h2>الزبون لا يشتري من متجر عادي<br>... بل من متجر <span style="color:var(--orange)">يوثق فيه</span></h2>
-    <p>الفارق بين تاجر يجذب الزبائن وتاجر يطاردهم — غالباً ليس في المنتج، بل في <strong>الانطباع الأول</strong>.</p>
+    <div class="sec-kicker"><i class="fas fa-chart-simple" aria-hidden="true"></i> الفرق واضح من النظرة الأولى</div>
+    <h2>التاجر العادي يعمل بجهد<br>... والتاجر المحترف يعمل <span style="color:var(--orange)">بأدوات</span></h2>
+    <p>الفرق بين من يبدأ من الصفر، ومن يبدأ من مكان متقدم — <strong>ليس في الحظ، بل في الأدوات</strong>.</p>
   </div>
 
   <div class="pp-grid">
     <div class="pp-card pain">
-      <div class="pp-tag"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> بدون BranZar</div>
-      <h3>ماذا قد يخسره تاجر بدون توثيق؟</h3>
+      <div class="pp-tag"><i class="fas fa-circle-minus" aria-hidden="true"></i> بدون BranZar</div>
+      <h3>ما الذي ينقصك فعلاً؟</h3>
       <ul class="pp-list">
-        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>زبون يفتح صفحتك ويغلقها خلال <strong>ثوانٍ</strong> لأنه لم يثق</span></li>
-        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>منافس أقل جودة منك، لكنه <strong>موثّق</strong> — يسبقك في الظهور</span></li>
-        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>صعوبة إقناع الزبون بالدفع <strong>مقدماً</strong></span></li>
-        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>مظهر الهواة يجعلك تفاوض على السعر بدل أن تفرضه</span></li>
-        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>شكوك الزبون تتقدّم على قراءة تفاصيل منتجك</span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>لا توجد <strong>هوية بصرية</strong> تليق بمنتجاتك</span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>عرض منتجاتك في قوائم عادية لا تميّزك</span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>لا توجد <strong>أدوات تحليل</strong> لمعرفة ما يتحرك</span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>فواتير عشوائية أو غير موجودة أصلاً</span></li>
+        <li><i class="fas fa-xmark" aria-hidden="true"></i><span>عمل منفرد — بدون <strong>شبكة تجار</strong> تتبادل معها الخبرة</span></li>
       </ul>
-      <div class="pp-foot"><i class="fas fa-circle-info" aria-hidden="true"></i> هذه ملاحظات تجار يشتكون منها في السوق</div>
+      <div class="pp-foot"><i class="fas fa-circle-info" aria-hidden="true"></i> نقاط تتكرر في ملاحظات تجار السوق</div>
     </div>
 
     <div class="pp-card gain">
-      <div class="pp-tag"><i class="fas fa-circle-check" aria-hidden="true"></i> مع BranZar</div>
-      <h3>ماذا يكسب تاجر موثّق؟</h3>
+      <div class="pp-tag"><i class="fas fa-circle-plus" aria-hidden="true"></i> مع BranZar</div>
+      <h3>ما الذي تكسبه كتاجر؟</h3>
       <ul class="pp-list">
-        <li><i class="fas fa-check" aria-hidden="true"></i><span>شارة <strong>موثّق</strong> زرقاء بجانب اسمك — ثقة بصرية فورية</span></li>
-        <li><i class="fas fa-check" aria-hidden="true"></i><span>متجر بمظهر <strong>احترافي</strong> يليق ببراندك</span></li>
-        <li><i class="fas fa-check" aria-hidden="true"></i><span>زبون مطمئن أكثر للدفع <strong>مقدماً</strong></span></li>
-        <li><i class="fas fa-check" aria-hidden="true"></i><span>تحكم كامل بالسعر — لأن القيمة واضحة من النظرة الأولى</span></li>
-        <li><i class="fas fa-check" aria-hidden="true"></i><span>فرص أعلى لعودة الزبون <strong>ولاء حقيقي</strong></span></li>
+        <li><i class="fas fa-check" aria-hidden="true"></i><span><strong>هوية بصرية احترافية</strong> بمظهر براند عالمي</span></li>
+        <li><i class="fas fa-check" aria-hidden="true"></i><span>عرض منتجاتك بطريقة تليق بجودتها</span></li>
+        <li><i class="fas fa-check" aria-hidden="true"></i><span><strong>لوحة تحكم كاملة</strong> تعطيك الأرقام والقرارات</span></li>
+        <li><i class="fas fa-check" aria-hidden="true"></i><span>فواتير احترافية بضغطة زر</span></li>
+        <li><i class="fas fa-check" aria-hidden="true"></i><span>انضمام لشبكة تجار BranZar وتبادل الخبرات</span></li>
       </ul>
-      <div class="pp-foot"><i class="fas fa-lightbulb" aria-hidden="true"></i> الثقة لا سعر لها — والانطباع الأول لا يُعاد</div>
+      <div class="pp-foot"><i class="fas fa-lightbulb" aria-hidden="true"></i> أدوات حقيقية — لا وعود بلا أساس</div>
     </div>
   </div>
 </section>
 
-<!-- ═══════ BENEFITS ═══════ -->
+<!-- ═══════ BENEFITS (كلها عن التاجر وأدواته) ═══════ -->
 <section class="section" style="padding-top:60px">
   <div class="sec-head">
     <div class="sec-kicker"><i class="fas fa-gem" aria-hidden="true"></i> لماذا يستثمر التجار الناجحون؟</div>
     <h2>6 أسباب تجعل BranZar<br>استثماراً لا مصروفاً</h2>
-    <p>كل ما تحتاجه لبناء حضور احترافي — في مكان واحد.</p>
+    <p>كل ما تحتاجه لبناء حضور تجاري احترافي — في مكان واحد.</p>
   </div>
 
   <div class="benefits">
     <div class="benefit">
-      <div class="benefit-icon i1"><i class="fas fa-shield-halved" aria-hidden="true"></i></div>
-      <h3>ثقة فورية لا تحتاج شرحاً</h3>
-      <p>الزبون يحكم على متجرك خلال <strong>لحظات</strong>. عندما يرى تصميماً احترافياً وشارة توثيق، يستقبل عقله إشارة: <strong>"هذا تاجر جاد"</strong>.</p>
-      <div class="benefit-note"><i class="fas fa-bolt" aria-hidden="true"></i> انطباع أول أقوى</div>
+      <div class="benefit-icon i1"><i class="fas fa-store" aria-hidden="true"></i></div>
+      <h3>متجر بهوية تليق بك</h3>
+      <p>لا تعرض منتجاتك في قائمة عادية. BranZar يمنحك <strong>متجراً بهوية راقية</strong> — تصميم مدروس، تنسيق احترافي، وتجربة تتشرف بعرض منتجاتك.</p>
+      <div class="benefit-note"><i class="fas fa-palette" aria-hidden="true"></i> هوية بصرية متكاملة</div>
     </div>
 
     <div class="benefit">
       <div class="benefit-icon i2"><i class="fas fa-crown" aria-hidden="true"></i></div>
-      <h3>مظهر يليق ببراندك</h3>
-      <p>لا تعرض منتجاتك في صفحة عادية. BranZar يمنح متجرك <strong>هوية بصرية راقية</strong> تسهّل عليك فرض السعر الذي يستحقه منتجك.</p>
-      <div class="benefit-note"><i class="fas fa-arrow-trend-up" aria-hidden="true"></i> يعزّز قيمة منتجك</div>
+      <h3>أدوات المتاجر الكبرى</h3>
+      <p>لوحة تحكم كاملة، إدارة فئات ومنتجات، تقارير، فواتير، وتخصيصات — كل ما تحتاجه <strong>كصاحب براند حقيقي</strong> في لوحة واحدة.</p>
+      <div class="benefit-note"><i class="fas fa-sliders" aria-hidden="true"></i> تحكم كامل بلا تعقيد</div>
     </div>
 
     <div class="benefit">
       <div class="benefit-icon i3"><i class="fas fa-chart-simple" aria-hidden="true"></i></div>
-      <h3>لوحة تحكم تعطيك القرار</h3>
-      <p>تعرف <strong>أي منتج يتحرك أكثر</strong>، أي فئة عليها طلب، ومن هم زبائنك. قراراتك تصبح مبنية على <strong>أرقام حقيقية</strong> لا تخمين.</p>
-      <div class="benefit-note"><i class="fas fa-lightbulb" aria-hidden="true"></i> قرارات أذكى</div>
+      <h3>قرارات مبنية على أرقام</h3>
+      <p>تعرف <strong>أي منتج يتحرك أكثر</strong>، أي فئة عليها طلب، وكيف يتصرف متجرك. قراراتك تصبح مبنية على بيانات حقيقية لا تخمين.</p>
+      <div class="benefit-note"><i class="fas fa-lightbulb" aria-hidden="true"></i> نمو مدروس</div>
     </div>
 
     <div class="benefit">
       <div class="benefit-icon i4"><i class="fas fa-file-invoice" aria-hidden="true"></i></div>
-      <h3>فواتير احترافية تبني سمعة</h3>
-      <p>كل فاتورة تصدر من متجرك تحمل بصمة احترافية. الزبون يحتفظ بها — لأنها تقول: <strong>"هذا تاجر موثوق"</strong>.</p>
-      <div class="benefit-note"><i class="fas fa-repeat" aria-hidden="true"></i> يعزز تكرار الشراء</div>
+      <h3>فواتير احترافية باسمك</h3>
+      <p>كل فاتورة تصدر من متجرك تحمل <strong>هويتك التجارية</strong> — بضغطة زر، وبمظهر احترافي يليق بتعاملك مع عملائك.</p>
+      <div class="benefit-note"><i class="fas fa-print" aria-hidden="true"></i> تعامل تجاري منظم</div>
     </div>
 
     <div class="benefit">
       <div class="benefit-icon i5"><i class="fas fa-users" aria-hidden="true"></i></div>
-      <h3>انضمام لمجتمع التجار</h3>
-      <p>تصبح جزءاً من شبكة تجار BranZar — تتبادل الخبرات، وتستفيد من <strong>تحديثات وميزات جديدة</strong> تُضاف باستمرار.</p>
-      <div class="benefit-note"><i class="fas fa-handshake" aria-hidden="true"></i> شبكة علاقات تجارية</div>
+      <h3>شبكة تجار BranZar</h3>
+      <p>انضم لمجتمع من <strong>أصحاب البراندات والتجار</strong> — تتبادل الخبرات، تكتشف فرصاً، وتستفيد من تحديثات وميزات جديدة باستمرار.</p>
+      <div class="benefit-note"><i class="fas fa-handshake" aria-hidden="true"></i> مجتمع تجاري حقيقي</div>
     </div>
 
     <div class="benefit">
       <div class="benefit-icon i6"><i class="fas fa-rocket" aria-hidden="true"></i></div>
-      <h3>تفعيل في دقائق — بدون تعقيد</h3>
-      <p>لا خبرة تقنية مطلوبة. تتواصل معنا على واتساب، تدفع بأمان، ويُفعَّل متجرك خلال <strong>دقائق</strong> — وتبدأ فوراً.</p>
+      <h3>تفعيل في دقائق</h3>
+      <p>لا خبرة تقنية مطلوبة. تتواصل معنا، تختار باقتك، ويُفعَّل متجرك خلال <strong>دقائق</strong> — وتبدأ بعرض منتجاتك فوراً.</p>
       <div class="benefit-note"><i class="fas fa-clock" aria-hidden="true"></i> جاهز خلال دقائق</div>
     </div>
   </div>
 </section>
 
-<!-- ═══════ VERIFICATION ═══════ -->
+<!-- ═══════ VERIFICATION (بلغة الجودة لا "ثقة الزبون") ═══════ -->
 <section class="verify-sec">
   <div class="verify-in">
     <div class="verify-head">
       <div class="verify-kicker"><i class="fas fa-circle-check" aria-hidden="true"></i> شارة التوثيق الرسمية</div>
       <h2>
-        الزبون لا يعرف من أنت<br>
-        <span class="grad-blue">لكن شارة التوثيق تتحدث عنك</span>
+        متجرك يستحق ختماً<br>
+        <span class="grad-blue">يعرفه مجتمع التجار</span>
       </h2>
       <p>
-        التوثيق ليس رفاهية — بل <strong>إشارة الثقة الأولى</strong>. الزبون الموثوق فيك يتحرك أسرع، ويسأل أقل، ويشتري أكثر.
+        التوثيق في BranZar ليس مجرد شارة — بل <strong>عملية تحقق كاملة</strong> نمنحها للمتاجر التي تستوفي معايير الجودة والجدية.
       </p>
     </div>
 
@@ -521,38 +569,38 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
 
       <div class="verify-content">
         <h3>
-          التوثيق الرسمي بـ <span class="usd">$2</span> فقط
+          شارة <span class="usd">موثّق</span> — بعد التحقق الكامل
         </h3>
         <ul class="verify-benefits">
           <li>
             <span class="vck"><i class="fas fa-check" aria-hidden="true"></i></span>
-            <span>تظهر <b>شارة موثّق زرقاء</b> بجانب اسم متجرك — تمييز بصري فوري</span>
+            <span>تظهر <b>شارة موثّق زرقاء</b> بجانب اسم متجرك — تمييز بصري واضح</span>
           </li>
           <li>
             <span class="vck"><i class="fas fa-check" aria-hidden="true"></i></span>
-            <span>يفرّقك بوضوح عن <strong>الحسابات العشوائية</strong> والمبتدئين</span>
+            <span>نراجع <strong>نشاطك التجاري</strong> ونتحقق من جدية المتجر قبل منح الشارة</span>
           </li>
           <li>
             <span class="vck"><i class="fas fa-check" aria-hidden="true"></i></span>
-            <span>يعزز <b>الثقة</b> عند الزبون من النظرة الأولى</span>
+            <span>تُمنح الشارة فقط للمتاجر التي <b>تستوفي المعايير</b> — لا لأي متجر</span>
           </li>
           <li>
             <span class="vck"><i class="fas fa-check" aria-hidden="true"></i></span>
-            <span>يفتح لك <strong>فرص تعاون</strong> مع تجار وبراندات أخرى</span>
+            <span>تفصل متجرك عن الحسابات العشوائية وتضعك في <strong>الصفوة</strong></span>
           </li>
           <li>
             <span class="vck"><i class="fas fa-check" aria-hidden="true"></i></span>
-            <span>تكلفة رمزية: <b>$2</b> قد تعيدها من أول عملية بيع</span>
+            <span>تفتح لك <b>فرص تعاون</b> مع تجار وبراندات موثوقة داخل BranZar</span>
           </li>
         </ul>
 
-        <a href="https://wa.me/249908280115?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%F0%9F%91%8B%0A%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%AA%D9%88%D8%AB%D9%8A%D9%82%20%D9%85%D8%AA%D8%AC%D8%B1%D9%8A%20(%242%20%D9%81%D9%82%D8%B7)%20%F0%9F%94%B5%E2%9C%94%EF%B8%8F%0A%D8%A3%D8%B1%D8%AC%D9%88%20%D9%85%D9%88%D8%A7%D9%81%D8%A7%D8%AA%D9%8A%20%D8%A8%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%84." target="_blank" rel="noopener noreferrer" class="verify-cta">
+        <a href="https://wa.me/249908280115?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%F0%9F%91%8B%0A%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%B7%D9%84%D8%A8%20%D8%A7%D9%84%D8%AA%D9%88%D8%AB%D9%8A%D9%82%20%D8%A7%D9%84%D8%B1%D8%B3%D9%85%D9%8A%20%D9%84%D9%85%D8%AA%D8%AC%D8%B1%D9%8A%0A%D8%A3%D8%B1%D8%AC%D9%88%20%D8%A5%D8%B1%D8%B4%D8%A7%D8%AF%D9%8A%20%D9%84%D9%84%D8%AE%D8%B7%D9%88%D8%A7%D8%AA." target="_blank" rel="noopener noreferrer" class="verify-cta">
           <i class="fab fa-whatsapp" aria-hidden="true"></i>
-          <span>وثّق متجرك الآن — $2 فقط</span>
+          <span>اطلب توثيق متجرك</span>
         </a>
         <div class="verify-note">
           <i class="fas fa-info-circle" aria-hidden="true"></i>
-          <span>الدفع لمرة واحدة • التوثيق دائم طوال فترة الاشتراك</span>
+          <span>تُطبَّق رسوم دراسة وتحقّق رمزية لمرة واحدة — مع التفعيل الدائم للشارة</span>
         </div>
       </div>
     </div>
@@ -562,7 +610,7 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
 <!-- ═══════ PRICING ═══════ -->
 <section class="pricing" id="pricing">
   <div class="sec-head">
-    <div class="sec-kicker"><i class="fas fa-tags" aria-hidden="true"></i> استثمار بسيط، عائد كبير</div>
+    <div class="sec-kicker"><i class="fas fa-tags" aria-hidden="true"></i> استثمار بسيط، أدوات كبرى</div>
     <h2>اختر الباقة التي تناسب طموحك</h2>
     <p>كل الباقات تشمل لوحة تحكم كاملة + إنشاء فواتير احترافية</p>
   </div>
@@ -694,8 +742,8 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
       <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>متجر احترافي</strong> بمظهر براند</span></div>
     </div>
     <div class="compare-row">
-      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>لا يوجد توثيق — زبون متردد</span></div>
-      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span>شارة <strong>موثّق زرقاء</strong> — ثقة فورية</span></div>
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>لا يوجد توثيق رسمي</span></div>
+      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span>شارة <strong>موثّق زرقاء</strong> بعد التحقق</span></div>
     </div>
     <div class="compare-row">
       <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>لا تعرف أي منتج يتحرك أكثر</span></div>
@@ -706,12 +754,12 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
       <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>فواتير احترافية</strong> بضغطة زر</span></div>
     </div>
     <div class="compare-row">
-      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>زبون لا يعود ويشتري مرة أخرى</span></div>
-      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>ولاء حقيقي</strong> وتكرار شراء</span></div>
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>لا يوجد متابعة أو تحليل</span></div>
+      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span><strong>تقارير ومتابعة</strong> مستمرة</span></div>
     </div>
     <div class="compare-row">
-      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>وحيد — بدون مجتمع تجاري</span></div>
-      <div class="cr-cell cr-good"><i class="fas fa-check" aria-hidden="true"></i><span>انضمام لـ <strong>شبكة التجار</strong></span></div>
+      <div class="cr-cell cr-bad"><i class="fas fa-xmark" aria-hidden="true"></i><span>عمل منفرد — بدون مجتمع</span></div>
+      <div class="cr-cell good"><i class="fas fa-check" aria-hidden="true"></i><span>انضمام لـ <strong>شبكة التجار</strong></span></div>
     </div>
   </div>
 </section>
@@ -743,7 +791,39 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
   </div>
 </section>
 
-<!-- ═══════ SECURITY SECTION (Cyber Security) ═══════ -->
+<!-- ═══════ COMMUNITY ═══════ -->
+<section class="community-sec">
+  <div class="community-in">
+    <div class="community-visual">
+      <div class="community-icon-wrap">
+        <i class="fas fa-users" aria-hidden="true"></i>
+      </div>
+      <span class="community-spark cs1" aria-hidden="true"></span>
+      <span class="community-spark cs2" aria-hidden="true"></span>
+    </div>
+    <div class="community-content">
+      <div class="community-kicker">
+        <i class="fas fa-comments" aria-hidden="true"></i>
+        <span>مجتمع برانزار على واتساب</span>
+      </div>
+      <h2>انضم لمجتمع التجار<br>وأصحاب البراندات</h2>
+      <p>
+        تجمّع فيه أصحاب البراندات والتجار لتبادل <strong>الخبرات، الفرص، والتحديثات</strong> — كن أول من يعرف كل جديد في BranZar.
+      </p>
+      <a href="https://chat.whatsapp.com/LBfTiCXGdZHLUNUmcWgWNQ?s=cl&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer" class="community-btn">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+        <span>انضم للمجتمع على واتساب</span>
+        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+      </a>
+      <div class="community-note">
+        <i class="fas fa-shield-halved" aria-hidden="true"></i>
+        <span>مجموعة رسمية تابعة لـ BranZar — لا رسوم، لا اشتراك إجباري</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SECURITY ═══════ -->
 <section class="security-sec">
   <div class="security-in">
     <div class="sec-head">
@@ -800,12 +880,12 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
 
     <div class="faq">
       <button class="faq-q" type="button" aria-expanded="false">
-        <span>كيف أحصل على شارة التوثيق بـ 2 دولار؟</span>
+        <span>كيف أحصل على شارة التوثيق الرسمية؟</span>
         <span class="ci"><i class="fas fa-chevron-down" aria-hidden="true"></i></span>
       </button>
       <div class="faq-a">
         <div class="faq-a-in">
-          بعد اشتراكك في أي باقة، راسلنا على واتساب واطلب <strong>التوثيق الرسمي</strong>. تُدفع <strong>2 دولار لمرة واحدة</strong>، وتظهر شارة موثّق زرقاء بجانب اسم متجرك — وتبقى معك طوال فترة اشتراكك.
+          بعد اشتراكك في أي باقة، راسلنا على واتساب واطلب <strong>التوثيق الرسمي</strong>. نراجع نشاطك التجاري ونتحقق من جدية المتجر، ثم تُفعَّل الشارة الزرقاء بجانب اسم متجرك — وتبقى معك طوال فترة اشتراكك.
         </div>
       </div>
     </div>
@@ -869,10 +949,16 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
     </div>
     <div class="footer-brand">BranZar</div>
     <div class="footer-tag">اشهر البراندات والمتاجر في مكان واحد</div>
-    <a href="https://wa.me/249908280115?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%F0%9F%91%8B%0A%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%A8%D8%A7%D9%82%D8%A7%D8%AA%20BranZar." target="_blank" rel="noopener noreferrer" class="footer-wa">
-      <i class="fab fa-whatsapp" aria-hidden="true"></i>
-      <span>+249 908 280 115</span>
-    </a>
+    <div class="footer-actions">
+      <a href="https://wa.me/249908280115?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%20%F0%9F%91%8B%0A%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%A8%D8%A7%D9%82%D8%A7%D8%AA%20BranZar." target="_blank" rel="noopener noreferrer" class="footer-wa">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+        <span>+249 908 280 115</span>
+      </a>
+      <a href="https://chat.whatsapp.com/LBfTiCXGdZHLUNUmcWgWNQ?s=cl&p=a&mlu=4&ilr=4" target="_blank" rel="noopener noreferrer" class="footer-community">
+        <i class="fas fa-users" aria-hidden="true"></i>
+        <span>مجتمع التجار</span>
+      </a>
+    </div>
     <div class="footer-cp">© 2025 BranZar — جميع الحقوق محفوظة</div>
   </div>
 </footer>
@@ -899,9 +985,7 @@ a:focus-visible,button:focus-visible{outline:2.5px solid var(--orange);outline-o
 /* ═══════════════════════════════════════════════════════════════
    🔐 SECURITY UTILITIES
    ═══════════════════════════════════════════════════════════════ */
-
-// Whitelist للروابط المسموحة فقط
-const ALLOWED_ORIGINS = ['https://wa.me', 'https://i.ibb.co'];
+const ALLOWED_ORIGINS = ['https://wa.me', 'https://chat.whatsapp.com', 'https://i.ibb.co'];
 
 function isSafeUrl(url){
   try{
@@ -910,21 +994,17 @@ function isSafeUrl(url){
   }catch{ return false; }
 }
 
-// منع أي محاولة لتغيير الروابط لعناوين ضارة
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('a[href]').forEach(a => {
     const href = a.getAttribute('href');
     if(!href) return;
-    // تجاهل روابط داخلية
     if(href.startsWith('#')) return;
-    // تحقق أن الرابط خارجي مسموح
     if((href.startsWith('http://') || href.startsWith('https://')) && !isSafeUrl(href)){
       console.warn('[Security] Blocked unsafe link:', href);
       a.removeAttribute('href');
       a.style.pointerEvents = 'none';
       a.style.opacity = '.5';
     }
-    // فرض rel الآمن على كل روابط خارجية
     if(href.startsWith('http')){
       a.setAttribute('rel', 'noopener noreferrer nofollow');
       a.setAttribute('target', '_blank');
@@ -933,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   🖼️ Image Fallback (آمنة — بدون innerHTML)
+   🖼️ Image Fallback
    ═══════════════════════════════════════════════════════════════ */
 const FALLBACK_SVG = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
@@ -958,7 +1038,7 @@ document.querySelectorAll('img').forEach(img => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   📂 FAQ Accordion (بدون innerHTML — آمنة تماماً)
+   📂 FAQ Accordion
    ═══════════════════════════════════════════════════════════════ */
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -980,7 +1060,7 @@ document.querySelectorAll('.faq-q').forEach(btn => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   🎯 Sticky CTA — Hide near footer (throttled + RAF)
+   🎯 Sticky CTA
    ═══════════════════════════════════════════════════════════════ */
 const stickyCta = document.getElementById('stickyCta');
 if(stickyCta){
@@ -1000,32 +1080,21 @@ if(stickyCta){
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   📊 Analytics Hooks (Placeholder آمن — بدون eval)
+   📊 Analytics
    ═══════════════════════════════════════════════════════════════ */
 const PLAN_NAMES = ['monthly','quarterly','half-year','yearly'];
 document.querySelectorAll('.plan-cta').forEach((btn, i) => {
   btn.addEventListener('click', () => {
-    // يمكن ربط Google Analytics / Facebook Pixel هنا
-    // مثال: gtag('event', 'purchase_intent', { plan: PLAN_NAMES[i] });
     if(typeof window.gtag === 'function'){
       window.gtag('event', 'subscribe_click', { plan: PLAN_NAMES[i] || 'unknown' });
     }
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   🛡️ Console Watermark
-   ═══════════════════════════════════════════════════════════════ */
-try{
-  console.log(
-    '%c🛡️ BranZar',
-    'color:#FF7A00;font-weight:900;font-size:16px;padding:6px 12px;background:#FFF7ED;border-radius:8px;border:1px solid #FFD9B3'
-  );
-  console.log(
-    '%c⚠️ تحذير أمني: إذا طُلب منك لصق كود هنا — فهو محاولة احتيال. لا تفعل.',
-    'color:#B91C1C;font-weight:700;font-size:12px;padding:4px 8px;background:#FEE2E2;border-radius:6px'
-  );
-}catch(e){/* silent */}
+console.log(
+  '%c🛡️ BranZar',
+  'color:#FF7A00;font-weight:900;font-size:16px;padding:6px 12px;background:#FFF7ED;border-radius:8px;border:1px solid #FFD9B3'
+);
 </script>
 
 </body>
