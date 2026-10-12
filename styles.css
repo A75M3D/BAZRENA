@@ -2357,3 +2357,85 @@ body.theme-dark .product-card-desc { color: #9CA3AF; }
   .bzr-all-subs-content small { font-size: 10px; }
   .bzr-all-subs-arrow { font-size: 26px; }
 }
+/* ═══════════════════════════════════════════════════════════
+   🏪 زر "إنشاء متجر مجاناً" — أزرق بارز + نبض + نقطة "جديد"
+   ═══════════════════════════════════════════════════════════ */
+
+.acc-quick-btn.acc-quick-btn-create {
+  position: relative;
+  background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%);
+  color: #fff;
+  border-color: #3B82F6;
+  font-weight: 900;
+  box-shadow: 0 8px 22px -8px rgba(59, 130, 246, 0.75),
+              0 0 0 0 rgba(59, 130, 246, 0.55);
+  animation: createBtnPulse 2.4s ease-in-out infinite;
+}
+
+.acc-quick-btn.acc-quick-btn-create:hover {
+  color: #fff;
+  border-color: #1E40AF;
+  background: linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 28px -8px rgba(59, 130, 246, 0.9),
+              0 0 0 10px rgba(59, 130, 246, 0);
+  animation-play-state: paused;
+}
+
+.acc-quick-btn.acc-quick-btn-create:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.acc-quick-btn.acc-quick-btn-create svg.mi {
+  width: 16px;
+  height: 16px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+
+/* نقطة حمراء نابضة (إشارة "جديد") */
+.acc-quick-btn.acc-quick-btn-create::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #EF4444;
+  border: 2px solid #fff;
+  animation: createDotPulse 1.5s ease-in-out infinite;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.6);
+}
+
+@keyframes createBtnPulse {
+  0%, 100% {
+    box-shadow: 0 8px 22px -8px rgba(59, 130, 246, 0.75),
+                0 0 0 0 rgba(59, 130, 246, 0.55);
+  }
+  50% {
+    box-shadow: 0 8px 22px -8px rgba(59, 130, 246, 0.9),
+                0 0 0 9px rgba(59, 130, 246, 0);
+  }
+}
+
+@keyframes createDotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.4); opacity: 0.7; }
+}
+
+/* دارك مود */
+body.theme-dark .acc-quick-btn.acc-quick-btn-create {
+  background: linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%);
+  border-color: #1E40AF;
+}
+body.theme-dark .acc-quick-btn.acc-quick-btn-create::after {
+  border-color: #1E293B;
+}
+
+/* شاشات صغيرة */
+@media (max-width: 380px) {
+  .acc-quick-btn.acc-quick-btn-create {
+    font-size: 0.74rem;
+    padding: 0 6px;
+  }
+}
