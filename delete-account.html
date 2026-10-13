@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#EF4444">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="format-detection" content="telephone=no">
+    <title>حذف المتجر نهائياً - BranZar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        html, body { overflow-x: hidden; margin: 0; padding: 0; }
+        body {
+            background: linear-gradient(165deg, #FEF2F2 0%, #FFFFFF 45%, #FEE2E2 100%);
+            min-height: 100vh; direction: rtl; -webkit-font-smoothing: antialiased;
+            display: flex; align-items: flex-start; justify-content: center;
+            padding: 1rem; position: relative;
+        }
+        body::before {
+            content: ''; position: fixed; top: -200px; right: -150px;
+            width: 480px; height: 480px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(239,68,68,0.15), transparent 65%);
+            pointer-events: none; z-index: 0;
+        }
+        body::after {
+            content: ''; position: fixed; bottom: -220px; left: -180px;
+            width: 540px; height: 540px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(220,38,38,0.1), transparent 65%);
+            pointer-events: none; z-index: 0;
+        }
+
+        .page { position: relative; z-index: 2; width: 100%; max-width: 520px; margin: 0 auto; padding: 0.5rem 0 2rem; }
+
+        .card {
+            background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
+            border: 1.5px solid #FECACA; border-radius: 1.75rem;
+            box-shadow: 0 30px 70px -25px rgba(239,68,68,0.35), 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden; animation: cardIn 0.55s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .card-head {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: #fff; padding: 1.75rem 1.25rem 1.6rem; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .card-head::before {
+            content: ''; position: absolute; top: -60px; right: -50px;
+            width: 180px; height: 180px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%);
+        }
+        .card-head::after {
+            content: ''; position: absolute; bottom: -90px; left: -70px;
+            width: 200px; height: 200px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+        }
+        .head-icon {
+            width: 78px; height: 78px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); border: 2.5px solid rgba(255,255,255,0.4);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 2.1rem; margin-bottom: 0.85rem;
+            position: relative; z-index: 2;
+            animation: iconPulse 2.4s ease-in-out infinite;
+        }
+        @keyframes iconPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .head-title { font-size: 1.35rem; font-weight: 900; margin: 0 0 0.35rem; position: relative; z-index: 2; letter-spacing: -0.3px; }
+        .head-sub { font-size: 0.85rem; font-weight: 700; opacity: 0.94; margin: 0; position: relative; z-index: 2; line-height: 1.65; }
+
+        .card-body { padding: 1.5rem 1.35rem; }
+        @media (min-width: 640px) { .card-body { padding: 1.9rem 1.75rem; } }
+
+        .warning-box {
+            background: linear-gradient(135deg, #FEF2F2, #FEE2E2);
+            border: 1.5px solid #FECACA; border-radius: 1.15rem;
+            padding: 1.05rem 1.15rem; margin-bottom: 1.25rem;
+        }
+        .warning-title {
+            font-weight: 900; font-size: 0.9rem; color: #991B1B;
+            margin-bottom: 0.65rem; display: flex; align-items: center; gap: 8px;
+        }
+        .warning-title i { color: #DC2626; font-size: 1rem; }
+        .warning-list { margin: 0; padding: 0; list-style: none; }
+        .warning-list li {
+            font-size: 0.82rem; color: #B91C1C; font-weight: 700;
+            padding: 0.35rem 0; display: flex; align-items: flex-start; gap: 9px;
+            line-height: 1.6;
+        }
+        .warning-list li i { color: #EF4444; font-size: 0.7rem; margin-top: 5px; flex-shrink: 0; }
+        .warning-list li strong { color: #7F1D1D; font-weight: 900; }
+
+        .store-info-box {
+            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
+            border: 1.5px solid #FFE0BD; border-radius: 1rem;
+            padding: 0.85rem 1rem; margin-bottom: 1.25rem;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .store-info-icon {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: #fff; border: 2px solid #FFE0BD;
+            display: flex; align-items: center; justify-content: center;
+            color: #FF7A00; font-size: 1.1rem; flex-shrink: 0;
+        }
+        .store-info-text { flex: 1; min-width: 0; text-align: right; }
+        .store-info-label { font-size: 0.72rem; color: #92400E; font-weight: 700; margin-bottom: 0.15rem; }
+        .store-info-value { font-size: 0.98rem; font-weight: 900; color: #1A1A1A; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .field { margin-bottom: 1.05rem; }
+        .field-label {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.83rem; font-weight: 800; color: #374151;
+            margin-bottom: 0.45rem; line-height: 1.5;
+        }
+        .field-label i { color: #EF4444; font-size: 0.78rem; }
+        .field-label .req { color: #EF4444; font-weight: 900; }
+        .field-label .target-name { color: #DC2626; font-weight: 900; background: #FEF2F2; padding: 0.1rem 0.5rem; border-radius: 6px; border: 1px solid #FECACA; }
+
+        .input {
+            width: 100%; padding: 0.9rem 1rem; border: 1.5px solid #E5E7EB;
+            border-radius: 0.9rem; font-size: 0.92rem; font-weight: 700;
+            font-family: 'Cairo', sans-serif; transition: all 0.22s;
+            background: #fff; color: #1A1A1A; box-sizing: border-box;
+        }
+        .input:focus { outline: none; border-color: #EF4444; box-shadow: 0 0 0 4px rgba(239,68,68,0.12); }
+        .input.match { border-color: #10B981; background: #F0FDF4; box-shadow: 0 0 0 4px rgba(16,185,129,0.1); }
+        .input::placeholder { color: #9CA3AF; font-weight: 500; }
+
+        .password-wrapper { position: relative; }
+        .password-wrapper .input { padding-left: 3rem; }
+        .pwd-toggle {
+            position: absolute; left: 0.75rem; top: 50%;
+            transform: translateY(-50%); width: 36px; height: 36px;
+            border-radius: 50%; background: transparent; border: none;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; color: #9CA3AF; font-size: 0.95rem;
+            transition: all 0.22s;
+        }
+        .pwd-toggle:hover { background: #FEF2F2; color: #EF4444; }
+        .pwd-toggle.active { color: #EF4444; }
+
+        .error-box {
+            background: #FEF2F2; border: 1.5px solid #FECACA;
+            color: #DC2626; padding: 0.85rem 1rem; border-radius: 0.9rem;
+            font-size: 0.83rem; font-weight: 800; text-align: center;
+            margin-bottom: 1rem; display: none; line-height: 1.6;
+        }
+        .error-box.show { display: block; animation: shake 0.4s; }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+        .success-box {
+            background: #ECFDF5; border: 1.5px solid #A7F3D0;
+            color: #059669; padding: 0.85rem 1rem; border-radius: 0.9rem;
+            font-size: 0.83rem; font-weight: 800; text-align: center;
+            margin-bottom: 1rem; display: none; line-height: 1.6;
+        }
+        .success-box.show { display: block; }
+
+        .actions { display: flex; gap: 0.65rem; margin-top: 1.4rem; }
+        .btn {
+            flex: 1; padding: 0.95rem 1.1rem; border: none; border-radius: 0.95rem;
+            font-weight: 900; font-size: 0.92rem; cursor: pointer;
+            font-family: 'Cairo', sans-serif; display: inline-flex;
+            align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.22s; text-decoration: none;
+        }
+        .btn-cancel { background: #F3F4F6; color: #374151; }
+        .btn-cancel:hover { background: #E5E7EB; }
+        .btn-danger {
+            background: linear-gradient(135deg, #EF4444, #DC2626); color: #fff;
+            box-shadow: 0 12px 26px -10px rgba(239,68,68,0.75);
+        }
+        .btn-danger:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 34px -12px rgba(239,68,68,0.9); }
+        .btn-danger:disabled {
+            opacity: 0.5; cursor: not-allowed;
+            background: linear-gradient(135deg, #94A3B8, #64748B);
+            box-shadow: none;
+        }
+
+        .state-screen {
+            text-align: center; padding: 2.5rem 1.5rem;
+        }
+        .state-icon {
+            width: 96px; height: 96px; margin: 0 auto 1.1rem;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 2.4rem;
+        }
+        .state-icon.gray { background: linear-gradient(135deg, #F3F4F6, #E5E7EB); color: #6B7280; }
+        .state-icon.orange { background: linear-gradient(135deg, #FFF7ED, #FFE0BD); color: #FF7A00; }
+        .state-icon.red { background: linear-gradient(135deg, #FEF2F2, #FECACA); color: #EF4444; }
+        .state-title { font-size: 1.15rem; font-weight: 900; color: #1A1A1A; margin: 0 0 0.5rem; }
+        .state-text { font-size: 0.88rem; color: #6B7280; font-weight: 600; line-height: 1.7; margin: 0 0 1.5rem; }
+        .state-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 0.85rem 1.5rem; background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            color: #fff; border-radius: 0.9rem; font-weight: 800; font-size: 0.9rem;
+            text-decoration: none; box-shadow: 0 12px 26px -10px rgba(255,122,0,0.75);
+            transition: all 0.22s; font-family: 'Cairo', sans-serif;
+        }
+        .state-btn:hover { transform: translateY(-2px); }
+
+        .loader {
+            position: fixed; inset: 0; background: #fff; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 1rem;
+        }
+        .loader-spinner {
+            width: 60px; height: 60px; border: 5px solid #FEE2E2;
+            border-top-color: #EF4444; border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { font-weight: 800; color: #6B7280; font-size: 0.9rem; }
+
+        .hidden { display: none !important; }
+
+        .footer-actions { text-align: center; margin-top: 1.5rem; }
+        .footer-actions a {
+            color: #6B7280; text-decoration: none; font-size: 0.82rem;
+            font-weight: 700; display: inline-flex; align-items: center;
+            gap: 6px; padding: 0.6rem 1rem; border-radius: 9999px;
+            transition: all 0.22s;
+        }
+        .footer-actions a:hover { background: #fff; color: #EF4444; }
+    </style>
+</head>
+<body>
+
+<!-- Loader -->
+<div id="loader" class="loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">جارٍ التحقق من الحساب...</div>
+</div>
+
+<div class="page">
+
+    <!-- Not Logged In -->
+    <div id="notLoggedCard" class="card hidden">
+        <div class="card-head">
+            <div class="head-icon"><i class="fas fa-user-lock"></i></div>
+            <h1 class="head-title">الوصول مرفوض</h1>
+            <p class="head-sub">يجب تسجيل الدخول للوصول إلى هذه الصفحة</p>
+        </div>
+        <div class="card-body">
+            <div class="state-screen">
+                <div class="state-icon gray"><i class="fas fa-shield-halved"></i></div>
+                <h2 class="state-title">لم يتم تسجيل الدخول</h2>
+                <p class="state-text">سجّل دخولك من لوحة التحكم أولاً، ثم عُد إلى هنا لحذف متجرك.</p>
+                <a href="a.html" class="state-btn">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>العودة لتسجيل الدخول</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Store -->
+    <div id="noStoreCard" class="card hidden">
+        <div class="card-head">
+            <div class="head-icon"><i class="fas fa-store-slash"></i></div>
+            <h1 class="head-title">لا يوجد متجر</h1>
+            <p class="head-sub">لم يتم العثور على متجر مرتبط بحسابك</p>
+        </div>
+        <div class="card-body">
+            <div class="state-screen">
+                <div class="state-icon orange"><i class="fas fa-circle-info"></i></div>
+                <h2 class="state-title">حسابك غير مرتبط بمتجر</h2>
+                <p class="state-text">لا يوجد متجر مسجّل بهذا الحساب، لا يمكن إتمام عملية الحذف.</p>
+                <a href="a.html" class="state-btn">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>العودة للوحة التحكم</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Form -->
+    <div id="deleteCard" class="card hidden">
+        <div class="card-head">
+            <div class="head-icon"><i class="fas fa-trash-can"></i></div>
+            <h1 class="head-title">حذف المتجر نهائياً</h1>
+            <p class="head-sub">هذا الإجراء لا يمكن التراجع عنه إطلاقاً</p>
+        </div>
+        <div class="card-body">
+
+            <!-- Store Info -->
+            <div class="store-info-box">
+                <div class="store-info-icon"><i class="fas fa-store"></i></div>
+                <div class="store-info-text">
+                    <div class="store-info-label">المتجر المراد حذفه</div>
+                    <div class="store-info-value" id="storeNameValue">—</div>
+                </div>
+            </div>
+
+            <!-- Warning -->
+            <div class="warning-box">
+                <div class="warning-title">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span>سيتم حذف البيانات التالية نهائياً:</span>
+                </div>
+                <ul class="warning-list">
+                    <li><i class="fas fa-xmark"></i> <span>حساب المتجر وبياناته بالكامل</span></li>
+                    <li><i class="fas fa-xmark"></i> <span>جميع المنتجات (<strong id="productsCountValue">0</strong> منتج)</span></li>
+                    <li><i class="fas fa-xmark"></i> <span>المتابعون والإحصائيات والاشتراكات</span></li>
+                    <li><i class="fas fa-xmark"></i> <span>حساب المستخدم نفسه (لن تستطيع تسجيل الدخول مجدداً)</span></li>
+                </ul>
+            </div>
+
+            <!-- Error / Success -->
+            <div id="errorBox" class="error-box"></div>
+            <div id="successBox" class="success-box"></div>
+
+            <!-- Confirm Name -->
+            <div class="field">
+                <label class="field-label" for="confirmName">
+                    <i class="fas fa-keyboard"></i>
+                    <span>اكتب اسم المتجر <span class="target-name" id="targetNameInline">—</span> للتأكيد <span class="req">*</span></span>
+                </label>
+                <input type="text" id="confirmName" class="input" placeholder="اكتب اسم المتجر بالضبط" autocomplete="off" spellcheck="false" maxlength="60">
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="field">
+                <label class="field-label" for="confirmPassword">
+                    <i class="fas fa-lock"></i>
+                    <span>كلمة مرور حسابك <span class="req">*</span></span>
+                </label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirmPassword" class="input" placeholder="أدخل كلمة المرور" autocomplete="current-password" maxlength="128">
+                    <button type="button" id="pwdToggle" class="pwd-toggle" aria-label="إظهار كلمة المرور">
+                        <i class="fas fa-eye" id="pwdToggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <a href="a.html" class="btn btn-cancel">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>إلغاء</span>
+                </a>
+                <button type="button" id="confirmDeleteBtn" class="btn btn-danger" disabled>
+                    <i class="fas fa-trash-can"></i>
+                    <span>حذف نهائي</span>
+                </button>
+            </div>
+
+            <div class="footer-actions">
+                <a href="https://wa.me/249908280115" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>هل تحتاج مساعدة؟ تواصل مع الدعم</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════════
+   🛡️ Security
+   ═══════════════════════════════════════════════════════════════ */
+(function enforceHTTPS() {
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        location.replace('https://' + location.host + location.pathname + location.search);
+    }
+})();
+(function preventIframe() {
+    try {
+        if (window.top !== window.self) {
+            document.documentElement.innerHTML = '<h1 style="font-family:Cairo;text-align:center;padding:2rem">غير مسموح</h1>';
+            try { window.top.location = window.self.location; } catch (e) {}
+        }
+    } catch (e) {}
+})();
+try { if (window.name) window.name = ''; } catch (e) {}
+
+/* ═══════════════════════════════════════════════════════════════
+   🔥 Firebase Init
+   ═══════════════════════════════════════════════════════════════ */
+const firebaseConfig = {
+    apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
+    authDomain: "bazarena-725e4.firebaseapp.com",
+    databaseURL: "https://bazarena-725e4-default-rtdb.firebaseio.com",
+    projectId: "bazarena-725e4",
+    storageBucket: "bazarena-725e4.firebasestorage.app",
+    messagingSenderId: "977750898059",
+    appId: "1:977750898059:web:247e8513b48490ed622b8e"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+db.settings({ ignoreUndefinedProperties: true });
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+
+const STORES = 'stores';
+const PRODUCTS = 'products';
+const LOGIN_RL_KEY = 'bzr_login_rl_v1';
+
+/* ═══════════════════════════════════════════════════════════════
+   Helpers
+   ═══════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const sanitize = s => !s ? '' : String(s).replace(/<[^>]*>/g, '').trim();
+
+function showScreen(id) {
+    ['notLoggedCard', 'noStoreCard', 'deleteCard'].forEach(x => {
+        const el = $(x);
+        if (el) el.classList.toggle('hidden', x !== id);
+    });
+    const loader = $('loader');
+    if (loader) loader.classList.add('hidden');
+}
+
+function showError(msg) {
+    const box = $('errorBox');
+    if (!box) return;
+    box.textContent = msg;
+    box.classList.add('show');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function hideError() {
+    const box = $('errorBox');
+    if (box) { box.classList.remove('show'); box.textContent = ''; }
+}
+function showSuccess(msg) {
+    const box = $('successBox');
+    if (!box) return;
+    box.textContent = msg;
+    box.classList.add('show');
+}
+function hideSuccess() {
+    const box = $('successBox');
+    if (box) { box.classList.remove('show'); box.textContent = ''; }
+}
+
+function mapFbError(err) {
+    const c = err && err.code ? String(err.code) : '';
+    const m = {
+        'auth/wrong-password': 'كلمة المرور غير صحيحة',
+        'auth/invalid-credential': 'كلمة المرور غير صحيحة',
+        'auth/invalid-login-credentials': 'كلمة المرور غير صحيحة',
+        'auth/user-mismatch': 'الحساب غير مطابق',
+        'auth/too-many-requests': 'محاولات كثيرة، حاول لاحقاً',
+        'auth/network-request-failed': 'تعذر الاتصال بالشبكة',
+        'auth/requires-recent-login': 'يجب إعادة تسجيل الدخول والمحاولة مجدداً',
+        'auth/user-token-expired': 'انتهت صلاحية الجلسة، سجّل الدخول مجدداً',
+        'permission-denied': 'لا تملك صلاحية تنفيذ هذا الإجراء',
+        'unavailable': 'الخدمة غير متاحة مؤقتاً'
+    };
+    return m[c] || (err && err.message) || 'حدث خطأ غير متوقع';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   State
+   ═══════════════════════════════════════════════════════════════ */
+let currentUser = null;
+let currentStore = null;
+let productsCount = 0;
+let isDeleting = false;
+
+/* ═══════════════════════════════════════════════════════════════
+   Password Toggle
+   ═══════════════════════════════════════════════════════════════ */
+(function setupPwdToggle() {
+    const pwd = $('confirmPassword');
+    const btn = $('pwdToggle');
+    const icon = $('pwdToggleIcon');
+    if (!pwd || !btn || !icon) return;
+    btn.addEventListener('click', () => {
+        const isPwd = pwd.type === 'password';
+        pwd.type = isPwd ? 'text' : 'password';
+        icon.classList.toggle('fa-eye', !isPwd);
+        icon.classList.toggle('fa-eye-slash', isPwd);
+        btn.classList.toggle('active', isPwd);
+    });
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   Find Store
+   ═══════════════════════════════════════════════════════════════ */
+async function findStoreByUid(uid) {
+    const snap = await db.collection(STORES).where('owner_uid', '==', uid).limit(1).get();
+    if (snap.empty) return null;
+    return { id: snap.docs[0].id, ...snap.docs[0].data() };
+}
+
+async function countProducts(storeName) {
+    try {
+        const snap = await db.collection(PRODUCTS).where('store_name', '==', storeName).get();
+        return snap.size;
+    } catch (e) {
+        console.warn('[countProducts]', e);
+        return 0;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Validate Form
+   ═══════════════════════════════════════════════════════════════ */
+function validateForm() {
+    if (!currentStore) return false;
+    const nameInput = $('confirmName');
+    const pwdInput = $('confirmPassword');
+    const btn = $('confirmDeleteBtn');
+    if (!nameInput || !pwdInput || !btn) return false;
+
+    const typedName = String(nameInput.value || '').trim();
+    const typedPwd = String(pwdInput.value || '');
+    const nameOk = typedName === (currentStore.name || '').trim();
+
+    nameInput.classList.toggle('match', nameOk && typedName.length > 0);
+
+    const ready = nameOk && typedPwd.length >= 6 && !isDeleting;
+    btn.disabled = !ready;
+    return ready;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Delete Process
+   ═══════════════════════════════════════════════════════════════ */
+async function performDelete() {
+    if (!currentStore || !currentUser) return;
+    if (isDeleting) return;
+
+    hideError();
+    hideSuccess();
+
+    const typedName = String($('confirmName').value || '').trim();
+    if (typedName !== (currentStore.name || '').trim()) {
+        showError('❌ اسم المتجر غير مطابق، تحقق من الكتابة');
+        return;
+    }
+
+    const pwd = String($('confirmPassword').value || '');
+    if (pwd.length < 6) {
+        showError('❌ كلمة المرور قصيرة جداً');
+        return;
+    }
+
+    if (!confirm('⚠️ تأكيد أخير: هل أنت متأكد تماماً من حذف المتجر؟\nهذا الإجراء نهائي ولا يمكن التراجع عنه.')) {
+        return;
+    }
+
+    isDeleting = true;
+    const btn = $('confirmDeleteBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>جارٍ الحذف...</span>';
+
+    const storeId = currentStore.id;
+    const storeName = currentStore.name;
+    const userEmail = currentUser.email;
+
+    try {
+        // 1) إعادة مصادقة المستخدم
+        const cred = firebase.auth.EmailAuthProvider.credential(userEmail, pwd);
+        await currentUser.reauthenticateWithCredential(cred);
+
+        // 2) حذف المنتجات
+        const prodSnap = await db.collection(PRODUCTS).where('store_name', '==', storeName).get();
+        let batch = db.batch();
+        let counter = 0;
+        const commits = [];
+        prodSnap.docs.forEach(doc => {
+            batch.delete(doc.ref);
+            counter++;
+            if (counter === 400) {
+                commits.push(batch.commit());
+                batch = db.batch();
+                counter = 0;
+            }
+        });
+        if (counter > 0) commits.push(batch.commit());
+        if (commits.length) await Promise.all(commits);
+
+        // 3) حذف مستند المتجر
+        await db.collection(STORES).doc(storeId).delete();
+
+        // 4) حذف حساب المستخدم
+        await currentUser.delete();
+
+        // 5) تنظيف
+        try { localStorage.removeItem(LOGIN_RL_KEY); } catch (e) {}
+
+        // 6) إظهار النجاح
+        showSuccess('✅ تم حذف المتجر والحساب بنجاح');
+        btn.innerHTML = '<i class="fas fa-check"></i> <span>تم الحذف</span>';
+
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1800);
+
+    } catch (err) {
+        console.error('[Delete]', err);
+        isDeleting = false;
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-trash-can"></i> <span>حذف نهائي</span>';
+
+        let msg = '❌ فشل الحذف: ' + mapFbError(err);
+        if (err.code === 'auth/requires-recent-login') {
+            msg = '🔒 لأمانك، يجب إعادة تسجيل الدخول ثم المحاولة مجدداً.\nجاري تحويلك لصفحة الدخول...';
+            setTimeout(async () => {
+                try { await auth.signOut(); } catch (e) {}
+                window.location.href = 'a.html';
+            }, 2200);
+        }
+        showError(msg);
+        validateForm();
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Auth State
+   ═══════════════════════════════════════════════════════════════ */
+auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+        currentUser = null;
+        currentStore = null;
+        showScreen('notLoggedCard');
+        return;
+    }
+
+    currentUser = user;
+
+    try {
+        const store = await findStoreByUid(user.uid);
+        if (!store) {
+            showScreen('noStoreCard');
+            return;
+        }
+
+        currentStore = store;
+
+        // Populate UI
+        const name = store.name || '—';
+        $('storeNameValue').textContent = name;
+        $('targetNameInline').textContent = name;
+
+        // Count products
+        productsCount = await countProducts(name);
+        $('productsCountValue').textContent = productsCount;
+
+        showScreen('deleteCard');
+
+    } catch (err) {
+        console.error('[AuthState]', err);
+        showScreen('noStoreCard');
+    }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   Event Listeners
+   ═══════════════════════════════════════════════════════════════ */
+$('confirmName')?.addEventListener('input', validateForm);
+$('confirmPassword')?.addEventListener('input', validateForm);
+$('confirmDeleteBtn')?.addEventListener('click', performDelete);
+$('confirmPassword')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !$('confirmDeleteBtn').disabled) performDelete();
+});
+
+console.log('%c🗑️ delete-account.html v1.0', 'color:#EF4444;font-weight:bold;font-size:14px');
+</script>
+
+</body>
+</html>
