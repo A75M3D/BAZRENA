@@ -210,6 +210,15 @@
 
         .support-float { position: fixed; bottom: 24px; left: 24px; width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.85rem; cursor: pointer; z-index: 8000; box-shadow: 0 10px 30px -8px rgba(37,211,102,0.7); border: none; }
         .support-badge { position: absolute; top: -2px; right: -2px; width: 22px; height: 22px; border-radius: 50%; background: #EF4444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; border: 2.5px solid #fff; }
+
+        /* ═══ Danger Zone ═══ */
+        .danger-zone { margin-top: 1.5rem; border: 2px dashed #FECACA; background: linear-gradient(135deg, #FEF2F2 0%, #FFF5F5 100%); border-radius: 1.25rem; padding: 1.15rem; }
+        .danger-zone-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.85rem; }
+        .danger-zone-icon { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #EF4444, #DC2626); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; box-shadow: 0 8px 18px -6px rgba(239,68,68,0.6); }
+        .danger-zone-title { font-weight: 900; font-size: 0.98rem; color: #991B1B; }
+        .danger-zone-sub { font-size: 0.76rem; color: #B91C1C; font-weight: 600; line-height: 1.6; margin-top: 0.15rem; }
+        .btn-delete-account { width: 100%; padding: 0.9rem 1.1rem; background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #fff; border: none; border-radius: 0.95rem; font-weight: 900; font-size: 0.92rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 12px 26px -10px rgba(239,68,68,0.75); transition: all 0.22s; font-family: 'Cairo', sans-serif; text-decoration: none; }
+        .btn-delete-account:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -12px rgba(239,68,68,0.9); }
     </style>
 </head>
 <body>
@@ -455,6 +464,21 @@
                                 </div>
                             </div>
                         </form>
+
+                        <!-- 🗑️ Danger Zone -->
+                        <div class="danger-zone">
+                            <div class="danger-zone-header">
+                                <div class="danger-zone-icon"><i class="fas fa-triangle-exclamation"></i></div>
+                                <div>
+                                    <div class="danger-zone-title">منطقة الخطر</div>
+                                    <div class="danger-zone-sub">إجراءات لا يمكن التراجع عنها</div>
+                                </div>
+                            </div>
+                            <a href="delete-account.html" class="btn-delete-account">
+                                <i class="fas fa-trash-can"></i>
+                                <span>حذف المتجر والحساب نهائياً</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1474,7 +1498,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v7.0 — Fixed Images + Security', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v7.1 — Fixed Images + Security + Delete Account Link', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
