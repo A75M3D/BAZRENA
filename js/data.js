@@ -54,8 +54,8 @@ function rebuildStoreCategories() {
 /* الترتيب الأصلي: الأكثر متابعة أولاً، ثم الأحدث إنشاءً */
 function sortStoresLikeOriginal(list) {
   return list.slice().sort((a, b) => {
-    const followersA = Number(a.followers) || 0;
-    const followersB = Number(b.followers) || 0;
+    const followersA = Number(b.followers) || 0;
+    const followersB = Number(a.followers) || 0;
 
     if (followersA !== followersB) {
       return followersB - followersA;
