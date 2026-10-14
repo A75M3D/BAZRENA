@@ -413,99 +413,200 @@ if (isStandaloneMode()) {
 
 /* ═══ NOTIFICATIONS (FCM) ═══ */
 let messaging = null;
+
+// حفظ وقت ظهور الرسالة ووقت آخر قرار للمستخدم حتى لا تتكرر عند كل فتح.
+const NOTIF_PROMPT_KEY = 'branzarNotifPromptShownAt';
+const NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
+const NOTIF_DELAY_DAYS = 7;
+
 function isNotificationSupported() {
-  return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+  return 'Notification' in window &&
+         'serviceWorker' in navigator &&
+         'PushManager' in window;
 }
-async function initFCM() {
+
+function getNotifLastActionTime() {
   try {
-    if (!isNotificationSupported()) return;
-    messaging = firebase.messaging();
-    const reg = await navigator.serviceWorker.ready;
-    messaging.onMessage((payload) => {
-      const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
-      const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
-      showPushToast(title, body);
-      if (Notification.permission === 'granted') {
-        try {
-          const n = new Notification(title, {
-            body,
-            icon: (payload.notification && payload.notification.icon) || CONFIG.DEFAULT_OG_IMAGE,
-            dir: 'rtl', lang: 'ar',
-            tag: (payload.data && payload.data.tag) || 'branzar-fg'
-          });
-          n.onclick = () => {
-            window.focus();
-            window.location.href = (payload.data && payload.data.url) || 'https://branzar.vercel.app';
-            n.close();
-          };
-        } catch(e){}
-      }
-    });
-    if (Notification.permission === 'granted') await registerFCMToken(reg);
-    else if (shouldShowNotifBanner()) setTimeout(showNotifBanner, 12000);
-  } catch(err){ console.warn('FCM:', err); }
+    const shownAt = Number(localStorage.getItem(NOTIF_PROMPT_KEY) || 0);
+    const dismissedAt = Number(localStorage.getItem(NOTIF_DISMISS_KEY) || 0);
+    return Math.max(shownAt, dismissedAt);
+  } catch (error) {
+    console.warn('[BZR] Cannot read notification state:', error);
+    return 0;
+  }
 }
+
 function shouldShowNotifBanner() {
   if (!isNotificationSupported()) return false;
-  const perm = Notification.permission;
-  if (perm === 'granted' || perm === 'denied') return false;
-  const dismissed = parseInt(localStorage.getItem(KEYS.NOTIF_DISMISS) || '0');
-  if (dismissed && (Date.now() - dismissed) < CONFIG.NOTIF_DISMISS_DAYS * 24 * 60 * 60 * 1000) return false;
+
+  const permission = Notification.permission;
+  if (permission === 'granted' || permission === 'denied') return false;
+
+  const lastAction = getNotifLastActionTime();
+  const delay = NOTIF_DELAY_DAYS * 24 * 60 * 60 * 1000;
+
+  if (lastAction && Date.now() - lastAction < delay) return false;
   return true;
 }
+
+function markNotifPromptShown() {
+  try {
+    localStorage.setItem(NOTIF_PROMPT_KEY, Date.now().toString());
+  } catch (error) {
+    console.warn('[BZR] Cannot save notification prompt state:', error);
+  }
+}
+
+function markNotifDismissed() {
+  try {
+    localStorage.setItem(NOTIF_DISMISS_KEY, Date.now().toString());
+  } catch (error) {
+    console.warn('[BZR] Cannot save notification dismissal:', error);
+  }
+}
+
 function showNotifBanner() {
-  const b = document.getElementById('notifPermissionBanner');
-  if (!b) return;
-  b.classList.remove('hidden');
-  requestAnimationFrame(() => setTimeout(() => b.classList.add('show'), 50));
+  const banner = document.getElementById('notifPermissionBanner');
+  if (!banner) return;
+
+  // الحفظ قبل العرض يمنع التكرار حتى لو أغلق المستخدم التطبيق مباشرة.
+  markNotifPromptShown();
+
+  banner.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    setTimeout(() => banner.classList.add('show'), 50);
+  });
 }
+
 function hideNotifBanner() {
-  const b = document.getElementById('notifPermissionBanner');
-  if (!b) return;
-  b.classList.remove('show');
-  setTimeout(() => b.classList.add('hidden'), 600);
+  const banner = document.getElementById('notifPermissionBanner');
+  if (!banner) return;
+
+  banner.classList.remove('show');
+  setTimeout(() => banner.classList.add('hidden'), 600);
 }
+
 async function registerFCMToken(reg) {
   try {
-    const token = await messaging.getToken({ vapidKey: CONFIG.VAPID, serviceWorkerRegistration: reg });
+    const token = await messaging.getToken({
+      vapidKey: CONFIG.VAPID,
+      serviceWorkerRegistration: reg
+    });
+
     if (!token) return null;
+
     localStorage.setItem(KEYS.FCM_TOKEN, token);
-    const prev = localStorage.getItem(KEYS.FCM_TOKEN + '_saved');
-    if (prev !== token) {
+
+    const previousToken = localStorage.getItem(KEYS.FCM_TOKEN + '_saved');
+
+    if (previousToken !== token) {
       await db.collection('fcm_tokens').doc(token).set({
         token,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
         active: true
       }, { merge: true });
+
       localStorage.setItem(KEYS.FCM_TOKEN + '_saved', token);
     }
+
     return token;
-  } catch(err){ return null; }
+  } catch (error) {
+    console.error('[BZR] FCM token registration failed:', error);
+    return null;
+  }
 }
+
+async function initFCM() {
+  try {
+    if (!isNotificationSupported()) return;
+
+    messaging = firebase.messaging();
+    const reg = await navigator.serviceWorker.ready;
+
+    messaging.onMessage((payload) => {
+      const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
+      const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
+
+      showPushToast(title, body);
+
+      if (Notification.permission === 'granted') {
+        try {
+          const notification = new Notification(title, {
+            body,
+            icon: (payload.notification && payload.notification.icon) || CONFIG.DEFAULT_OG_IMAGE,
+            dir: 'rtl',
+            lang: 'ar',
+            tag: (payload.data && payload.data.tag) || 'branzar-fg'
+          });
+
+          notification.onclick = () => {
+            window.focus();
+            window.location.href = (payload.data && payload.data.url) || 'https://branzar.vercel.app';
+            notification.close();
+          };
+        } catch (error) {
+          console.error('[BZR] Foreground notification failed:', error);
+        }
+      }
+    });
+
+    if (Notification.permission === 'granted') {
+      await registerFCMToken(reg);
+    } else if (shouldShowNotifBanner()) {
+      setTimeout(() => {
+        // إعادة الفحص قبل العرض لمنع عرض مؤجل بعد تغيير الحالة.
+        if (shouldShowNotifBanner()) showNotifBanner();
+      }, 12000);
+    }
+  } catch (error) {
+    console.error('[BZR] FCM initialization failed:', error);
+  }
+}
+
 function showPushToast(title, body) {
-  const t = document.getElementById('pushToast');
-  if (!t) return;
+  const toast = document.getElementById('pushToast');
+  if (!toast) return;
+
   document.getElementById('pushToastTitle').textContent = title;
   document.getElementById('pushToastBody').textContent = body;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 5000);
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 5000);
 }
+
 document.getElementById('enableNotifBtn')?.addEventListener('click', async () => {
-  const btn = document.getElementById('enableNotifBtn'); btn.disabled = true;
+  const button = document.getElementById('enableNotifBtn');
+  if (!button) return;
+
+  button.disabled = true;
+
   try {
-    const perm = await Notification.requestPermission();
-    if (perm === 'granted') {
+    const permission = await Notification.requestPermission();
+
+    if (permission === 'granted') {
       const reg = await navigator.serviceWorker.ready;
       await registerFCMToken(reg);
-      hideNotifBanner(); showToast('✅ تم تفعيل الإشعارات'); haptic('medium');
-    } else { hideNotifBanner(); localStorage.setItem(KEYS.NOTIF_DISMISS, Date.now().toString()); }
-  } catch(err){}
-  btn.disabled = false;
+      hideNotifBanner();
+      showToast('✅ تم تفعيل الإشعارات');
+      haptic('medium');
+    } else {
+      markNotifDismissed();
+      hideNotifBanner();
+    }
+  } catch (error) {
+    console.error('[BZR] Notification permission failed:', error);
+    markNotifDismissed();
+    hideNotifBanner();
+  } finally {
+    button.disabled = false;
+  }
 });
+
 document.getElementById('dismissNotifBtn')?.addEventListener('click', () => {
-  hideNotifBanner(); localStorage.setItem(KEYS.NOTIF_DISMISS, Date.now().toString());
+  markNotifDismissed();
+  hideNotifBanner();
 });
+
 
 /* ═══ SEARCH ═══ */
 const searchInput = document.getElementById('searchInput');
