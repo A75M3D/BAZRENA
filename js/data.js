@@ -3,6 +3,8 @@
    Layer 2: Data Loading + Follow System + Polling + Deep Link
    ✅ Cache-first stores loading
    ✅ Firebase listener for newest stores only
+   ✅ Original stores sorting (followers desc, then newest)
+   ✅ Elegant new-store toast with store name
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -49,6 +51,21 @@ function rebuildStoreCategories() {
   displayCategories();
 }
 
+/* الترتيب الأصلي: الأكثر متابعة أولاً، ثم الأحدث إنشاءً */
+function sortStoresLikeOriginal(list) {
+  return list.slice().sort((a, b) => {
+    const followersA = Number(a.followers) || 0;
+    const followersB = Number(b.followers) || 0;
+
+    if (followersA !== followersB) {
+      return followersB - followersA;
+    }
+
+    return String(b.created_at || '')
+      .localeCompare(String(a.created_at || ''));
+  });
+}
+
 function renderStoresFromMemory() {
   const empty = document.getElementById('storesEmpty');
   const errorMessage = document.getElementById('storesErrorMessage');
@@ -73,8 +90,10 @@ function renderStoresFromMemory() {
 }
 
 function mergeLatestStores(latestStores) {
+  const result = { hasNew: false, newStores: [] };
+
   if (!Array.isArray(latestStores) || !latestStores.length) {
-    return false;
+    return result;
   }
 
   const existingById = new Map(
@@ -82,13 +101,12 @@ function mergeLatestStores(latestStores) {
   );
 
   const previousIds = new Set(existingById.keys());
-  let hasNewStore = false;
 
   latestStores.forEach((freshStore) => {
     const id = String(getStoreId(freshStore));
 
     if (!previousIds.has(id)) {
-      hasNewStore = true;
+      result.newStores.push(freshStore);
     }
 
     existingById.set(id, {
@@ -97,29 +115,17 @@ function mergeLatestStores(latestStores) {
     });
   });
 
-  const latestIds = new Set(
-    latestStores.map((store) => String(getStoreId(store)))
-  );
+  // إعادة الترتيب الأصلي الكامل (المتابعون ثم الأحدث)
+  stores = sortStoresLikeOriginal(Array.from(existingById.values()));
 
-  // أحدث المتاجر أولاً، ثم بقية المتاجر القديمة من الكاش.
-  const latestPart = latestStores.map((store) =>
-    existingById.get(String(getStoreId(store)))
-  );
-
-  const cachedPart = Array.from(existingById.values()).filter(
-    (store) => !latestIds.has(String(getStoreId(store)))
-  );
-
-  stores = latestPart.concat(cachedPart);
-
-  // تحديث الكاش بالقائمة المدمجة بدون إعادة جلب المتاجر القديمة.
   cacheManager.set(
     'stores_list',
     stores,
     CONFIG.CACHE_TTL_STORES
   );
 
-  return hasNewStore;
+  result.hasNew = result.newStores.length > 0;
+  return result;
 }
 
 function startStoresChangesListener() {
@@ -135,12 +141,23 @@ function startStoresChangesListener() {
           ...doc.data()
         }));
 
-        const hasNewStore = mergeLatestStores(latestStores);
+        const { hasNew, newStores } = mergeLatestStores(latestStores);
 
         // لا نعيد الرسم عند أول اتصال إلا إذا وُجد متجر جديد فعلاً.
-        if (hasNewStore) {
+        if (hasNew) {
           renderStoresFromMemory();
-          showToast('✅ تم إضافة متجر جديد');
+
+          const names = newStores
+            .map((store) => (store && store.name ? String(store.name).trim() : ''))
+            .filter(Boolean);
+
+          if (names.length === 1) {
+            showNewStoreToast(names[0]);
+          } else if (names.length > 1) {
+            showNewStoreToast(names.slice(0, 3).join(' • '));
+          } else {
+            showNewStoreToast('');
+          }
         }
       }, (error) => {
         console.warn('[BZR] New stores listener failed:', error);
@@ -191,18 +208,8 @@ async function loadStores() {
       ...doc.data()
     }));
 
-    // الحفاظ على ترتيب التطبيق الحالي عند أول تحميل.
-    stores.sort((a, b) => {
-      const followersA = Number(a.followers) || 0;
-      const followersB = Number(b.followers) || 0;
-
-      if (followersA !== followersB) {
-        return followersB - followersA;
-      }
-
-      return String(b.created_at || '')
-        .localeCompare(String(a.created_at || ''));
-    });
+    // الحفاظ على ترتيب التطبيق الأصلي عند أول تحميل.
+    stores = sortStoresLikeOriginal(stores);
 
     cacheManager.set(
       'stores_list',
@@ -231,6 +238,151 @@ document.getElementById('retryStoresBtn')?.addEventListener('click', () => {
   // إعادة المحاولة لا تعيد تحميل كل المتاجر؛ تعيد تشغيل مراقبة الجديد فقط.
   startStoresChangesListener();
 });
+
+/* ═══ NEW STORE TOAST (أنيق) ═══ */
+function showNewStoreToast(storeName) {
+  // إزالة أي إشعار سابق
+  document.getElementById('bzrNewStoreToast')?.remove();
+
+  if (!document.getElementById('bzrNewStoreToastStyles')) {
+    const style = document.createElement('style');
+    style.id = 'bzrNewStoreToastStyles';
+    style.textContent = `
+      @keyframes bzrToastIn {
+        0%   { opacity: 0; transform: translate(-50%, -40px) scale(0.85); }
+        60%  { opacity: 1; transform: translate(-50%, 4px) scale(1.02); }
+        100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+      }
+      @keyframes bzrToastOut {
+        0%   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -30px) scale(0.9); }
+      }
+      @keyframes bzrShine {
+        0%   { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      @keyframes bzrPulse {
+        0%, 100% { transform: scale(1); }
+        50%      { transform: scale(1.15); }
+      }
+      .bzr-new-store-toast {
+        position: fixed;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px 12px 18px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #6a5cff 0%, #a855f7 50%, #ec4899 100%);
+        color: #fff;
+        font-family: inherit;
+        direction: rtl;
+        max-width: min(92vw, 420px);
+        box-shadow:
+          0 14px 40px rgba(124, 58, 237, 0.45),
+          0 4px 14px rgba(0, 0, 0, 0.18),
+          inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        animation: bzrToastIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        overflow: hidden;
+      }
+      .bzr-new-store-toast::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.25), transparent 60%);
+        pointer-events: none;
+      }
+      .bzr-new-store-toast.hide {
+        animation: bzrToastOut 0.4s ease forwards;
+      }
+      .bzr-new-store-toast .bzr-icon {
+        font-size: 26px;
+        line-height: 1;
+        animation: bzrPulse 1.6s ease-in-out infinite;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+      }
+      .bzr-new-store-toast .bzr-body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        line-height: 1.35;
+        min-width: 0;
+      }
+      .bzr-new-store-toast .bzr-title {
+        font-size: 12px;
+        font-weight: 500;
+        opacity: 0.92;
+        letter-spacing: 0.2px;
+      }
+      .bzr-new-store-toast .bzr-name {
+        font-size: 15px;
+        font-weight: 800;
+        background: linear-gradient(90deg, #ffffff 0%, #ffe9b8 30%, #ffffff 60%, #ffe9b8 100%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: bzrShine 2.5s linear infinite;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 68vw;
+      }
+      @media (max-width: 380px) {
+        .bzr-new-store-toast { padding: 10px 14px; gap: 10px; }
+        .bzr-new-store-toast .bzr-icon { font-size: 22px; }
+        .bzr-new-store-toast .bzr-name { font-size: 14px; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const toast = document.createElement('div');
+  toast.id = 'bzrNewStoreToast';
+  toast.className = 'bzr-new-store-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+
+  const icon = document.createElement('span');
+  icon.className = 'bzr-icon';
+  icon.textContent = '🎉';
+
+  const body = document.createElement('div');
+  body.className = 'bzr-body';
+
+  const title = document.createElement('span');
+  title.className = 'bzr-title';
+  title.textContent = 'متجر جديد انضم إلى BranZar';
+
+  const name = document.createElement('span');
+  name.className = 'bzr-name';
+  name.textContent = (storeName && String(storeName).trim())
+    ? String(storeName).trim()
+    : 'مرحباً بك ✨';
+
+  body.appendChild(title);
+  body.appendChild(name);
+
+  toast.appendChild(icon);
+  toast.appendChild(body);
+  document.body.appendChild(toast);
+
+  // نقرة لإغلاق فوري
+  toast.addEventListener('click', () => {
+    toast.classList.add('hide');
+    setTimeout(() => toast.remove(), 380);
+  }, { once: true });
+
+  setTimeout(() => {
+    if (!toast.isConnected) return;
+    toast.classList.add('hide');
+    setTimeout(() => toast.remove(), 380);
+  }, 4200);
+}
 
 /* ═══ PRODUCTS ═══ */
 async function loadAllProducts(force) {
