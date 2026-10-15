@@ -42,10 +42,6 @@ input,textarea,select{outline:none}
 .gate-email-badge{display:inline-block;padding:10px 18px;background:rgba(255,122,0,.1);border:1px solid rgba(255,122,0,.3);border-radius:999px;color:#FFA64D;font-weight:800;font-size:.85rem;word-break:break-all;direction:ltr;margin-bottom:8px}
 .gate-info-note{display:flex;gap:8px;align-items:flex-start;padding:12px 14px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25);border-radius:12px;color:#93C5FD;font-size:.78rem;font-weight:600;line-height:1.65;text-align:right;margin-bottom:20px}
 .gate-info-note i{color:#60A5FA;font-size:.9rem;margin-top:2px;flex-shrink:0}
-.gate-steps-list{display:flex;flex-direction:column;gap:10px;margin:20px 0 18px;text-align:right}
-.gate-step-item{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px}
-.gate-step-num{width:24px;height:24px;border-radius:50%;background:var(--c-primary);color:#fff;font-weight:900;font-size:.72rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.gate-step-text{color:#d1d5db;font-size:.8rem;font-weight:600;line-height:1.6}
 .bzr-header{position:sticky;top:0;z-index:100;height:64px;background:rgba(255,255,255,.88);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 16px;gap:12px}
 .bzr-header-inner{max-width:780px;margin:0 auto;width:100%;display:flex;align-items:center;gap:12px}
 .bzr-back-btn{width:40px;height:40px;border-radius:50%;background:var(--c-surface-2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--c-text);font-size:1rem;flex-shrink:0}
@@ -102,6 +98,9 @@ input,textarea,select{outline:none}
 .cat-chip:hover{background:var(--c-primary-soft);color:var(--c-primary);border-color:var(--c-primary);transform:translateY(-2px)}
 .cat-chip.active{background:var(--c-primary-gradient);color:#fff;box-shadow:var(--shadow-primary);border-color:var(--c-primary-dark)}
 .cat-chip.active::after{content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;font-size:.7rem;position:absolute;top:8px;inset-inline-end:8px;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center}
+.cats-loading{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:30px 20px;color:var(--c-text-soft);font-weight:700;font-size:.85rem}
+.cats-loading .ring{width:32px;height:32px;border-radius:50%;border:3px solid var(--c-surface-3);border-top-color:var(--c-primary);animation:spin .85s linear infinite}
+.cats-empty{grid-column:1/-1;text-align:center;padding:30px 20px;background:#FEF2F2;border:1.5px dashed #FECACA;border-radius:var(--radius-md);color:#B91C1C;font-weight:700;font-size:.85rem;line-height:1.7}
 .upload-cover{position:relative;width:100%;height:170px;border-radius:var(--radius-md);overflow:hidden;background:var(--c-surface-2);border:2px dashed var(--c-border);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .upload-cover:hover{border-color:var(--c-primary);background-color:var(--c-primary-soft)}
 .upload-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
@@ -166,7 +165,7 @@ input,textarea,select{outline:none}
   </div>
 </div>
 
-<!-- Gate: Waiting for email verification (بعد التسجيل) -->
+<!-- Gate: Waiting for email verification -->
 <div id="gateWaiting" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon info"><i class="fas fa-envelope-open-text"></i></div>
@@ -183,7 +182,7 @@ input,textarea,select{outline:none}
   </div>
 </div>
 
-<!-- Gate: Verified — redirect -->
+<!-- Gate: Verified -->
 <div id="gateVerified" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon success"><i class="fas fa-check-circle"></i></div>
@@ -194,7 +193,7 @@ input,textarea,select{outline:none}
   </div>
 </div>
 
-<!-- Gate: Blocked (device already registered) -->
+<!-- Gate: Blocked -->
 <div id="gateBlocked" class="gate-overlay hidden">
   <div class="gate-card">
     <div class="gate-icon info"><i class="fas fa-store"></i></div>
@@ -250,7 +249,7 @@ input,textarea,select{outline:none}
           <div class="error-msg" id="nameError"><i class="fas fa-exclamation-circle"></i><span>الاسم بين 3 و 60 حرفًا</span></div>
         </div>
         <div class="form-field">
-          <label class="form-label"><span class="label-icon"><i class="fas fa-tags"></i></span><span>الفئة الرئيسية</span><span class="required">*</span></label>
+          <label class="form-label"><span class="label-icon"><i class="fas fa-tags"></i></span><span>الفئة الرئيسية</span><span class="required">*</span><span class="hint" id="catsSourceHint" style="display:none;"><i class="fas fa-cloud-arrow-down"></i> مباشرة</span></label>
           <div id="catsGrid" class="cats-grid"></div>
           <div class="error-msg" id="catError"><i class="fas fa-exclamation-circle"></i><span>يرجى اختيار فئة</span></div>
         </div>
@@ -321,7 +320,7 @@ input,textarea,select{outline:none}
         <input type="file" id="logoInput" accept="image/*" hidden>
       </div>
 
-      <!-- 5. حساب الدخول (Email + Password) -->
+      <!-- 5. حساب الدخول -->
       <div class="bzr-card">
         <div class="bzr-card-head"><div class="bzr-card-head-icon"><i class="fas fa-lock"></i></div><h2>حساب الدخول</h2><span class="bzr-card-step">5 / 5</span></div>
 
@@ -377,6 +376,9 @@ input,textarea,select{outline:none}
 <script>
 'use strict';
 
+// ═══════════════════════════════════════════════════════════
+// 🔥 Firebase
+// ═══════════════════════════════════════════════════════════
 const firebaseConfig = {
   apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
   authDomain: "bazarena-725e4.firebaseapp.com",
@@ -394,37 +396,51 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 
 const STORES = 'stores';
 const DEVICES = 'device_registry';
+const CATEGORIES = 'categories';  // ⭐ جديد
+
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 const RESEND_COOLDOWN_MS = 60*1000;
 
-const FIXED_CATEGORIES = [
-  {id:'electronics',name:'إلكترونيات وتقنية',emoji:'📱'},
-  {id:'fashion',name:'أزياء وموضة',emoji:'👗'},
-  {id:'beauty',name:'جمال وعناية',emoji:'💄'},
-  {id:'perfumes',name:'عطور',emoji:'🌸'},
-  {id:'home',name:'منزل وديكور',emoji:'🏠'},
-  {id:'stationery',name:'أدوات مكتبية',emoji:'✏️'},
-  {id:'food',name:'أطعمة ومشروبات',emoji:'🍔'},
-  {id:'supermarket',name:'سوبرماركت ومواد',emoji:'🛒'},
-  {id:'cars',name:'سيارات وقطع',emoji:'🚗'},
-  {id:'kids',name:'أطفال ومواليد',emoji:'👶'},
-  {id:'gifts',name:'هدايا وإكسسوارات',emoji:'🎁'},
-  {id:'sports',name:'رياضة ولياقة',emoji:'🏋️'},
-  {id:'construction',name:'بناء ومعدات',emoji:'🏗️'},
-  {id:'agriculture',name:'زراعة ومنتجات',emoji:'🌾'},
-  {id:'training',name:'تعليم وتطوير',emoji:'🎓'},
-  {id:'medical',name:'خدمات طبية',emoji:'🏥'},
-  {id:'realestate',name:'عقارات وإيجارات',emoji:'🏢'},
-  {id:'services',name:'خدمات وأعمال',emoji:'💼'},
-  {id:'transport',name:'نقل وتوصيل',emoji:'🚚'},
-  {id:'travel',name:'سفر وسياحة',emoji:'✈️'}
+// ═══════════════════════════════════════════════════════════
+// 🎯 الفئات الافتراضية (تُزرع تلقائياً إن كانت المجموعة فارغة)
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_CATEGORIES = [
+  { id:'electronics', name:'إلكترونيات وتقنية', emoji:'📱' },
+  { id:'fashion', name:'أزياء وموضة', emoji:'👗' },
+  { id:'beauty', name:'جمال وعناية', emoji:'💄' },
+  { id:'perfumes', name:'عطور', emoji:'🌸' },
+  { id:'home', name:'منزل وديكور', emoji:'🏠' },
+  { id:'stationery', name:'أدوات مكتبية', emoji:'✏️' },
+  { id:'food', name:'أطعمة ومشروبات', emoji:'🍔' },
+  { id:'supermarket', name:'سوبرماركت ومواد', emoji:'🛒' },
+  { id:'cars', name:'سيارات وقطع', emoji:'🚗' },
+  { id:'kids', name:'أطفال ومواليد', emoji:'👶' },
+  { id:'gifts', name:'هدايا وإكسسوارات', emoji:'🎁' },
+  { id:'sports', name:'رياضة ولياقة', emoji:'🏋️' },
+  { id:'construction', name:'بناء ومعدات', emoji:'🏗️' },
+  { id:'agriculture', name:'زراعة ومنتجات', emoji:'🌾' },
+  { id:'training', name:'تعليم وتطوير', emoji:'🎓' },
+  { id:'medical', name:'خدمات طبية', emoji:'🏥' },
+  { id:'realestate', name:'عقارات وإيجارات', emoji:'🏢' },
+  { id:'services', name:'خدمات وأعمال', emoji:'💼' },
+  { id:'transport', name:'نقل وتوصيل', emoji:'🚚' },
+  { id:'travel', name:'سفر وسياحة', emoji:'✈️' }
 ];
+
+// ═══════════════════════════════════════════════════════════
+// 🌐 State
+// ═══════════════════════════════════════════════════════════
 const state = {
   persistentId:null, deviceFingerprint:null, selectedCategory:null,
   coverUrl:null, logoUrl:null, submitting:false, alreadyRegistered:false,
   pendingUser:null, pendingEmail:null, pendingStoreId:null,
-  pollTimer:null, lastResendAt:0
+  pollTimer:null, lastResendAt:0,
+  // ⭐ إدارة الفئات
+  allCategories: [],
+  categoriesUnsub: null,
+  categoriesLoaded: false,
+  categoriesSeeded: false
 };
 
 const $ = id => document.getElementById(id);
@@ -432,6 +448,9 @@ const escapeHtml = s => { if(s==null) return ''; const d=document.createElement(
 const sanitize = s => !s ? '' : String(s).replace(/<[^>]*>/g,'').trim();
 const haptic = t => { if(!navigator.vibrate) return; try { navigator.vibrate({light:15,medium:30,heavy:60}[t]||15); } catch(e){} };
 
+// ═══════════════════════════════════════════════════════════
+// 🎨 Toast & UI Helpers
+// ═══════════════════════════════════════════════════════════
 let toastTimer = null;
 function showToast(msg, type='success') {
   const t=$('toast'); if(!t) return;
@@ -456,6 +475,9 @@ function showGate(id) {
 function updateGateStep(text){const el=$('gateSteps');if(el){el.style.opacity='0';setTimeout(()=>{el.textContent=text;el.style.opacity='1';},150);}}
 function startProgress(){const b=$('topProgressBar');if(b){b.classList.remove('done');b.classList.add('active');}}
 function doneProgress(){const b=$('topProgressBar');if(!b)return;b.classList.remove('active');b.classList.add('done');setTimeout(()=>{b.classList.remove('done');b.style.transform='';},400);}
+function showErr(id){const el=$(id);if(el)el.classList.add('show');}
+function hideErr(id){const el=$(id);if(el)el.classList.remove('show');}
+function setFieldState(w,st){const el=$(w);if(!el)return;el.classList.remove('error','valid');if(st==='error')el.classList.add('error');else if(st==='valid')el.classList.add('valid');}
 
 function mapFbError(err){
   const c = err&&err.code?String(err.code):'';
@@ -472,7 +494,9 @@ function mapFbError(err){
   return m[c] || (err&&err.message) || 'حدث خطأ غير متوقع';
 }
 
-/* ─── Persistent ID (ثابت في 4 أماكن) ─── */
+// ═══════════════════════════════════════════════════════════
+// 🆔 Persistent ID
+// ═══════════════════════════════════════════════════════════
 const PID_KEY='bzr_pid_v6';
 const PID_COOKIE='bzr_pid_v6';
 function uuid(){ if(crypto.randomUUID){try{return crypto.randomUUID();}catch(e){}} return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:((r&0x3)|0x8)).toString(16);});}
@@ -509,7 +533,9 @@ async function buildFingerprint(){
   return fp;
 }
 
-/* ─── Device check (4 مصادر) ─── */
+// ═══════════════════════════════════════════════════════════
+// 🔒 Device Check
+// ═══════════════════════════════════════════════════════════
 async function checkDeviceRegistration(pid, fp){
   const r = {blocked:false, store:null, source:null};
 
@@ -547,7 +573,9 @@ async function showBlockedGate(storeInfo){
   showGate('gateBlocked');
 }
 
-/* ─── Image upload ─── */
+// ═══════════════════════════════════════════════════════════
+// 🖼️ Image Upload
+// ═══════════════════════════════════════════════════════════
 function compressImage(file,maxW,quality){return new Promise((res,rej)=>{const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxW){h=Math.round(maxW/w*h);w=maxW;}c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#FFFFFF';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);c.toBlob(b=>b?res(b):rej(new Error('compress_failed')),'image/jpeg',quality);};img.onerror=rej;img.src=e.target.result;};reader.onerror=rej;reader.readAsDataURL(file);});}
 async function uploadToCloudinary(blob){const fd=new FormData();fd.append('file',blob);fd.append('upload_preset',CLOUDINARY_UPLOAD_PRESET);fd.append('folder','branzar/stores');const r=await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD_NAME+'/image/upload',{method:'POST',body:fd});if(!r.ok)throw new Error('upload_failed');const d=await r.json();if(!d.secure_url)throw new Error('no_url');return d.secure_url;}
 function setupImageUpload(zoneEl,inputEl,previewEl,progressEl,onLoaded,isLogo){
@@ -566,31 +594,157 @@ function setupImageUpload(zoneEl,inputEl,previewEl,progressEl,onLoaded,isLogo){
   }
 }
 
-/* ─── Categories ─── */
-function renderCategories(){
-  const g=$('catsGrid');if(!g)return;g.innerHTML='';
-  const f=document.createDocumentFragment();
-  FIXED_CATEGORIES.forEach(c=>{
-    const b=document.createElement('button');b.type='button';
-    b.className='cat-chip'+(state.selectedCategory===c.name?' active':'');
-    b.dataset.cat=c.name;
-    b.innerHTML='<span class="cat-emoji">'+c.emoji+'</span><span>'+escapeHtml(c.name)+'</span>';
-    b.addEventListener('click',()=>selectCategory(c.name));
-    f.appendChild(b);
+// ═══════════════════════════════════════════════════════════
+// 🏷️ Categories — Firestore Dynamic Loading
+// ═══════════════════════════════════════════════════════════
+async function ensureCategoriesSeeded() {
+  if (state.categoriesSeeded) return;
+  try {
+    const snap = await db.collection(CATEGORIES).limit(1).get();
+    if (!snap.empty) { state.categoriesSeeded = true; return; }
+    console.log('[Categories] Seeding defaults...');
+    const batch = db.batch();
+    DEFAULT_CATEGORIES.forEach((cat, idx) => {
+      batch.set(db.collection(CATEGORIES).doc(cat.id), {
+        name: cat.name,
+        emoji: cat.emoji,
+        order: idx,
+        is_default: true,
+        created_at: Date.now()
+      });
+    });
+    await batch.commit();
+    state.categoriesSeeded = true;
+    console.log('[Categories] Seeded ' + DEFAULT_CATEGORIES.length + ' defaults');
+  } catch (err) {
+    console.warn('[Categories] Seed failed:', err);
+  }
+}
+
+function normalizeCategories(list) {
+  return list
+    .filter(c => c && c.name && String(c.name).trim())
+    .map((c, i) => ({
+      id: c.id || ('cat_' + i),
+      name: String(c.name).trim(),
+      emoji: c.emoji || '🏷️',
+      order: typeof c.order === 'number' ? c.order : i,
+      is_default: !!c.is_default
+    }))
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+}
+
+async function loadCategoriesFromFirestore() {
+  try {
+    const snap = await db.collection(CATEGORIES).get();
+    const cats = normalizeCategories(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    if (!cats.length) {
+      // fallback
+      state.allCategories = normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
+    } else {
+      state.allCategories = cats;
+    }
+    state.categoriesLoaded = true;
+    return state.allCategories;
+  } catch (err) {
+    console.warn('[Categories] Fetch failed:', err);
+    // fallback offline
+    state.allCategories = normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
+    state.categoriesLoaded = true;
+    return state.allCategories;
+  }
+}
+
+function subscribeCategoriesRealtime() {
+  if (state.categoriesUnsub) return;
+  console.log('[Categories] Subscribing to realtime updates...');
+  state.categoriesUnsub = db.collection(CATEGORIES)
+    .onSnapshot((snapshot) => {
+      const cats = normalizeCategories(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+      const freshList = cats.length ? cats : normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
+
+      // كشف التغيير
+      const oldSig = state.allCategories.map(c => c.id + ':' + c.name + ':' + c.emoji).join('|');
+      const newSig = freshList.map(c => c.id + ':' + c.name + ':' + c.emoji).join('|');
+
+      state.allCategories = freshList;
+
+      if (oldSig !== newSig) {
+        console.log('[Categories] Updated dynamically:', freshList.length);
+        // إعادة رسم الشبكة فوراً
+        if ($('catsGrid')) renderCategories();
+        // إذا الفئة المختارة اختفت، إزالة الاختيار
+        if (state.selectedCategory && !freshList.some(c => c.name === state.selectedCategory)) {
+          state.selectedCategory = null;
+          showToast('الفئة التي اخترتها لم تعد متاحة', 'warning');
+        }
+      }
+    }, err => {
+      console.warn('[Categories] Listener error:', err);
+    });
+}
+
+async function initCategories() {
+  await ensureCategoriesSeeded();
+  await loadCategoriesFromFirestore();
+  subscribeCategoriesRealtime();
+  renderCategories();
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🎨 Render Categories
+// ═══════════════════════════════════════════════════════════
+function renderCategories() {
+  const g = $('catsGrid');
+  if (!g) return;
+
+  // حالة التحميل
+  if (!state.categoriesLoaded) {
+    g.innerHTML = '<div class="cats-loading"><div class="ring"></div><span>جارٍ تحميل الفئات...</span></div>';
+    return;
+  }
+
+  const cats = state.allCategories || [];
+
+  if (!cats.length) {
+    g.innerHTML = '<div class="cats-empty"><i class="fas fa-triangle-exclamation" style="font-size:1.4rem;margin-bottom:8px;display:block;"></i>لا توجد فئات متاحة حالياً<br><span style="font-size:.75rem;font-weight:600;">يرجى المحاولة لاحقاً أو التواصل مع الدعم</span></div>';
+    return;
+  }
+
+  g.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cat-chip' + (state.selectedCategory === c.name ? ' active' : '');
+    btn.dataset.cat = c.name;
+    btn.dataset.catId = c.id;
+    btn.innerHTML = '<span class="cat-emoji">' + escapeHtml(c.emoji) + '</span><span>' + escapeHtml(c.name) + '</span>';
+    btn.addEventListener('click', () => selectCategory(c.name));
+    frag.appendChild(btn);
   });
-  g.appendChild(f);
-}
-function selectCategory(name){
-  state.selectedCategory=name;
-  document.querySelectorAll('.cat-chip').forEach(c=>c.classList.toggle('active',c.dataset.cat===name));
-  hideErr('catError');haptic('light');
+  g.appendChild(frag);
+
+  // إظهار شارة "مباشر" إن كانت البيانات من Firestore
+  const hint = $('catsSourceHint');
+  if (hint) {
+    const hasRemote = cats.some(c => !c.is_default || c.id);
+    hint.style.display = hasRemote ? 'inline-flex' : 'none';
+  }
 }
 
-function showErr(id){const el=$(id);if(el)el.classList.add('show');}
-function hideErr(id){const el=$(id);if(el)el.classList.remove('show');}
-function setFieldState(w,st){const el=$(w);if(!el)return;el.classList.remove('error','valid');if(st==='error')el.classList.add('error');else if(st==='valid')el.classList.add('valid');}
+function selectCategory(name) {
+  state.selectedCategory = name;
+  document.querySelectorAll('.cat-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.cat === name);
+  });
+  hideErr('catError');
+  haptic('light');
+}
 
-/* ─── Input events ─── */
+// ═══════════════════════════════════════════════════════════
+// 📝 Input Events
+// ═══════════════════════════════════════════════════════════
 if($('storeName')){$('storeName').addEventListener('input',e=>{const v=e.target.value.replace(/[<>"`\\]/g,'');if(e.target.value!==v)e.target.value=v;$('nameCount').textContent=v.length;if(v.trim().length>=3){hideErr('nameError');setFieldState('nameWrap','valid');}});}
 if($('storeDescription')){$('storeDescription').addEventListener('input',e=>{$('descCount').textContent=e.target.value.length;});}
 if($('locationInput')){
@@ -613,7 +767,9 @@ $('togglePwdConfirm').addEventListener('click',()=>{const i=$('confirmPassword')
 setupImageUpload($('coverUpload'),$('coverInput'),$('coverPreview'),$('coverProgress'),url=>{state.coverUrl=url;hideErr('coverError');},false);
 setupImageUpload($('logoUpload'),$('logoInput'),$('logoPreview'),$('logoProgress'),url=>{state.logoUrl=url;hideErr('logoError');},true);
 
-/* ─── Validation ─── */
+// ═══════════════════════════════════════════════════════════
+// ✅ Validation
+// ═══════════════════════════════════════════════════════════
 function validateForm(){
   let ok=true, first=null;
   const name=sanitize($('storeName').value);
@@ -635,10 +791,13 @@ function validateForm(){
   return ok;
 }
 
-/* ─── Submit ─── */
+// ═══════════════════════════════════════════════════════════
+// 🚀 Submit Registration
+// ═══════════════════════════════════════════════════════════
 $('submitBtn').addEventListener('click', async()=>{
   if(state.alreadyRegistered){showToast('لديك متجر بالفعل','warning');return;}
   if(state.submitting)return;
+  if(!state.categoriesLoaded){showToast('جارٍ تحميل الفئات، لحظة...','info');return;}
   if(!validateForm()){showToast('يرجى تصحيح الحقول المطلوبة','error');return;}
 
   const email=($('emailInput').value||'').trim().toLowerCase();
@@ -657,7 +816,6 @@ $('submitBtn').addEventListener('click', async()=>{
 
   let createdUser=null;
   try{
-    // 1) فحص مسبق للجهاز
     const devCheck = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
     if(devCheck.blocked){
       await showBlockedGate(devCheck.store);
@@ -665,19 +823,16 @@ $('submitBtn').addEventListener('click', async()=>{
       state.submitting=false; return;
     }
 
-    // 2) إنشاء حساب Firebase Auth
     setButtonLoading(btn,true,'جارٍ إنشاء الحساب...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const cred = await auth.createUserWithEmailAndPassword(email, password);
     createdUser = cred.user;
 
-    // 3) فحص التكرار
     setButtonLoading(btn,true,'جارٍ التحقق من البيانات...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const nChk=await db.collection(STORES).where('name','==',storeName).limit(1).get();
     if(!nChk.empty){try{await createdUser.delete();}catch(e){} throw new Error('store_name_exists');}
     const wChk=await db.collection(STORES).where('whatsapp_number','==',whatsapp).limit(1).get();
     if(!wChk.empty){try{await createdUser.delete();}catch(e){} throw new Error('whatsapp_exists');}
 
-    // 4) بناء المستندات
     const now=Date.now();
     const storeRef=db.collection(STORES).doc();
     const deviceRef=db.collection(DEVICES).doc(state.persistentId);
@@ -701,7 +856,6 @@ $('submitBtn').addEventListener('click', async()=>{
       registeredAt:firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    // 5) Batch Write ذري
     setButtonLoading(btn,true,'جارٍ إنشاء المتجر...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const batch=db.batch();
     batch.set(deviceRef,deviceData);
@@ -711,7 +865,6 @@ $('submitBtn').addEventListener('click', async()=>{
 
     state.pendingStoreId=storeRef.id;
 
-    // 6) إرسال رابط التحقق (آخر خطوة)
     setButtonLoading(btn,true,'جارٍ إرسال رابط التحقق...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const acs={ url:window.location.origin+window.location.pathname+'?verified=1', handleCodeInApp:false };
     let sent=false;
@@ -744,7 +897,9 @@ $('submitBtn').addEventListener('click', async()=>{
   }
 });
 
-/* ─── Polling ─── */
+// ═══════════════════════════════════════════════════════════
+// 🔄 Email Verification Polling
+// ═══════════════════════════════════════════════════════════
 function startVerifyPolling(){
   stopVerifyPolling();
   let attempts=0;
@@ -770,7 +925,6 @@ async function onVerifiedSuccess(){
   },1800);
 }
 
-/* ─── Verify buttons ─── */
 $('checkVerifyBtn').addEventListener('click',async()=>{
   const b=$('checkVerifyBtn');
   setButtonLoading(b,true,'جارٍ التحقق...','<i class="fas fa-check-circle"></i><span>تحققت من البريد الآن</span>');
@@ -795,13 +949,22 @@ $('resendVerifyBtn').addEventListener('click',async()=>{
   finally{ setButtonLoading(b,false,'','<i class="fas fa-redo"></i><span>إعادة إرسال الرابط</span>'); }
 });
 
-/* ─── Global ─── */
+// ═══════════════════════════════════════════════════════════
+// 🌐 Global Events
+// ═══════════════════════════════════════════════════════════
 $('retryCheckBtn').addEventListener('click',()=>{showGate('gateCheck');setTimeout(bootstrap,400);});
 $('backBtn').addEventListener('click',()=>{if(document.referrer&&document.referrer.indexOf(location.hostname)>-1)history.back();else window.location.href='index.html';});
 $('signupForm').addEventListener('submit',e=>{e.preventDefault();$('submitBtn').click();});
 $('signupForm').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA')e.preventDefault();});
 
-/* ─── Bootstrap ─── */
+// تنظيف المستمع عند مغادرة الصفحة
+window.addEventListener('beforeunload', () => {
+  if (state.categoriesUnsub) { try { state.categoriesUnsub(); } catch(e){} }
+});
+
+// ═══════════════════════════════════════════════════════════
+// 🚀 Bootstrap
+// ═══════════════════════════════════════════════════════════
 async function bootstrap(){
   showGate('gateCheck');
   try{
@@ -809,7 +972,6 @@ async function bootstrap(){
     await new Promise(r=>setTimeout(r,200));
     await buildFingerprint();
 
-    // فحص الجهاز الشامل قبل أي شيء
     const devCheck = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
     if(devCheck.blocked){
       updateGateStep('هذا الجهاز مسجّل مسبقًا');
@@ -818,7 +980,6 @@ async function bootstrap(){
       return;
     }
 
-    // تنظيف auth معلّق
     if(auth.currentUser){
       if(auth.currentUser.emailVerified){
         updateGateStep('لديك حساب فعّال — جارٍ التوجيه...');
@@ -829,7 +990,6 @@ async function bootstrap(){
       try{
         const snap=await db.collection(STORES).where('owner_uid','==',auth.currentUser.uid).limit(1).get();
         if(!snap.empty){
-          // عنده متجر فعلاً — أرسله ليكمل التحقق
           state.pendingUser=auth.currentUser;
           state.pendingEmail=auth.currentUser.email;
           state.pendingStoreId=snap.docs[0].id;
@@ -840,11 +1000,14 @@ async function bootstrap(){
       }catch(e){ try{await auth.signOut();}catch(_){} }
     }
 
-    // نظيف → اعرض النموذج
-    updateGateStep('جاهز للتسجيل ✅');
-    await new Promise(r=>setTimeout(r,250));
+    // ⭐ عرض التطبيق أولاً مع حالة تحميل للفئات
+    updateGateStep('جارٍ تحميل الفئات...');
     showGate('appContainer');
-    renderCategories();
+    renderCategories(); // سيعرض "جارٍ التحميل..."
+
+    // ثم تحميل الفئات ديناميكياً
+    await initCategories();
+    updateGateStep('جاهز للتسجيل ✅');
   }catch(err){
     console.error('[Bootstrap]',err);
     const el=$('errorReason'); if(el) el.textContent='تعذّر إتمام التحقق.';
@@ -853,7 +1016,7 @@ async function bootstrap(){
 }
 
 document.addEventListener('DOMContentLoaded',bootstrap);
-console.log('[BZR] signup v8.0 — email+password + device check أولاً ✅');
+console.log('[BZR] signup v9.0 — dynamic categories from Firestore ✅');
 </script>
 </body>
 </html>
