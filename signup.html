@@ -399,17 +399,27 @@ const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 const RESEND_COOLDOWN_MS = 60*1000;
 
 const FIXED_CATEGORIES = [
-  {id:'electronics',name:'إلكترونيات وتقنية',emoji:'📱'},{id:'fashion',name:'أزياء وموضة',emoji:'👗'},
-  {id:'beauty',name:'جمال وعناية',emoji:'💄'},{id:'home',name:'منزل وديكور',emoji:'🏠'},
-  {id:'food',name:'أطعمة ومشروبات',emoji:'🍔'},{id:'supermarket',name:'سوبرماركت ومواد',emoji:'🛒'},
-  {id:'cars',name:'سيارات وقطع',emoji:'🚗'},{id:'kids',name:'أطفال ومواليد',emoji:'👶'},
-  {id:'gifts',name:'هدايا وإكسسوارات',emoji:'🎁'},{id:'sports',name:'رياضة ولياقة',emoji:'🏋️'},
-  {id:'construction',name:'بناء ومعدات',emoji:'🏗️'},{id:'agriculture',name:'زراعة ومنتجات',emoji:'🌾'},
-  {id:'education',name:'تعليم وكتب',emoji:'📚'},{id:'training',name:'تعليم وتطوير',emoji:'🎓'},
-  {id:'services',name:'خدمات وأعمال',emoji:'💼'},{id:'transport',name:'نقل وتوصيل',emoji:'🚚'},
+  {id:'electronics',name:'إلكترونيات وتقنية',emoji:'📱'},
+  {id:'fashion',name:'أزياء وموضة',emoji:'👗'},
+  {id:'beauty',name:'جمال وعناية',emoji:'💄'},
+  {id:'perfumes',name:'عطور',emoji:'🌸'},
+  {id:'home',name:'منزل وديكور',emoji:'🏠'},
+  {id:'stationery',name:'أدوات مكتبية',emoji:'✏️'},
+  {id:'food',name:'أطعمة ومشروبات',emoji:'🍔'},
+  {id:'supermarket',name:'سوبرماركت ومواد',emoji:'🛒'},
+  {id:'cars',name:'سيارات وقطع',emoji:'🚗'},
+  {id:'kids',name:'أطفال ومواليد',emoji:'👶'},
+  {id:'gifts',name:'هدايا وإكسسوارات',emoji:'🎁'},
+  {id:'sports',name:'رياضة ولياقة',emoji:'🏋️'},
+  {id:'construction',name:'بناء ومعدات',emoji:'🏗️'},
+  {id:'agriculture',name:'زراعة ومنتجات',emoji:'🌾'},
+  {id:'training',name:'تعليم وتطوير',emoji:'🎓'},
+  {id:'medical',name:'خدمات طبية',emoji:'🏥'},
+  {id:'realestate',name:'عقارات وإيجارات',emoji:'🏢'},
+  {id:'services',name:'خدمات وأعمال',emoji:'💼'},
+  {id:'transport',name:'نقل وتوصيل',emoji:'🚚'},
   {id:'travel',name:'سفر وسياحة',emoji:'✈️'}
 ];
-
 const state = {
   persistentId:null, deviceFingerprint:null, selectedCategory:null,
   coverUrl:null, logoUrl:null, submitting:false, alreadyRegistered:false,
