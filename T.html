@@ -7,21 +7,14 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>لوحة تحكم الأدمن - BAZRENA</title>
+    <title>لوحة تحكم الأدمن — BAZRENA</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         html, body { overflow-x: hidden; }
-        body {
-            background: #F5F7FA;
-            direction: rtl;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
+        body { background: #F5F7FA; direction: rtl; margin: 0; padding: 0; min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
         /* ═══ Login Overlay ═══ */
         .admin-login-overlay { position: fixed; inset: 0; background: radial-gradient(ellipse at top, #1a1a1a 0%, #0a0a0a 100%); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 99999; overflow-y: auto; }
@@ -38,7 +31,6 @@
         .admin-login-title { font-size: 1.5rem; font-weight: 900; color: #FFFFFF; text-align: center; margin-bottom: 0.5rem; letter-spacing: -0.3px; }
         @media (min-width: 640px) { .admin-login-title { font-size: 1.75rem; } }
         .admin-login-subtitle { text-align: center; color: #9ca3af; font-size: 0.88rem; margin-bottom: 1.75rem; line-height: 1.7; }
-        @media (min-width: 640px) { .admin-login-subtitle { font-size: 0.93rem; } }
         .admin-login-field { position: relative; margin-bottom: 1rem; }
         .admin-login-field-icon { position: absolute; right: 1.15rem; top: 50%; transform: translateY(-50%); color: #FF7A00; font-size: 1rem; pointer-events: none; }
         .admin-login-input { width: 100%; padding: 1rem 3.1rem 1rem 1rem; border: 2px solid rgba(255,255,255,0.08); border-radius: 1.1rem; font-size: 0.95rem; background: rgba(255,255,255,0.04); color: #FFFFFF; transition: all 0.25s; font-weight: 600; }
@@ -46,7 +38,6 @@
         .admin-login-input::placeholder { color: #6b7280; font-weight: 500; }
         .admin-login-btn { width: 100%; padding: 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 1.1rem; font-weight: 800; font-size: 1.05rem; cursor: pointer; transition: all 0.25s; box-shadow: 0 14px 34px -10px rgba(255,122,0,0.75); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 1.5rem; }
         .admin-login-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 18px 44px -10px rgba(255,122,0,0.9); }
-        .admin-login-btn:active:not(:disabled) { transform: translateY(0); }
         .admin-login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .admin-login-error { background: rgba(220,38,38,0.15); border: 1.5px solid rgba(220,38,38,0.4); color: #fca5a5; padding: 0.9rem 1rem; border-radius: 0.9rem; font-size: 0.87rem; font-weight: 700; text-align: center; margin-top: 1rem; display: none; animation: shake 0.4s; line-height: 1.6; }
         .admin-login-error.show { display: block; }
@@ -72,7 +63,6 @@
         @media (min-width: 640px) { .header-brand-subtitle { font-size: 1.15rem; } }
         .logout-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(239,68,68,0.15); border: 1.5px solid rgba(239,68,68,0.4); color: #fca5a5; padding: 0.55rem 0.9rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.22s; backdrop-filter: blur(10px); flex-shrink: 0; }
         .logout-btn:hover { background: rgba(239,68,68,0.25); transform: translateY(-1px); }
-        .logout-btn:active { transform: translateY(0); }
         .logout-btn span { display: none; }
         @media (min-width: 400px) { .logout-btn span { display: inline; } }
         .connection-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 0.45rem 0.9rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700; margin-top: 1rem; backdrop-filter: blur(10px); position: relative; z-index: 2; }
@@ -85,9 +75,10 @@
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
 
         /* ═══ Tabs ═══ */
-        .tabs-wrap { background: #fff; border-radius: 1.25rem; padding: 0.45rem; display: flex; gap: 0.35rem; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 1.25rem; }
-        .tab-item { flex: 1; padding: 0.75rem 0.75rem; border-radius: 0.95rem; font-weight: 800; font-size: 0.85rem; border: none; background: transparent; color: #6B7280; cursor: pointer; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
-        @media (min-width: 640px) { .tab-item { font-size: 0.92rem; padding: 0.85rem 1rem; } }
+        .tabs-wrap { background: #fff; border-radius: 1.25rem; padding: 0.45rem; display: flex; gap: 0.35rem; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 1.25rem; overflow-x: auto; scrollbar-width: none; }
+        .tabs-wrap::-webkit-scrollbar { display: none; }
+        .tab-item { flex: 1; min-width: 100px; padding: 0.75rem 0.75rem; border-radius: 0.95rem; font-weight: 800; font-size: 0.82rem; border: none; background: transparent; color: #6B7280; cursor: pointer; transition: all 0.28s cubic-bezier(0.4,0,0.2,1); display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+        @media (min-width: 640px) { .tab-item { font-size: 0.92rem; padding: 0.85rem 1rem; gap: 8px; } }
         .tab-item:hover:not(.active) { background: #FFF7ED; color: #FF7A00; }
         .tab-item.active { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: #fff; box-shadow: 0 8px 20px -6px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,122,0,0.3); }
         .tab-item.active i { color: #FF7A00; }
@@ -119,7 +110,7 @@
         @media (min-width: 640px) { .filter-bar { flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem; } }
         .filter-input-wrap { position: relative; flex: 1; min-width: 0; }
         .filter-input-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.9rem; pointer-events: none; }
-        .filter-input { width: 100%; padding: 0.85rem 2.75rem 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.9rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; }
+        .filter-input { width: 100%; padding: 0.85rem 2.75rem 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.9rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif; }
         .filter-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
         .filter-select { padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.9rem; font-weight: 700; transition: all 0.22s; background: #fff; color: #1A1A1A; cursor: pointer; font-family: 'Cairo', sans-serif; width: 100%; }
         @media (min-width: 640px) { .filter-select { min-width: 200px; width: auto; } }
@@ -128,7 +119,6 @@
         /* ═══ Buttons ═══ */
         .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.85rem 1.25rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; box-shadow: 0 12px 28px -10px rgba(255,122,0,0.7); font-family: 'Cairo', sans-serif; white-space: nowrap; }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(255,122,0,0.9); }
-        .btn-primary:active:not(:disabled) { transform: translateY(0); }
         .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
         .btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0.85rem 1.25rem; background: #F3F4F6; color: #4B5563; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.22s; font-family: 'Cairo', sans-serif; }
         .btn-secondary:hover { background: #E5E7EB; }
@@ -146,7 +136,6 @@
         .item-name { font-weight: 900; font-size: 0.92rem; color: #1A1A1A; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         @media (min-width: 640px) { .item-name { font-size: 1rem; } }
         .item-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 0.75rem; align-items: center; font-size: 0.75rem; color: #6B7280; font-weight: 700; }
-        @media (min-width: 640px) { .item-meta { font-size: 0.8rem; } }
         .meta-pill { display: inline-flex; align-items: center; gap: 4px; padding: 0.2rem 0.55rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 800; white-space: nowrap; }
         .meta-pill-cat { background: #F3F4F6; color: #4B5563; }
         .meta-pill-count { background: #EFF6FF; color: #1E40AF; }
@@ -159,6 +148,7 @@
         .meta-pill-prodcat { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
         .meta-pill-loc { background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; }
         .meta-pill-desc { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+        .meta-pill-emoji { background: #FEF3C7; color: #92400E; font-size: 1rem; padding: 0.15rem 0.5rem; }
         .item-actions { display: flex; gap: 0.35rem; flex-shrink: 0; align-items: flex-start; }
         .icon-btn { width: 36px; height: 36px; border-radius: 0.75rem; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; font-size: 0.82rem; }
         @media (min-width: 640px) { .icon-btn { width: 40px; height: 40px; font-size: 0.88rem; } }
@@ -172,6 +162,10 @@
         .empty-state-icon { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; background: linear-gradient(135deg, #FFF7ED, #FFF1E0); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #FFA64D; }
         .empty-state-title { font-size: 1rem; font-weight: 900; color: #374151; margin-bottom: 0.35rem; }
         .empty-state-text { font-size: 0.82rem; color: #9CA3AF; font-weight: 600; }
+
+        /* ═══ Category Emoji Thumb ═══ */
+        .cat-emoji-thumb { width: 56px; height: 56px; border-radius: 0.9rem; background: linear-gradient(135deg, #FFF7ED, #FFEDD5); display: flex; align-items: center; justify-content: center; font-size: 1.85rem; flex-shrink: 0; border: 1.5px solid #FFE0BD; }
+        @media (min-width: 640px) { .cat-emoji-thumb { width: 68px; height: 68px; border-radius: 1rem; font-size: 2.2rem; } }
 
         /* ═══ Password Badge ═══ */
         .password-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
@@ -204,10 +198,12 @@
         @media (min-width: 640px) { .form-label { font-size: 0.88rem; } }
         .form-label i { color: #FF7A00; font-size: 0.78rem; }
         .form-label .req { color: #EF4444; }
+        .form-label .optional-badge { font-size: 0.68rem; background: #F3F4F6; padding: 2px 8px; border-radius: 9999px; color: #6B7280; margin-right: auto; font-weight: 800; }
         .form-input { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.92rem; font-weight: 600; transition: all 0.22s; background: #fff; color: #1A1A1A; font-family: 'Cairo', sans-serif; }
         @media (min-width: 640px) { .form-input { padding: 0.9rem 1.1rem; font-size: 0.95rem; } }
         .form-input:focus { outline: none; border-color: #FF7A00; box-shadow: 0 0 0 4px rgba(255,122,0,0.1); }
         .form-input::placeholder { color: #9CA3AF; font-weight: 500; }
+        .form-input:disabled { background: #F9FAFB; color: #9CA3AF; cursor: not-allowed; }
         .form-hint { font-size: 0.72rem; color: #6B7280; margin-top: 0.35rem; line-height: 1.6; font-weight: 600; }
         .form-row { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
         @media (min-width: 640px) { .form-row { grid-template-columns: 1fr 1fr; } }
@@ -219,6 +215,13 @@
         @media (min-width: 640px) { .image-preview { height: 170px; } }
         .btn-row { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
         .btn-row .btn-primary { flex: 1; }
+
+        /* ═══ Emoji Picker ═══ */
+        .emoji-picker-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 0.5rem; padding: 0.65rem; background: #F9FAFB; border-radius: 0.9rem; border: 1.5px dashed #E5E7EB; max-height: 180px; overflow-y: auto; }
+        @media (min-width: 640px) { .emoji-picker-grid { grid-template-columns: repeat(10, 1fr); } }
+        .emoji-pick-btn { aspect-ratio: 1; border: none; background: #fff; border-radius: 0.55rem; cursor: pointer; font-size: 1.35rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; border: 1.5px solid transparent; }
+        .emoji-pick-btn:hover { transform: scale(1.15); background: #FFF7ED; border-color: #FFE0BD; }
+        .emoji-pick-btn.selected { background: linear-gradient(135deg, #FF7A00, #FFA64D); border-color: #E66900; }
 
         /* ═══ Tags Input (Categories) ═══ */
         .tags-input-wrap { border: 1.5px solid #E5E7EB; border-radius: 0.9rem; padding: 0.65rem; background: #fff; transition: all 0.22s; }
@@ -233,7 +236,7 @@
         .tags-input-row .form-input:focus { border-style: solid; }
         .tags-input-row button { padding: 0.55rem 0.95rem; font-size: 0.82rem; }
 
-        /* ═══ Location Field Helper ═══ */
+        /* ═══ Location Helper ═══ */
         .loc-helper { display: flex; gap: 8px; align-items: flex-start; background: #F8FAFC; border: 1px dashed #E5E7EB; border-radius: 0.8rem; padding: 0.7rem 0.9rem; margin-bottom: 0.65rem; font-size: 0.74rem; font-weight: 600; color: #6B7280; line-height: 1.6; }
         .loc-helper i { color: #FF7A00; font-size: 0.8rem; margin-top: 2px; flex-shrink: 0; }
         .loc-helper strong { color: #1A1A1A; font-weight: 800; }
@@ -251,23 +254,21 @@
         /* ═══ Upload Buttons ═══ */
         .url-upload-group { display: flex; gap: 8px; align-items: stretch; }
         .url-upload-group .form-input { flex: 1; min-width: 0; }
-        .upload-btn { padding: 0 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.22s; font-family: 'Cairo', sans-serif; white-space: nowrap; flex-shrink: 0; box-shadow: 0 6px 16px -8px rgba(255,122,0,0.7); -webkit-tap-highlight-color: transparent; }
+        .upload-btn { padding: 0 1.05rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.22s; font-family: 'Cairo', sans-serif; white-space: nowrap; flex-shrink: 0; box-shadow: 0 6px 16px -8px rgba(255,122,0,0.7); }
         .upload-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 24px -8px rgba(255,122,0,0.9); }
-        .upload-btn:active:not(:disabled) { transform: translateY(0); }
         .upload-btn:disabled { opacity: 0.75; cursor: not-allowed; }
-        .upload-btn i { font-size: 0.9rem; }
         @media (max-width: 480px) { .upload-btn span { display: none; } .upload-btn { padding: 0 0.85rem; } }
     </style>
 </head>
 <body>
 
-<!-- Login Overlay -->
+<!-- ═══ Login Overlay ═══ -->
 <div id="adminLoginOverlay" class="admin-login-overlay">
     <div class="admin-login-card">
         <div class="admin-shield-icon"><i class="fas fa-shield-halved"></i></div>
         <h1 class="admin-login-title">لوحة تحكم الأدمن</h1>
         <p class="admin-login-subtitle">
-            الدخول مخصص لإدارة منصة بازارِنا فقط<br>
+            الدخول مخصص لإدارة منصة BAZRENA فقط<br>
             إدارة كاملة للمتاجر والمنتجات والفئات
         </p>
         <form id="adminLoginForm" autocomplete="off">
@@ -295,7 +296,7 @@
     </div>
 </div>
 
-<!-- Dashboard -->
+<!-- ═══ Dashboard ═══ -->
 <div id="adminDashboard" class="hidden">
     <div id="toast" class="toast"></div>
     <div class="app-container">
@@ -370,15 +371,21 @@
                     <span>المنتجات</span>
                     <span id="tabProductsCount" class="count-badge">0</span>
                 </button>
+                <button id="tabCategories" class="tab-item">
+                    <i class="fas fa-tags"></i>
+                    <span>الفئات</span>
+                    <span id="tabCategoriesCount" class="count-badge">0</span>
+                </button>
             </div>
 
+            <!-- Stores Section -->
             <div id="storesSection" class="tab-content">
                 <div class="card">
                     <div class="card-body">
                         <div class="filter-bar">
                             <div class="filter-input-wrap">
                                 <i class="fas fa-search filter-input-icon"></i>
-                                <input type="text" id="storesSearchInput" class="filter-input" placeholder="ابحث باسم المتجر أو التصنيف...">
+                                <input type="text" id="storesSearchInput" class="filter-input" placeholder="ابحث باسم المتجر أو التصنيف أو الموقع...">
                             </div>
                             <button id="addStoreBtn" class="btn-primary">
                                 <i class="fas fa-plus"></i>
@@ -390,6 +397,7 @@
                 </div>
             </div>
 
+            <!-- Products Section -->
             <div id="productsSection" class="tab-content hidden">
                 <div class="card">
                     <div class="card-body">
@@ -410,11 +418,30 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Categories Section -->
+            <div id="categoriesSection" class="tab-content hidden">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="filter-bar">
+                            <div class="filter-input-wrap">
+                                <i class="fas fa-search filter-input-icon"></i>
+                                <input type="text" id="categoriesSearchInput" class="filter-input" placeholder="ابحث في الفئات...">
+                            </div>
+                            <button id="addCategoryMainBtn" class="btn-primary">
+                                <i class="fas fa-plus"></i>
+                                <span>إضافة فئة</span>
+                            </button>
+                        </div>
+                        <div id="categoriesListContainer" class="items-list"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Store Modal -->
+<!-- ═══ Store Modal ═══ -->
 <div id="storeModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
@@ -437,47 +464,40 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-key"></i><span>كلمة مرور الدخول</span><span class="req">*</span></label>
-                <input type="text" id="store_login_password" class="form-input" required placeholder="كلمة مرور صاحب المتجر" minlength="4" style="font-family: 'Courier New', monospace; letter-spacing: 0.5px;">
-                <div class="form-hint"><i class="fas fa-info-circle"></i> سيستخدمها صاحب المتجر للدخول إلى لوحة تحكم متجره</div>
+                <label class="form-label">
+                    <i class="fas fa-key"></i>
+                    <span>كلمة مرور الدخول</span>
+                    <span class="optional-badge">اختياري</span>
+                </label>
+                <input type="text" id="store_login_password" class="form-input" placeholder="اتركها فارغة إذا لم ترغب بتعيين كلمة مرور" minlength="4" maxlength="64" style="font-family: 'Courier New', monospace; letter-spacing: 0.5px;">
+                <div class="form-hint"><i class="fas fa-info-circle"></i> اختيارية تماماً — يمكنك حفظ المتجر بدون كلمة مرور</div>
             </div>
 
-            <!-- ⭐ حقل الموقع (حقل واحد) -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-map-marker-alt"></i><span>موقع المتجر (الولاية والمنطقة)</span></label>
                 <div class="loc-helper">
                     <i class="fas fa-lightbulb"></i>
                     <span>
-                        ابدأ بكتابة اسم الولاية ثم أضف المنطقة. مثال: <strong>الخرطوم - الرياض</strong> أو <strong>الجزيرة - ود مدني</strong>
+                        ابدأ بكتابة اسم الولاية ثم أضف المنطقة. مثال: <strong>الخرطوم - الرياض</strong>
                     </span>
                 </div>
                 <input type="text" id="store_location" class="form-input" placeholder="مثال: الخرطوم - الرياض" maxlength="100" list="sudanStatesList" autocomplete="off">
                 <datalist id="sudanStatesList">
-                    <option value="الخرطوم"></option>
-                    <option value="الجزيرة"></option>
-                    <option value="البحر الأحمر"></option>
-                    <option value="كسلا"></option>
-                    <option value="القضارف"></option>
-                    <option value="سنار"></option>
-                    <option value="النيل الأبيض"></option>
-                    <option value="النيل الأزرق"></option>
-                    <option value="نهر النيل"></option>
-                    <option value="الشمالية"></option>
-                    <option value="شمال كردفان"></option>
-                    <option value="جنوب كردفان"></option>
-                    <option value="غرب كردفان"></option>
-                    <option value="شمال دارفور"></option>
-                    <option value="جنوب دارفور"></option>
-                    <option value="غرب دارفور"></option>
-                    <option value="شرق دارفور"></option>
-                    <option value="وسط دارفور"></option>
+                    <option value="الخرطوم"></option><option value="الجزيرة"></option><option value="البحر الأحمر"></option>
+                    <option value="كسلا"></option><option value="القضارف"></option><option value="سنار"></option>
+                    <option value="النيل الأبيض"></option><option value="النيل الأزرق"></option><option value="نهر النيل"></option>
+                    <option value="الشمالية"></option><option value="شمال كردفان"></option><option value="جنوب كردفان"></option>
+                    <option value="غرب كردفان"></option><option value="شمال دارفور"></option><option value="جنوب دارفور"></option>
+                    <option value="غرب دارفور"></option><option value="شرق دارفور"></option><option value="وسط دارفور"></option>
                 </datalist>
             </div>
 
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-tag"></i><span>الفئة الرئيسية (مجانية دائماً)</span></label>
-                <input type="text" id="store_category" class="form-input" placeholder="مثال: إلكترونيات">
-                <div class="form-hint"><i class="fas fa-info-circle"></i> الفئة الأساسية للمتجر — تظهر في قائمة فئات التطبيق الرئيسية</div>
+                <select id="store_category" class="form-input">
+                    <option value="">— اختر الفئة —</option>
+                </select>
+                <div class="form-hint"><i class="fas fa-info-circle"></i> الفئة الأساسية للمتجر — تُدار من تبويب "الفئات"</div>
             </div>
 
             <div class="form-group">
@@ -492,7 +512,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="form-hint"><i class="fas fa-lock"></i> هذه الفئات تظهر بقفل 🔒 للمتاجر المجانية وتفتح تلقائياً عند تفعيل الاشتراك</div>
+                <div class="form-hint"><i class="fas fa-lock"></i> هذه الفئات تظهر بقفل 🔒 للمتاجر المجانية</div>
             </div>
 
             <div class="form-group">
@@ -501,7 +521,6 @@
                     <input type="checkbox" id="store_is_subscribed">
                     <span style="color:#6D28D9;">⭐ متجر مشترك — جميع الفئات مفتوحة</span>
                 </label>
-                <div class="form-hint"><i class="fas fa-info-circle"></i> عند التفعيل، الفئات الإضافية تفتح فوراً للعملاء</div>
             </div>
 
             <div class="form-group">
@@ -524,24 +543,24 @@
                 <label class="form-label"><i class="fas fa-image"></i><span>رابط الشعار (Logo)</span></label>
                 <div class="url-upload-group">
                     <input type="url" id="store_logo" class="form-input" placeholder="https://example.com/logo.png" dir="ltr" style="text-align: left;">
-                    <button type="button" class="upload-btn" data-upload-target="store_logo" title="رفع صورة من جهازك">
+                    <button type="button" class="upload-btn" data-upload-target="store_logo" title="رفع صورة">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <span>رفع</span>
                     </button>
                 </div>
-                <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار" onerror="this.classList.add('hidden')">
+                <img id="store_logo_preview" class="image-preview hidden" alt="معاينة الشعار">
             </div>
 
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-panorama"></i><span>رابط الغلاف (Cover)</span></label>
                 <div class="url-upload-group">
                     <input type="url" id="store_cover" class="form-input" placeholder="https://example.com/cover.png" dir="ltr" style="text-align: left;">
-                    <button type="button" class="upload-btn" data-upload-target="store_cover" title="رفع صورة من جهازك">
+                    <button type="button" class="upload-btn" data-upload-target="store_cover" title="رفع صورة">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <span>رفع</span>
                     </button>
                 </div>
-                <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف" onerror="this.classList.add('hidden')">
+                <img id="store_cover_preview" class="image-preview hidden" alt="معاينة الغلاف">
             </div>
 
             <div class="form-row">
@@ -569,7 +588,7 @@
     </div>
 </div>
 
-<!-- Product Modal -->
+<!-- ═══ Product Modal ═══ -->
 <div id="productModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
@@ -603,11 +622,9 @@
                 <div class="form-hint"><i class="fas fa-info-circle"></i> اختر الفئة التي يظهر بها المنتج داخل صفحة المتجر</div>
             </div>
 
-            <!-- ⭐ حقل وصف المنتج (جديد) -->
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-align-right"></i><span>وصف المنتج</span></label>
-                <textarea id="product_description" class="form-input" rows="3" placeholder="اكتب وصفاً مختصراً للمنتج — المواصفات، المميزات، الحالة..." maxlength="1000" style="resize: vertical; min-height: 90px;"></textarea>
-                <div class="form-hint"><i class="fas fa-info-circle"></i> اختياري — يظهر للعملاء عند فتح تفاصيل المنتج</div>
+                <textarea id="product_description" class="form-input" rows="3" placeholder="اكتب وصفاً مختصراً للمنتج..." maxlength="1000" style="resize: vertical; min-height: 90px;"></textarea>
             </div>
 
             <div class="form-group">
@@ -619,12 +636,12 @@
                 <label class="form-label"><i class="fas fa-image"></i><span>رابط الصورة</span></label>
                 <div class="url-upload-group">
                     <input type="url" id="product_img_url" class="form-input" placeholder="https://example.com/product.png" dir="ltr" style="text-align: left;">
-                    <button type="button" class="upload-btn" data-upload-target="product_img_url" title="رفع صورة من جهازك">
+                    <button type="button" class="upload-btn" data-upload-target="product_img_url" title="رفع صورة">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <span>رفع</span>
                     </button>
                 </div>
-                <img id="product_img_preview" class="image-preview hidden" alt="معاينة الصورة" onerror="this.classList.add('hidden')">
+                <img id="product_img_preview" class="image-preview hidden" alt="معاينة الصورة">
             </div>
 
             <div class="btn-row">
@@ -638,15 +655,52 @@
     </div>
 </div>
 
-<!-- Firebase -->
+<!-- ═══ Category Modal ═══ -->
+<div id="categoryModal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 540px;">
+        <div class="modal-header">
+            <div class="modal-header-title">
+                <div class="modal-header-icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="modal-header-text" id="categoryModalTitle">إضافة فئة جديدة</div>
+            </div>
+            <button class="modal-close" onclick="closeCategoryModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <form id="categoryForm">
+            <input type="hidden" id="category_id">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-tag"></i><span>اسم الفئة</span><span class="req">*</span></label>
+                <input type="text" id="category_name" class="form-input" required placeholder="مثال: إلكترونيات وتقنية" maxlength="40">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-smile"></i><span>الأيقونة (إيموجي)</span></label>
+                <input type="text" id="category_emoji" class="form-input" placeholder="📱" maxlength="6" style="font-size:1.8rem;text-align:center;padding:1rem;">
+                <div class="form-hint"><i class="fas fa-info-circle"></i> اختر من الأيقونات المقترحة أدناه أو اكتب أي إيموجي</div>
+                <div class="emoji-picker-grid" id="emojiPicker"></div>
+            </div>
+            <div class="btn-row">
+                <button type="submit" id="categorySubmitBtn" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span>حفظ الفئة</span>
+                </button>
+                <button type="button" onclick="closeCategoryModal()" class="btn-secondary">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ═══ Firebase ═══ -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-// ============================================================
+'use strict';
+
+// ═══════════════════════════════════════════════════════════
 // 🔥 Firebase Config
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 const firebaseConfig = {
     apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
     authDomain: "bazarena-725e4.firebaseapp.com",
@@ -662,16 +716,69 @@ const db = firebase.firestore();
 
 const STORES_COLLECTION = 'stores';
 const PRODUCTS_COLLECTION = 'products';
+const CATEGORIES_COLLECTION = 'categories';
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
+// 🎯 Default Categories (20)
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_CATEGORIES = [
+    { id: 'electronics', name: 'إلكترونيات وتقنية', emoji: '📱' },
+    { id: 'fashion', name: 'أزياء وموضة', emoji: '👗' },
+    { id: 'beauty', name: 'جمال وعناية', emoji: '💄' },
+    { id: 'perfumes', name: 'عطور', emoji: '🌸' },
+    { id: 'home', name: 'منزل وديكور', emoji: '🏠' },
+    { id: 'stationery', name: 'أدوات مكتبية', emoji: '✏️' },
+    { id: 'food', name: 'أطعمة ومشروبات', emoji: '🍔' },
+    { id: 'supermarket', name: 'سوبرماركت ومواد', emoji: '🛒' },
+    { id: 'cars', name: 'سيارات وقطع', emoji: '🚗' },
+    { id: 'kids', name: 'أطفال ومواليد', emoji: '👶' },
+    { id: 'gifts', name: 'هدايا وإكسسوارات', emoji: '🎁' },
+    { id: 'sports', name: 'رياضة ولياقة', emoji: '🏋️' },
+    { id: 'construction', name: 'بناء ومعدات', emoji: '🏗️' },
+    { id: 'agriculture', name: 'زراعة ومنتجات', emoji: '🌾' },
+    { id: 'training', name: 'تعليم وتطوير', emoji: '🎓' },
+    { id: 'medical', name: 'خدمات طبية', emoji: '🏥' },
+    { id: 'realestate', name: 'عقارات وإيجارات', emoji: '🏢' },
+    { id: 'services', name: 'خدمات وأعمال', emoji: '💼' },
+    { id: 'transport', name: 'نقل وتوصيل', emoji: '🚚' },
+    { id: 'travel', name: 'سفر وسياحة', emoji: '✈️' }
+];
+
+// ═══════════════════════════════════════════════════════════
+// 😀 Emoji Picker Pool
+// ═══════════════════════════════════════════════════════════
+const EMOJI_POOL = [
+    '📱','💻','🎮','📷','🎧','⌚','📺','🔌','💡','🔋',
+    '👗','👔','👟','👠','👜','🕶️','💍','🧥','👒','🧢',
+    '💄','💅','🧴','🧼','🪥','💇','💆','🛁','🧖','🌸',
+    '🏠','🛋️','🪑','🖼️','🕯️','🧺','🪞','🚪','🏡','🛏️',
+    '🍔','🍕','🍰','☕','🍹','🥗','🍜','🍞','🧁','🍫',
+    '🛒','🥫','🧴','🧻','🧂','🍚','🫘','🧀','🥛','🍯',
+    '🚗','🏍️','🚙','🚕','⚙️','🔧','🔩','🛞','🚲','🛵',
+    '👶','🧸','🍼','👶','🎈','🎠','🪀','🎨','🧩','📚',
+    '🎁','🎀','🎊','🎉','💐','🌹','🎂','🎊','🥂','💝',
+    '🏋️','⚽','🏀','🎾','🏐','🥊','🏊','🚴','🎿','🏓',
+    '🏗️','🧱','🪚','🔨','🪛','⚒️','🚧','🏗️','🔩','🛠️',
+    '🌾','🌱','🌳','🍎','🥕','🌽','🐄','🐔','🍇','🐝',
+    '🎓','📚','✏️','🖊️','📝','📖','🎒','🏫','🔬','🔭',
+    '🏥','💊','🩺','💉','🩹','🧬','🦷','👨‍⚕️','🚑','🧪',
+    '🏢','🏘️','🏚️','🏗️','🔑','🚪','📐','🗺️','🏙️','🏛️',
+    '💼','🧰','📊','📈','💡','🎯','🤝','📞','📧','🖥️',
+    '🚚','📦','🚛','✈️','🚢','🚁','📮','🛣️','🚉','🚌',
+    '🌍','🧳','🎫','🗽','🏖️','⛰️','🗺️','🏨','🎡','🚂',
+    '✏️','📚','🖇️','📎','📌','🗂️','📁','🗃️','📋','🖊️',
+    '🌸','🌺','🌼','💐','🌷','🌻','🥀','🌹','🪷','💮'
+];
+
+// ═══════════════════════════════════════════════════════════
 // 🔑 Cloudinary
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 
-// ============================================================
-// ⭐ ولايات السودان (الخرطوم أولاً)
-// ============================================================
+// ═══════════════════════════════════════════════════════════
+// ⭐ Sudan States
+// ═══════════════════════════════════════════════════════════
 const SUDAN_STATES = [
     'الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','سنار',
     'النيل الأبيض','النيل الأزرق','نهر النيل','الشمالية',
@@ -679,9 +786,9 @@ const SUDAN_STATES = [
     'شمال دارفور','جنوب دارفور','غرب دارفور','شرق دارفور','وسط دارفور'
 ];
 
-// ============================================================
-// 🔐 نسخ كلمة المرور وإظهارها
-// ============================================================
+// ═══════════════════════════════════════════════════════════
+// 🔐 Password Helpers
+// ═══════════════════════════════════════════════════════════
 async function copyToClipboard(text) {
     if (!text) return false;
     try {
@@ -727,27 +834,22 @@ window.toggleStorePasswordVisibility = (el) => {
     }
 };
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🗄️ Cache
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 const CACHE_DURATION = 100 * 60 * 60 * 1000;
-const CACHE_PREFIX = 'bazrena_admin_cache_v4_';
+const CACHE_PREFIX = 'bazrena_admin_cache_v5_';
 
 const cacheManager = {
     set(key, value) {
-        try {
-            localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ timestamp: Date.now(), value }));
-        } catch (e) { console.warn('⚠️ Cache write failed:', e); }
+        try { localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ timestamp: Date.now(), value })); } catch (e) {}
     },
     get(key) {
         try {
             const raw = localStorage.getItem(CACHE_PREFIX + key);
             if (!raw) return null;
             const data = JSON.parse(raw);
-            if (Date.now() - data.timestamp > CACHE_DURATION) {
-                localStorage.removeItem(CACHE_PREFIX + key);
-                return null;
-            }
+            if (Date.now() - data.timestamp > CACHE_DURATION) { localStorage.removeItem(CACHE_PREFIX + key); return null; }
             return data.value;
         } catch (e) { return null; }
     },
@@ -757,17 +859,12 @@ const cacheManager = {
             if (!raw) return -1;
             return Math.floor((Date.now() - JSON.parse(raw).timestamp) / 60000);
         } catch (e) { return -1; }
-    },
-    clearAll() {
-        Object.keys(localStorage)
-            .filter(k => k.startsWith(CACHE_PREFIX))
-            .forEach(k => localStorage.removeItem(k));
     }
 };
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🧬 Fingerprint
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 function getFingerprint(items) {
     if (!Array.isArray(items) || items.length === 0) return 'empty';
     return items.map(item => {
@@ -782,46 +879,48 @@ function getFingerprint(items) {
     }).sort().join('||');
 }
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🌐 State
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 let allStores = [];
 let allProducts = [];
+let allCategories = [];
 let filteredStores = [];
 let filteredProducts = [];
+let filteredCategories = [];
 let adminUser = '';
 let currentEditingCategories = [];
 let isSavingStore = false;
 let isSavingProduct = false;
+let isSavingCategory = false;
 let dashboardInitialized = false;
 let listenersSetup = false;
 let storesUnsubscribe = null;
 let productsUnsubscribe = null;
+let categoriesUnsubscribe = null;
 let isFirstStoresSnapshot = true;
 let isFirstProductsSnapshot = true;
+let isFirstCategoriesSnapshot = true;
 let lastStoresFingerprint = '';
 let lastProductsFingerprint = '';
+let lastCategoriesFingerprint = '';
 let suppressStoresToast = false;
 let suppressProductsToast = false;
+let suppressCategoriesToast = false;
+let categoriesSeeded = false;
 
 const $ = id => document.getElementById(id);
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🛠️ Helpers
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 function sanitize(str) {
     if (!str) return '';
     return String(str).replace(/<[^>]*>/g, '').trim();
 }
-// ⭐ تنظيف الموقع وإزالة الشرطة الزائدة في النهاية
 function sanitizeLocation(loc) {
     if (!loc) return '';
-    return String(loc)
-        .replace(/[<>"`\\]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .replace(/[\s\-]+$/, '')
-        .slice(0, 100);
+    return String(loc).replace(/[<>"`\\]/g, '').replace(/\s+/g, ' ').trim().replace(/[\s\-]+$/, '').slice(0, 100);
 }
 function toNum(v, def = 0) {
     const n = parseFloat(v);
@@ -875,22 +974,21 @@ function updateConnectionStatus(ok, msg) {
     }
 }
 
-// ============================================================
-// 📤 رفع الصور إلى Cloudinary
-// ============================================================
+// ═══════════════════════════════════════════════════════════
+// 📤 Upload Image
+// ═══════════════════════════════════════════════════════════
 async function uploadImageToHost(file) {
     if (!file) throw new Error('لم يتم اختيار ملف');
     if (!file.type || !file.type.startsWith('image/')) throw new Error('الملف المختار ليس صورة');
     const MAX_MB = 10;
     if (file.size > MAX_MB * 1024 * 1024) throw new Error(`حجم الصورة أكبر من ${MAX_MB} ميجابايت`);
-    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) throw new Error('إعدادات Cloudinary غير مكتملة');
     const fd = new FormData();
     fd.append('file', file);
     fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
     const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, { method: 'POST', body: fd });
-    if (!res.ok) throw new Error('فشل الاتصال بخدمة الرفع (HTTP ' + res.status + ')');
+    if (!res.ok) throw new Error('فشل الاتصال بخدمة الرفع');
     const data = await res.json();
-    if (!data.secure_url) throw new Error('لم يتم استلام رابط الصورة من Cloudinary');
+    if (!data.secure_url) throw new Error('لم يتم استلام رابط الصورة');
     return data.secure_url;
 }
 
@@ -899,7 +997,6 @@ function openFilePickerAndUpload(button, targetInput) {
     fileInput.type = 'file';
     fileInput.accept = 'image/*';
     fileInput.style.display = 'none';
-
     fileInput.addEventListener('change', async () => {
         const file = fileInput.files && fileInput.files[0];
         if (!file) { fileInput.remove(); return; }
@@ -911,9 +1008,8 @@ function openFilePickerAndUpload(button, targetInput) {
             targetInput.value = url;
             targetInput.dispatchEvent(new Event('input', { bubbles: true }));
             targetInput.dispatchEvent(new Event('change', { bubbles: true }));
-            showToast('✅ تم رفع الصورة بنجاح');
+            showToast('✅ تم رفع الصورة');
         } catch (err) {
-            console.error('Upload error:', err);
             showToast('❌ ' + (err.message || 'فشل الرفع'), 'error');
         } finally {
             button.disabled = false;
@@ -921,7 +1017,6 @@ function openFilePickerAndUpload(button, targetInput) {
             fileInput.remove();
         }
     });
-
     document.body.appendChild(fileInput);
     fileInput.click();
 }
@@ -936,22 +1031,21 @@ document.addEventListener('click', (e) => {
     openFilePickerAndUpload(btn, targetInput);
 });
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🔒 Admin Verification
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 async function verifyAdminAccess() {
     try {
         await db.collection('admin').doc('config').get();
         return true;
     } catch (err) {
-        console.warn('⚠️ Admin verification failed:', err.code);
         return false;
     }
 }
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🔐 Login
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 $('adminLoginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = sanitize($('adminEmail').value).toLowerCase();
@@ -978,7 +1072,6 @@ $('adminLoginForm').addEventListener('submit', async (e) => {
         showToast(`مرحباً ${adminUser} ✅`);
         await enterDashboard();
     } catch (err) {
-        console.error(err);
         let msg = 'خطأ غير متوقع';
         if (err.code === 'auth/wrong-password') msg = 'كلمة المرور غير صحيحة';
         else if (err.code === 'auth/user-not-found') msg = 'البريد غير مسجّل';
@@ -998,14 +1091,15 @@ $('adminLogoutBtn').addEventListener('click', async () => {
     if (!confirm('هل أنت متأكد من تسجيل الخروج؟')) return;
     if (storesUnsubscribe) { storesUnsubscribe(); storesUnsubscribe = null; }
     if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
+    if (categoriesUnsubscribe) { categoriesUnsubscribe(); categoriesUnsubscribe = null; }
     listenersSetup = false;
     try { await firebase.auth().signOut(); } catch (e) {}
     location.reload();
 });
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🚀 Dashboard Entry
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 async function enterDashboard() {
     if (dashboardInitialized) return;
     dashboardInitialized = true;
@@ -1022,39 +1116,44 @@ function setupAllListeners() {
     listenersSetup = true;
     setupRealtimeStoresListener();
     setupRealtimeProductsListener();
+    setupRealtimeCategoriesListener();
+    seedCategoriesIfEmpty();
 }
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 📥 Load Data
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 async function loadAllData() {
     try {
         const cachedStores = cacheManager.get('stores_list');
         const cachedProducts = cacheManager.get('all_products');
+        const cachedCategories = cacheManager.get('categories_list');
 
-        if (cachedStores && cachedProducts) {
-            console.log(`⚡ [Cache] stores: ${cacheManager.getAge('stores_list')} min`);
+        if (cachedStores && cachedProducts && cachedCategories) {
             allStores = cachedStores;
             allProducts = cachedProducts;
+            allCategories = cachedCategories;
             processLoadedData();
             return;
         }
 
-        console.log('🌐 [Firestore] Fetching data...');
-        const [storeSnap, productSnap] = await Promise.all([
+        const [storeSnap, productSnap, catSnap] = await Promise.all([
             db.collection(STORES_COLLECTION).get(),
-            db.collection(PRODUCTS_COLLECTION).get()
+            db.collection(PRODUCTS_COLLECTION).get(),
+            db.collection(CATEGORIES_COLLECTION).get()
         ]);
 
         allStores = storeSnap.docs.map(d => ({ ...d.data(), id: d.id }));
         allProducts = productSnap.docs.map(d => ({ ...d.data(), id: d.id }));
+        allCategories = catSnap.docs.map(d => ({ ...d.data(), id: d.id }))
+            .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
         cacheManager.set('stores_list', allStores);
         cacheManager.set('all_products', allProducts);
+        cacheManager.set('categories_list', allCategories);
 
         processLoadedData();
     } catch (err) {
-        console.error('❌ Load error:', err);
         showToast('فشل تحميل البيانات: ' + err.message, 'error');
         updateConnectionStatus(false, err.code || '');
     }
@@ -1068,10 +1167,11 @@ function processLoadedData() {
     allStores = allStores.map(s => ({ ...s, products_count: counts[s.name] || 0 }));
 
     updateStats();
-
     $('tabStoresCount').textContent = allStores.length;
     $('tabProductsCount').textContent = allProducts.length;
+    $('tabCategoriesCount').textContent = allCategories.length;
 
+    // Store filter dropdown
     const sel = $('productsStoreFilter');
     const currentFilter = sel.value;
     sel.innerHTML = '<option value="">كل المتاجر</option>';
@@ -1083,6 +1183,7 @@ function processLoadedData() {
     });
     if (currentFilter) sel.value = currentFilter;
 
+    // Product store dropdown
     const psel = $('product_store_name');
     const currentProductStore = psel.value;
     psel.innerHTML = '<option value="">اختر المتجر</option>';
@@ -1098,8 +1199,11 @@ function processLoadedData() {
         refreshProductCategoriesSelect();
     }
 
+    populateStoreCategorySelect();
+
     applyStoresFilter();
     applyProductsFilter();
+    applyCategoriesFilter();
 }
 
 function updateStats() {
@@ -1109,9 +1213,9 @@ function updateStats() {
     $('statSubscribedCount').textContent = allStores.filter(s => s.is_subscribed === true).length;
 }
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🏪 Stores Rendering
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 function applyStoresFilter() {
     const q = ($('storesSearchInput').value || '').trim().toLowerCase();
     filteredStores = allStores.filter(s => {
@@ -1155,7 +1259,6 @@ function renderStoresList() {
             ? `<span class="meta-pill meta-pill-cats"><i class="fas fa-layer-group"></i> ${extraCatsCount} فئة إضافية</span>`
             : '';
 
-        // ⭐ بادج الموقع
         const locationBadge = s.location
             ? `<span class="meta-pill meta-pill-loc"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(s.location)}</span>`
             : '';
@@ -1172,11 +1275,11 @@ function renderStoresList() {
             ? `
                 <div class="password-row">
                     <span class="password-label"><i class="fas fa-key"></i> كلمة المرور:</span>
-                    <span class="password-badge" title="اضغط زر النسخ لنسخها">
+                    <span class="password-badge blurred" title="اضغط زر العين للإظهار">
                         <span class="pwd-value">${escapeHtml(pwd)}</span>
                         <span class="pwd-actions">
-                            <button type="button" onclick="event.stopPropagation(); toggleStorePasswordVisibility(this);" title="إخفاء/إظهار">
-                                <i class="fas fa-eye-slash"></i>
+                            <button type="button" onclick="event.stopPropagation(); toggleStorePasswordVisibility(this);" title="إظهار/إخفاء">
+                                <i class="fas fa-eye"></i>
                             </button>
                             <button type="button" onclick="event.stopPropagation(); copyStorePassword('${pwdEscaped}', this);" title="نسخ">
                                 <i class="fas fa-copy"></i>
@@ -1214,9 +1317,9 @@ function renderStoresList() {
     container.innerHTML = html;
 }
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 📦 Products Rendering
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 function applyProductsFilter() {
     const q = ($('productsSearchInput').value || '').trim().toLowerCase();
     const storeFilter = $('productsStoreFilter').value;
@@ -1250,18 +1353,13 @@ function renderProductsList() {
             : `<div class="item-thumb item-thumb-placeholder"><i class="fas fa-box"></i></div>`;
 
         const price = parseFloat(p.price || 0);
-
         const prodCatBadge = (p.category && String(p.category).trim())
             ? `<span class="meta-pill meta-pill-prodcat"><i class="fas fa-tag"></i> ${escapeHtml(p.category)}</span>`
             : '';
-
-        // ⭐ بادج الوصف
         const hasDesc = p.description && String(p.description).trim().length > 0;
         const descBadge = hasDesc
             ? `<span class="meta-pill meta-pill-desc"><i class="fas fa-align-right"></i> وصف</span>`
             : '';
-
-        // ⭐ نص الوصف (مقتطف قصير)
         const descPreview = hasDesc
             ? `<div style="font-size:0.72rem;color:#6B7280;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">${escapeHtml(String(p.description).slice(0, 90))}${String(p.description).length > 90 ? '…' : ''}</div>`
             : '';
@@ -1289,165 +1387,257 @@ function renderProductsList() {
     container.innerHTML = html;
 }
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
+// 🏷️ Categories Rendering
+// ═══════════════════════════════════════════════════════════
+function applyCategoriesFilter() {
+    const q = ($('categoriesSearchInput')?.value || '').trim().toLowerCase();
+    filteredCategories = allCategories.filter(c => {
+        if (!q) return true;
+        return (c.name || '').toLowerCase().includes(q) || (c.emoji || '').includes(q);
+    });
+    renderCategoriesList();
+}
+
+function renderCategoriesList() {
+    const container = $('categoriesListContainer');
+    if (!container) return;
+    if (!filteredCategories.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon" style="background: linear-gradient(135deg, #F5F3FF, #EDE9FE); color: #8b5cf6;"><i class="fas fa-tags"></i></div>
+                <div class="empty-state-title">${allCategories.length ? 'لا توجد نتائج' : 'لا توجد فئات بعد'}</div>
+                <div class="empty-state-text">${allCategories.length ? 'جرب كلمة بحث أخرى' : 'ابدأ بإضافة أول فئة'}</div>
+            </div>`;
+        return;
+    }
+
+    let html = '';
+    filteredCategories.forEach(c => {
+        const emoji = c.emoji || '🏷️';
+        const isDefault = c.is_default === true;
+        const storesCount = allStores.filter(s =>
+            String(s.category || '').trim().toLowerCase() === String(c.name).trim().toLowerCase()
+        ).length;
+
+        html += `
+            <div class="item-card">
+                <div class="cat-emoji-thumb">${escapeHtml(emoji)}</div>
+                <div class="item-info">
+                    <div class="item-name">${escapeHtml(c.name || '')}</div>
+                    <div class="item-meta">
+                        ${isDefault
+                            ? '<span class="meta-pill meta-pill-verified"><i class="fas fa-check"></i> افتراضية</span>'
+                            : '<span class="meta-pill meta-pill-cats"><i class="fas fa-star"></i> مخصصة</span>'}
+                        <span class="meta-pill meta-pill-count"><i class="fas fa-store"></i> ${storesCount} متجر</span>
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <button class="icon-btn icon-btn-edit" onclick="openCategoryEdit('${c.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
+                    <button class="icon-btn icon-btn-delete" onclick="deleteCategory('${c.id}')" title="حذف"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════
 // 🎛️ Tabs
-// ============================================================
-$('tabStores').addEventListener('click', () => {
-    $('tabStores').classList.add('active');
-    $('tabProducts').classList.remove('active');
-    $('storesSection').classList.remove('hidden');
-    $('productsSection').classList.add('hidden');
-});
-$('tabProducts').addEventListener('click', () => {
-    $('tabProducts').classList.add('active');
-    $('tabStores').classList.remove('active');
-    $('productsSection').classList.remove('hidden');
-    $('storesSection').classList.add('hidden');
+// ═══════════════════════════════════════════════════════════
+const TAB_MAP = {
+    tabStores: 'storesSection',
+    tabProducts: 'productsSection',
+    tabCategories: 'categoriesSection'
+};
+
+function switchTab(tabId) {
+    Object.keys(TAB_MAP).forEach(id => {
+        const tab = $(id);
+        const section = $(TAB_MAP[id]);
+        if (id === tabId) {
+            tab.classList.add('active');
+            section.classList.remove('hidden');
+        } else {
+            tab.classList.remove('active');
+            section.classList.add('hidden');
+        }
+    });
+}
+
+Object.keys(TAB_MAP).forEach(id => {
+    $(id).addEventListener('click', () => switchTab(id));
 });
 
-// ============================================================
-// 📡 Realtime Stores Listener
-// ============================================================
+// ═══════════════════════════════════════════════════════════
+// 📡 Realtime Listeners
+// ═══════════════════════════════════════════════════════════
 function setupRealtimeStoresListener() {
     if (storesUnsubscribe) return;
-    console.log('📡 Starting stores listener...');
-
     storesUnsubscribe = db.collection(STORES_COLLECTION)
         .onSnapshot((snapshot) => {
-            const freshStores = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
-            const newFingerprint = getFingerprint(freshStores);
+            const fresh = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+            const newFp = getFingerprint(fresh);
 
             if (isFirstStoresSnapshot) {
                 isFirstStoresSnapshot = false;
-                lastStoresFingerprint = newFingerprint;
-                const cached = cacheManager.get('stores_list');
-                const cachedFp = cached ? getFingerprint(cached) : '';
-                cacheManager.set('stores_list', freshStores);
-                if (cachedFp && cachedFp !== newFingerprint) {
-                    console.log('🏪 Stores changed since cache - updating UI');
-                    allStores = freshStores;
-                    processLoadedData();
-                }
+                lastStoresFingerprint = newFp;
+                cacheManager.set('stores_list', fresh);
                 return;
             }
+            if (newFp === lastStoresFingerprint) return;
 
-            if (newFingerprint === lastStoresFingerprint) return;
-
-            const changes = snapshot.docChanges();
-            const added = changes.filter(c => c.type === 'added').length;
-            const removed = changes.filter(c => c.type === 'removed').length;
-            const modified = changes.filter(c => c.type === 'modified').length;
-
-            console.log(`🏪 Live update: +${added} -${removed} ✎${modified}`);
-
-            lastStoresFingerprint = newFingerprint;
-            allStores = freshStores;
-            cacheManager.set('stores_list', freshStores);
+            lastStoresFingerprint = newFp;
+            allStores = fresh;
+            cacheManager.set('stores_list', fresh);
             processLoadedData();
 
             if (suppressStoresToast) return;
-
-            const messages = [];
-            if (added > 0) messages.push(`+${added}`);
-            if (removed > 0) messages.push(`-${removed}`);
-            if (modified > 0) messages.push(`✎${modified}`);
-
-            if (messages.length === 1 && added === 1 && removed === 0 && modified === 0) {
-                showToast(`🆕 تم إضافة متجر جديد`);
-            } else if (messages.length === 1 && removed === 1 && added === 0 && modified === 0) {
-                showToast(`🗑️ تم حذف متجر`, 'warning');
-            } else if (messages.length === 1 && modified === 1 && added === 0 && removed === 0) {
-                showToast(`✏️ تم تعديل متجر`);
-            } else {
-                showToast(`🏪 تحديث: ${messages.join(' ')}`);
-            }
-        }, err => {
-            console.warn('⚠️ Stores listener error:', err);
-            updateConnectionStatus(false, err.code || '');
-        });
-}
-
-// ============================================================
-// 📡 Realtime Products Listener
-// ============================================================
-function setupRealtimeProductsListener() {
-    if (productsUnsubscribe) return;
-    console.log('📡 Starting products listener...');
-
-    productsUnsubscribe = db.collection(PRODUCTS_COLLECTION)
-        .onSnapshot((snapshot) => {
-            const freshProducts = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
-            const newFingerprint = getFingerprint(freshProducts);
-
-            if (isFirstProductsSnapshot) {
-                isFirstProductsSnapshot = false;
-                lastProductsFingerprint = newFingerprint;
-                const cached = cacheManager.get('all_products');
-                const cachedFp = cached ? getFingerprint(cached) : '';
-                cacheManager.set('all_products', freshProducts);
-                if (cachedFp && cachedFp !== newFingerprint) {
-                    console.log('📦 Products changed since cache - updating UI');
-                    allProducts = freshProducts;
-                    processLoadedData();
-                }
-                return;
-            }
-
-            if (newFingerprint === lastProductsFingerprint) return;
-
             const changes = snapshot.docChanges();
             const added = changes.filter(c => c.type === 'added').length;
             const removed = changes.filter(c => c.type === 'removed').length;
             const modified = changes.filter(c => c.type === 'modified').length;
+            if (added === 1 && !removed && !modified) showToast(`🆕 تم إضافة متجر`);
+            else if (removed === 1 && !added && !modified) showToast(`🗑️ تم حذف متجر`, 'warning');
+            else if (modified === 1 && !added && !removed) showToast(`✏️ تم تعديل متجر`);
+            else showToast(`🏪 تحديث المتاجر`);
+        }, err => updateConnectionStatus(false, err.code || ''));
+}
 
-            console.log(`📦 Live update: +${added} -${removed} ✎${modified}`);
+function setupRealtimeProductsListener() {
+    if (productsUnsubscribe) return;
+    productsUnsubscribe = db.collection(PRODUCTS_COLLECTION)
+        .onSnapshot((snapshot) => {
+            const fresh = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+            const newFp = getFingerprint(fresh);
 
-            lastProductsFingerprint = newFingerprint;
-            allProducts = freshProducts;
-            cacheManager.set('all_products', freshProducts);
+            if (isFirstProductsSnapshot) {
+                isFirstProductsSnapshot = false;
+                lastProductsFingerprint = newFp;
+                cacheManager.set('all_products', fresh);
+                return;
+            }
+            if (newFp === lastProductsFingerprint) return;
+
+            lastProductsFingerprint = newFp;
+            allProducts = fresh;
+            cacheManager.set('all_products', fresh);
             processLoadedData();
 
             if (suppressProductsToast) return;
-
-            const messages = [];
-            if (added > 0) messages.push(`+${added}`);
-            if (removed > 0) messages.push(`-${removed}`);
-            if (modified > 0) messages.push(`✎${modified}`);
-
-            if (messages.length === 1 && added === 1 && removed === 0 && modified === 0) {
-                showToast(`🆕 تم إضافة منتج جديد`);
-            } else if (messages.length === 1 && removed === 1 && added === 0 && modified === 0) {
-                showToast(`🗑️ تم حذف منتج`, 'warning');
-            } else if (messages.length === 1 && modified === 1 && added === 0 && removed === 0) {
-                showToast(`✏️ تم تعديل منتج`);
-            } else {
-                showToast(`📦 تحديث: ${messages.join(' ')}`);
-            }
-        }, err => {
-            console.warn('⚠️ Products listener error:', err);
-        });
+            const changes = snapshot.docChanges();
+            const added = changes.filter(c => c.type === 'added').length;
+            const removed = changes.filter(c => c.type === 'removed').length;
+            const modified = changes.filter(c => c.type === 'modified').length;
+            if (added === 1 && !removed && !modified) showToast(`🆕 تم إضافة منتج`);
+            else if (removed === 1 && !added && !modified) showToast(`🗑️ تم حذف منتج`, 'warning');
+            else if (modified === 1 && !added && !removed) showToast(`✏️ تم تعديل منتج`);
+            else showToast(`📦 تحديث المنتجات`);
+        }, err => console.warn('Products listener:', err));
 }
 
-// ============================================================
-// 🏷️ Categories Tag Editor
-// ============================================================
+function setupRealtimeCategoriesListener() {
+    if (categoriesUnsubscribe) return;
+    categoriesUnsubscribe = db.collection(CATEGORIES_COLLECTION)
+        .onSnapshot((snapshot) => {
+            const fresh = snapshot.docs
+                .map(d => ({ ...d.data(), id: d.id }))
+                .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+            const newFp = getFingerprint(fresh);
+
+            if (isFirstCategoriesSnapshot) {
+                isFirstCategoriesSnapshot = false;
+                lastCategoriesFingerprint = newFp;
+                allCategories = fresh;
+                cacheManager.set('categories_list', fresh);
+                $('tabCategoriesCount').textContent = fresh.length;
+                applyCategoriesFilter();
+                populateStoreCategorySelect();
+                return;
+            }
+            if (newFp === lastCategoriesFingerprint) return;
+
+            lastCategoriesFingerprint = newFp;
+            allCategories = fresh;
+            cacheManager.set('categories_list', fresh);
+            $('tabCategoriesCount').textContent = fresh.length;
+            applyCategoriesFilter();
+            populateStoreCategorySelect();
+
+            if (!suppressCategoriesToast) showToast('🏷️ تم تحديث الفئات');
+        }, err => console.warn('Categories listener:', err));
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🌱 Seed Default Categories
+// ═══════════════════════════════════════════════════════════
+async function seedCategoriesIfEmpty() {
+    if (categoriesSeeded) return;
+    try {
+        const snap = await db.collection(CATEGORIES_COLLECTION).limit(1).get();
+        if (!snap.empty) { categoriesSeeded = true; return; }
+        const batch = db.batch();
+        DEFAULT_CATEGORIES.forEach((cat, idx) => {
+            batch.set(db.collection(CATEGORIES_COLLECTION).doc(cat.id), {
+                name: cat.name,
+                emoji: cat.emoji,
+                order: idx,
+                is_default: true,
+                created_at: Date.now()
+            });
+        });
+        await batch.commit();
+        categoriesSeeded = true;
+        showToast(`✅ تم تحميل ${DEFAULT_CATEGORIES.length} فئة افتراضية`);
+    } catch (err) {
+        console.warn('Seed failed:', err);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🏷️ Populate Store Category Select
+// ═══════════════════════════════════════════════════════════
+function populateStoreCategorySelect(selectedValue = null) {
+    const sel = $('store_category');
+    if (!sel) return;
+    const current = selectedValue != null ? selectedValue : sel.value;
+    sel.innerHTML = '<option value="">— اختر الفئة —</option>';
+    allCategories.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = (c.emoji ? c.emoji + ' ' : '') + c.name;
+        sel.appendChild(opt);
+    });
+    if (current) {
+        const found = allCategories.find(c => c.name === current || c.id === current);
+        if (found) sel.value = found.name;
+        else {
+            const opt = document.createElement('option');
+            opt.value = current;
+            opt.textContent = current + ' (قديمة)';
+            sel.appendChild(opt);
+            sel.value = current;
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🏷️ Categories Tag Editor (Extra Categories in Store Modal)
+// ═══════════════════════════════════════════════════════════
 function renderCategoriesTags() {
     const list = $('storeCategoriesList');
     if (!list) return;
     list.innerHTML = '';
-
     if (!currentEditingCategories.length) {
-        list.innerHTML = '<div style="font-size:0.78rem;color:#9CA3AF;font-weight:700;padding:0.4rem 0.2rem;"><i class="fas fa-info-circle"></i> لا توجد فئات إضافية — أضف فئة لتفعيلها للمشتركين</div>';
+        list.innerHTML = '<div style="font-size:0.78rem;color:#9CA3AF;font-weight:700;padding:0.4rem 0.2rem;"><i class="fas fa-info-circle"></i> لا توجد فئات إضافية</div>';
         return;
     }
-
     currentEditingCategories.forEach((cat, idx) => {
         const chip = document.createElement('span');
         chip.className = 'tag-chip';
         chip.innerHTML = `<i class="fas fa-tag" style="font-size:0.65rem;"></i><span>${escapeHtml(cat)}</span><button type="button" data-idx="${idx}" title="إزالة"><i class="fas fa-times"></i></button>`;
         list.appendChild(chip);
     });
-
     list.querySelectorAll('button[data-idx]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const idx = parseInt(e.currentTarget.getAttribute('data-idx'));
@@ -1465,14 +1655,19 @@ function addCategoryTag() {
     if (!input) return;
     let val = sanitize(input.value);
     if (!val) { showToast('اكتب اسم الفئة أولاً', 'error'); input.focus(); return; }
-    if (val.length > 40) { showToast('اسم الفئة طويل جداً (40 حرف كحد أقصى)', 'error'); return; }
+    if (val.length > 40) { showToast('اسم الفئة طويل جداً', 'error'); return; }
 
     const mainCat = sanitize($('store_category').value).toLowerCase();
-    const existsInExtra = currentEditingCategories.some(c => c.toLowerCase() === val.toLowerCase());
-
-    if (existsInExtra) { showToast('هذه الفئة موجودة بالفعل', 'warning'); input.value = ''; input.focus(); return; }
-    if (mainCat && val.toLowerCase() === mainCat) { showToast('هذه الفئة هي الفئة الرئيسية', 'warning'); input.value = ''; input.focus(); return; }
-
+    if (currentEditingCategories.some(c => c.toLowerCase() === val.toLowerCase())) {
+        showToast('هذه الفئة موجودة بالفعل', 'warning');
+        input.value = '';
+        return;
+    }
+    if (mainCat && val.toLowerCase() === mainCat) {
+        showToast('هذه الفئة هي الفئة الرئيسية', 'warning');
+        input.value = '';
+        return;
+    }
     currentEditingCategories.push(val);
     renderCategoriesTags();
     input.value = '';
@@ -1485,28 +1680,23 @@ $('newCategoryInput')?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); addCategoryTag(); }
 });
 
-// ============================================================
-// 📍 Location Field - Auto Append " - " on state selection
-// ============================================================
-const storeLocationInput = $('store_location');
-storeLocationInput?.addEventListener('input', (e) => {
+// ═══════════════════════════════════════════════════════════
+// 📍 Location Auto-Append
+// ═══════════════════════════════════════════════════════════
+$('store_location')?.addEventListener('input', (e) => {
     let val = e.target.value.replace(/[<>"`\\]/g, '');
     if (e.target.value !== val) e.target.value = val;
-
     const inputType = e.inputType || '';
     const isDeleting = inputType.startsWith('delete');
     const trimmed = val.trim();
-
-    // ⭐ عند اختيار ولاية كاملة → نضيف " - " تلقائيًا
     if (!isDeleting && SUDAN_STATES.includes(trimmed) && !val.endsWith(' - ')) {
-        val = trimmed + ' - ';
-        e.target.value = val;
+        e.target.value = trimmed + ' - ';
     }
 });
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🏪 Store Modal
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 function openStoreModal(store = null) {
     const isEdit = !!store;
     $('storeModalTitle').textContent = isEdit ? 'تعديل المتجر' : 'إضافة متجر جديد';
@@ -1517,15 +1707,15 @@ function openStoreModal(store = null) {
     $('store_logo_preview').removeAttribute('src');
     $('store_cover_preview').classList.add('hidden');
     $('store_cover_preview').removeAttribute('src');
-
     currentEditingCategories = [];
+
+    populateStoreCategorySelect();
 
     if (isEdit) {
         $('store_id').value = store.id;
         $('store_original_name').value = store.name || '';
         $('store_name').value = store.name || '';
         $('store_login_password').value = store.login_password || '';
-        $('store_category').value = store.category || '';
         $('store_location').value = store.location || '';
         $('store_description').value = store.description || '';
         $('store_whatsapp').value = store.whatsapp_number || '';
@@ -1535,6 +1725,8 @@ function openStoreModal(store = null) {
         $('store_followers').value = store.followers || 0;
         $('store_is_verified').checked = !!store.is_verified;
         $('store_is_subscribed').checked = store.is_subscribed === true;
+
+        populateStoreCategorySelect(store.category || '');
 
         if (Array.isArray(store.categories)) {
             currentEditingCategories = store.categories
@@ -1557,7 +1749,6 @@ function openStoreModal(store = null) {
 
     renderCategoriesTags();
     $('newCategoryInput').value = '';
-
     $('storeModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
@@ -1587,7 +1778,7 @@ $('storeForm').addEventListener('submit', async (e) => {
     const locationValue = sanitizeLocation($('store_location').value);
 
     if (!name) { showToast('اسم المتجر مطلوب', 'error'); return; }
-    if (!password || password.length < 4) { showToast('كلمة المرور مطلوبة (4 أحرف على الأقل)', 'error'); return; }
+    if (password && password.length < 4) { showToast('كلمة المرور 4 أحرف على الأقل', 'error'); return; }
     if (!whatsapp || whatsapp.length < 10) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
 
     const isEdit = !!id;
@@ -1596,10 +1787,10 @@ $('storeForm').addEventListener('submit', async (e) => {
     const nameChanged = !isEdit || (originalName !== newNameLower);
 
     if (nameChanged) {
-        const existing = allStores.find(s => {
-            if (String(s.id) === String(id)) return false;
-            return String(s.name || '').trim().toLowerCase() === newNameLower;
-        });
+        const existing = allStores.find(s =>
+            String(s.id) !== String(id) &&
+            String(s.name || '').trim().toLowerCase() === newNameLower
+        );
         if (existing) { showToast('يوجد متجر آخر بنفس الاسم', 'error'); return; }
     }
 
@@ -1612,11 +1803,11 @@ $('storeForm').addEventListener('submit', async (e) => {
     const now = Date.now();
     const data = {
         name,
-        login_password: password,
+        login_password: password || null,
         category: mainCat,
         categories: cleanCategories,
         is_subscribed: $('store_is_subscribed').checked,
-        location: locationValue || null,   // ⭐ حقل الموقع الواحد
+        location: locationValue || null,
         description: sanitize($('store_description').value),
         whatsapp_number: whatsapp,
         phone_number: cleanPhone($('store_phone').value) || null,
@@ -1648,16 +1839,15 @@ $('storeForm').addEventListener('submit', async (e) => {
                     ));
                 }
             }
-            showToast('✅ تم تعديل المتجر بنجاح');
+            showToast('✅ تم تعديل المتجر');
         } else {
             data.created_at = now;
             data.products_count = 0;
             await db.collection(STORES_COLLECTION).add(data);
-            showToast('✅ تمت إضافة المتجر بنجاح');
+            showToast('✅ تمت إضافة المتجر');
         }
         closeStoreModal();
     } catch (err) {
-        console.error('❌ Save store error:', err);
         showToast('❌ فشل الحفظ: ' + (err.message || 'خطأ غير معروف'), 'error');
     } finally {
         isSavingStore = false;
@@ -1670,12 +1860,10 @@ $('storeForm').addEventListener('submit', async (e) => {
 window.deleteStore = async (id) => {
     const store = allStores.find(s => String(s.id) === String(id));
     if (!store) return;
-
     const productsCount = store.products_count || 0;
     const msg = productsCount > 0
         ? `⚠️ تحذير!\n\nسيتم حذف المتجر "${store.name}" و ${productsCount} منتج مرتبط به.\n\nهل أنت متأكد؟`
         : `هل أنت متأكد من حذف المتجر "${store.name}"؟`;
-
     if (!confirm(msg)) return;
 
     suppressStoresToast = true;
@@ -1690,9 +1878,8 @@ window.deleteStore = async (id) => {
             ));
         }
         await db.collection(STORES_COLLECTION).doc(id).delete();
-        showToast('✅ تم حذف المتجر وجميع منتجاته');
+        showToast('✅ تم حذف المتجر');
     } catch (err) {
-        console.error('❌ Delete error:', err);
         showToast('❌ فشل الحذف: ' + (err.message || 'خطأ غير معروف'), 'error');
     } finally {
         setTimeout(() => {
@@ -1703,15 +1890,148 @@ window.deleteStore = async (id) => {
 };
 
 window.viewStoreProducts = (storeName) => {
-    $('tabProducts').click();
+    switchTab('tabProducts');
     $('productsStoreFilter').value = storeName;
     $('productsSearchInput').value = '';
     applyProductsFilter();
 };
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
+// 🏷️ Category Modal
+// ═══════════════════════════════════════════════════════════
+function buildEmojiPicker() {
+    const grid = $('emojiPicker');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const uniqueEmojis = [...new Set(EMOJI_POOL)];
+    uniqueEmojis.forEach(emoji => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'emoji-pick-btn';
+        btn.textContent = emoji;
+        btn.addEventListener('click', () => {
+            $('category_emoji').value = emoji;
+            grid.querySelectorAll('.emoji-pick-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        });
+        grid.appendChild(btn);
+    });
+}
+
+function openCategoryModal(category = null) {
+    const isEdit = !!category;
+    $('categoryModalTitle').textContent = isEdit ? 'تعديل الفئة' : 'إضافة فئة جديدة';
+    $('categoryForm').reset();
+    $('category_id').value = '';
+    $('category_emoji').value = '';
+    buildEmojiPicker();
+
+    if (isEdit) {
+        $('category_id').value = category.id;
+        $('category_name').value = category.name || '';
+        $('category_emoji').value = category.emoji || '';
+        const grid = $('emojiPicker');
+        if (grid && category.emoji) {
+            grid.querySelectorAll('.emoji-pick-btn').forEach(b => {
+                if (b.textContent === category.emoji) b.classList.add('selected');
+            });
+        }
+    }
+
+    $('categoryModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => $('category_name')?.focus(), 200);
+}
+
+function closeCategoryModal() {
+    $('categoryModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+window.openCategoryEdit = (id) => {
+    const cat = allCategories.find(c => String(c.id) === String(id));
+    if (cat) openCategoryModal(cat);
+};
+
+window.deleteCategory = async (id) => {
+    const cat = allCategories.find(c => String(c.id) === String(id));
+    if (!cat) return;
+    const used = allStores.filter(s =>
+        String(s.category || '').trim().toLowerCase() === String(cat.name).trim().toLowerCase()
+    ).length;
+    const msg = used > 0
+        ? `⚠️ الفئة "${cat.name}" مستخدمة في ${used} متجر.\n\nهل أنت متأكد من حذفها؟`
+        : `هل أنت متأكد من حذف الفئة "${cat.name}"؟`;
+    if (!confirm(msg)) return;
+
+    suppressCategoriesToast = true;
+    try {
+        await db.collection(CATEGORIES_COLLECTION).doc(id).delete();
+        showToast('✅ تم حذف الفئة');
+    } catch (err) {
+        showToast('❌ فشل الحذف: ' + err.message, 'error');
+    } finally {
+        setTimeout(() => { suppressCategoriesToast = false; }, 2000);
+    }
+};
+
+$('addCategoryMainBtn').addEventListener('click', () => openCategoryModal());
+$('categoriesSearchInput')?.addEventListener('input', applyCategoriesFilter);
+
+$('categoryForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSavingCategory) return;
+
+    const id = $('category_id').value;
+    const name = sanitize($('category_name').value);
+    const emoji = ($('category_emoji').value || '').trim().slice(0, 6);
+
+    if (!name || name.length < 2) { showToast('اسم الفئة مطلوب (حرفان على الأقل)', 'error'); return; }
+    if (name.length > 40) { showToast('اسم الفئة طويل جداً', 'error'); return; }
+
+    const isEdit = !!id;
+    const dup = allCategories.find(c =>
+        String(c.id) !== String(id) &&
+        c.name.trim().toLowerCase() === name.toLowerCase()
+    );
+    if (dup) { showToast('توجد فئة بنفس الاسم', 'error'); return; }
+
+    isSavingCategory = true;
+    suppressCategoriesToast = true;
+    setBtnLoading($('categorySubmitBtn'), true,
+        isEdit ? 'جارٍ التعديل...' : 'جارٍ الإضافة...',
+        '<i class="fas fa-save"></i> <span>حفظ الفئة</span>');
+
+    try {
+        const now = Date.now();
+        if (isEdit) {
+            await db.collection(CATEGORIES_COLLECTION).doc(id).update({
+                name, emoji: emoji || null, updated_at: now
+            });
+            showToast('✅ تم تعديل الفئة');
+        } else {
+            const newId = 'cat_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+            const maxOrder = allCategories.reduce((m, c) => Math.max(m, c.order ?? 0), 0);
+            await db.collection(CATEGORIES_COLLECTION).doc(newId).set({
+                name, emoji: emoji || null, order: maxOrder + 1,
+                is_default: false, created_at: now
+            });
+            showToast('✅ تمت إضافة الفئة');
+        }
+        closeCategoryModal();
+    } catch (err) {
+        showToast('❌ فشل الحفظ: ' + err.message, 'error');
+    } finally {
+        isSavingCategory = false;
+        setTimeout(() => { suppressCategoriesToast = false; }, 2000);
+        setBtnLoading($('categorySubmitBtn'), false, '',
+            '<i class="fas fa-save"></i> <span>حفظ الفئة</span>');
+    }
+});
+
+// ═══════════════════════════════════════════════════════════
 // 🏷️ Product Categories Select
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 function refreshProductCategoriesSelect(selectedValue = null) {
     const storeName = $('product_store_name').value;
     const catSelect = $('product_category');
@@ -1760,13 +2080,11 @@ function refreshProductCategoriesSelect(selectedValue = null) {
     if (selectedValue != null) catSelect.value = selectedValue;
 }
 
-$('product_store_name')?.addEventListener('change', () => {
-    refreshProductCategoriesSelect();
-});
+$('product_store_name')?.addEventListener('change', () => refreshProductCategoriesSelect());
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 📦 Product Modal
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 function openProductModal(product = null) {
     const isEdit = !!product;
     $('productModalTitle').textContent = isEdit ? 'تعديل المنتج' : 'إضافة منتج جديد';
@@ -1784,7 +2102,7 @@ function openProductModal(product = null) {
         $('product_store_name').value = product.store_name || '';
         $('product_price').value = product.price || 0;
         $('product_img_url').value = product.img_url || '';
-        $('product_description').value = product.description || '';   // ⭐ الوصف
+        $('product_description').value = product.description || '';
         refreshProductCategoriesSelect(product.category || '');
         if (product.img_url) {
             $('product_img_preview').src = product.img_url;
@@ -1817,7 +2135,7 @@ $('productForm').addEventListener('submit', async (e) => {
     const storeName = $('product_store_name').value;
     const price = toNum($('product_price').value);
     const productCategory = sanitize($('product_category').value);
-    const productDescription = sanitize($('product_description').value).slice(0, 1000);   // ⭐ الوصف
+    const productDescription = sanitize($('product_description').value).slice(0, 1000);
 
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (!storeName) { showToast('يجب اختيار المتجر', 'error'); return; }
@@ -1829,14 +2147,13 @@ $('productForm').addEventListener('submit', async (e) => {
         store_name: storeName,
         category: productCategory || null,
         price,
-        description: productDescription || null,   // ⭐ حقل الوصف
+        description: productDescription || null,
         img_url: sanitize($('product_img_url').value),
         updated_at: now
     };
 
     isSavingProduct = true;
     suppressProductsToast = true;
-
     const isEdit = !!id;
     setBtnLoading($('productSubmitBtn'), true,
         isEdit ? 'جارٍ التعديل...' : 'جارٍ الإضافة...',
@@ -1853,7 +2170,6 @@ $('productForm').addEventListener('submit', async (e) => {
         }
         closeProductModal();
     } catch (err) {
-        console.error('❌ Save product error:', err);
         showToast('❌ فشل الحفظ: ' + (err.message || 'خطأ غير معروف'), 'error');
     } finally {
         isSavingProduct = false;
@@ -1873,16 +2189,15 @@ window.deleteProduct = async (id) => {
         await db.collection(PRODUCTS_COLLECTION).doc(id).delete();
         showToast('✅ تم حذف المنتج');
     } catch (err) {
-        console.error('❌ Delete error:', err);
         showToast('❌ فشل الحذف: ' + (err.message || 'خطأ غير معروف'), 'error');
     } finally {
         setTimeout(() => { suppressProductsToast = false; }, 2000);
     }
 };
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🖼️ Image Previews
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 function attachImagePreview(inputId, previewId) {
     const input = $(inputId);
     const preview = $(previewId);
@@ -1893,55 +2208,49 @@ function attachImagePreview(inputId, previewId) {
         if (url) {
             preview.src = url;
             preview.classList.remove('hidden');
-            preview.style.display = 'block';
         } else {
             preview.classList.add('hidden');
             preview.removeAttribute('src');
         }
     });
-
     preview.addEventListener('load', () => {
-        if (preview.getAttribute('src')) {
-            preview.classList.remove('hidden');
-            preview.style.display = 'block';
-        }
+        if (preview.getAttribute('src')) preview.classList.remove('hidden');
     });
-    preview.addEventListener('error', () => { preview.classList.add('hidden'); });
+    preview.addEventListener('error', () => preview.classList.add('hidden'));
 }
 
 attachImagePreview('store_logo', 'store_logo_preview');
 attachImagePreview('store_cover', 'store_cover_preview');
 attachImagePreview('product_img_url', 'product_img_preview');
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🔍 Filters
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 $('storesSearchInput').addEventListener('input', applyStoresFilter);
 $('productsSearchInput').addEventListener('input', applyProductsFilter);
 $('productsStoreFilter').addEventListener('change', applyProductsFilter);
 
-// ============================================================
-// ⌨️ Keyboard & Modal clicks
-// ============================================================
+// ═══════════════════════════════════════════════════════════
+// ⌨️ Keyboard & Modal Closers
+// ═══════════════════════════════════════════════════════════
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         if (!$('storeModal').classList.contains('hidden')) closeStoreModal();
         if (!$('productModal').classList.contains('hidden')) closeProductModal();
+        if (!$('categoryModal').classList.contains('hidden')) closeCategoryModal();
     }
 });
-$('storeModal').addEventListener('click', (e) => {
-    if (e.target === $('storeModal')) closeStoreModal();
-});
-$('productModal').addEventListener('click', (e) => {
-    if (e.target === $('productModal')) closeProductModal();
-});
+$('storeModal').addEventListener('click', (e) => { if (e.target === $('storeModal')) closeStoreModal(); });
+$('productModal').addEventListener('click', (e) => { if (e.target === $('productModal')) closeProductModal(); });
+$('categoryModal').addEventListener('click', (e) => { if (e.target === $('categoryModal')) closeCategoryModal(); });
 
 window.closeStoreModal = closeStoreModal;
 window.closeProductModal = closeProductModal;
+window.closeCategoryModal = closeCategoryModal;
 
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 // 🚀 Auth State
-// ============================================================
+// ═══════════════════════════════════════════════════════════
 firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
         $('adminLoginOverlay').classList.remove('hidden');
@@ -1949,7 +2258,6 @@ firebase.auth().onAuthStateChanged(async (user) => {
         setTimeout(() => $('adminEmail')?.focus(), 200);
         return;
     }
-
     const isAdmin = await verifyAdminAccess();
     if (!isAdmin) {
         try { await firebase.auth().signOut(); } catch (e) {}
@@ -1957,7 +2265,6 @@ firebase.auth().onAuthStateChanged(async (user) => {
         $('adminDashboard').classList.add('hidden');
         return;
     }
-
     adminUser = user.email;
     await enterDashboard();
 });
