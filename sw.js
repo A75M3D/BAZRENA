@@ -1,5 +1,5 @@
 /* BranZar Service Worker v1.0.019 */
-const SW_VERSION = '1.01.1114';
+const SW_VERSION = '1.01.1115';
 const CACHE_NAME = `branzar-${SW_VERSION}`;
 const STATIC_CACHE = `${CACHE_NAME}-static`;
 const RUNTIME_CACHE = `${CACHE_NAME}-runtime`;
