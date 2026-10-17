@@ -95,6 +95,16 @@
         .filter-select { padding: 0.85rem 1rem; border: 1.5px solid #E5E7EB; border-radius: 0.9rem; font-size: 0.9rem; font-weight: 700; background: #fff; color: #1A1A1A; cursor: pointer; font-family: 'Cairo', sans-serif; width: 100%; }
         @media (min-width: 640px) { .filter-select { min-width: 200px; width: auto; } }
 
+        /* ═══ Orphans Alert ═══ */
+        .orphans-alert { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%); border: 1.5px solid #FCA5A5; border-radius: 1rem; padding: 0.85rem 1rem; margin-bottom: 1rem; animation: fadeSlideIn 0.35s ease; }
+        .orphans-alert-info { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; color: #991B1B; flex: 1; min-width: 0; line-height: 1.5; }
+        .orphans-alert-info i { color: #DC2626; font-size: 1.05rem; flex-shrink: 0; }
+        .orphans-alert-info strong { color: #7F1D1D; font-weight: 900; background: #FEE2E2; padding: 1px 8px; border-radius: 9999px; }
+        .orphans-clean-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #DC2626, #EF4444); color: #fff; border: none; border-radius: 0.75rem; padding: 0.6rem 1rem; font-weight: 800; font-size: 0.82rem; cursor: pointer; font-family: 'Cairo', sans-serif; white-space: nowrap; box-shadow: 0 8px 20px -6px rgba(220,38,38,0.6); transition: all 0.22s; }
+        .orphans-clean-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 28px -6px rgba(220,38,38,0.85); }
+        .orphans-clean-btn:disabled { opacity: 0.75; cursor: not-allowed; transform: none; }
+        @media (max-width: 520px) { .orphans-alert { flex-direction: column; align-items: stretch; } .orphans-clean-btn { width: 100%; } }
+
         /* ═══ Buttons ═══ */
         .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.85rem 1.25rem; background: linear-gradient(135deg, #FF7A00 0%, #FFA64D 100%); color: #fff; border: none; border-radius: 0.9rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: all 0.25s; box-shadow: 0 12px 28px -10px rgba(255,122,0,0.7); font-family: 'Cairo', sans-serif; white-space: nowrap; }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(255,122,0,0.9); }
@@ -127,6 +137,7 @@
         .meta-pill-prodcat { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
         .meta-pill-loc { background: #EFF6FF; color: #1E40AF; border: 1px solid #BFDBFE; }
         .meta-pill-desc { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+        .meta-pill-orphan { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
         .item-actions { display: flex; gap: 0.35rem; flex-shrink: 0; align-items: flex-start; }
         .icon-btn { width: 36px; height: 36px; border-radius: 0.75rem; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.22s; font-size: 0.82rem; }
         .icon-btn-edit { background: #EFF6FF; color: #3B82F6; }
@@ -336,7 +347,7 @@
                 </button>
             </div>
 
-            <!-- Stores Section (تعديل فقط) -->
+            <!-- Stores Section -->
             <div id="storesSection" class="tab-content">
                 <div class="card">
                     <div class="card-body">
@@ -364,6 +375,19 @@
                                 <option value="">كل المتاجر</option>
                             </select>
                         </div>
+
+                        <!-- 🧹 Orphans Cleanup Alert -->
+                        <div id="orphansAlert" class="orphans-alert hidden">
+                            <div class="orphans-alert-info">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>يوجد <strong id="orphansCountBadge">0</strong> منتج يتيم (متجرهم محذوف)</span>
+                            </div>
+                            <button type="button" id="cleanOrphansBtn" class="orphans-clean-btn">
+                                <i class="fas fa-broom"></i>
+                                <span>حذفهم جميعاً</span>
+                            </button>
+                        </div>
+
                         <div id="productsListContainer" class="items-list"></div>
                     </div>
                 </div>
@@ -391,7 +415,7 @@
     </div>
 </div>
 
-<!-- ═══ Store Edit Modal (تعديل فقط) ═══ -->
+<!-- ═══ Store Edit Modal ═══ -->
 <div id="storeModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
@@ -596,6 +620,7 @@ const db = firebase.firestore();
 const STORES_COLLECTION = 'stores';
 const PRODUCTS_COLLECTION = 'products';
 const CATEGORIES_COLLECTION = 'categories';
+const BATCH_LIMIT = 450; // أقل من حد Firestore (500) للأمان
 
 // ═══════════════════════════════════════════════════════════
 // 🎯 Default Categories
@@ -738,6 +763,8 @@ let adminUser = '';
 let currentEditingCategories = [];
 let isSavingStore = false;
 let isSavingCategory = false;
+let isDeletingStore = false;
+let isCleaningOrphans = false;
 let dashboardInitialized = false;
 let listenersSetup = false;
 let storesUnsubscribe = null;
@@ -779,6 +806,9 @@ function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+function normalizeStoreName(name) {
+    return String(name || '').trim().toLowerCase();
 }
 function showToast(msg, type = 'success') {
     const t = $('toast');
@@ -874,21 +904,14 @@ document.addEventListener('click', (e) => {
 });
 
 // ═══════════════════════════════════════════════════════════
-// 🔒 Admin Verification — Simplified & Robust
+// 🔒 Admin Verification
 // ═══════════════════════════════════════════════════════════
 async function verifyAdminAccess() {
     try {
-        // محاولة قراءة admin/config (قد لا تكون موجودة)
         await db.collection('admin').doc('config').get();
         return true;
     } catch (err) {
-        // إذا فشلت القراءة — نتحقق من نوع الخطأ
-        if (err.code === 'permission-denied') {
-            // لا صلاحية → غير مصرح
-            return false;
-        }
-        // أي خطأ آخر (not-found, network...) → نسمح بالمتابعة
-        // لأن Firebase Auth نجح بالفعل
+        if (err.code === 'permission-denied') return false;
         return true;
     }
 }
@@ -1010,11 +1033,16 @@ async function loadAllData() {
 }
 
 function processLoadedData() {
+    // ✅ حساب products_count بشكل مُعاير (تطبيع الأسماء)
     const counts = {};
     allProducts.forEach(p => {
-        if (p.store_name) counts[p.store_name] = (counts[p.store_name] || 0) + 1;
+        const key = normalizeStoreName(p.store_name);
+        if (key) counts[key] = (counts[key] || 0) + 1;
     });
-    allStores = allStores.map(s => ({ ...s, products_count: counts[s.name] || 0 }));
+    allStores = allStores.map(s => ({
+        ...s,
+        products_count: counts[normalizeStoreName(s.name)] || 0
+    }));
 
     updateStats();
     $('tabStoresCount').textContent = allStores.length;
@@ -1037,6 +1065,9 @@ function processLoadedData() {
     applyStoresFilter();
     applyProductsFilter();
     applyCategoriesFilter();
+
+    // ✅ تحديث عداد المنتجات اليتيمة بعد كل تحميل
+    updateOrphansAlert();
 }
 
 function updateStats() {
@@ -1044,6 +1075,109 @@ function updateStats() {
     $('statProductsCount').textContent = allProducts.length;
     $('statVerifiedCount').textContent = allStores.filter(s => s.is_verified).length;
     $('statSubscribedCount').textContent = allStores.filter(s => s.is_subscribed === true).length;
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🧹 Orphans Detection & Cleanup
+// ═══════════════════════════════════════════════════════════
+/**
+ * يرجع مصفوفة المنتجات التي لا يوجد متجر مطابق لـ store_name
+ * (بعد التطبيع: trim + lowercase)
+ */
+function getOrphanedProducts() {
+    const validNames = new Set(
+        allStores
+            .map(s => normalizeStoreName(s.name))
+            .filter(Boolean)
+    );
+    return allProducts.filter(p => {
+        const name = normalizeStoreName(p.store_name);
+        if (!name) return true; // منتج بلا اسم متجر → يتيم
+        return !validNames.has(name);
+    });
+}
+
+/**
+ * يعرض/يخفي شريط التحذير بناءً على عدد المنتجات اليتيمة
+ */
+function updateOrphansAlert() {
+    const alertEl = $('orphansAlert');
+    const countEl = $('orphansCountBadge');
+    const btn = $('cleanOrphansBtn');
+    if (!alertEl || !countEl || !btn) return;
+
+    const orphans = getOrphanedProducts();
+    if (orphans.length === 0) {
+        alertEl.classList.add('hidden');
+        return;
+    }
+    countEl.textContent = orphans.length;
+    btn.querySelector('span').textContent = `حذف ${orphans.length} منتج`;
+    alertEl.classList.remove('hidden');
+}
+
+/**
+ * حذف المنتجات اليتيمة على دفعات احترافية
+ * - لا يتجاوز حد Firestore (450/دفعة)
+ * - يعرض تقدم لحظي
+ * - يعالج الفشل الجزئي
+ */
+async function deleteOrphanedProducts() {
+    if (isCleaningOrphans) return;
+
+    const orphans = getOrphanedProducts();
+    if (orphans.length === 0) {
+        showToast('لا توجد منتجات يتيمة ✅', 'success');
+        return;
+    }
+
+    const confirmMsg =
+        `⚠️ يوجد ${orphans.length} منتج يتيم (متاجرهم محذوفة).\n\n` +
+        `سيتم حذفها نهائياً من قاعدة البيانات على دفعات آمنة.\n` +
+        `هل أنت متأكد؟`;
+    if (!confirm(confirmMsg)) return;
+
+    isCleaningOrphans = true;
+    const btn = $('cleanOrphansBtn');
+    const btnSpan = btn.querySelector('span');
+    const originalIcon = btn.querySelector('i').className;
+    btn.disabled = true;
+    btn.querySelector('i').className = 'fas fa-spinner fa-spin';
+    btnSpan.textContent = 'جارٍ الحذف...';
+
+    let deleted = 0;
+    let lastError = null;
+
+    try {
+        // ✅ دفعات آمنة — كل دفعة 450 عملية
+        for (let i = 0; i < orphans.length; i += BATCH_LIMIT) {
+            const chunk = orphans.slice(i, i + BATCH_LIMIT);
+            const batch = db.batch();
+            chunk.forEach(p => {
+                batch.delete(db.collection(PRODUCTS_COLLECTION).doc(p.id));
+            });
+            await batch.commit();
+            deleted += chunk.length;
+            // تحديث لحظي للتقدم
+            btnSpan.textContent = `${deleted}/${orphans.length}...`;
+            showToast(`🧹 جارٍ الحذف... ${deleted}/${orphans.length}`, 'warning');
+        }
+        showToast(`✅ تم حذف ${deleted} منتج يتيم بنجاح`, 'success');
+    } catch (err) {
+        lastError = err;
+        console.error('[Cleanup Orphans Error]', err);
+        if (deleted > 0) {
+            showToast(`⚠️ حُذف ${deleted} من ${orphans.length} — ${err.message || 'خطأ'}`, 'error');
+        } else {
+            showToast(`❌ فشل الحذف: ${err.message || 'خطأ'}`, 'error');
+        }
+    } finally {
+        isCleaningOrphans = false;
+        btn.disabled = false;
+        btn.querySelector('i').className = originalIcon;
+        // onSnapshot سيعيد تحديث العدّاد — لكن نُحدّث احتياطياً
+        setTimeout(() => updateOrphansAlert(), 300);
+    }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1156,18 +1290,20 @@ function renderStoresList() {
 function applyProductsFilter() {
     const q = ($('productsSearchInput').value || '').trim().toLowerCase();
     const storeFilter = $('productsStoreFilter').value;
+    const validNames = new Set(allStores.map(s => normalizeStoreName(s.name)).filter(Boolean));
 
     filteredProducts = allProducts.filter(p => {
-        if (storeFilter && p.store_name !== storeFilter) return false;
+        if (storeFilter && normalizeStoreName(p.store_name) !== normalizeStoreName(storeFilter)) return false;
         if (!q) return true;
         return (p.name || '').toLowerCase().includes(q) ||
                (p.store_name || '').toLowerCase().includes(q) ||
                (p.description || '').toLowerCase().includes(q);
     });
-    renderProductsList();
+    // نمرر validNames للعرض فقط (شارة "يتيم")
+    renderProductsList(validNames);
 }
 
-function renderProductsList() {
+function renderProductsList(validNames = new Set()) {
     const container = $('productsListContainer');
     if (!filteredProducts.length) {
         container.innerHTML = `
@@ -1197,13 +1333,20 @@ function renderProductsList() {
             ? `<div style="font-size:0.72rem;color:#6B7280;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">${escapeHtml(String(p.description).slice(0, 90))}${String(p.description).length > 90 ? '…' : ''}</div>`
             : '';
 
+        // ✅ شارة "يتيم" إن كان المتجر غير موجود
+        const isOrphan = !validNames.has(normalizeStoreName(p.store_name));
+        const orphanBadge = isOrphan
+            ? `<span class="meta-pill meta-pill-orphan"><i class="fas fa-unlink"></i> يتيم</span>`
+            : '';
+
         html += `
             <div class="item-card">
                 ${imgHtml}
                 <div class="item-info">
                     <div class="item-name">${escapeHtml(p.name || '')}</div>
                     <div class="item-meta">
-                        <span class="meta-pill meta-pill-cat"><i class="fas fa-store"></i> ${escapeHtml(p.store_name || '')}</span>
+                        <span class="meta-pill meta-pill-cat"><i class="fas fa-store"></i> ${escapeHtml(p.store_name || '—')}</span>
+                        ${orphanBadge}
                         ${prodCatBadge}
                         ${descBadge}
                         <span class="meta-pill meta-pill-price"><i class="fas fa-tag"></i> ${price.toLocaleString()} ج.س</span>
@@ -1440,7 +1583,7 @@ function populateStoreCategorySelect(selectedValue = null) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// 🏷️ Categories Tags (Extra Categories in Store Edit)
+// 🏷️ Categories Tags
 // ═══════════════════════════════════════════════════════════
 function renderCategoriesTags() {
     const list = $('storeCategoriesList');
@@ -1513,7 +1656,7 @@ $('store_location')?.addEventListener('input', (e) => {
 });
 
 // ═══════════════════════════════════════════════════════════
-// 🏪 Store Edit Modal (تعديل فقط)
+// 🏪 Store Edit Modal
 // ═══════════════════════════════════════════════════════════
 function openStoreModal(store) {
     if (!store) return;
@@ -1640,9 +1783,14 @@ $('storeForm').addEventListener('submit', async (e) => {
             const prodSnap = await db.collection(PRODUCTS_COLLECTION)
                 .where('store_name', '==', oldStore.name).get();
             if (!prodSnap.empty) {
-                await Promise.all(prodSnap.docs.map(d =>
-                    db.collection(PRODUCTS_COLLECTION).doc(d.id).update({ store_name: name })
-                ));
+                const docs = prodSnap.docs;
+                for (let i = 0; i < docs.length; i += BATCH_LIMIT) {
+                    const batch = db.batch();
+                    docs.slice(i, i + BATCH_LIMIT).forEach(d => {
+                        batch.update(d.ref, { store_name: name });
+                    });
+                    await batch.commit();
+                }
             }
         }
         showToast('✅ تم حفظ التعديلات');
@@ -1656,30 +1804,80 @@ $('storeForm').addEventListener('submit', async (e) => {
     }
 });
 
+// ═══════════════════════════════════════════════════════════
+// 🗑️ DELETE STORE — يحذف المتجر + جميع منتجاته فوراً
+// ═══════════════════════════════════════════════════════════
 window.deleteStore = async (id) => {
+    if (isDeletingStore) return;
     const store = allStores.find(s => String(s.id) === String(id));
-    if (!store) return;
-    const productsCount = store.products_count || 0;
-    const msg = productsCount > 0
-        ? `⚠️ سيتم حذف "${store.name}" و ${productsCount} منتج مرتبط به.\n\nهل أنت متأكد؟`
-        : `هل أنت متأكد من حذف "${store.name}"؟`;
+    if (!store) { showToast('المتجر غير موجود', 'error'); return; }
+
+    const storeNameTrimmed = String(store.name || '').trim();
+    const cachedCount = store.products_count || 0;
+
+    const msg = cachedCount > 0
+        ? `⚠️ سيتم حذف "${storeNameTrimmed}" و ${cachedCount} منتج مرتبط به نهائياً.\n\nهل أنت متأكد؟`
+        : `هل أنت متأكد من حذف "${storeNameTrimmed}"؟\n(سيتم حذف جميع منتجاته أيضاً إن وجدت)`;
+
     if (!confirm(msg)) return;
 
+    isDeletingStore = true;
     suppressStoresToast = true;
+
     try {
-        const prodSnap = await db.collection(PRODUCTS_COLLECTION)
-            .where('store_name', '==', store.name).get();
-        if (!prodSnap.empty) {
-            await Promise.all(prodSnap.docs.map(d =>
-                db.collection(PRODUCTS_COLLECTION).doc(d.id).delete()
-            ));
+        const productDocsMap = new Map();
+
+        const nameSnap = await db.collection(PRODUCTS_COLLECTION)
+            .where('store_name', '==', storeNameTrimmed).get();
+        nameSnap.docs.forEach(d => productDocsMap.set(d.id, d));
+
+        if (store.name !== storeNameTrimmed) {
+            const rawSnap = await db.collection(PRODUCTS_COLLECTION)
+                .where('store_name', '==', store.name).get();
+            rawSnap.docs.forEach(d => productDocsMap.set(d.id, d));
         }
+
+        try {
+            const idSnap = await db.collection(PRODUCTS_COLLECTION)
+                .where('store_id', '==', id).get();
+            idSnap.docs.forEach(d => productDocsMap.set(d.id, d));
+        } catch (_) { /* الحقل غير موجود */ }
+
+        const productDocs = Array.from(productDocsMap.values());
+        const actualCount = productDocs.length;
+
+        if (actualCount > 0) {
+            showToast(`🗑️ جارٍ حذف ${actualCount} منتج...`, 'warning');
+            for (let i = 0; i < productDocs.length; i += BATCH_LIMIT) {
+                const batch = db.batch();
+                productDocs.slice(i, i + BATCH_LIMIT).forEach(d => batch.delete(d.ref));
+                await batch.commit();
+            }
+        }
+
         await db.collection(STORES_COLLECTION).doc(id).delete();
-        showToast('✅ تم الحذف');
+        showToast(`✅ تم حذف المتجر و ${actualCount} منتج فوراً`);
     } catch (err) {
         showToast('❌ فشل الحذف: ' + (err.message || 'خطأ'), 'error');
+        console.error('[Delete Store Error]', err);
     } finally {
+        isDeletingStore = false;
         setTimeout(() => { suppressStoresToast = false; }, 2000);
+    }
+};
+
+// ═══════════════════════════════════════════════════════════
+// 🗑️ Delete Product (منفرد)
+// ═══════════════════════════════════════════════════════════
+window.deleteProduct = async (id) => {
+    const product = allProducts.find(p => String(p.id) === String(id));
+    if (!product) { showToast('المنتج غير موجود', 'error'); return; }
+    if (!confirm(`هل أنت متأكد من حذف "${product.name}"؟`)) return;
+    try {
+        await db.collection(PRODUCTS_COLLECTION).doc(id).delete();
+        showToast('✅ تم حذف المنتج');
+    } catch (err) {
+        showToast('❌ فشل الحذف: ' + err.message, 'error');
     }
 };
 
@@ -1825,6 +2023,11 @@ $('productsSearchInput').addEventListener('input', applyProductsFilter);
 $('productsStoreFilter').addEventListener('change', applyProductsFilter);
 
 // ═══════════════════════════════════════════════════════════
+// 🧹 Orphans Cleanup Button
+// ═══════════════════════════════════════════════════════════
+$('cleanOrphansBtn')?.addEventListener('click', deleteOrphanedProducts);
+
+// ═══════════════════════════════════════════════════════════
 // ⌨️ Keyboard
 // ═══════════════════════════════════════════════════════════
 document.addEventListener('keydown', (e) => {
@@ -1840,7 +2043,7 @@ window.closeStoreModal = closeStoreModal;
 window.closeCategoryModal = closeCategoryModal;
 
 // ═══════════════════════════════════════════════════════════
-// 🚀 Auth State — Auto-login on refresh
+// 🚀 Auth State
 // ═══════════════════════════════════════════════════════════
 firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
@@ -1862,7 +2065,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
     await enterDashboard();
 });
 
-console.log('[BZR Admin] v10.0 — fixed login + no add store + simple emoji ✅');
+console.log('[BZR Admin] v12.0 — orphans cleanup + cascade delete + batched safety ✅');
 </script>
 
 </body>
