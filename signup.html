@@ -8,6 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="DENY">
+<meta name="format-detection" content="telephone=no">
 <title>إنشاء متجر | BranZar بران زار</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +34,7 @@ input,textarea,select{outline:none}
 .gate-text strong{color:var(--c-primary);font-weight:800}
 .gate-spinner{width:40px;height:40px;margin:0 auto;border:3px solid rgba(255,255,255,.15);border-top-color:var(--c-primary);border-radius:50%;animation:spin .85s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.gate-steps{color:#6b7280;font-size:.78rem;font-weight:700;margin-top:20px;min-height:20px}
+.gate-steps{color:#6b7280;font-size:.78rem;font-weight:700;margin-top:20px;min-height:20px;transition:opacity .15s}
 .gate-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:var(--radius-md);font-weight:800;font-size:.92rem;cursor:pointer;border:none;text-decoration:none;font-family:inherit;transition:all .25s;width:100%}
 .gate-btn-primary{background:var(--c-primary-gradient);color:#fff;box-shadow:var(--shadow-primary)}
 .gate-btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:var(--shadow-primary-lg)}
@@ -396,7 +397,7 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 
 const STORES = 'stores';
 const DEVICES = 'device_registry';
-const CATEGORIES = 'categories';  // ⭐ جديد
+const CATEGORIES = 'categories';
 
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
@@ -436,7 +437,6 @@ const state = {
   coverUrl:null, logoUrl:null, submitting:false, alreadyRegistered:false,
   pendingUser:null, pendingEmail:null, pendingStoreId:null,
   pollTimer:null, lastResendAt:0,
-  // ⭐ إدارة الفئات
   allCategories: [],
   categoriesUnsub: null,
   categoriesLoaded: false,
@@ -595,7 +595,7 @@ function setupImageUpload(zoneEl,inputEl,previewEl,progressEl,onLoaded,isLogo){
 }
 
 // ═══════════════════════════════════════════════════════════
-// 🏷️ Categories — Firestore Dynamic Loading
+// 🏷️ Categories
 // ═══════════════════════════════════════════════════════════
 async function ensureCategoriesSeeded() {
   if (state.categoriesSeeded) return;
@@ -606,19 +606,13 @@ async function ensureCategoriesSeeded() {
     const batch = db.batch();
     DEFAULT_CATEGORIES.forEach((cat, idx) => {
       batch.set(db.collection(CATEGORIES).doc(cat.id), {
-        name: cat.name,
-        emoji: cat.emoji,
-        order: idx,
-        is_default: true,
-        created_at: Date.now()
+        name: cat.name, emoji: cat.emoji, order: idx, is_default: true, created_at: Date.now()
       });
     });
     await batch.commit();
     state.categoriesSeeded = true;
     console.log('[Categories] Seeded ' + DEFAULT_CATEGORIES.length + ' defaults');
-  } catch (err) {
-    console.warn('[Categories] Seed failed:', err);
-  }
+  } catch (err) { console.warn('[Categories] Seed failed:', err); }
 }
 
 function normalizeCategories(list) {
@@ -638,17 +632,11 @@ async function loadCategoriesFromFirestore() {
   try {
     const snap = await db.collection(CATEGORIES).get();
     const cats = normalizeCategories(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    if (!cats.length) {
-      // fallback
-      state.allCategories = normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
-    } else {
-      state.allCategories = cats;
-    }
+    state.allCategories = cats.length ? cats : normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
     state.categoriesLoaded = true;
     return state.allCategories;
   } catch (err) {
     console.warn('[Categories] Fetch failed:', err);
-    // fallback offline
     state.allCategories = normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
     state.categoriesLoaded = true;
     return state.allCategories;
@@ -662,26 +650,18 @@ function subscribeCategoriesRealtime() {
     .onSnapshot((snapshot) => {
       const cats = normalizeCategories(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
       const freshList = cats.length ? cats : normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
-
-      // كشف التغيير
       const oldSig = state.allCategories.map(c => c.id + ':' + c.name + ':' + c.emoji).join('|');
       const newSig = freshList.map(c => c.id + ':' + c.name + ':' + c.emoji).join('|');
-
       state.allCategories = freshList;
-
       if (oldSig !== newSig) {
         console.log('[Categories] Updated dynamically:', freshList.length);
-        // إعادة رسم الشبكة فوراً
         if ($('catsGrid')) renderCategories();
-        // إذا الفئة المختارة اختفت، إزالة الاختيار
         if (state.selectedCategory && !freshList.some(c => c.name === state.selectedCategory)) {
           state.selectedCategory = null;
           showToast('الفئة التي اخترتها لم تعد متاحة', 'warning');
         }
       }
-    }, err => {
-      console.warn('[Categories] Listener error:', err);
-    });
+    }, err => { console.warn('[Categories] Listener error:', err); });
 }
 
 async function initCategories() {
@@ -697,20 +677,15 @@ async function initCategories() {
 function renderCategories() {
   const g = $('catsGrid');
   if (!g) return;
-
-  // حالة التحميل
   if (!state.categoriesLoaded) {
     g.innerHTML = '<div class="cats-loading"><div class="ring"></div><span>جارٍ تحميل الفئات...</span></div>';
     return;
   }
-
   const cats = state.allCategories || [];
-
   if (!cats.length) {
     g.innerHTML = '<div class="cats-empty"><i class="fas fa-triangle-exclamation" style="font-size:1.4rem;margin-bottom:8px;display:block;"></i>لا توجد فئات متاحة حالياً<br><span style="font-size:.75rem;font-weight:600;">يرجى المحاولة لاحقاً أو التواصل مع الدعم</span></div>';
     return;
   }
-
   g.innerHTML = '';
   const frag = document.createDocumentFragment();
   cats.forEach(c => {
@@ -724,8 +699,6 @@ function renderCategories() {
     frag.appendChild(btn);
   });
   g.appendChild(frag);
-
-  // إظهار شارة "مباشر" إن كانت البيانات من Firestore
   const hint = $('catsSourceHint');
   if (hint) {
     const hasRemote = cats.some(c => !c.is_default || c.id);
@@ -743,26 +716,173 @@ function selectCategory(name) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// 📝 Input Events
+// 📝 Input Events — SAFE HANDLING v9.1
 // ═══════════════════════════════════════════════════════════
-if($('storeName')){$('storeName').addEventListener('input',e=>{const v=e.target.value.replace(/[<>"`\\]/g,'');if(e.target.value!==v)e.target.value=v;$('nameCount').textContent=v.length;if(v.trim().length>=3){hideErr('nameError');setFieldState('nameWrap','valid');}});}
-if($('storeDescription')){$('storeDescription').addEventListener('input',e=>{$('descCount').textContent=e.target.value.length;});}
-if($('locationInput')){
-  const S=['الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','سنار','النيل الأبيض','النيل الأزرق','نهر النيل','الشمالية','شمال كردفان','جنوب كردفان','غرب كردفان','شمال دارفور','جنوب دارفور','غرب دارفور','شرق دارفور','وسط دارفور'];
-  $('locationInput').addEventListener('input',e=>{
-    let v=e.target.value.replace(/[<>"`\\]/g,'');if(e.target.value!==v)e.target.value=v;
-    const isDel=(e.inputType||'').indexOf('delete')===0;const t=v.trim();
-    if(!isDel&&S.indexOf(t)>-1&&!v.endsWith(' - ')){v=t+' - ';e.target.value=v;}
-    if(v.replace(/\s*-\s*$/,'').trim().length>=3){hideErr('locationError');setFieldState('locationWrap','valid');}
+const composingInputs = new WeakSet();
+
+function attachInputSafety(el) {
+  if (!el || el.__bzrSafe) return;
+  el.__bzrSafe = true;
+  el.addEventListener('compositionstart', () => composingInputs.add(el), true);
+  el.addEventListener('compositionend', () => {
+    composingInputs.delete(el);
+    try { el.dispatchEvent(new Event('input', { bubbles: true })); } catch(e) {}
+  }, true);
+}
+
+function isComposing(el) { return composingInputs.has(el); }
+
+function safeSetValue(el, newVal) {
+  if (!el || el.value === newVal) return;
+  const hadFocus = document.activeElement === el;
+  const start = el.selectionStart ?? 0;
+  const end = el.selectionEnd ?? 0;
+  el.value = newVal;
+  if (hadFocus) {
+    try {
+      const len = newVal.length;
+      if (start === end) {
+        const pos = Math.min(start, len);
+        el.setSelectionRange(pos, pos);
+      } else {
+        el.setSelectionRange(Math.min(start, len), Math.min(end, len));
+      }
+    } catch(e) {}
+  }
+}
+
+// تفعيل الحماية على جميع الحقول النصية
+document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea').forEach(attachInputSafety);
+
+// ─── اسم المتجر ───
+if ($('storeName')) {
+  $('storeName').addEventListener('input', () => {
+    const el = $('storeName');
+    if (isComposing(el)) {
+      if ($('nameCount')) $('nameCount').textContent = el.value.length;
+      return;
+    }
+    const cleaned = el.value.replace(/[<>"`\\]/g, '');
+    safeSetValue(el, cleaned);
+    if ($('nameCount')) $('nameCount').textContent = cleaned.length;
+    if (cleaned.trim().length >= 3) {
+      hideErr('nameError'); setFieldState('nameWrap', 'valid');
+    } else {
+      setFieldState('nameWrap', null);
+    }
   });
 }
-[$('whatsapp'),$('phone')].forEach(i=>{if(!i)return;i.addEventListener('input',e=>{e.target.value=e.target.value.replace(/[^\d+]/g,'');if(i===$('whatsapp')&&i.value.replace(/\D/g,'').length>=9){hideErr('waError');setFieldState('waWrap','valid');}});});
-if($('emailInput')){$('emailInput').addEventListener('input',()=>{const v=$('emailInput').value.trim().toLowerCase();if(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){hideErr('emailError');setFieldState('emailWrap','valid');}else setFieldState('emailWrap',null);});}
-if($('password')){$('password').addEventListener('input',()=>{const p=$('password').value;const el=$('pwdStrength');if(!p){el.classList.remove('show');return;}el.classList.add('show');let sc=0;if(p.length>=6)sc++;if(p.length>=10)sc++;if(/[A-Z]/.test(p)&&/[a-z]/.test(p))sc++;if(/\d/.test(p))sc++;if(/[^A-Za-z0-9]/.test(p))sc++;sc=Math.min(sc,4);const cs=['#EF4444','#F59E0B','#F59E0B','#10B981','#10B981'];const ls=['ضعيفة','ضعيفة','متوسطة','قوية','قوية جداً'];document.querySelectorAll('#pwdStrength .pwd-bar').forEach((b,i)=>{b.style.background=i<sc?cs[sc]:'#E2E8F0';});const t=$('pwdStrengthText');t.textContent=ls[sc]||'';t.style.color=cs[sc]||'';if(p.length>=6){hideErr('pwdError');setFieldState('pwdWrap','valid');}});}
-if($('confirmPassword')){$('confirmPassword').addEventListener('input',()=>{if($('confirmPassword').value&&$('confirmPassword').value===$('password').value){hideErr('pwdConfirmError');setFieldState('pwdConfirmWrap','valid');}});}
-if($('termsCheck')){$('termsCheck').addEventListener('change',()=>{if($('termsCheck').checked)hideErr('termsError');});}
-$('togglePwd').addEventListener('click',()=>{const i=$('password');const p=i.type==='password';i.type=p?'text':'password';$('togglePwd').querySelector('i').className=p?'fas fa-eye-slash':'fas fa-eye';});
-$('togglePwdConfirm').addEventListener('click',()=>{const i=$('confirmPassword');const p=i.type==='password';i.type=p?'text':'password';$('togglePwdConfirm').querySelector('i').className=p?'fas fa-eye-slash':'fas fa-eye';});
+
+// ─── وصف المتجر ───
+if ($('storeDescription')) {
+  $('storeDescription').addEventListener('input', (e) => {
+    if ($('descCount')) $('descCount').textContent = e.target.value.length;
+  });
+}
+
+// ─── الموقع ───
+if ($('locationInput')) {
+  const locEl = $('locationInput');
+  const STATES = ['الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','سنار','النيل الأبيض','النيل الأزرق','نهر النيل','الشمالية','شمال كردفان','جنوب كردفان','غرب كردفان','شمال دارفور','جنوب دارفور','غرب دارفور','شرق دارفور','وسط دارفور'];
+  locEl.addEventListener('input', (e) => {
+    if (isComposing(locEl)) return;
+    let v = locEl.value.replace(/[<>"`\\]/g, '');
+    safeSetValue(locEl, v);
+    const isDel = (e.inputType || '').indexOf('delete') === 0;
+    const t = v.trim();
+    if (!isDel && STATES.indexOf(t) > -1 && !v.endsWith(' - ')) {
+      const newVal = t + ' - ';
+      locEl.value = newVal;
+      try { locEl.setSelectionRange(newVal.length, newVal.length); } catch(err) {}
+      v = newVal;
+    }
+    if (v.replace(/\s*-\s*$/, '').trim().length >= 3) {
+      hideErr('locationError'); setFieldState('locationWrap', 'valid');
+    }
+  });
+}
+
+// ─── واتساب + هاتف ───
+const waEl = $('whatsapp');
+const phoneEl = $('phone');
+[waEl, phoneEl].forEach((el) => {
+  if (!el) return;
+  el.addEventListener('input', () => {
+    if (isComposing(el)) return;
+    const cleaned = el.value.replace(/[^\d+]/g, '');
+    safeSetValue(el, cleaned);
+    if (el === waEl && cleaned.replace(/\D/g, '').length >= 9) {
+      hideErr('waError'); setFieldState('waWrap', 'valid');
+    }
+  });
+});
+
+// ─── البريد ───
+if ($('emailInput')) {
+  $('emailInput').addEventListener('input', () => {
+    const el = $('emailInput');
+    if (isComposing(el)) return;
+    const v = el.value.trim().toLowerCase();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) {
+      hideErr('emailError'); setFieldState('emailWrap', 'valid');
+    } else {
+      setFieldState('emailWrap', null);
+    }
+  });
+}
+
+// ─── كلمة المرور ───
+if ($('password')) {
+  $('password').addEventListener('input', () => {
+    const p = $('password').value;
+    const el = $('pwdStrength');
+    if (!p) { el.classList.remove('show'); return; }
+    el.classList.add('show');
+    let sc = 0;
+    if (p.length >= 6) sc++;
+    if (p.length >= 10) sc++;
+    if (/[A-Z]/.test(p) && /[a-z]/.test(p)) sc++;
+    if (/\d/.test(p)) sc++;
+    if (/[^A-Za-z0-9]/.test(p)) sc++;
+    sc = Math.min(sc, 4);
+    const cs = ['#EF4444','#F59E0B','#F59E0B','#10B981','#10B981'];
+    const ls = ['ضعيفة','ضعيفة','متوسطة','قوية','قوية جداً'];
+    document.querySelectorAll('#pwdStrength .pwd-bar').forEach((b, i) => {
+      b.style.background = i < sc ? cs[sc] : '#E2E8F0';
+    });
+    const t = $('pwdStrengthText');
+    t.textContent = ls[sc] || ''; t.style.color = cs[sc] || '';
+    if (p.length >= 6) { hideErr('pwdError'); setFieldState('pwdWrap', 'valid'); }
+  });
+}
+
+// ─── تأكيد كلمة المرور ───
+if ($('confirmPassword')) {
+  $('confirmPassword').addEventListener('input', () => {
+    if ($('confirmPassword').value && $('confirmPassword').value === $('password').value) {
+      hideErr('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid');
+    }
+  });
+}
+
+// ─── الشروط ───
+if ($('termsCheck')) {
+  $('termsCheck').addEventListener('change', () => {
+    if ($('termsCheck').checked) hideErr('termsError');
+  });
+}
+
+// ─── إظهار/إخفاء كلمة المرور ───
+$('togglePwd').addEventListener('click', () => {
+  const i = $('password'); const p = i.type === 'password';
+  i.type = p ? 'text' : 'password';
+  $('togglePwd').querySelector('i').className = p ? 'fas fa-eye-slash' : 'fas fa-eye';
+});
+$('togglePwdConfirm').addEventListener('click', () => {
+  const i = $('confirmPassword'); const p = i.type === 'password';
+  i.type = p ? 'text' : 'password';
+  $('togglePwdConfirm').querySelector('i').className = p ? 'fas fa-eye-slash' : 'fas fa-eye';
+});
 
 setupImageUpload($('coverUpload'),$('coverInput'),$('coverPreview'),$('coverProgress'),url=>{state.coverUrl=url;hideErr('coverError');},false);
 setupImageUpload($('logoUpload'),$('logoInput'),$('logoPreview'),$('logoProgress'),url=>{state.logoUrl=url;hideErr('logoError');},true);
@@ -792,7 +912,7 @@ function validateForm(){
 }
 
 // ═══════════════════════════════════════════════════════════
-// 🚀 Submit Registration
+// 🚀 Submit
 // ═══════════════════════════════════════════════════════════
 $('submitBtn').addEventListener('click', async()=>{
   if(state.alreadyRegistered){showToast('لديك متجر بالفعل','warning');return;}
@@ -957,7 +1077,6 @@ $('backBtn').addEventListener('click',()=>{if(document.referrer&&document.referr
 $('signupForm').addEventListener('submit',e=>{e.preventDefault();$('submitBtn').click();});
 $('signupForm').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA')e.preventDefault();});
 
-// تنظيف المستمع عند مغادرة الصفحة
 window.addEventListener('beforeunload', () => {
   if (state.categoriesUnsub) { try { state.categoriesUnsub(); } catch(e){} }
 });
@@ -1000,12 +1119,10 @@ async function bootstrap(){
       }catch(e){ try{await auth.signOut();}catch(_){} }
     }
 
-    // ⭐ عرض التطبيق أولاً مع حالة تحميل للفئات
     updateGateStep('جارٍ تحميل الفئات...');
     showGate('appContainer');
-    renderCategories(); // سيعرض "جارٍ التحميل..."
+    renderCategories();
 
-    // ثم تحميل الفئات ديناميكياً
     await initCategories();
     updateGateStep('جاهز للتسجيل ✅');
   }catch(err){
@@ -1016,7 +1133,7 @@ async function bootstrap(){
 }
 
 document.addEventListener('DOMContentLoaded',bootstrap);
-console.log('[BZR] signup v9.0 — dynamic categories from Firestore ✅');
+console.log('[BZR] signup v9.1 — safe input + dynamic categories ✅');
 </script>
 </body>
 </html>
