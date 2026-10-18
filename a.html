@@ -217,6 +217,11 @@
         .danger-zone-sub { font-size: 0.76rem; color: #B91C1C; font-weight: 600; line-height: 1.6; margin-top: 0.15rem; }
         .btn-delete-account { width: 100%; padding: 0.9rem 1.1rem; background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #fff; border: none; border-radius: 0.95rem; font-weight: 900; font-size: 0.92rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 12px 26px -10px rgba(239,68,68,0.75); transition: all 0.22s; font-family: 'Cairo', sans-serif; text-decoration: none; }
         .btn-delete-account:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -12px rgba(239,68,68,0.9); }
+
+        /* معاينة صورة المنتج الرئيسية */
+        .product-img-preview-wrapper { position: relative; width: 46px; height: 46px; flex-shrink: 0; align-self: center; margin-right: 4px; }
+        .product-img-preview { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1.5px solid #FF7A00; display: block; }
+        .remove-img-btn { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: #EF4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; }
     </style>
 </head>
 <body>
@@ -556,9 +561,9 @@
                                             <span>رفع</span>
                                         </button>
                                         <!-- معاينة الصورة المربعة الصغيرة -->
-                                        <div id="product_img_preview_wrapper" class="hidden" style="position: relative; width: 46px; height: 46px; flex-shrink: 0; align-self: center; margin-right: 4px;">
-                                            <img id="product_img_preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1.5px solid #FF7A00;" alt="">
-                                            <button type="button" id="removeProductImgBtn" style="position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: #EF4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2;">
+                                        <div id="product_img_preview_wrapper" class="product-img-preview-wrapper hidden">
+                                            <img id="product_img_preview" class="product-img-preview" alt="">
+                                            <button type="button" id="removeProductImgBtn" class="remove-img-btn" aria-label="حذف الصورة">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </div>
@@ -1302,7 +1307,7 @@ function renderProductsList() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🎨 COLOR ROW WITH SQUARE IMAGE PREVIEW (UPDATED)
+   🎨 COLOR ROW WITH SQUARE IMAGE PREVIEW
    ═══════════════════════════════════════════════════════════════ */
 function addColorRow(name, image) {
     const c = $('productColorsContainer'); if (!c) return;
@@ -1367,32 +1372,38 @@ function addColorRow(name, image) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🖼️ MAIN PRODUCT IMAGE PREVIEW LOGIC
+   🖼️ MAIN PRODUCT IMAGE PREVIEW LOGIC (UPDATED)
    ═══════════════════════════════════════════════════════════════ */
 const prodImgInput = $('product_img_url');
 const prodImgWrapper = $('product_img_preview_wrapper');
 const prodImgPreview = $('product_img_preview');
 const removeProdImgBtn = $('removeProductImgBtn');
 
+function updateMainImgPreview() {
+    if (!prodImgInput || !prodImgWrapper || !prodImgPreview) return;
+    const val = prodImgInput.value.trim();
+    
+    if (val) {
+        prodImgPreview.src = val;
+        prodImgWrapper.classList.remove('hidden');
+        prodImgPreview.onerror = () => { 
+            prodImgPreview.src = FALLBACK_ICON_SVG; 
+            prodImgPreview.onerror = null; 
+        };
+    } else {
+        prodImgWrapper.classList.add('hidden');
+        prodImgPreview.removeAttribute('src');
+    }
+}
+
 if (prodImgInput) {
-    prodImgInput.addEventListener('input', (e) => {
-        const val = e.target.value.trim();
-        if (val) {
-            prodImgPreview.src = val;
-            prodImgWrapper.classList.remove('hidden');
-            prodImgPreview.onerror = () => { prodImgPreview.src = FALLBACK_ICON_SVG; prodImgPreview.onerror = null; };
-        } else {
-            prodImgWrapper.classList.add('hidden');
-            prodImgPreview.removeAttribute('src');
-        }
-    });
+    prodImgInput.addEventListener('input', updateMainImgPreview);
 }
 
 if (removeProdImgBtn) {
     removeProdImgBtn.addEventListener('click', () => {
         prodImgInput.value = '';
-        prodImgWrapper.classList.add('hidden');
-        prodImgPreview.removeAttribute('src');
+        updateMainImgPreview();
         prodImgInput.dispatchEvent(new Event('input', { bubbles: true }));
     });
 }
@@ -1464,8 +1475,8 @@ function resetProductForm() {
     $('cancelEditProduct').classList.add('hidden');
     
     // Reset Main Image Preview
-    $('product_img_preview_wrapper').classList.add('hidden');
-    $('product_img_preview').removeAttribute('src');
+    if (prodImgWrapper) prodImgWrapper.classList.add('hidden');
+    if (prodImgPreview) prodImgPreview.removeAttribute('src');
     
     $('productColorsContainer').innerHTML = '';
     $('productDescCounter').textContent = '0 / ' + PRODUCT_DESC_MAX;
@@ -1487,13 +1498,7 @@ window.editProduct = async (id) => {
         populateProductCategories(d.category || '');
         
         // Show Main Image Preview
-        if (d.img_url) {
-            $('product_img_preview').src = d.img_url;
-            $('product_img_preview_wrapper').classList.remove('hidden');
-            $('product_img_preview').onerror = function(){ this.src = FALLBACK_ICON_SVG; this.onerror = null; };
-        } else {
-            $('product_img_preview_wrapper').classList.add('hidden');
-        }
+        updateMainImgPreview();
 
         $('productColorsContainer').innerHTML = '';
         if (Array.isArray(d.colors)) d.colors.forEach(x => addColorRow(x.name, x.image));
@@ -1530,7 +1535,7 @@ $('tabProducts').addEventListener('click', () => {
     updateLimitsUI();
 });
 
-// المعاينة التلقائية للشعار والغلاف فقط (بدون صورة المنتج لأنها أصبحت لها معالجة خاصة)
+// المعاينة التلقائية للشعار والغلاف فقط
 ['store_logo', 'store_cover'].forEach((id) => {
     const inp = $(id); if (!inp) return;
     inp.addEventListener('input', (e) => {
@@ -1591,7 +1596,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v7.3 — Square Image Preview + Color Preview + Security', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v7.4 — Main Image URL Preview + Square Thumbnails + Security', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
