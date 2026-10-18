@@ -195,13 +195,28 @@
         #productColorsContainer { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
         .color-row { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #F9FAFB; border-radius: 14px; border: 1.5px solid #E5E7EB; }
         .color-row-top { display: flex; align-items: center; gap: 8px; }
-        .color-dot-preview { width: 42px; height: 42px; border-radius: 10px; border: 1.5px solid #E5E7EB; flex-shrink: 0; overflow: hidden; position: relative; background: #E2E8F0; transition: background 0.2s; }
-        .color-dot-img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: none; }
-        .color-name { flex: 1; min-width: 0; padding: 0.65rem 0.85rem; border-radius: 10px; border: 1.5px solid #D1D5DB; font-size: 0.9rem; font-weight: 700; font-family: 'Cairo', sans-serif; }
-        .remove-color-btn { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: #EF4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; }
-        .color-row-bottom { display: flex; gap: 8px; align-items: center; }
-        .color-image { flex: 1; min-width: 0; padding: 0.65rem 0.85rem; border-radius: 10px; border: 1.5px solid #D1D5DB; font-size: 0.78rem; font-weight: 600; font-family: 'Cairo', sans-serif; direction: ltr; text-align: left; }
+        
+        /* منتقي الألوان (المربع الذي يعرض اللون المختار) */
+        .color-picker {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #fff;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .color-picker::-webkit-color-swatch-wrapper { padding: 2px; }
+        .color-picker::-webkit-color-swatch { border: none; border-radius: 6px; }
 
+        .color-name { flex: 1; min-width: 0; padding: 0.65rem 0.85rem; border-radius: 10px; border: 1.5px solid #D1D5DB; font-size: 0.9rem; font-weight: 700; font-family: 'Cairo', sans-serif; }
+        .remove-color-btn { width: 42px; height: 42px; border-radius: 10px; background: #FEF2F2; color: #EF4444; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 1rem; }
+        
         #addColorBtn { background: #FFF7ED; color: #FF7A00; border: 1.5px dashed #FFA64D; border-radius: 12px; padding: 0.7rem 1rem; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-family: 'Cairo', sans-serif; }
 
         .char-counter { display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem; font-size: 0.74rem; font-weight: 800; }
@@ -218,7 +233,7 @@
         .btn-delete-account { width: 100%; padding: 0.9rem 1.1rem; background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #fff; border: none; border-radius: 0.95rem; font-weight: 900; font-size: 0.92rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 12px 26px -10px rgba(239,68,68,0.75); transition: all 0.22s; font-family: 'Cairo', sans-serif; text-decoration: none; }
         .btn-delete-account:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -12px rgba(239,68,68,0.9); }
 
-        /* معاينة صورة المنتج الرئيسية */
+        /* معاينة صورة المنتج الرئيسية وصور الألوان */
         .product-img-preview-wrapper { position: relative; width: 46px; height: 46px; flex-shrink: 0; align-self: center; margin-right: 4px; }
         .product-img-preview { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1.5px solid #FF7A00; display: block; }
         .remove-img-btn { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: #EF4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; }
@@ -554,7 +569,7 @@
                                         <i class="fas fa-image"></i>
                                         <span>رابط الصورة الأساسية</span>
                                     </label>
-                                    <div class="url-upload-group" style="align-items: stretch;">
+                                    <div class="url-upload-group">
                                         <input type="url" id="product_img_url" class="form-input" placeholder="https://..." dir="ltr" style="text-align: left;">
                                         <button type="button" class="upload-btn" data-upload-target="product_img_url">
                                             <i class="fas fa-cloud-upload-alt"></i>
@@ -1307,9 +1322,9 @@ function renderProductsList() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🎨 COLOR ROW WITH SQUARE IMAGE PREVIEW
+   🎨 COLOR ROW WITH SQUARE IMAGE PREVIEW & COLOR PICKER (UPDATED)
    ═══════════════════════════════════════════════════════════════ */
-function addColorRow(name, image) {
+function addColorRow(name, image, hex) {
     const c = $('productColorsContainer'); if (!c) return;
     const row = document.createElement('div');
     row.className = 'color-row';
@@ -1317,62 +1332,52 @@ function addColorRow(name, image) {
     
     row.innerHTML =
         '<div class="color-row-top">' +
-            '<div class="color-dot-preview">' +
-                '<img class="color-dot-img" alt="" loading="lazy" decoding="async">' +
-                '<button type="button" class="remove-color-btn" aria-label="حذف اللون"><i class="fas fa-times"></i></button>' +
-            '</div>' +
-            '<input type="text" class="color-name" list="colorList" placeholder="اسم اللون" autocomplete="off">' +
+            '<input type="color" class="color-picker" value="' + (hex || '#FF7A00') + '">' +
+            '<input type="text" class="color-name" list="colorList" placeholder="اسم اللون" autocomplete="off" value="' + (name || '') + '">' +
+            '<button type="button" class="remove-color-btn" aria-label="حذف اللون"><i class="fas fa-trash"></i></button>' +
         '</div>' +
-        '<div class="color-row-bottom">' +
-            '<input type="url" id="' + uid + '" class="color-image" placeholder="رابط صورة اللون (اختياري)" dir="ltr">' +
+        '<div class="url-upload-group" style="margin-top: 8px;">' +
+            '<input type="url" id="' + uid + '" class="form-input color-image" placeholder="رابط صورة اللون (اختياري)" dir="ltr" value="' + (image || '') + '" style="text-align: left; font-size: 0.78rem; padding: 0.65rem 0.85rem; border-radius: 10px;">' +
             '<button type="button" class="color-upload-btn" data-upload-target="' + uid + '" aria-label="رفع صورة اللون"><i class="fas fa-cloud-upload-alt"></i></button>' +
+            '<div class="product-img-preview-wrapper hidden">' +
+                '<img class="product-img-preview" alt="">' +
+                '<button type="button" class="remove-img-btn" aria-label="حذف صورة اللون"><i class="fas fa-times"></i></button>' +
+            '</div>' +
         '</div>';
 
-    const n = row.querySelector('.color-name');
-    const im = row.querySelector('.color-image');
-    const dot = row.querySelector('.color-dot-preview');
-    const dotImg = row.querySelector('.color-dot-img');
-    const removeBtn = row.querySelector('.remove-color-btn');
+    const rowEl = row;
+    const im = rowEl.querySelector('.color-image');
+    const wrapper = rowEl.querySelector('.product-img-preview-wrapper');
+    const previewImg = rowEl.querySelector('.product-img-preview');
+    const removeImgBtn = rowEl.querySelector('.remove-img-btn');
+    const removeRowBtn = rowEl.querySelector('.remove-color-btn');
 
-    n.value = name || '';
-    im.value = image || '';
-
-    const updateColorPreview = () => {
-        const url = String(im.value || '').trim();
-        const nameVal = String(n.value || '').trim();
-
+    const updatePreview = () => {
+        const url = im.value.trim();
         if (url) {
-            dotImg.onload = () => {
-                dotImg.style.display = 'block';
-                dot.style.background = '#F9FAFB';
-                dot.style.border = '1.5px solid #E5E7EB';
-            };
-            dotImg.onerror = () => {
-                dotImg.style.display = 'none';
-                dotImg.removeAttribute('src');
-                dot.style.background = nameVal ? '#FF7A00' : '#E2E8F0';
-            };
-            dotImg.src = url;
-            dot.style.background = '#F9FAFB';
-            dotImg.style.display = 'block';
-            dot.style.border = '1.5px solid #E5E7EB';
+            previewImg.src = url;
+            wrapper.classList.remove('hidden');
+            previewImg.onerror = () => { previewImg.src = FALLBACK_ICON_SVG; previewImg.onerror = null; };
         } else {
-            dotImg.style.display = 'none';
-            dotImg.removeAttribute('src');
-            dot.style.background = nameVal ? '#FF7A00' : '#E2E8F0';
+            wrapper.classList.add('hidden');
+            previewImg.removeAttribute('src');
         }
     };
 
-    n.addEventListener('input', updateColorPreview);
-    im.addEventListener('input', updateColorPreview);
-    removeBtn.addEventListener('click', () => row.remove());
+    im.addEventListener('input', updatePreview);
+    removeImgBtn.addEventListener('click', () => {
+        im.value = '';
+        updatePreview();
+        im.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    removeRowBtn.addEventListener('click', () => rowEl.remove());
 
-    c.appendChild(row);
-    updateColorPreview();
+    c.appendChild(rowEl);
+    updatePreview();
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🖼️ MAIN PRODUCT IMAGE PREVIEW LOGIC (UPDATED)
+   🖼️ MAIN PRODUCT IMAGE PREVIEW LOGIC
    ═══════════════════════════════════════════════════════════════ */
 const prodImgInput = $('product_img_url');
 const prodImgWrapper = $('product_img_preview_wrapper');
@@ -1432,7 +1437,8 @@ $('productForm').addEventListener('submit', async (e) => {
     document.querySelectorAll('#productColorsContainer .color-row').forEach((r) => {
         const cn = sanitize(r.querySelector('.color-name').value);
         const ci = sanitize(r.querySelector('.color-image').value);
-        if (cn && ci) colors.push({ name: cn, image: ci });
+        const ch = r.querySelector('.color-picker').value;
+        if (cn) colors.push({ name: cn, image: ci, hex: ch });
     });
 
     const data = {
@@ -1474,7 +1480,6 @@ function resetProductForm() {
     $('productFormTitle').textContent = 'إضافة منتج جديد';
     $('cancelEditProduct').classList.add('hidden');
     
-    // Reset Main Image Preview
     if (prodImgWrapper) prodImgWrapper.classList.add('hidden');
     if (prodImgPreview) prodImgPreview.removeAttribute('src');
     
@@ -1497,11 +1502,10 @@ window.editProduct = async (id) => {
         $('productDescCounter').textContent = (d.description || '').length + ' / ' + PRODUCT_DESC_MAX;
         populateProductCategories(d.category || '');
         
-        // Show Main Image Preview
         updateMainImgPreview();
 
         $('productColorsContainer').innerHTML = '';
-        if (Array.isArray(d.colors)) d.colors.forEach(x => addColorRow(x.name, x.image));
+        if (Array.isArray(d.colors)) d.colors.forEach(x => addColorRow(x.name, x.image, x.hex));
         $('productFormTitle').textContent = 'تعديل: ' + d.name;
         $('cancelEditProduct').classList.remove('hidden');
         $('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1535,7 +1539,6 @@ $('tabProducts').addEventListener('click', () => {
     updateLimitsUI();
 });
 
-// المعاينة التلقائية للشعار والغلاف فقط
 ['store_logo', 'store_cover'].forEach((id) => {
     const inp = $(id); if (!inp) return;
     inp.addEventListener('input', (e) => {
@@ -1596,7 +1599,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v7.4 — Main Image URL Preview + Square Thumbnails + Security', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v7.5 — Color Picker + Square Color Image Preview + Security', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
