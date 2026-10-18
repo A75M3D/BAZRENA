@@ -196,24 +196,9 @@
         .color-row { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #F9FAFB; border-radius: 14px; border: 1.5px solid #E5E7EB; }
         .color-row-top { display: flex; align-items: center; gap: 8px; }
         
-        /* منتقي الألوان (المربع الذي يعرض اللون المختار) */
-        .color-picker {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            width: 42px;
-            height: 42px;
-            padding: 0;
-            border: 1.5px solid #D1D5DB;
-            border-radius: 10px;
-            cursor: pointer;
-            background: #fff;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-        .color-picker::-webkit-color-swatch-wrapper { padding: 2px; }
-        .color-picker::-webkit-color-swatch { border: none; border-radius: 6px; }
-
+        /* دائرة اللون الذكية */
+        .color-dot-preview { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #D1D5DB; flex-shrink: 0; background: #E2E8F0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); transition: background 0.3s; }
+        
         .color-name { flex: 1; min-width: 0; padding: 0.65rem 0.85rem; border-radius: 10px; border: 1.5px solid #D1D5DB; font-size: 0.9rem; font-weight: 700; font-family: 'Cairo', sans-serif; }
         .remove-color-btn { width: 42px; height: 42px; border-radius: 10px; background: #FEF2F2; color: #EF4444; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; font-size: 1rem; }
         
@@ -795,6 +780,37 @@ const FIXED_CATEGORIES = [
     'نقل وتوصيل','سفر وسياحة'
 ];
 
+// خريطة الألوان الذكية
+const COLOR_MAP = {
+    'أسود': '#000000', 'black': '#000000',
+    'أبيض': '#FFFFFF', 'white': '#FFFFFF',
+    'رمادي': '#808080', 'gray': '#808080', 'grey': '#808080',
+    'أحمر': '#EF4444', 'red': '#EF4444',
+    'أزرق': '#3B82F6', 'blue': '#3B82F6',
+    'أخضر': '#10B981', 'green': '#10B981',
+    'أصفر': '#F59E0B', 'yellow': '#F59E0B',
+    'برتقالي': '#FF7A00', 'orange': '#FF7A00',
+    'بنفسجي': '#8B5CF6', 'purple': '#8B5CF6',
+    'وردي': '#EC4899', 'pink': '#EC4899',
+    'بني': '#78350F', 'brown': '#78350F',
+    'ذهبي': '#FBBF24', 'gold': '#FBBF24',
+    'فضي': '#D1D5DB', 'silver': '#D1D5DB',
+    'كحلي': '#1E3A8A', 'navy': '#1E3A8A',
+    'بيج': '#FDE68A', 'beige': '#FDE68A',
+    'تركواز': '#06B6D4', 'turquoise': '#06B6D4',
+    'نبيتي': '#991B1B', 'maroon': '#991B1B',
+    'خمري': '#7F1D1D', 'wine': '#7F1D1D'
+};
+
+function getColorHex(name) {
+    if (!name) return '#E2E8F0';
+    const clean = name.trim().toLowerCase();
+    for (const [key, val] of Object.entries(COLOR_MAP)) {
+        if (clean === key.toLowerCase() || clean.includes(key.toLowerCase())) return val;
+    }
+    return '#E2E8F0'; // لون افتراضي إذا لم يوجد
+}
+
 let currentStore = null;
 let currentUser = null;
 let productsData = [];
@@ -1322,9 +1338,9 @@ function renderProductsList() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🎨 COLOR ROW WITH SQUARE IMAGE PREVIEW & COLOR PICKER (UPDATED)
+   🎨 COLOR ROW WITH SMART DOT AND SQUARE PREVIEW
    ═══════════════════════════════════════════════════════════════ */
-function addColorRow(name, image, hex) {
+function addColorRow(name, image) {
     const c = $('productColorsContainer'); if (!c) return;
     const row = document.createElement('div');
     row.className = 'color-row';
@@ -1332,7 +1348,7 @@ function addColorRow(name, image, hex) {
     
     row.innerHTML =
         '<div class="color-row-top">' +
-            '<input type="color" class="color-picker" value="' + (hex || '#FF7A00') + '">' +
+            '<div class="color-dot-preview" title="اللون التلقائي"></div>' +
             '<input type="text" class="color-name" list="colorList" placeholder="اسم اللون" autocomplete="off" value="' + (name || '') + '">' +
             '<button type="button" class="remove-color-btn" aria-label="حذف اللون"><i class="fas fa-trash"></i></button>' +
         '</div>' +
@@ -1346,13 +1362,23 @@ function addColorRow(name, image, hex) {
         '</div>';
 
     const rowEl = row;
+    const nameInput = rowEl.querySelector('.color-name');
+    const dotPreview = rowEl.querySelector('.color-dot-preview');
     const im = rowEl.querySelector('.color-image');
     const wrapper = rowEl.querySelector('.product-img-preview-wrapper');
     const previewImg = rowEl.querySelector('.product-img-preview');
     const removeImgBtn = rowEl.querySelector('.remove-img-btn');
     const removeRowBtn = rowEl.querySelector('.remove-color-btn');
 
-    const updatePreview = () => {
+    // تحديث الدائرة بناءً على الاسم
+    const updateDotColor = () => {
+        const colorHex = getColorHex(nameInput.value);
+        dotPreview.style.background = colorHex;
+        dotPreview.style.borderColor = colorHex === '#FFFFFF' ? '#D1D5DB' : colorHex; // حدود رمادية للأبيض
+    };
+
+    // تحديث الصورة المربعة بناءً على الرابط
+    const updateImagePreview = () => {
         const url = im.value.trim();
         if (url) {
             previewImg.src = url;
@@ -1364,16 +1390,19 @@ function addColorRow(name, image, hex) {
         }
     };
 
-    im.addEventListener('input', updatePreview);
+    nameInput.addEventListener('input', updateDotColor);
+    im.addEventListener('input', updateImagePreview);
+    
     removeImgBtn.addEventListener('click', () => {
         im.value = '';
-        updatePreview();
+        updateImagePreview();
         im.dispatchEvent(new Event('input', { bubbles: true }));
     });
     removeRowBtn.addEventListener('click', () => rowEl.remove());
 
     c.appendChild(rowEl);
-    updatePreview();
+    updateDotColor(); // تشغيل أولي
+    updateImagePreview(); // تشغيل أولي
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1437,8 +1466,7 @@ $('productForm').addEventListener('submit', async (e) => {
     document.querySelectorAll('#productColorsContainer .color-row').forEach((r) => {
         const cn = sanitize(r.querySelector('.color-name').value);
         const ci = sanitize(r.querySelector('.color-image').value);
-        const ch = r.querySelector('.color-picker').value;
-        if (cn) colors.push({ name: cn, image: ci, hex: ch });
+        if (cn) colors.push({ name: cn, image: ci });
     });
 
     const data = {
@@ -1505,7 +1533,7 @@ window.editProduct = async (id) => {
         updateMainImgPreview();
 
         $('productColorsContainer').innerHTML = '';
-        if (Array.isArray(d.colors)) d.colors.forEach(x => addColorRow(x.name, x.image, x.hex));
+        if (Array.isArray(d.colors)) d.colors.forEach(x => addColorRow(x.name, x.image));
         $('productFormTitle').textContent = 'تعديل: ' + d.name;
         $('cancelEditProduct').classList.remove('hidden');
         $('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1599,7 +1627,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v7.5 — Color Picker + Square Color Image Preview + Security', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v7.6 — Smart Color Dot + Square Image Preview + Security', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
