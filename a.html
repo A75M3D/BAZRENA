@@ -198,7 +198,8 @@
         #productColorsContainer { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
         .color-row { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #F9FAFB; border-radius: 14px; border: 1.5px solid #E5E7EB; }
         .color-row-top { display: flex; align-items: center; gap: 8px; }
-        .color-dot-preview { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid #fff; box-shadow: 0 0 0 1.5px #D1D5DB; flex-shrink: 0; }
+        .color-dot-preview { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid #fff; box-shadow: 0 0 0 1.5px #D1D5DB; flex-shrink: 0; overflow: hidden; position: relative; background: #E2E8F0; transition: background 0.2s; }
+        .color-dot-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: none; }
         .color-name { flex: 1; min-width: 0; padding: 0.65rem 0.85rem; border-radius: 10px; border: 1.5px solid #D1D5DB; font-size: 0.9rem; font-weight: 700; font-family: 'Cairo', sans-serif; }
         .remove-color-btn { width: 38px; height: 38px; border-radius: 10px; background: #FEF2F2; color: #EF4444; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
         .color-row-bottom { display: flex; gap: 8px; align-items: center; }
@@ -1297,25 +1298,66 @@ function renderProductsList() {
     setTimeout(setupImageFallbacks, 50);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   🎨 COLOR ROW WITH IMAGE PREVIEW (UPDATED)
+   ═══════════════════════════════════════════════════════════════ */
 function addColorRow(name, image) {
     const c = $('productColorsContainer'); if (!c) return;
     const row = document.createElement('div');
     row.className = 'color-row';
     const uid = 'ci_' + Date.now() + '_' + Math.floor(Math.random() * 9999);
-    row.innerHTML = '<div class="color-row-top"><div class="color-dot-preview"></div>' +
-        '<input type="text" class="color-name" list="colorList" placeholder="اسم اللون" autocomplete="off">' +
-        '<button type="button" class="remove-color-btn"><i class="fas fa-times"></i></button></div>' +
-        '<div class="color-row-bottom"><input type="url" id="' + uid + '" class="color-image" placeholder="رابط صورة اللون (اختياري)" dir="ltr">' +
-        '<button type="button" class="color-upload-btn" data-upload-target="' + uid + '"><i class="fas fa-cloud-upload-alt"></i></button></div>';
+    row.innerHTML =
+        '<div class="color-row-top">' +
+            '<div class="color-dot-preview">' +
+                '<img class="color-dot-img" alt="" loading="lazy" decoding="async">' +
+            '</div>' +
+            '<input type="text" class="color-name" list="colorList" placeholder="اسم اللون" autocomplete="off">' +
+            '<button type="button" class="remove-color-btn" aria-label="حذف اللون"><i class="fas fa-times"></i></button>' +
+        '</div>' +
+        '<div class="color-row-bottom">' +
+            '<input type="url" id="' + uid + '" class="color-image" placeholder="رابط صورة اللون (اختياري)" dir="ltr">' +
+            '<button type="button" class="color-upload-btn" data-upload-target="' + uid + '" aria-label="رفع صورة اللون"><i class="fas fa-cloud-upload-alt"></i></button>' +
+        '</div>';
+
     const n = row.querySelector('.color-name');
     const im = row.querySelector('.color-image');
-    const d = row.querySelector('.color-dot-preview');
+    const dot = row.querySelector('.color-dot-preview');
+    const dotImg = row.querySelector('.color-dot-img');
+
     n.value = name || '';
     im.value = image || '';
-    d.style.background = n.value ? '#FF7A00' : '#E2E8F0';
-    n.addEventListener('input', () => { d.style.background = n.value ? '#FF7A00' : '#E2E8F0'; });
+
+    const updateColorPreview = () => {
+        const url = String(im.value || '').trim();
+        const nameVal = String(n.value || '').trim();
+
+        if (url) {
+            // Try to load image
+            dotImg.onload = () => {
+                dotImg.style.display = 'block';
+                dot.style.background = '#F9FAFB';
+            };
+            dotImg.onerror = () => {
+                dotImg.style.display = 'none';
+                dotImg.removeAttribute('src');
+                dot.style.background = nameVal ? '#FF7A00' : '#E2E8F0';
+            };
+            dotImg.src = url;
+            dot.style.background = '#F9FAFB';
+            dotImg.style.display = 'block';
+        } else {
+            dotImg.style.display = 'none';
+            dotImg.removeAttribute('src');
+            dot.style.background = nameVal ? '#FF7A00' : '#E2E8F0';
+        }
+    };
+
+    n.addEventListener('input', updateColorPreview);
+    im.addEventListener('input', updateColorPreview);
     row.querySelector('.remove-color-btn').addEventListener('click', () => row.remove());
+
     c.appendChild(row);
+    updateColorPreview();
 }
 
 if ($('addColorBtn')) $('addColorBtn').addEventListener('click', () => addColorRow());
@@ -1402,7 +1444,11 @@ window.editProduct = async (id) => {
         $('product_img_url').value = d.img_url || '';
         $('productDescCounter').textContent = (d.description || '').length + ' / ' + PRODUCT_DESC_MAX;
         populateProductCategories(d.category || '');
-        if (d.img_url) { $('product_img_preview').src = d.img_url; $('product_img_preview').classList.remove('hidden'); $('product_img_preview').onerror = function(){ this.src = FALLBACK_ICON_SVG; this.onerror = null; }; }
+        if (d.img_url) {
+            $('product_img_preview').src = d.img_url;
+            $('product_img_preview').classList.remove('hidden');
+            $('product_img_preview').onerror = function(){ this.src = FALLBACK_ICON_SVG; this.onerror = null; };
+        }
         $('productColorsContainer').innerHTML = '';
         if (Array.isArray(d.colors)) d.colors.forEach(x => addColorRow(x.name, x.image));
         $('productFormTitle').textContent = 'تعديل: ' + d.name;
@@ -1498,7 +1544,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v7.1 — Fixed Images + Security + Delete Account Link', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v7.2 — Color Image Preview + Security + Delete Account', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
