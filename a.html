@@ -196,7 +196,6 @@
         .color-row { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #F9FAFB; border-radius: 14px; border: 1.5px solid #E5E7EB; }
         .color-row-top { display: flex; align-items: center; gap: 8px; }
         
-        /* دائرة اللون الذكية */
         .color-dot-preview { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #D1D5DB; flex-shrink: 0; background: #E2E8F0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); transition: background 0.3s; }
         
         .color-name { flex: 1; min-width: 0; padding: 0.65rem 0.85rem; border-radius: 10px; border: 1.5px solid #D1D5DB; font-size: 0.9rem; font-weight: 700; font-family: 'Cairo', sans-serif; }
@@ -222,6 +221,63 @@
         .product-img-preview-wrapper { position: relative; width: 46px; height: 46px; flex-shrink: 0; align-self: center; margin-right: 4px; }
         .product-img-preview { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1.5px solid #FF7A00; display: block; }
         .remove-img-btn { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: #EF4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; }
+
+        /* ═══ CURRENCY ═══ */
+        .image-preview { max-width: 100px; max-height: 100px; border-radius: 12px; border: 2px solid #FFE0BD; margin-top: 10px; padding: 4px; object-fit: contain; background: #fff; display: block; }
+        .price-input-wrap { position: relative; }
+        .price-input-wrap .form-input { padding-left: 92px; }
+        .price-currency-badge {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #FF7A00, #FFA64D);
+            color: #fff;
+            padding: 0.3rem 0.7rem;
+            border-radius: 0.55rem;
+            font-weight: 900;
+            font-size: 0.78rem;
+            pointer-events: none;
+            box-shadow: 0 4px 10px -4px rgba(255,122,0,0.7);
+            letter-spacing: 0.2px;
+        }
+        .currency-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 0.4rem;
+            padding: 0.35rem 0.65rem;
+            background: linear-gradient(135deg, #FFF7ED, #FFF1E0);
+            border: 1.5px solid #FFE0BD;
+            border-radius: 0.65rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: #92400E;
+        }
+        .currency-hint i { color: #FF7A00; }
+        .currency-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            color: #92400E;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 900;
+            border: 1px solid #FCD34D;
+            white-space: nowrap;
+        }
+        .currency-chip i { font-size: 0.65rem; color: #D97706; }
+        .currency-chip .sym {
+            background: #fff;
+            color: #C2410C;
+            padding: 0.05rem 0.45rem;
+            border-radius: 9999px;
+            font-size: 0.68rem;
+            font-weight: 900;
+            margin-right: 2px;
+        }
     </style>
 </head>
 <body>
@@ -382,6 +438,22 @@
                                 </select>
                             </div>
 
+                            <!-- 🪙 العملة -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-coins"></i>
+                                    <span>عملة المتجر</span>
+                                    <span class="req">*</span>
+                                </label>
+                                <select id="store_currency" class="form-input" required>
+                                    <option value="SDG">🇸🇩 جنيه سوداني (ج.س)</option>
+                                    <option value="USD">🇺🇸 دولار أمريكي (USD)</option>
+                                </select>
+                                <div class="form-hint">
+                                    <i class="fas fa-info-circle"></i> تُطبَّق هذه العملة على المنتجات <strong>الجديدة</strong> — المنتجات الحالية تحتفظ بعملتها الأصلية
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-align-right"></i>
@@ -540,13 +612,22 @@
                                     <input type="hidden" id="product_store_name">
                                 </div>
 
+                                <!-- 💰 السعر مع العملة -->
                                 <div class="form-group">
                                     <label class="form-label">
                                         <i class="fas fa-money-bill-wave"></i>
-                                        <span>السعر (ج.س)</span>
+                                        <span>السعر</span>
                                         <span class="req">*</span>
                                     </label>
-                                    <input type="number" id="product_price" class="form-input" required min="0" step="0.01" placeholder="0.00" dir="ltr" style="text-align: right;">
+                                    <div class="price-input-wrap">
+                                        <input type="number" id="product_price" class="form-input" required min="0" step="0.01" placeholder="0.00" dir="ltr" style="text-align: right;">
+                                        <span id="productCurrencySymbol" class="price-currency-badge">ج.س</span>
+                                    </div>
+                                    <input type="hidden" id="product_currency" value="ج.س">
+                                    <div class="currency-hint">
+                                        <i class="fas fa-coins"></i>
+                                        <span>العملة: <strong id="productCurrencyName">جنيه سوداني</strong></span>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -560,7 +641,6 @@
                                             <i class="fas fa-cloud-upload-alt"></i>
                                             <span>رفع</span>
                                         </button>
-                                        <!-- معاينة الصورة المربعة الصغيرة -->
                                         <div id="product_img_preview_wrapper" class="product-img-preview-wrapper hidden">
                                             <img id="product_img_preview" class="product-img-preview" alt="">
                                             <button type="button" id="removeProductImgBtn" class="remove-img-btn" aria-label="حذف الصورة">
@@ -608,6 +688,11 @@
                                     <span id="mainLimitBadge" style="background: #EFF6FF; color: #1E40AF; padding: 0.35rem 0.85rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 900; border: 1px solid #BFDBFE; display:none; align-items:center; gap:5px;">
                                         <i class="fas fa-tag" style="font-size:0.65rem;"></i>
                                         <span id="mainLimitText">0/20</span>
+                                    </span>
+                                    <span id="currencyChip" class="currency-chip" title="عملة المتجر الحالية">
+                                        <i class="fas fa-coins"></i>
+                                        <span id="currencyChipName">جنيه سوداني</span>
+                                        <span class="sym" id="currencyChipSymbol">ج.س</span>
                                     </span>
                                 </div>
                             </div>
@@ -780,6 +865,61 @@ const FIXED_CATEGORIES = [
     'نقل وتوصيل','سفر وسياحة'
 ];
 
+/* ═══════════════════════════════════════════════════════════════
+   💱 CURRENCY SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+const CURRENCIES = {
+    SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'ج.س', flag: '🇸🇩' },
+    USD: { code: 'USD', name: 'دولار أمريكي', symbol: 'USD', flag: '🇺🇸' }
+};
+const DEFAULT_CURRENCY_CODE = 'SDG';
+
+function getCurrencyByCode(code) {
+    if (!code) return CURRENCIES[DEFAULT_CURRENCY_CODE];
+    return CURRENCIES[String(code).toUpperCase()] || CURRENCIES[DEFAULT_CURRENCY_CODE];
+}
+
+function getCurrencyBySymbol(sym) {
+    if (!sym) return null;
+    const s = String(sym).trim();
+    for (const c of Object.values(CURRENCIES)) {
+        if (c.symbol === s || c.code === s) return c;
+    }
+    return null;
+}
+
+function getStoreCurrency() {
+    if (!currentStore) return CURRENCIES[DEFAULT_CURRENCY_CODE];
+    return getCurrencyByCode(currentStore.currency);
+}
+
+function getProductCurrency(p) {
+    if (p && p.currency) {
+        const found = getCurrencyBySymbol(p.currency);
+        if (found) return found;
+        const raw = String(p.currency).trim();
+        return { code: raw, name: raw, symbol: raw, flag: '💱' };
+    }
+    return getStoreCurrency();
+}
+
+function updateProductCurrencyDisplay(currency) {
+    const symEl = $('productCurrencySymbol');
+    const nameEl = $('productCurrencyName');
+    const hiddenEl = $('product_currency');
+    if (symEl) symEl.textContent = currency.symbol;
+    if (nameEl) nameEl.textContent = currency.name + ' (' + currency.symbol + ')';
+    if (hiddenEl) hiddenEl.value = currency.symbol;
+}
+
+function refreshCurrencyChip() {
+    const curr = getStoreCurrency();
+    const nameEl = $('currencyChipName');
+    const symEl = $('currencyChipSymbol');
+    if (nameEl) nameEl.textContent = curr.name;
+    if (symEl) symEl.textContent = curr.symbol;
+}
+
 // خريطة الألوان الذكية
 const COLOR_MAP = {
     'أسود': '#000000', 'black': '#000000',
@@ -808,7 +948,7 @@ function getColorHex(name) {
     for (const [key, val] of Object.entries(COLOR_MAP)) {
         if (clean === key.toLowerCase() || clean.includes(key.toLowerCase())) return val;
     }
-    return '#E2E8F0'; // لون افتراضي إذا لم يوجد
+    return '#E2E8F0';
 }
 
 let currentStore = null;
@@ -925,6 +1065,8 @@ function updateCooldownUI() {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-save"></i><span>حفظ التعديلات</span>';
     }
+
+    refreshCurrencyChip();
 }
 
 if (_cooldownTicker) clearInterval(_cooldownTicker);
@@ -1056,6 +1198,7 @@ async function enterDashboard() {
     await loadMyProducts();
     setConn(true, currentStore.name);
     updateCooldownUI();
+    updateProductCurrencyDisplay(getStoreCurrency());
     setTimeout(setupImageFallbacks, 200);
 }
 
@@ -1099,8 +1242,9 @@ function setupStoreListener() {
         const subChanged = (fresh.is_subscribed === true) !== (currentStore.is_subscribed === true);
         const verChanged = (fresh.is_verified === true) !== (currentStore.is_verified === true);
         const catChanged = (fresh.category || '') !== (currentStore.category || '');
+        const currChanged = (fresh.currency || '') !== (currentStore.currency || '');
         currentStore = fresh;
-        if (catChanged || subChanged || verChanged) {
+        if (catChanged || subChanged || verChanged || currChanged) {
             populateCategorySelect();
             fillStoreForm(currentStore);
             if (subChanged) showToast(fresh.is_subscribed ? '🎉 تم تفعيل اشتراكك!' : '⚠️ تم إيقاف اشتراكك', fresh.is_subscribed ? 'success' : 'warning');
@@ -1120,6 +1264,14 @@ function fillStoreForm(store) {
     $('store_phone').value = store.phone_number || '';
     $('store_logo').value = store.logo_url || '';
     $('store_cover').value = store.cover_url || '';
+
+    // 💱 Currency
+    const currencyCode = CURRENCIES[store.currency] ? store.currency : DEFAULT_CURRENCY_CODE;
+    const currSelect = $('store_currency');
+    if (currSelect) currSelect.value = currencyCode;
+    const currObj = getCurrencyByCode(currencyCode);
+    if (!$('product_id').value) updateProductCurrencyDisplay(currObj);
+    refreshCurrencyChip();
 
     $('ro_followers').textContent = (parseInt(store.followers) || 0).toLocaleString();
     $('ro_products_count').textContent = parseInt(store.products_count) || 0;
@@ -1153,6 +1305,7 @@ $('storeForm').addEventListener('submit', async (e) => {
 
     const newName = sanitize($('store_name').value);
     const newCategory = sanitize($('store_category').value);
+    const newCurrency = sanitize($('store_currency').value);
     const newDescription = sanitize($('store_description').value).slice(0, 500);
     const newLocation = sanitize($('store_location').value).slice(0, 100);
     const newWhatsapp = sanitize($('store_whatsapp').value).replace(/[^\d+]/g, '');
@@ -1162,22 +1315,26 @@ $('storeForm').addEventListener('submit', async (e) => {
 
     if (newName.length < 3 || newName.length > 60) { showToast('اسم المتجر بين 3 و 60 حرف', 'error'); return; }
     if (!newCategory || newCategory.length < 2) { showToast('اختر فئة صحيحة', 'error'); return; }
+    if (!CURRENCIES[newCurrency]) { showToast('اختر عملة صحيحة', 'error'); return; }
     if (newWhatsapp.replace(/\D/g, '').length < 9) { showToast('رقم الواتساب غير صحيح', 'error'); return; }
 
     const nameChanged = newName !== (currentStore.name || '');
+    const currencyChanged = newCurrency !== (currentStore.currency || DEFAULT_CURRENCY_CODE);
     const otherChanged = newCategory !== (currentStore.category || '') || newDescription !== (currentStore.description || '')
         || newLocation !== (currentStore.location || '') || newWhatsapp !== (currentStore.whatsapp_number || '')
         || newPhone !== (currentStore.phone_number || '') || newLogo !== (currentStore.logo_url || '')
         || newCover !== (currentStore.cover_url || '');
 
-    if (!nameChanged && !otherChanged) { showToast('لم يتم إجراء أي تغيير', 'info'); return; }
+    if (!nameChanged && !currencyChanged && !otherChanged) { showToast('لم يتم إجراء أي تغيير', 'info'); return; }
 
     const status = getCooldownStatus();
     if (nameChanged && !status.canUpdateName) { showToast('⏱️ لا يمكن تغيير اسم المتجر إلا بعد ' + formatDuration(status.nameRemaining), 'error'); updateCooldownUI(); return; }
     if (otherChanged && !status.canUpdateData) { showToast('⏱️ لا يمكن تعديل بيانات المتجر إلا بعد ' + formatDuration(status.dataRemaining), 'error'); updateCooldownUI(); return; }
+    // Currency change is allowed freely (no cooldown)
 
     const updates = {};
     if (nameChanged) updates.name = newName;
+    if (currencyChanged) updates.currency = newCurrency;
     if (newCategory !== (currentStore.category || '')) updates.category = newCategory;
     if (newDescription !== (currentStore.description || '')) updates.description = newDescription;
     if (newLocation !== (currentStore.location || '')) updates.location = newLocation;
@@ -1198,6 +1355,9 @@ $('storeForm').addEventListener('submit', async (e) => {
         currentStore = { ...currentStore, ...updates };
         updateHeaderLogo(currentStore);
         updateCooldownUI();
+        if (currencyChanged && !$('product_id').value) {
+            updateProductCurrencyDisplay(getStoreCurrency());
+        }
         showToast('✅ تم حفظ التعديلات بنجاح');
     } catch (err) {
         console.error('[Save]', err);
@@ -1290,6 +1450,7 @@ function updateProductsUI() {
     $('ro_products_count').textContent = productsData.length;
     updateLimitsUI();
     renderProductsList();
+    refreshCurrencyChip();
 }
 
 function updateLimitsUI() {
@@ -1318,6 +1479,7 @@ function renderProductsList() {
     let html = '';
     productsData.forEach(p => {
         const price = parseFloat(p.price || 0);
+        const curr = getProductCurrency(p);
         const hasImg = p.img_url && String(p.img_url).trim();
         const thumb = hasImg
             ? '<img src="' + escapeHtml(p.img_url) + '" class="product-thumb" alt="" loading="lazy" decoding="async">'
@@ -1329,7 +1491,7 @@ function renderProductsList() {
         html += '<div class="product-row">' + thumb +
             '<div class="product-info"><div class="product-name">' + escapeHtml(p.name) + '</div>' +
             (p.description ? '<div class="product-description">' + escapeHtml(p.description) + '</div>' : '') +
-            '<div class="product-meta"><span class="product-price">' + price.toLocaleString() + ' ج.س</span>' + catBadge + '</div></div>' +
+            '<div class="product-meta"><span class="product-price">' + price.toLocaleString() + ' ' + escapeHtml(curr.symbol) + '</span>' + catBadge + '</div></div>' +
             '<div class="product-actions"><button type="button" class="icon-btn icon-btn-edit" onclick="editProduct(\'' + p.id + '\')"><i class="fas fa-pen"></i></button>' +
             '<button type="button" class="icon-btn icon-btn-delete" onclick="deleteProduct(\'' + p.id + '\')"><i class="fas fa-trash"></i></button></div></div>';
     });
@@ -1370,14 +1532,12 @@ function addColorRow(name, image) {
     const removeImgBtn = rowEl.querySelector('.remove-img-btn');
     const removeRowBtn = rowEl.querySelector('.remove-color-btn');
 
-    // تحديث الدائرة بناءً على الاسم
     const updateDotColor = () => {
         const colorHex = getColorHex(nameInput.value);
         dotPreview.style.background = colorHex;
-        dotPreview.style.borderColor = colorHex === '#FFFFFF' ? '#D1D5DB' : colorHex; // حدود رمادية للأبيض
+        dotPreview.style.borderColor = colorHex === '#FFFFFF' ? '#D1D5DB' : colorHex;
     };
 
-    // تحديث الصورة المربعة بناءً على الرابط
     const updateImagePreview = () => {
         const url = im.value.trim();
         if (url) {
@@ -1401,8 +1561,8 @@ function addColorRow(name, image) {
     removeRowBtn.addEventListener('click', () => rowEl.remove());
 
     c.appendChild(rowEl);
-    updateDotColor(); // تشغيل أولي
-    updateImagePreview(); // تشغيل أولي
+    updateDotColor();
+    updateImagePreview();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1457,6 +1617,7 @@ $('productForm').addEventListener('submit', async (e) => {
     const description = sanitize($('product_description').value).slice(0, PRODUCT_DESC_MAX);
     const price = toNumber($('product_price').value);
     const category = sanitize($('product_category').value);
+    const currencySymbol = sanitize($('product_currency').value) || getStoreCurrency().symbol;
 
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (!category) { showToast('اختر الفئة', 'error'); return; }
@@ -1475,6 +1636,7 @@ $('productForm').addEventListener('submit', async (e) => {
         store_id: currentStore.id,
         owner_uid: currentUser.uid,
         price,
+        currency: currencySymbol, // only symbol stored per product ✅
         img_url: sanitize($('product_img_url').value),
         colors: colors.length > 0 ? colors : null
     };
@@ -1513,6 +1675,7 @@ function resetProductForm() {
     
     $('productColorsContainer').innerHTML = '';
     $('productDescCounter').textContent = '0 / ' + PRODUCT_DESC_MAX;
+    updateProductCurrencyDisplay(getStoreCurrency()); // default = store currency
     populateProductCategories('');
 }
 if ($('cancelEditProduct')) $('cancelEditProduct').addEventListener('click', resetProductForm);
@@ -1529,6 +1692,10 @@ window.editProduct = async (id) => {
         $('product_img_url').value = d.img_url || '';
         $('productDescCounter').textContent = (d.description || '').length + ' / ' + PRODUCT_DESC_MAX;
         populateProductCategories(d.category || '');
+        
+        // Show product's own currency (snapshot) or store's if legacy
+        const prodCurr = d.currency ? (getCurrencyBySymbol(d.currency) || getStoreCurrency()) : getStoreCurrency();
+        updateProductCurrencyDisplay(prodCurr);
         
         updateMainImgPreview();
 
@@ -1565,6 +1732,7 @@ $('tabProducts').addEventListener('click', () => {
     populateProductCategories();
     loadMyProducts();
     updateLimitsUI();
+    refreshCurrencyChip();
 });
 
 ['store_logo', 'store_cover'].forEach((id) => {
@@ -1627,7 +1795,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v7.6 — Smart Color Dot + Square Image Preview + Security', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v8.0 — Multi-Currency (SDG/USD) + Smart Color Dot + Square Preview + Security', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
