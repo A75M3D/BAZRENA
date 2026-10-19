@@ -99,6 +99,66 @@ i.fa-fallback { display: none !important; }
 }
 /* إزالة أي طبقة تعتيم كانت للنص */
 .bzr-slide-overlay { display: none !important; }
+
+/* ═══════════════════════════════════════════════════
+   💱 CURRENCY DISPLAY SYSTEM
+   (BranZar multi-currency — SDG default, USD support)
+   ═══════════════════════════════════════════════════ */
+.bzr-price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+.bzr-price-amount {
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+.bzr-price-symbol {
+  font-size: 0.78em;
+  font-weight: 800;
+  opacity: 0.9;
+  color: inherit;
+}
+.currency-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  color: #92400E;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  border: 1px solid #FCD34D;
+  margin-inline-start: 4px;
+  vertical-align: middle;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+body.theme-dark .currency-badge {
+  background: linear-gradient(135deg, #78350F, #92400E);
+  color: #FDE68A;
+  border-color: #B45309;
+}
+/* أداة تأكيد لون العملة في السلة */
+.cart-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.cart-total #cartTotalAmount {
+  font-weight: 900;
+  color: #FF7A00;
+  font-size: 1.05em;
+  letter-spacing: -0.2px;
+  text-align: left;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
 </style>
 </head>
 <body class="font-cairo">
@@ -451,7 +511,10 @@ i.fa-fallback { display: none !important; }
   </div>
   <div id="cartItems" class="cart-items"></div>
   <div class="cart-footer">
-    <div id="cartTotal" class="cart-total"><span>المجموع:</span><span>0 ج.س</span></div>
+    <div id="cartTotal" class="cart-total">
+      <span>المجموع:</span>
+      <span id="cartTotalAmount">0 ج.س</span>
+    </div>
     <button id="continueShopping" class="btn-ghost ripple">مواصلة التسوق</button>
     <button id="whatsappOrder" class="btn-whatsapp ripple"><svg class="mi mi-xs" aria-hidden="true"><use href="#mi-whatsapp"/></svg><span>طلب السلة عبر واتساب</span></button>
   </div>
@@ -643,6 +706,111 @@ i.fa-fallback { display: none !important; }
     <div id="pushToastBody">لديك جديد</div>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     💱 CURRENCY SYSTEM — Global Helpers
+     (يُستخدم من قبل data.js / ui.js / app.js / ad.js)
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  // 📌 العملات المدعومة — متطابقة مع لوحة تحكم المتجر (a.html)
+  window.BZR_CURRENCIES = {
+    SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'ج.س', flag: '🇸🇩' },
+    USD: { code: 'USD', name: 'دولار أمريكي', symbol: 'USD', flag: '🇺🇸' }
+  };
+  window.BZR_DEFAULT_CURRENCY = 'SDG';
+
+  // 🔎 جلب كائن العملة بالكود
+  window.bzrGetCurrencyByCode = function (code) {
+    if (!code) return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
+    return window.BZR_CURRENCIES[String(code).toUpperCase()]
+        || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
+  };
+
+  // 🔎 جلب كائن العملة بالرمز المخزَّن داخل المنتج (مثل "ج.س" أو "USD")
+  window.bzrGetCurrencyBySymbol = function (sym) {
+    if (!sym) return null;
+    const s = String(sym).trim();
+    for (const c of Object.values(window.BZR_CURRENCIES)) {
+      if (c.symbol === s || c.code === s) return c;
+    }
+    return null;
+  };
+
+  // 🔎 جلب عملة منتج محدد (أولوية للحقل currency المخزَّن، ثم الافتراضي)
+  window.bzrGetProductCurrency = function (product) {
+    if (product && product.currency) {
+      const found = window.bzrGetCurrencyBySymbol(product.currency);
+      if (found) return found;
+      // رمز غير معروف — نعيده كما هو للحفاظ على البيانات
+      const raw = String(product.currency).trim();
+      return { code: raw, name: raw, symbol: raw, flag: '💱' };
+    }
+    return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
+  };
+
+  // 💰 تنسيق سعر واحد مع رمز العملة
+  //   bzrFormatPrice(1500, "ج.س")   → "1,500 ج.س"
+  //   bzrFormatPrice(12.5, "USD")   → "12.5 USD"
+  //   bzrFormatPrice(1500)          → "1,500 ج.س"   (افتراضي)
+  window.bzrFormatPrice = function (price, currencySymbol) {
+    const p = parseFloat(price);
+    const num = isNaN(p) ? 0 : p;
+    let sym = currencySymbol;
+    if (!sym) sym = window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY].symbol;
+    const formatted = num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+    return formatted + ' ' + sym;
+  };
+
+  // 🧮 حساب مجموع السلة مقسّماً حسب العملة (يدعم سلة بعملات مختلطة)
+  //   يُعيد كائن مثل: { "ج.س": 1500, "USD": 25 }
+  window.bzrComputeCartTotals = function (cart) {
+    const totals = {};
+    (cart || []).forEach(function (item) {
+      const price = parseFloat(item && item.price) || 0;
+      const qty = parseInt(item && item.quantity, 10) || 1;
+      let sym = item && item.currency;
+      if (!sym) sym = window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY].symbol;
+      totals[sym] = (totals[sym] || 0) + (price * qty);
+    });
+    return totals;
+  };
+
+  // 📝 تنسيق المجاميع كنص واحد للعرض
+  window.bzrFormatCartTotals = function (totals) {
+    const entries = Object.entries(totals || {});
+    if (!entries.length) {
+      return '0 ' + window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY].symbol;
+    }
+    return entries
+      .map(function (pair) {
+        const amt = (parseFloat(pair[1]) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+        return amt + ' ' + pair[0];
+      })
+      .join(' + ');
+  };
+
+  // 🖨️ رسم مجموع السلة في عنصر محدد
+  //   يُستدعى من ui.js بعد كل تعديل على السلة
+  window.bzrRenderCartTotals = function (cart, elementId) {
+    const el = document.getElementById(elementId || 'cartTotalAmount');
+    if (!el) return;
+    const totals = window.bzrComputeCartTotals(cart);
+    el.textContent = window.bzrFormatCartTotals(totals);
+  };
+
+  // 🌐 كشف الحالة لتطبيقات المتاجر في اللوحة (اختياري — للتناسق)
+  window.bzrCurrencyInfo = function (productOrSymbol) {
+    if (productOrSymbol && typeof productOrSymbol === 'object') {
+      return window.bzrGetProductCurrency(productOrSymbol);
+    }
+    return window.bzrGetCurrencyBySymbol(productOrSymbol)
+        || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
+  };
+})();
+</script>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
