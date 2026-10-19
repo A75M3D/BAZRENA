@@ -82,12 +82,40 @@
         .logout-btn:hover { background: rgba(255,255,255,0.3); }
         .logout-btn span { display: none; }
         @media (min-width: 400px) { .logout-btn span { display: inline; } }
-        .connection-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.45rem 0.9rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700; margin-top: 1rem; backdrop-filter: blur(10px); position: relative; z-index: 2; }
+        .connection-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.45rem 0.9rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700; backdrop-filter: blur(10px); }
         .connection-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
         .dot-green { background: #4ADE80; box-shadow: 0 0 8px rgba(74,222,128,0.8); }
         .dot-red { background: #F87171; }
         .dot-yellow { background: #FBBF24; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* ═══ HEADER PILLS ROW (connection + currency) ═══ */
+        .header-pills-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 1rem; position: relative; z-index: 2; }
+        .currency-header-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255,255,255,0.28);
+            border: 1px solid rgba(255,255,255,0.45);
+            color: #fff;
+            padding: 0.45rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        .currency-header-pill i { font-size: 0.75rem; opacity: 0.9; }
+        .currency-header-pill strong {
+            background: rgba(255,255,255,0.35);
+            color: #fff;
+            padding: 0.08rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.2px;
+        }
+
         .main-content { margin-top: -2.25rem; padding: 0 1rem; position: relative; z-index: 3; }
         @media (min-width: 640px) { .main-content { padding: 0 1.5rem; margin-top: -2.5rem; } }
         .tabs-wrap { background: #fff; border-radius: 1.25rem; padding: 0.45rem; display: flex; gap: 0.35rem; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.12); margin-bottom: 1.25rem; }
@@ -278,6 +306,92 @@
             font-weight: 900;
             margin-right: 2px;
         }
+
+        /* ═══ 🆕 Currency Choice Cards (SDG / USD) ═══ */
+        .currency-choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 420px) {
+            .currency-choice-grid { grid-template-columns: 1fr; }
+        }
+        .currency-choice-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 14px;
+            background: #fff;
+            border: 2px solid #E5E7EB;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+            outline: none;
+        }
+        .currency-choice-btn:hover:not(.active) {
+            border-color: #FFE0BD;
+            background: #FFFBF7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px -10px rgba(255,122,0,0.3);
+        }
+        .currency-choice-btn.active {
+            border-color: #FF7A00;
+            background: linear-gradient(135deg, #FFF8F1, #FFFFFF);
+            box-shadow: 0 10px 22px -10px rgba(255,122,0,0.5);
+        }
+        .currency-choice-flag {
+            font-size: 1.9rem;
+            line-height: 1;
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.12));
+        }
+        .currency-choice-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+            gap: 1px;
+        }
+        .currency-choice-name {
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: #1A1A1A;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .currency-choice-symbol {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #FF7A00;
+            letter-spacing: 0.3px;
+        }
+        .currency-choice-check {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #FF7A00;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.62rem;
+            font-weight: 900;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 10px -2px rgba(255,122,0,0.6);
+        }
+        .currency-choice-btn.active .currency-choice-check {
+            opacity: 1;
+            transform: scale(1);
+        }
     </style>
 </head>
 <body>
@@ -360,9 +474,16 @@
                     <span>خروج</span>
                 </button>
             </div>
-            <div class="connection-pill">
-                <span id="connectionStatusDot" class="connection-dot dot-yellow"></span>
-                <span id="connectionStatusText">جارٍ فحص الاتصال...</span>
+            <div class="header-pills-row">
+                <div class="connection-pill">
+                    <span id="connectionStatusDot" class="connection-dot dot-yellow"></span>
+                    <span id="connectionStatusText">جارٍ فحص الاتصال...</span>
+                </div>
+                <div class="currency-header-pill" id="currencyHeaderPill" title="عملة متجرك الحالية">
+                    <i class="fas fa-coins"></i>
+                    <span id="currencyHeaderName">جنيه سوداني</span>
+                    <strong id="currencyHeaderSymbol">ج.س</strong>
+                </div>
             </div>
         </div>
 
@@ -438,17 +559,32 @@
                                 </select>
                             </div>
 
-                            <!-- 🪙 العملة -->
+                            <!-- 🪙 العملة — خيارات بطاقات كبيرة -->
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-coins"></i>
                                     <span>عملة المتجر</span>
                                     <span class="req">*</span>
                                 </label>
-                                <select id="store_currency" class="form-input" required>
-                                    <option value="SDG">🇸🇩 جنيه سوداني (ج.س)</option>
-                                    <option value="USD">🇺🇸 دولار أمريكي (USD)</option>
-                                </select>
+                                <div class="currency-choice-grid" id="currencyChoiceGrid" role="radiogroup" aria-label="اختر عملة المتجر">
+                                    <button type="button" class="currency-choice-btn" data-currency="SDG" role="radio" aria-checked="false">
+                                        <span class="currency-choice-flag" aria-hidden="true">🇸🇩</span>
+                                        <span class="currency-choice-info">
+                                            <span class="currency-choice-name">جنيه سوداني</span>
+                                            <span class="currency-choice-symbol">ج.س</span>
+                                        </span>
+                                        <span class="currency-choice-check" aria-hidden="true"><i class="fas fa-check"></i></span>
+                                    </button>
+                                    <button type="button" class="currency-choice-btn" data-currency="USD" role="radio" aria-checked="false">
+                                        <span class="currency-choice-flag" aria-hidden="true">🇺🇸</span>
+                                        <span class="currency-choice-info">
+                                            <span class="currency-choice-name">دولار أمريكي</span>
+                                            <span class="currency-choice-symbol">USD</span>
+                                        </span>
+                                        <span class="currency-choice-check" aria-hidden="true"><i class="fas fa-check"></i></span>
+                                    </button>
+                                </div>
+                                <input type="hidden" id="store_currency" value="SDG">
                                 <div class="form-hint">
                                     <i class="fas fa-info-circle"></i> تُطبَّق هذه العملة على المنتجات <strong>الجديدة</strong> — المنتجات الحالية تحتفظ بعملتها الأصلية
                                 </div>
@@ -914,10 +1050,26 @@ function updateProductCurrencyDisplay(currency) {
 
 function refreshCurrencyChip() {
     const curr = getStoreCurrency();
+    // chip in products tab
     const nameEl = $('currencyChipName');
     const symEl = $('currencyChipSymbol');
     if (nameEl) nameEl.textContent = curr.name;
     if (symEl) symEl.textContent = curr.symbol;
+    // header pill
+    const hName = $('currencyHeaderName');
+    const hSym = $('currencyHeaderSymbol');
+    if (hName) hName.textContent = curr.name;
+    if (hSym) hSym.textContent = curr.symbol;
+}
+
+/* 🆕 تحديث حالة بطاقات اختيار العملة */
+function updateCurrencyChoiceUI(code) {
+    const normalized = CURRENCIES[code] ? code : DEFAULT_CURRENCY_CODE;
+    document.querySelectorAll('.currency-choice-btn').forEach(btn => {
+        const isActive = btn.dataset.currency === normalized;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+    });
 }
 
 // خريطة الألوان الذكية
@@ -1101,6 +1253,21 @@ window.openInvoiceApp = function () {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
+   🪙 CURRENCY CHOICE CARDS — click handler
+   ═══════════════════════════════════════════════════════════════ */
+(function setupCurrencyChoiceHandlers() {
+    document.querySelectorAll('.currency-choice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const code = btn.dataset.currency;
+            if (!CURRENCIES[code]) return;
+            $('store_currency').value = code;
+            updateCurrencyChoiceUI(code);
+            try { navigator.vibrate && navigator.vibrate(8); } catch (e) {}
+        });
+    });
+})();
+
+/* ═══════════════════════════════════════════════════════════════
    Login
    ═══════════════════════════════════════════════════════════════ */
 $('loginForm').addEventListener('submit', async (e) => {
@@ -1265,10 +1432,11 @@ function fillStoreForm(store) {
     $('store_logo').value = store.logo_url || '';
     $('store_cover').value = store.cover_url || '';
 
-    // 💱 Currency
+    // 💱 Currency — set hidden input + highlight the active card
     const currencyCode = CURRENCIES[store.currency] ? store.currency : DEFAULT_CURRENCY_CODE;
-    const currSelect = $('store_currency');
-    if (currSelect) currSelect.value = currencyCode;
+    $('store_currency').value = currencyCode;
+    updateCurrencyChoiceUI(currencyCode);
+
     const currObj = getCurrencyByCode(currencyCode);
     if (!$('product_id').value) updateProductCurrencyDisplay(currObj);
     refreshCurrencyChip();
@@ -1358,7 +1526,12 @@ $('storeForm').addEventListener('submit', async (e) => {
         if (currencyChanged && !$('product_id').value) {
             updateProductCurrencyDisplay(getStoreCurrency());
         }
-        showToast('✅ تم حفظ التعديلات بنجاح');
+        if (currencyChanged) {
+            const curr = getCurrencyByCode(newCurrency);
+            showToast('✅ تم حفظ التعديلات — العملة الآن ' + curr.name + ' (' + curr.symbol + ')');
+        } else {
+            showToast('✅ تم حفظ التعديلات بنجاح');
+        }
     } catch (err) {
         console.error('[Save]', err);
         if (err.code === 'permission-denied') {
@@ -1795,7 +1968,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v8.0 — Multi-Currency (SDG/USD) + Smart Color Dot + Square Preview + Security', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v9.0 — Currency Choice Cards (SDG/USD) + Header Pill + Smart Color Dot + Security', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
