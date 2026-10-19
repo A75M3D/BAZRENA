@@ -1,8 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.10.0 — ui.js
+   BranZar v9.11.0 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
    ✅ Material SVG icons — native createElementNS
    ✅ Store cards: follow button + share button
+   ✅ Multi-Currency (SDG/USD) — per-product currency, cart mixing
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -31,6 +32,57 @@ function bzrSetIcon(parentEl, iconId, className) {
 }
 window.bzrSvgIcon = bzrSvgIcon;
 window.bzrSetIcon = bzrSetIcon;
+
+/* ═══════════════════════════════════════════════════════════════
+   💱 Currency Resolution (multi-currency — SDG default)
+   - Products carry only the SYMBOL in `currency` field ("ج.س" | "USD")
+   - Legacy products without `currency` → fall back to store's currency
+     (looked up by store_name) → else default SDG
+   ═══════════════════════════════════════════════════════════════ */
+var _BZR_FALLBACK_CURRENCY = { code: 'SDG', name: 'جنيه سوداني', symbol: 'ج.س', flag: '🇸🇩' };
+
+function bzrResolveProductCurrency(product) {
+  if (typeof window.BZR_CURRENCIES === 'undefined') return _BZR_FALLBACK_CURRENCY;
+
+  if (!product) return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY] || _BZR_FALLBACK_CURRENCY;
+
+  // 1) Explicit per-product currency (symbol snapshot)
+  if (product.currency) {
+    var found = (typeof window.bzrGetCurrencyBySymbol === 'function')
+      ? window.bzrGetCurrencyBySymbol(product.currency)
+      : null;
+    if (found) return found;
+    // Unknown symbol — preserve as-is
+    var raw = String(product.currency).trim();
+    return { code: raw, name: raw, symbol: raw, flag: '💱' };
+  }
+
+  // 2) Legacy: use store's current currency if we know the store
+  try {
+    if (product.store_name && typeof stores !== 'undefined' && Array.isArray(stores)) {
+      var store = stores.find(function (s) { return s && s.name === product.store_name; });
+      if (store && store.currency && typeof window.bzrGetCurrencyByCode === 'function') {
+        return window.bzrGetCurrencyByCode(store.currency);
+      }
+    }
+  } catch (e) { /* ignore */ }
+
+  // 3) Default
+  return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY] || _BZR_FALLBACK_CURRENCY;
+}
+
+function bzrSafeFormatPrice(price, currencySymbol) {
+  if (typeof window.bzrFormatPrice === 'function') {
+    return window.bzrFormatPrice(price, currencySymbol);
+  }
+  var p = parseFloat(price) || 0;
+  var sym = currencySymbol || _BZR_FALLBACK_CURRENCY.symbol;
+  return p.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' ' + sym;
+}
+
+// expose (optional external use)
+window.bzrResolveProductCurrency = bzrResolveProductCurrency;
+window.bzrSafeFormatPrice = bzrSafeFormatPrice;
 
 /* ═══ THEME ═══ */
 function applyTheme(theme) {
@@ -233,10 +285,8 @@ createStoreModal?.addEventListener('click', (e) => {
 });
 document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
-
-
 /* ═══════════════════════════════════════════════════════════════
-   🆕 v9.10.2: زر مشاركة التطبيق من نافذة الحساب
+   🆕 زر مشاركة التطبيق من نافذة الحساب
    ═══════════════════════════════════════════════════════════════ */
 document.getElementById('accountShareAppBtn')?.addEventListener('click', async () => {
   haptic('medium');
@@ -246,12 +296,8 @@ document.getElementById('accountShareAppBtn')?.addEventListener('click', async (
     url: window.location.origin
   };
   if (navigator.share) {
-    try {
-      await navigator.share(shareData);
-      return;
-    } catch (err) {
-      if (err && err.name === 'AbortError') return;
-    }
+    try { await navigator.share(shareData); return; }
+    catch (err) { if (err && err.name === 'AbortError') return; }
   }
   try {
     if (navigator.clipboard && window.isSecureContext) {
@@ -267,10 +313,9 @@ document.getElementById('accountShareAppBtn')?.addEventListener('click', async (
       document.body.removeChild(ta);
       showToast('✅ تم نسخ رابط التطبيق');
     }
-  } catch (e) {
-    showToast('تعذر نسخ الرابط');
-  }
+  } catch (e) { showToast('تعذر نسخ الرابط'); }
 });
+
 /* ═══════════════════════════════════════════════════════════
    📱 PWA INSTALL
    ═══════════════════════════════════════════════════════════ */
@@ -370,11 +415,7 @@ function closeIOSInstructions() {
 }
 document.getElementById('installButtonFloating')?.addEventListener('click', async () => {
   haptic('medium');
-  if (isStandaloneMode()) {
-    showToast('✅ التطبيق مثبت بالفعل');
-    hideInstallButton();
-    return;
-  }
+  if (isStandaloneMode()) { showToast('✅ التطبيق مثبت بالفعل'); hideInstallButton(); return; }
   if (isIOS() && !deferredPrompt) { showIOSInstallInstructions(); return; }
   if (deferredPrompt) {
     try {
@@ -414,91 +455,50 @@ if (isStandaloneMode()) {
 /* ═══ NOTIFICATIONS (FCM) ═══ */
 let messaging = null;
 
-// حفظ وقت ظهور الرسالة ووقت آخر قرار للمستخدم حتى لا تتكرر عند كل فتح.
 const NOTIF_PROMPT_KEY = 'branzarNotifPromptShownAt';
 const NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
 const NOTIF_DELAY_DAYS = 7;
 
 function isNotificationSupported() {
-  return 'Notification' in window &&
-         'serviceWorker' in navigator &&
-         'PushManager' in window;
+  return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
 }
-
 function getNotifLastActionTime() {
   try {
     const shownAt = Number(localStorage.getItem(NOTIF_PROMPT_KEY) || 0);
     const dismissedAt = Number(localStorage.getItem(NOTIF_DISMISS_KEY) || 0);
     return Math.max(shownAt, dismissedAt);
-  } catch (error) {
-    console.warn('[BZR] Cannot read notification state:', error);
-    return 0;
-  }
+  } catch (error) { return 0; }
 }
-
 function shouldShowNotifBanner() {
   if (!isNotificationSupported()) return false;
-
   const permission = Notification.permission;
   if (permission === 'granted' || permission === 'denied') return false;
-
   const lastAction = getNotifLastActionTime();
   const delay = NOTIF_DELAY_DAYS * 24 * 60 * 60 * 1000;
-
   if (lastAction && Date.now() - lastAction < delay) return false;
   return true;
 }
-
-function markNotifPromptShown() {
-  try {
-    localStorage.setItem(NOTIF_PROMPT_KEY, Date.now().toString());
-  } catch (error) {
-    console.warn('[BZR] Cannot save notification prompt state:', error);
-  }
-}
-
-function markNotifDismissed() {
-  try {
-    localStorage.setItem(NOTIF_DISMISS_KEY, Date.now().toString());
-  } catch (error) {
-    console.warn('[BZR] Cannot save notification dismissal:', error);
-  }
-}
-
+function markNotifPromptShown() { try { localStorage.setItem(NOTIF_PROMPT_KEY, Date.now().toString()); } catch (error) {} }
+function markNotifDismissed() { try { localStorage.setItem(NOTIF_DISMISS_KEY, Date.now().toString()); } catch (error) {} }
 function showNotifBanner() {
   const banner = document.getElementById('notifPermissionBanner');
   if (!banner) return;
-
-  // الحفظ قبل العرض يمنع التكرار حتى لو أغلق المستخدم التطبيق مباشرة.
   markNotifPromptShown();
-
   banner.classList.remove('hidden');
-  requestAnimationFrame(() => {
-    setTimeout(() => banner.classList.add('show'), 50);
-  });
+  requestAnimationFrame(() => { setTimeout(() => banner.classList.add('show'), 50); });
 }
-
 function hideNotifBanner() {
   const banner = document.getElementById('notifPermissionBanner');
   if (!banner) return;
-
   banner.classList.remove('show');
   setTimeout(() => banner.classList.add('hidden'), 600);
 }
-
 async function registerFCMToken(reg) {
   try {
-    const token = await messaging.getToken({
-      vapidKey: CONFIG.VAPID,
-      serviceWorkerRegistration: reg
-    });
-
+    const token = await messaging.getToken({ vapidKey: CONFIG.VAPID, serviceWorkerRegistration: reg });
     if (!token) return null;
-
     localStorage.setItem(KEYS.FCM_TOKEN, token);
-
     const previousToken = localStorage.getItem(KEYS.FCM_TOKEN + '_saved');
-
     if (previousToken !== token) {
       await db.collection('fcm_tokens').doc(token).set({
         token,
@@ -506,30 +506,20 @@ async function registerFCMToken(reg) {
         lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
         active: true
       }, { merge: true });
-
       localStorage.setItem(KEYS.FCM_TOKEN + '_saved', token);
     }
-
     return token;
-  } catch (error) {
-    console.error('[BZR] FCM token registration failed:', error);
-    return null;
-  }
+  } catch (error) { return null; }
 }
-
 async function initFCM() {
   try {
     if (!isNotificationSupported()) return;
-
     messaging = firebase.messaging();
     const reg = await navigator.serviceWorker.ready;
-
     messaging.onMessage((payload) => {
       const title = (payload.notification && payload.notification.title) || 'إشعار جديد';
       const body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
-
       showPushToast(title, body);
-
       if (Notification.permission === 'granted') {
         try {
           const notification = new Notification(title, {
@@ -539,50 +529,35 @@ async function initFCM() {
             lang: 'ar',
             tag: (payload.data && payload.data.tag) || 'branzar-fg'
           });
-
           notification.onclick = () => {
             window.focus();
             window.location.href = (payload.data && payload.data.url) || 'https://branzar.vercel.app';
             notification.close();
           };
-        } catch (error) {
-          console.error('[BZR] Foreground notification failed:', error);
-        }
+        } catch (error) {}
       }
     });
-
     if (Notification.permission === 'granted') {
       await registerFCMToken(reg);
     } else if (shouldShowNotifBanner()) {
-      setTimeout(() => {
-        // إعادة الفحص قبل العرض لمنع عرض مؤجل بعد تغيير الحالة.
-        if (shouldShowNotifBanner()) showNotifBanner();
-      }, 12000);
+      setTimeout(() => { if (shouldShowNotifBanner()) showNotifBanner(); }, 12000);
     }
-  } catch (error) {
-    console.error('[BZR] FCM initialization failed:', error);
-  }
+  } catch (error) {}
 }
-
 function showPushToast(title, body) {
   const toast = document.getElementById('pushToast');
   if (!toast) return;
-
   document.getElementById('pushToastTitle').textContent = title;
   document.getElementById('pushToastBody').textContent = body;
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 5000);
 }
-
 document.getElementById('enableNotifBtn')?.addEventListener('click', async () => {
   const button = document.getElementById('enableNotifBtn');
   if (!button) return;
-
   button.disabled = true;
-
   try {
     const permission = await Notification.requestPermission();
-
     if (permission === 'granted') {
       const reg = await navigator.serviceWorker.ready;
       await registerFCMToken(reg);
@@ -594,19 +569,16 @@ document.getElementById('enableNotifBtn')?.addEventListener('click', async () =>
       hideNotifBanner();
     }
   } catch (error) {
-    console.error('[BZR] Notification permission failed:', error);
     markNotifDismissed();
     hideNotifBanner();
   } finally {
     button.disabled = false;
   }
 });
-
 document.getElementById('dismissNotifBtn')?.addEventListener('click', () => {
   markNotifDismissed();
   hideNotifBanner();
 });
-
 
 /* ═══ SEARCH ═══ */
 const searchInput = document.getElementById('searchInput');
@@ -744,7 +716,9 @@ function createSearchProductRow(product) {
   nm.textContent = product.name || '';
   const meta = document.createElement('div');
   meta.style.cssText = 'font-size:0.72rem;color:#FF7A00;margin-top:2px;font-weight:800;';
-  meta.textContent = (parseFloat(product.price) || 0).toLocaleString() + ' ج.س';
+  /* 💱 currency-aware price */
+  const _pCurr = bzrResolveProductCurrency(product);
+  meta.textContent = bzrSafeFormatPrice(parseFloat(product.price) || 0, _pCurr.symbol);
   info.appendChild(nm); info.appendChild(meta);
   row.appendChild(img); row.appendChild(info);
   row.addEventListener('click', () => {
@@ -758,7 +732,8 @@ function createSearchProductRow(product) {
       store_name: product.store_name,
       description: product.description || '',
       colors: product.colors || null,
-      category: product.category || null
+      category: product.category || null,
+      currency: product.currency || null
     });
   });
   return row;
@@ -792,7 +767,6 @@ function createStoreCard(store) {
   const card = document.createElement('div');
   card.className = 'store-card';
 
-  /* صورة الغلاف */
   const cover = document.createElement('img');
   cover.className = 'cover-image';
   cover.loading = 'lazy';
@@ -800,7 +774,6 @@ function createStoreCard(store) {
   cover.src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
   cover.onerror = function(){ this.src = 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; };
 
-  /* شعار المتجر */
   const logo = document.createElement('img');
   logo.className = 'store-logo';
   logo.loading = 'lazy';
@@ -808,7 +781,6 @@ function createStoreCard(store) {
   logo.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   logo.onerror = function(){ this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
 
-  /* معلومات المتجر */
   const info = document.createElement('div');
   info.className = 'store-info';
 
@@ -828,11 +800,9 @@ function createStoreCard(store) {
   catRow.className = 'store-category';
   catRow.textContent = store.category || 'عام';
 
-  /* 🎨 الصف السفلي: زر المتابعة + زر المشاركة */
   const bottomRow = document.createElement('div');
   bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;';
 
-  /* زر المتابعة */
   const followBtn = document.createElement('button');
   followBtn.type = 'button';
   followBtn.className = 'bzr-follow-btn';
@@ -844,7 +814,6 @@ function createStoreCard(store) {
     toggleFollowFromCard(store, followBtn);
   });
 
-  /* زر المشاركة */
   const shareBtn = document.createElement('button');
   shareBtn.type = 'button';
   shareBtn.className = 'bzr-card-share';
@@ -883,7 +852,6 @@ function createStoreCard(store) {
   return card;
 }
 
-/* 🎨 تحديث شكل زر المتابعة في البطاقة */
 function setCardFollowState(btn, following) {
   if (!btn) return;
   btn.classList.toggle('following', following);
@@ -900,7 +868,6 @@ function setCardFollowState(btn, following) {
   }
 }
 
-/* 🎯 تبديل المتابعة من البطاقة */
 async function toggleFollowFromCard(store, btn) {
   const storeId = String(getStoreId(store));
   if (btn.disabled) return;
@@ -949,7 +916,6 @@ async function toggleFollowFromCard(store, btn) {
   }
 }
 
-/* 🎨 تحديث كل أزرار المتابعة لمتجر معيّن (في كل البطاقات) */
 function updateCardFollowButtons(storeId) {
   const following = isStoreFollowed(storeId);
   document.querySelectorAll('.store-card .bzr-follow-btn').forEach(btn => {
@@ -1151,7 +1117,6 @@ async function refreshStoreDataOnOpen(storeId) {
   } catch(e) { /* silent */ }
 }
 
-/* ═══ موقع المتجر داخل النافذة ═══ */
 function renderStoreLocationInModal(store) {
   const row = document.getElementById('storeLocationRow');
   const value = document.getElementById('storeLocationValue');
@@ -1444,10 +1409,12 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
   }
 });
 
-/* 🎨 بطاقة المنتج (مشتركة بين قائمة المتجر وقائمة الكل) */
+/* 🎨 بطاقة المنتج — multi-currency aware */
 function buildProductCard(product, showStoreName) {
   const price = parseFloat(product.price) || 0;
   const fav = isProductFav(product.id);
+  const _pCurr = bzrResolveProductCurrency(product);
+
   const pm = {
     id: product.id, name: product.name, img_url: product.img_url,
     price,
@@ -1455,7 +1422,8 @@ function buildProductCard(product, showStoreName) {
     store_name: product.store_name,
     description: product.description || '',
     colors: product.colors || null,
-    category: product.category || null
+    category: product.category || null,
+    currency: product.currency || _pCurr.symbol   // 🆕 snapshot for modal & cart
   };
 
   const card = document.createElement('div');
@@ -1504,9 +1472,10 @@ function buildProductCard(product, showStoreName) {
     info.appendChild(storeEl);
   }
 
+  /* 💱 price with product's currency */
   const priceEl = document.createElement('div');
   priceEl.className = 'store-product-price';
-  priceEl.textContent = price.toLocaleString() + ' ج.س';
+  priceEl.textContent = bzrSafeFormatPrice(price, _pCurr.symbol);
   info.appendChild(priceEl);
 
   const viewBtn = document.createElement('button');
@@ -1546,7 +1515,7 @@ function renderProductsBatch(products, append) {
   grid.appendChild(frag);
 }
 
-/* ═══ PRODUCT MODAL ═══ */
+/* ═══ PRODUCT MODAL — multi-currency aware ═══ */
 let currentModalProduct = null, selectedColorVariant = null;
 function openProductModal(product) {
   currentModalProduct = product;
@@ -1558,10 +1527,15 @@ function openProductModal(product) {
   imgEl.onerror = function(){ this.src = 'https://via.placeholder.com/600'; };
   document.getElementById('productModalName').textContent = product.name;
   document.getElementById('productModalStore').textContent = product.store_name || 'غير محدد';
-  document.getElementById('productModalPrice').textContent = (product.price || 0).toLocaleString() + ' ج.س';
+
+  /* 💱 resolve product currency once */
+  const _pCurr = bzrResolveProductCurrency(product);
+
+  document.getElementById('productModalPrice').textContent =
+    bzrSafeFormatPrice(product.price || 0, _pCurr.symbol);
   const origEl = document.getElementById('productModalOriginalPrice');
   if (product.original_price) {
-    origEl.textContent = product.original_price.toLocaleString() + ' ج.س';
+    origEl.textContent = bzrSafeFormatPrice(product.original_price, _pCurr.symbol);
     origEl.classList.remove('hidden');
   } else {
     origEl.textContent = '';
@@ -1662,6 +1636,11 @@ function updateModalActionButtons() {
     p.selectedColor = selectedColorVariant.name;
     p.img_url = selectedColorVariant.image || currentModalProduct.img_url;
   }
+  /* 🆕 make sure currency is captured — used at cart-add time */
+  if (!p.currency) {
+    const _c = bzrResolveProductCurrency(p);
+    p.currency = _c.symbol;
+  }
   document.getElementById('addToCartFromModal').dataset.product = JSON.stringify(p);
   document.getElementById('buyNowFromModal').dataset.product = JSON.stringify(p);
 }
@@ -1692,18 +1671,33 @@ document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
   let wa = store && store.whatsapp_number ? store.whatsapp_number : '';
   if (!wa) { showToast('رقم الواتساب غير متوفر'); return; }
   haptic('medium');
+
+  /* 💱 currency-aware message */
+  const _pCurr = bzrResolveProductCurrency(p);
+  const priceStr = bzrSafeFormatPrice(p.price || 0, _pCurr.symbol);
+
   const msg = 'مرحباً، أريد شراء:\n\n' + p.name + '\n'
     + (p.selectedColor ? 'اللون: ' + p.selectedColor + '\n' : '')
-    + 'السعر: ' + (p.price || 0).toLocaleString() + ' ج.س\n'
+    + 'السعر: ' + priceStr + '\n'
     + (p.store_name ? 'من متجر: ' + p.store_name : '');
   window.open('https://wa.me/' + wa.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
 });
 
-/* ═══ CART ═══ */
+/* ═══ CART — multi-currency aware ═══ */
 function addToCart(product) {
   const store = stores.find(s => s.name === product.store_name);
   const cartItemId = product.selectedColor ? product.id + '_' + product.selectedColor : product.id;
-  const item = { ...product, cartItemId, quantity: 1, store_whatsapp: store?.whatsapp_number || '' };
+
+  /* 💱 snapshot the resolved currency symbol on the cart item */
+  const _pCurr = bzrResolveProductCurrency(product);
+
+  const item = {
+    ...product,
+    cartItemId,
+    currency: product.currency || _pCurr.symbol,   // 🆕 self-contained
+    quantity: 1,
+    store_whatsapp: store?.whatsapp_number || ''
+  };
   const existing = cart.find(i => (i.cartItemId || i.id) === cartItemId);
   if (existing) existing.quantity += 1; else cart.push(item);
   updateCartUI();
@@ -1744,6 +1738,14 @@ function updateCartUI() {
   } else {
     const frag = document.createDocumentFragment();
     cart.forEach(item => {
+      /* 💱 per-item currency */
+      const itemCurr = item.currency
+        ? (window.bzrGetCurrencyBySymbol ? (window.bzrGetCurrencyBySymbol(item.currency) || { symbol: item.currency }) : { symbol: item.currency })
+        : _BZR_FALLBACK_CURRENCY;
+      const itemSym = itemCurr.symbol;
+      const lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
+      const lineTotalStr = bzrSafeFormatPrice(lineTotal, itemSym);
+
       const div = document.createElement('div');
       div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--c-border);';
       const itemId = item.cartItemId || item.id;
@@ -1760,7 +1762,7 @@ function updateCartUI() {
           '</div>' +
         '</div>' +
         '<div style="text-align:left;flex-shrink:0;">' +
-          '<div style="font-weight:900;color:#FF7A00;">' + (item.price * item.quantity).toLocaleString() + ' ج.س</div>' +
+          '<div style="font-weight:900;color:#FF7A00;white-space:nowrap;">' + sanitizeHTML(lineTotalStr) + '</div>' +
           '<button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;padding:0;display:inline-flex;"></button>' +
         '</div>';
       const rmBtn = div.querySelector('.remove-btn');
@@ -1772,9 +1774,16 @@ function updateCartUI() {
     items.querySelectorAll('.increase-btn').forEach(b => b.onclick = () => { haptic('light'); changeQuantity(b.dataset.id, 1); });
     items.querySelectorAll('.remove-btn').forEach(b => b.onclick = () => { haptic('light'); removeFromCart(b.dataset.id); });
   }
-  const total = cart.reduce((s,i) => s + i.price * i.quantity, 0);
-  const ct = document.getElementById('cartTotal');
-  if (ct) ct.querySelector('span:last-child').textContent = total.toLocaleString() + ' ج.س';
+
+  /* 💱 grand total (currency-aware, mixed currencies supported) */
+  if (typeof window.bzrRenderCartTotals === 'function') {
+    window.bzrRenderCartTotals(cart);
+  } else {
+    const total = cart.reduce((s,i) => s + (parseFloat(i.price)||0) * (i.quantity||0), 0);
+    const el = document.getElementById('cartTotalAmount');
+    if (el) el.textContent = total.toLocaleString() + ' ' + _BZR_FALLBACK_CURRENCY.symbol;
+  }
+
   updateBottomNavBadge();
 }
 function changeQuantity(id, delta) {
@@ -1807,20 +1816,33 @@ document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
 
-/* ═══ WHATSAPP ORDER ═══ */
+/* ═══ WHATSAPP ORDER — multi-currency aware ═══ */
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   if (cart.length === 0) { showToast('السلة فارغة'); return; }
   haptic('medium');
   let msg = '🛒 *طلب جديد من BranZar*\n\n📋 *تفاصيل الطلب:*\n━━━━━━━━━━━━━━\n';
   cart.forEach((item, index) => {
-    msg += `${index + 1}. *${item.name}*\n   • الكمية: ${item.quantity}\n   • السعر: ${(item.price * item.quantity).toLocaleString()} ج.س\n`;
+    const _ci = item.currency
+      ? (window.bzrGetCurrencyBySymbol ? (window.bzrGetCurrencyBySymbol(item.currency) || { symbol: item.currency }) : { symbol: item.currency })
+      : _BZR_FALLBACK_CURRENCY;
+    const lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
+    msg += `${index + 1}. *${item.name}*\n   • الكمية: ${item.quantity}\n   • السعر: ${lineTotal.toLocaleString()} ${_ci.symbol}\n`;
     if (item.selectedColor) msg += `   • اللون: ${item.selectedColor}\n`;
     if (item.store_name) msg += `   • المتجر: ${item.store_name}\n`;
     msg += '\n';
   });
   msg += '━━━━━━━━━━━━━━\n';
-  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  msg += `💰 *المجموع الكلي:* ${total.toLocaleString()} ج.س\n\n📦 عدد المنتجات: ${cart.reduce((s, i) => s + i.quantity, 0)}\n\nشكراً لاستخدامكم BranZar 🌟`;
+
+  /* 💱 grand total across currencies */
+  let totalStr;
+  if (typeof window.bzrComputeCartTotals === 'function' && typeof window.bzrFormatCartTotals === 'function') {
+    totalStr = window.bzrFormatCartTotals(window.bzrComputeCartTotals(cart));
+  } else {
+    const total = cart.reduce((s, i) => s + (parseFloat(i.price) || 0) * (i.quantity || 0), 0);
+    totalStr = total.toLocaleString() + ' ' + _BZR_FALLBACK_CURRENCY.symbol;
+  }
+  const itemCount = cart.reduce((s, i) => s + (i.quantity || 0), 0);
+  msg += `💰 *المجموع الكلي:* ${totalStr}\n\n📦 عدد المنتجات: ${itemCount}\n\nشكراً لاستخدامكم BranZar 🌟`;
   window.open('https://wa.me/' + CONFIG.FIXED_WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
 });
 
@@ -2010,11 +2032,8 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   finally { if (svgIcon) svgIcon.classList.remove('mi-spin'); btn.disabled = false; }
 });
 
-
-
-// --- إصلاح زر البحث وإضافة أيقونة الحساب العلوية ---
+/* --- إصلاح زر البحث وإضافة أيقونة الحساب العلوية --- */
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. إصلاح زر البحث
   const searchBtn = document.getElementById('openSearchBtn');
   const searchOverlay = document.getElementById('bzrSearchOverlay');
   const closeSearchBtn = document.getElementById('closeSearchBtn');
@@ -2038,18 +2057,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. إضافة أيقونة الحساب الكبيرة للهيدر
   const appActions = document.querySelector('.bzr-app-actions');
   if (appActions && !document.querySelector('.bzr-account-btn')) {
     const accBtn = document.createElement('button');
     accBtn.className = 'bzr-account-btn';
     accBtn.setAttribute('aria-label', 'حسابي');
     accBtn.innerHTML = '<svg class="mi" aria-hidden="true"><use href="#mi-person"></use></svg>';
-    
-    // إدراج الزر قبل السلة أو البحث
     appActions.insertBefore(accBtn, appActions.firstChild);
-    
-    // ربطه بنافذة الحساب
     accBtn.addEventListener('click', (e) => {
       e.preventDefault();
       if (typeof openAccountModal === 'function') openAccountModal();
@@ -2057,15 +2071,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-console.log('[BZR] ui.js loaded ✅ v9.10.1 — follow + share buttons restored');
+console.log('[BZR] ui.js loaded ✅ v9.11.0 — multi-currency (SDG/USD) + follow + share');
