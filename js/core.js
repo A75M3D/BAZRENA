@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.10.0 — core.js
+   BranZar v9.11.0 — core.js
    Layer 1: Config + Utils + Security + Fingerprint + Cache + Firebase + Auth + State
-   ✅ v9.10.0: إضافة دالة truncateText + CONFIG.PRODUCT_DESCRIPTION_MAX
-   ✅ Fix: إزالة كود الثيم ووضع العرض المكرر (موجود في ui.js فقط)
+   ✅ v9.11.0: multi-currency support (helpers live in index.html;
+               state/cart automatically carry `currency` field)
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -795,9 +795,4 @@ function getFallbackHex(colorName) {
   return result;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ✅ تم حذف كتلتي THEME و VIEW MODE من هذا الملف
-   ✅ موجودتان الآن في ui.js فقط (المصدر الوحيد)
-   ═══════════════════════════════════════════════════════════ */
-
-console.log('[BZR] core.js loaded ✅ v9.10.0 (theme/view moved to ui.js)');
+console.log('[BZR] core.js loaded ✅ v9.11.0 (multi-currency: state ready)');
