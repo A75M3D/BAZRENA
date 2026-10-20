@@ -149,6 +149,90 @@ input,textarea,select{outline:none}
 #topProgressBar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--c-primary-gradient);z-index:99999;transform-origin:right center;transform:scaleX(0);transition:transform .3s}
 #topProgressBar.active{transform:scaleX(.75);transition:transform 1.5s}
 #topProgressBar.done{transform:scaleX(1);transition:transform .2s;opacity:0}
+
+/* ═══════ Security Guidelines Card ═══════ */
+.security-card{
+  position:relative;overflow:hidden;
+  border:2px solid rgba(255,122,0,.18);
+  background:linear-gradient(180deg,#FFFFFF 0%,#FFFBF5 100%);
+  animation:secFadeUp .6s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes secFadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.security-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#FF7A00 0%,#25D366 50%,#FF7A00 100%);
+  background-size:200% 100%;animation:secShine 3s linear infinite;
+}
+@keyframes secShine{0%{background-position:0% 0}100%{background-position:200% 0}}
+.security-card .sec-head-icon{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,#10B981,#059669);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 8px 20px -6px rgba(16,185,129,.6);
+  animation:secPulse 2.6s ease-in-out infinite;
+}
+@keyframes secPulse{0%,100%{box-shadow:0 8px 20px -6px rgba(16,185,129,.6),0 0 0 0 rgba(16,185,129,.35)}50%{box-shadow:0 8px 20px -6px rgba(16,185,129,.6),0 0 0 10px rgba(16,185,129,0)}}
+.sec-badge{
+  display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;
+  font-size:.7rem;font-weight:900;color:#92400E;
+  background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid #FCD34D;
+}
+.sec-badge i{font-size:.62rem}
+.sec-intro{
+  display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;
+  background:linear-gradient(135deg,#FFF1E0,#FFF8EE);
+  border-radius:14px;border:1px solid rgba(255,122,0,.16);
+}
+.sec-intro i{color:var(--c-primary);font-size:1.1rem;margin-top:2px;flex-shrink:0}
+.sec-intro p{font-size:.83rem;font-weight:600;color:#7c4a15;line-height:1.75;margin:0}
+.sec-intro strong{color:var(--c-primary-dark);font-weight:900}
+.sec-list{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-direction:column;gap:10px}
+.sec-list li{
+  display:flex;gap:12px;align-items:flex-start;padding:12px 14px;
+  background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;
+  transition:all .25s ease;
+}
+.sec-list li:hover{background:#F0FDF4;border-color:#86EFAC;transform:translateX(-3px)}
+.sec-check{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#10B981,#059669);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:.72rem;
+  box-shadow:0 4px 12px -3px rgba(16,185,129,.55);
+}
+.sec-list li>div{flex:1;min-width:0}
+.sec-list li b{display:block;font-size:.86rem;font-weight:800;color:var(--c-text);line-height:1.4;margin-bottom:2px}
+.sec-list li span{display:block;font-size:.76rem;font-weight:600;color:var(--c-text-soft);line-height:1.55}
+.sec-howto{
+  padding:16px;margin-bottom:16px;border-radius:14px;
+  background:linear-gradient(135deg,#F0FDF4,#DCFCE7);
+  border:1.5px dashed #86EFAC;
+}
+.sec-howto-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:#065F46;font-size:.88rem;font-weight:900}
+.sec-howto-head i{color:#25D366;font-size:1.25rem}
+.sec-steps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px}
+.sec-step{
+  padding:6px 12px;background:#fff;border:1px solid #86EFAC;border-radius:999px;
+  font-size:.74rem;font-weight:800;color:#065F46;
+  box-shadow:0 2px 6px rgba(16,185,129,.1);
+}
+.sec-steps>i{color:#10B981;font-size:.6rem}
+.sec-howto-note{font-size:.76rem;font-weight:600;color:#166534;line-height:1.65;margin:0}
+.sec-footer{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 16px;border-radius:12px;color:#fff;
+  background:var(--c-primary-gradient);
+  font-size:.79rem;font-weight:700;text-align:center;
+  box-shadow:0 10px 24px -10px rgba(255,122,0,.65);
+}
+.sec-footer i{color:#fff;font-size:.85rem;animation:secHeart 1.6s ease-in-out infinite}
+.sec-footer b{font-weight:900;letter-spacing:.3px}
+@keyframes secHeart{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@media(max-width:420px){
+  .sec-list li b{font-size:.82rem}
+  .sec-steps{gap:5px}
+  .sec-step{font-size:.7rem;padding:5px 10px}
+  .sec-intro p{font-size:.78rem}
+}
 </style>
 </head>
 <body>
@@ -277,6 +361,68 @@ input,textarea,select{outline:none}
             <option value="غرب كردفان"></option><option value="شمال دارفور"></option><option value="جنوب دارفور"></option>
             <option value="غرب دارفور"></option><option value="شرق دارفور"></option><option value="وسط دارفور"></option>
           </datalist>
+        </div>
+      </div>
+
+      <!-- 🔐 إرشادات الأمان -->
+      <div class="bzr-card security-card">
+        <div class="bzr-card-head">
+          <div class="sec-head-icon"><i class="fas fa-shield-halved"></i></div>
+          <h2>إرشادات الأمان لحسابك</h2>
+          <span class="sec-badge"><i class="fas fa-star"></i> مهم</span>
+        </div>
+
+        <div class="sec-intro">
+          <i class="fas fa-lock"></i>
+          <p>لضمان تجربة أكثر أمانًا على منصة <strong>BranZar</strong>، نوصي باتباع إجراءات الأمان التالية قبل إضافة رقم التواصل الخاص بمتجرك:</p>
+        </div>
+
+        <ul class="sec-list">
+          <li>
+            <div class="sec-check"><i class="fas fa-check"></i></div>
+            <div>
+              <b>ربط واتساب ببريدك الإلكتروني</b>
+              <span>لاستعادة حسابك بسهولة عند الحاجة.</span>
+            </div>
+          </li>
+          <li>
+            <div class="sec-check"><i class="fas fa-check"></i></div>
+            <div>
+              <b>تفعيل التحقق بخطوتين</b>
+              <span>من إعدادات واتساب لمزيد من الحماية.</span>
+            </div>
+          </li>
+          <li>
+            <div class="sec-check"><i class="fas fa-check"></i></div>
+            <div>
+              <b>الاحتفاظ برمز PIN</b>
+              <span>لا تشاركه مع أي شخص آخر مهما كان السبب.</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="sec-howto">
+          <div class="sec-howto-head">
+            <i class="fab fa-whatsapp"></i>
+            <span>طريقة التفعيل</span>
+          </div>
+          <div class="sec-steps">
+            <span class="sec-step">واتساب</span>
+            <i class="fas fa-chevron-left"></i>
+            <span class="sec-step">الإعدادات</span>
+            <i class="fas fa-chevron-left"></i>
+            <span class="sec-step">الحساب</span>
+            <i class="fas fa-chevron-left"></i>
+            <span class="sec-step">عنوان البريد الإلكتروني</span>
+          </div>
+          <p class="sec-howto-note">
+            اربط بريدك أولاً، ثم عد إلى <strong>«التحقق بخطوتين»</strong> وقم بتفعيل الميزة.
+          </p>
+        </div>
+
+        <div class="sec-footer">
+          <i class="fas fa-heart"></i>
+          <span><b>BranZar</b> — نهتم بأمانك ونساعدك على إدارة متجرك بثقة</span>
         </div>
       </div>
 
@@ -1133,7 +1279,7 @@ async function bootstrap(){
 }
 
 document.addEventListener('DOMContentLoaded',bootstrap);
-console.log('[BZR] signup v9.1 — safe input + dynamic categories ✅');
+console.log('[BZR] signup v9.2 — security guidelines + safe input + dynamic categories ✅');
 </script>
 </body>
 </html>
