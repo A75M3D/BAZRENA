@@ -13,7 +13,7 @@
         * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
         body { background-color: #F1F5F9; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
-        /* ═══ Form Styling (Modern & Clean) ═══ */
+        /* ═══ Form Styling ═══ */
         .form-card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; border: 1px solid #E2E8F0; }
         .form-title { font-size: 16px; font-weight: 800; color: #1E293B; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 12px; }
         .form-label { display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 6px; }
@@ -27,15 +27,30 @@
         /* ═══ A4 Paper Layout ═══ */
         .preview-container { width: 100%; overflow-x: auto; padding: 10px; display: flex; justify-content: center; }
         .invoice-paper { 
-            width: 210mm; min-height: 297mm; background: white; position: relative; padding: 20mm;
-            overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform-origin: top center;
-            display: flex; flex-direction: column;
+            width: 210mm; 
+            min-height: 297mm; 
+            background: white; 
+            position: relative; 
+            padding: 20mm; /* هوامش A4 الرسمية */
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform-origin: top center;
+            display: flex;
+            flex-direction: column;
         }
         
         /* ═══ Watermark (Center) ═══ */
-        .watermark { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 450px; height: 450px; opacity: 0.03; pointer-events: none; z-index: 0; mix-blend-mode: multiply; 
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            opacity: 0.04; /* خفيف جداً في المنتصف */
+            pointer-events: none;
+            z-index: 0;
+            mix-blend-mode: multiply;
         }
 
         /* ═══ Formal Invoice Elements ═══ */
@@ -52,7 +67,7 @@
         .invoice-table td { padding: 10px; border: 1px solid #E2E8F0; text-align: center; font-weight: 600; font-size: 13px; color: #1E293B; height: 40px; }
         .invoice-table tbody tr:nth-child(even) { background-color: #F8FAFC; }
 
-        .total-section { display: flex; justify-content: flex-end; margin-bottom: 30px; }
+        .total-section { display: flex; justify-content: flex-end; margin-bottom: 20px; }
         .total-box { border: 1px solid #1E3A8A; border-radius: 8px; overflow: hidden; display: flex; min-width: 250px; }
         .total-label { background: #F8FAFC; color: #1E3A8A; padding: 12px 20px; font-weight: 800; font-size: 15px; border-left: 1px solid #1E3A8A; display: flex; align-items: center; }
         .total-value { background: #1E3A8A; color: white; padding: 12px 20px; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; flex: 1; direction: ltr; }
@@ -60,16 +75,15 @@
         /* ═══ Bottom Fixed Stamp ═══ */
         .stamp-section { 
             display: flex; 
-            justify-content: flex-start; /* يضع الختم في اليسار */
-            margin-top: auto; /* يدفعه دائماً إلى أسفل الصفحة */
-            padding-top: 20px;
+            justify-content: flex-start; /* يضع الختم في الجهة اليسرى */
+            margin-top: auto; /* يضمن بقاءه في أسفل الصفحة دائماً */
+            padding-top: 10px;
         }
         .bottom-stamp {
-            width: 140px; /* حجم الختم */
-            height: 140px;
+            width: 120px; /* الحجم المناسب للختم */
+            height: 120px;
             object-fit: contain;
-            opacity: 0.85; /* شفافية خفيفة ليعطي واقعية */
-            transform: rotate(-12deg); /* ميلان بسيط مثل الختم الحقيقي */
+            /* تم إزالة أي شفافية أو ميلان ليظهر الختم كما هو تماماً بألوانه الحقيقية */
         }
 
         /* ═══ PDF Print Fixes ═══ */
@@ -213,8 +227,8 @@
 
                     <!-- Bottom Fixed Stamp -->
                     <div class="stamp-section">
-                        <!-- الختم الثابت -->
-                        <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="bottom-stamp" alt="ختم الفاتورة" crossorigin="anonymous">
+                        <!-- الختم كما هو تماماً بدون أي تعديل -->
+                        <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="bottom-stamp" alt="ختم BranZar" crossorigin="anonymous">
                     </div>
 
                 </div>
@@ -327,6 +341,7 @@
                 }
             });
 
+            // الحد الأدنى للصفوف الفارغة
             const minRows = 8;
             if (validItemsCount < minRows) {
                 for (let i = validItemsCount; i < minRows; i++) {
