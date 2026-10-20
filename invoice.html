@@ -6,8 +6,6 @@
     <title>نظام الفواتير الرسمي - BranZar</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome للأيقونات (القلم) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -15,7 +13,7 @@
         * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
         body { background-color: #F1F5F9; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
-        /* ═══ Form Styling ═══ */
+        /* ═══ Form Styling (Modern & Clean) ═══ */
         .form-card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; border: 1px solid #E2E8F0; }
         .form-title { font-size: 16px; font-weight: 800; color: #1E293B; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 12px; }
         .form-label { display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 6px; }
@@ -29,13 +27,31 @@
         /* ═══ A4 Paper Layout ═══ */
         .preview-container { width: 100%; overflow-x: auto; padding: 10px; display: flex; justify-content: center; }
         .invoice-paper { 
-            width: 210mm; min-height: 297mm; background: white; position: relative; padding: 20mm;
-            overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform-origin: top center;
-            display: flex; flex-direction: column;
+            width: 210mm; 
+            min-height: 297mm; 
+            background: white; 
+            position: relative; 
+            padding: 20mm; /* هوامش A4 الرسمية */
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform-origin: top center;
+            display: flex;
+            flex-direction: column;
         }
         
-        /* ═══ Watermark ═══ */
-        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.04; pointer-events: none; z-index: 0; mix-blend-mode: multiply; }
+        /* ═══ Watermark (Official Stamp) ═══ */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            opacity: 0.04; /* خفيف جداً ليكون رسمياً */
+            pointer-events: none;
+            z-index: 0;
+            mix-blend-mode: multiply;
+        }
 
         /* ═══ Formal Invoice Elements ═══ */
         .invoice-content { position: relative; z-index: 5; display: flex; flex-direction: column; height: 100%; }
@@ -56,33 +72,9 @@
         .total-label { background: #F8FAFC; color: #1E3A8A; padding: 12px 20px; font-weight: 800; font-size: 15px; border-left: 1px solid #1E3A8A; display: flex; align-items: center; }
         .total-value { background: #1E3A8A; color: white; padding: 12px 20px; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; flex: 1; direction: ltr; }
 
-        /* ═══ Signatures Area ═══ */
-        .signatures { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
-        .sig-box { width: 220px; text-align: center; }
-        .sig-label { font-size: 14px; font-weight: 800; color: #475569; margin-bottom: 10px; display: block; }
-        
-        /* مساحة التوقيع (قابلة للنقر) */
-        .sig-canvas-container { 
-            width: 100%; height: 100px; border-bottom: 2px dashed #94A3B8; 
-            position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; background: #FAFAFA; border-radius: 8px 8px 0 0;
-        }
-        .sig-canvas-container:hover { background: #F1F5F9; border-bottom-color: #1E3A8A; }
-        
-        /* زر التوقيع الوهمي */
-        .sig-placeholder { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #64748B; font-size: 12px; font-weight: 700; pointer-events: none; }
-        .sig-placeholder i { font-size: 20px; color: #1E3A8A; }
-        
-        /* صورة التوقيع بعد الحفظ */
-        .sig-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: none; }
-
-        /* ═══ Signature Modal ═══ */
-        #signatureModal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .sig-modal-content { background: white; width: 90%; max-width: 600px; border-radius: 16px; padding: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); animation: modalIn 0.3s ease; }
-        @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .sig-canvas-wrap { position: relative; width: 100%; height: 250px; background: #F8FAFC; border: 2px dashed #CBD5E1; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
-        #signatureCanvas { width: 100%; height: 100%; cursor: crosshair; touch-action: none; /* يمنع السكرول أثناء الرسم */ }
+        /* ═══ Signatures ═══ */
+        .signatures { display: flex; justify-content: space-between; margin-top: auto; padding-top: 40px; }
+        .sig-box { width: 200px; text-align: center; border-top: 1px dashed #94A3B8; padding-top: 10px; font-size: 13px; font-weight: 700; color: #64748B; }
 
         /* ═══ PDF Print Fixes ═══ */
         body.exporting .no-print { display: none !important; }
@@ -180,16 +172,34 @@
 
                     <!-- Info Section -->
                     <div class="info-section">
+                        <!-- Store Info -->
                         <div class="info-box">
                             <h3>معلومات المتجر</h3>
-                            <div class="info-row"><span>اسم المتجر:</span><span id="disp-store">---</span></div>
-                            <div class="info-row"><span>رقم الفاتورة:</span><span id="disp-num">---</span></div>
-                            <div class="info-row"><span>التاريخ:</span><span id="disp-date">---</span></div>
+                            <div class="info-row">
+                                <span>اسم المتجر:</span>
+                                <span id="disp-store">---</span>
+                            </div>
+                            <div class="info-row">
+                                <span>رقم الفاتورة:</span>
+                                <span id="disp-num">---</span>
+                            </div>
+                            <div class="info-row">
+                                <span>التاريخ:</span>
+                                <span id="disp-date">---</span>
+                            </div>
                         </div>
+
+                        <!-- Customer Info -->
                         <div class="info-box">
                             <h3>معلومات العميل</h3>
-                            <div class="info-row"><span>اسم العميل:</span><span id="disp-customer">---</span></div>
-                            <div class="info-row"><span>رقم الواتساب:</span><span id="disp-wa" dir="ltr">---</span></div>
+                            <div class="info-row">
+                                <span>اسم العميل:</span>
+                                <span id="disp-customer">---</span>
+                            </div>
+                            <div class="info-row">
+                                <span>رقم الواتساب:</span>
+                                <span id="disp-wa" dir="ltr">---</span>
+                            </div>
                         </div>
                     </div>
 
@@ -204,7 +214,9 @@
                                 <th style="width: 20%;">الإجمالي</th>
                             </tr>
                         </thead>
-                        <tbody id="table-body"></tbody>
+                        <tbody id="table-body">
+                            <!-- Rendered by JS -->
+                        </tbody>
                     </table>
 
                     <!-- Total -->
@@ -218,31 +230,10 @@
                         </div>
                     </div>
 
-                    <!-- Signatures (Interactive) -->
-                    <div class="signatures no-print-interaction">
-                        <!-- توقيع العميل -->
-                        <div class="sig-box">
-                            <span class="sig-label">توقيع المستلم / العميل</span>
-                            <div class="sig-canvas-container" onclick="openSignaturePad('customer')">
-                                <img id="customer-sig-img" class="sig-img" alt="توقيع المستلم">
-                                <div id="customer-sig-placeholder" class="sig-placeholder">
-                                    <i class="fas fa-pen"></i>
-                                    <span>اضغط هنا للتوقيع</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- توقيع المدير -->
-                        <div class="sig-box">
-                            <span class="sig-label">توقيع المدير / البائع</span>
-                            <div class="sig-canvas-container" onclick="openSignaturePad('admin')">
-                                <img id="admin-sig-img" class="sig-img" alt="توقيع المدير">
-                                <div id="admin-sig-placeholder" class="sig-placeholder">
-                                    <i class="fas fa-pen"></i>
-                                    <span>اضغط هنا للتوقيع</span>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Signatures -->
+                    <div class="signatures">
+                        <div class="sig-box">توقيع المستلم</div>
+                        <div class="sig-box">توقيع المدير / البائع</div>
                     </div>
 
                 </div>
@@ -250,48 +241,33 @@
         </div>
     </div>
 
-    <!-- ═══ Signature Modal ═══ -->
-    <div id="signatureModal" class="hidden">
-        <div class="sig-modal-content">
-            <h3 id="sig-modal-title" class="text-xl font-black text-gray-800 mb-2">توقيع المستلم</h3>
-            <p class="text-sm text-gray-500 font-bold mb-4">ارسم توقيعك بإصبعك أو بالماوس في المربع أدناه</p>
-            
-            <div class="sig-canvas-wrap">
-                <!-- الكانفاس الخاص بالرسم -->
-                <canvas id="signatureCanvas"></canvas>
-            </div>
-
-            <div class="flex gap-3">
-                <button onclick="clearSignatureCanvas()" class="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 transition">
-                    <i class="fas fa-eraser"></i> مسح
-                </button>
-                <button onclick="saveSignature()" class="flex-1 py-3 bg-blue-900 text-white font-bold rounded-lg hover:bg-blue-800 transition">
-                    <i class="fas fa-check"></i> تأكيد التوقيع
-                </button>
-            </div>
-            <button onclick="closeSignaturePad()" class="w-full mt-3 text-sm text-red-500 font-bold hover:underline">إلغاء</button>
-        </div>
-    </div>
-
     <script>
-        // ═══ 1. إعدادات الفاتورة الأساسية ═══
+        // 1. توليد رقم الفاتورة
         function generateInvoiceNumber() {
             const now = new Date();
-            const dateStr = now.toISOString().slice(0,10).replace(/-/g, ''); 
+            const dateStr = now.toISOString().slice(0,10).replace(/-/g, ''); // YYYYMMDD
             const random = Math.floor(1000 + Math.random() * 9000);
             return `INV-${dateStr}-${random}`;
         }
 
+        // 2. التهيئة
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('in-date').value = new Date().toISOString().split('T')[0];
             document.getElementById('in-invoice-num').value = generateInvoiceNumber();
+
+            // إضافة 3 صفوف افتراضية
             addItemRow();
+            addItemRow();
+            addItemRow();
+            
             syncData();
         });
 
+        // 3. إضافة صف منتج (متناسق مع الحقول الأخرى)
         function addItemRow() {
             const container = document.getElementById('items-container');
             const rowId = 'row_' + Date.now() + Math.floor(Math.random() * 100);
+            
             const div = document.createElement('div');
             div.className = 'product-item-group';
             div.id = rowId;
@@ -302,8 +278,14 @@
                     <input type="text" class="form-input p-name" placeholder="وصف المنتج..." oninput="syncData()">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="form-label text-xs">الكمية</label><input type="number" class="form-input p-qty" value="1" min="1" oninput="syncData()"></div>
-                    <div><label class="form-label text-xs">سعر الوحدة</label><input type="number" class="form-input p-price" placeholder="0.00" min="0" oninput="syncData()"></div>
+                    <div>
+                        <label class="form-label text-xs">الكمية</label>
+                        <input type="number" class="form-input p-qty" value="1" min="1" oninput="syncData()">
+                    </div>
+                    <div>
+                        <label class="form-label text-xs">سعر الوحدة</label>
+                        <input type="number" class="form-input p-price" placeholder="0.00" min="0" oninput="syncData()">
+                    </div>
                 </div>
             `;
             container.appendChild(div);
@@ -312,35 +294,47 @@
 
         function removeRow(rowId) {
             const row = document.getElementById(rowId);
-            if (row) { row.remove(); syncData(); }
+            if (row) {
+                row.remove();
+                syncData();
+            }
         }
 
+        // 4. المزامنة والحسابات
         function syncData() {
+            // نصوص الترويسة
             document.getElementById('disp-store').textContent = document.getElementById('in-store').value || '---';
             document.getElementById('disp-customer').textContent = document.getElementById('in-customer').value || '---';
-            document.getElementById('disp-num').textContent = document.getElementById('in-invoice-num').value || '---';
+            
+            const invNum = document.getElementById('in-invoice-num').value;
+            document.getElementById('disp-num').textContent = invNum || '---';
             
             const dateVal = document.getElementById('in-date').value;
             if (dateVal) {
                 const [y, m, d] = dateVal.split('-');
                 document.getElementById('disp-date').textContent = `${y}/${m}/${d}`;
             }
+            
             document.getElementById('disp-wa').textContent = document.getElementById('in-wa').value || '---';
             document.getElementById('disp-currency').textContent = document.getElementById('in-currency').value;
 
+            // حساب الجدول
             const rows = document.querySelectorAll('#items-container .product-item-group');
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
+            
             let grandTotal = 0;
             let validItemsCount = 0;
 
-            rows.forEach((row) => {
+            rows.forEach((row, index) => {
                 const name = row.querySelector('.p-name').value.trim();
                 const qty = parseFloat(row.querySelector('.p-qty').value) || 0;
                 const price = parseFloat(row.querySelector('.p-price').value) || 0;
+                
                 const rowTotal = qty * price;
                 grandTotal += rowTotal;
 
+                // طباعة الصف فقط إذا كان يحتوي على بيانات (أو نطبع 8 صفوف فارغة إذا كان أقل)
                 if (name || price > 0) {
                     validItemsCount++;
                     const tr = document.createElement('tr');
@@ -355,192 +349,64 @@
                 }
             });
 
-            const minRows = 6; // قللناها قليلاً لإعطاء مساحة للتوقيع
+            // إضافة صفوف فارغة لتكملة شكل الفاتورة الرسمي (الحد الأدنى 8 صفوف)
+            const minRows = 8;
             if (validItemsCount < minRows) {
                 for (let i = validItemsCount; i < minRows; i++) {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${i + 1}</td><td></td><td></td><td></td><td></td>`;
+                    tr.innerHTML = `
+                        <td>${i + 1}</td>
+                        <td class="text-right px-4"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    `;
                     tableBody.appendChild(tr);
                 }
             }
+
+            // تحديث الإجمالي
             document.getElementById('disp-total').textContent = grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
 
-        // ═══ 2. التوقيع الإلكتروني (Signature Pad) ═══
-        let canvas, ctx;
-        let isDrawing = false;
-        let currentSignatureTarget = null; // 'customer' أو 'admin'
-
-        // تهيئة الكانفاس
-        window.addEventListener('load', () => {
-            canvas = document.getElementById('signatureCanvas');
-            ctx = canvas.getContext('2d');
-            
-            // ضبط أبعاد الكانفاس لتناسب الشاشة (High DPI)
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * 2;
-            canvas.height = rect.height * 2;
-            ctx.scale(2, 2);
-            
-            // إعدادات القلم (حبر أزرق)
-            ctx.strokeStyle = '#1E3A8A'; // أزرق داكن احترافي
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-
-            // أحداث الرسم (تدعم اللمس والماوس)
-            canvas.addEventListener('pointerdown', startDrawing);
-            canvas.addEventListener('pointermove', draw);
-            canvas.addEventListener('pointerup', stopDrawing);
-            canvas.addEventListener('pointerout', stopDrawing);
-        });
-
-        function openSignaturePad(target) {
-            currentSignatureTarget = target;
-            const title = target === 'customer' ? 'توقيع المستلم / العميل' : 'توقيع المدير / البائع';
-            document.getElementById('sig-modal-title').textContent = title;
-            
-            // إظهار النافذة
-            document.getElementById('signatureModal').classList.remove('hidden');
-            
-            // مسح أي رسم سابق
-            clearSignatureCanvas();
-            
-            // ضبط أبعاد الكانفاس بعد ظهور النافذة
-            setTimeout(() => {
-                const rect = canvas.getBoundingClientRect();
-                canvas.width = rect.width * 2;
-                canvas.height = rect.height * 2;
-                ctx.scale(2, 2);
-                ctx.strokeStyle = '#1E3A8A';
-                ctx.lineWidth = 2.5;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-            }, 100);
-        }
-
-        function closeSignaturePad() {
-            document.getElementById('signatureModal').classList.add('hidden');
-            currentSignatureTarget = null;
-        }
-
-        function clearSignatureCanvas() {
-            if(!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        // بدء الرسم
-        function startDrawing(e) {
-            isDrawing = true;
-            const pos = getCanvasPos(e);
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-        }
-
-        // الرسم (تتبع حركة اليد)
-        function draw(e) {
-            if (!isDrawing) return;
-            e.preventDefault(); // منع التمرير
-            const pos = getCanvasPos(e);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-        }
-
-        // إيقاف الرسم
-        function stopDrawing() {
-            isDrawing = false;
-            ctx.closePath();
-        }
-
-        // حساب مكان المؤشر/الإصبع بدقة داخل الكانفاس
-        function getCanvasPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            return {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            };
-        }
-
-        // حفظ التوقيع
-        function saveSignature() {
-            if (!currentSignatureTarget) return;
-            
-            // تحويل الكانفاس إلى صورة
-            const dataURL = canvas.toDataURL('image/png');
-            
-            if (currentSignatureTarget === 'customer') {
-                document.getElementById('customer-sig-img').src = dataURL;
-                document.getElementById('customer-sig-img').style.display = 'block';
-                document.getElementById('customer-sig-placeholder').style.display = 'none';
-            } else {
-                document.getElementById('admin-sig-img').src = dataURL;
-                document.getElementById('admin-sig-img').style.display = 'block';
-                document.getElementById('admin-sig-placeholder').style.display = 'none';
-            }
-            
-            closeSignaturePad();
-        }
-
-        // ═══ 3. تصدير PDF ═══
+        // 5. تصدير PDF
         function exportPDF() {
             const element = document.getElementById('invoice-paper');
             const btn = document.getElementById('btn-download');
 
-            // إضافة كلاس لإخفاء عناصر التحكم أثناء التصدير
             document.body.classList.add('exporting');
-            
-            // إخفاء علامات (اضغط للتوقيع) إذا كان التوقيع فارغاً
-            // (لأن html2pdf قد يصورها كأزرار)
-            document.querySelectorAll('.sig-canvas-container').forEach(el => {
-                if(el.querySelector('.sig-img').style.display !== 'block') {
-                    el.style.borderBottomColor = 'transparent';
-                    el.querySelector('.sig-placeholder').style.display = 'none';
-                }
-            });
-
             btn.innerHTML = 'جاري التحميل...';
             btn.disabled = true;
 
             const opt = {
-                margin: 0,
-                filename: document.getElementById('in-invoice-num').value + '.pdf',
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                margin:       0,
+                filename:     document.getElementById('in-invoice-num').value + '.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
                 document.body.classList.remove('exporting');
-                // إرجاع علامات التوقيع
-                document.querySelectorAll('.sig-canvas-container').forEach(el => {
-                    el.style.borderBottomColor = '#94A3B8';
-                    if(el.querySelector('.sig-img').style.display !== 'block') {
-                        el.querySelector('.sig-placeholder').style.display = 'flex';
-                    }
-                });
                 btn.innerHTML = 'تحميل الفاتورة PDF';
                 btn.disabled = false;
             }).catch(err => {
                 console.error('PDF Error:', err);
                 alert('حدث خطأ أثناء التحميل.');
                 document.body.classList.remove('exporting');
-                document.querySelectorAll('.sig-canvas-container').forEach(el => {
-                    el.style.borderBottomColor = '#94A3B8';
-                    el.querySelector('.sig-placeholder').style.display = 'flex';
-                });
                 btn.innerHTML = 'تحميل الفاتورة PDF';
                 btn.disabled = false;
             });
         }
 
-        // ═══ 4. تكييف الشاشة ═══
+        // 6. تكييف الشاشة (Responsive)
         function scalePreview() {
             const container = document.querySelector('.preview-container');
             const paper = document.getElementById('invoice-paper');
             const containerWidth = container.clientWidth - 32; 
             
-            if (window.innerWidth < 1024) {
-                const scale = containerWidth / 794; 
+            if (window.innerWidth < 1024) { // للموبايل والتابلت
+                const scale = containerWidth / 794; // 794px = 210mm
                 paper.style.transform = `scale(${scale})`;
                 container.style.height = (paper.offsetHeight * scale) + 'px';
             } else {
