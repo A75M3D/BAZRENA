@@ -27,30 +27,15 @@
         /* ═══ A4 Paper Layout ═══ */
         .preview-container { width: 100%; overflow-x: auto; padding: 10px; display: flex; justify-content: center; }
         .invoice-paper { 
-            width: 210mm; 
-            min-height: 297mm; 
-            background: white; 
-            position: relative; 
-            padding: 20mm; /* هوامش A4 الرسمية */
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            transform-origin: top center;
-            display: flex;
-            flex-direction: column;
+            width: 210mm; min-height: 297mm; background: white; position: relative; padding: 20mm;
+            overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform-origin: top center;
+            display: flex; flex-direction: column;
         }
         
-        /* ═══ Watermark (Official Stamp) ═══ */
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            opacity: 0.04; /* خفيف جداً ليكون رسمياً */
-            pointer-events: none;
-            z-index: 0;
-            mix-blend-mode: multiply;
+        /* ═══ Watermark (Center) ═══ */
+        .watermark { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 450px; height: 450px; opacity: 0.03; pointer-events: none; z-index: 0; mix-blend-mode: multiply; 
         }
 
         /* ═══ Formal Invoice Elements ═══ */
@@ -67,14 +52,25 @@
         .invoice-table td { padding: 10px; border: 1px solid #E2E8F0; text-align: center; font-weight: 600; font-size: 13px; color: #1E293B; height: 40px; }
         .invoice-table tbody tr:nth-child(even) { background-color: #F8FAFC; }
 
-        .total-section { display: flex; justify-content: flex-end; margin-bottom: 50px; }
+        .total-section { display: flex; justify-content: flex-end; margin-bottom: 30px; }
         .total-box { border: 1px solid #1E3A8A; border-radius: 8px; overflow: hidden; display: flex; min-width: 250px; }
         .total-label { background: #F8FAFC; color: #1E3A8A; padding: 12px 20px; font-weight: 800; font-size: 15px; border-left: 1px solid #1E3A8A; display: flex; align-items: center; }
         .total-value { background: #1E3A8A; color: white; padding: 12px 20px; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; flex: 1; direction: ltr; }
 
-        /* ═══ Signatures ═══ */
-        .signatures { display: flex; justify-content: space-between; margin-top: auto; padding-top: 40px; }
-        .sig-box { width: 200px; text-align: center; border-top: 1px dashed #94A3B8; padding-top: 10px; font-size: 13px; font-weight: 700; color: #64748B; }
+        /* ═══ Bottom Fixed Stamp ═══ */
+        .stamp-section { 
+            display: flex; 
+            justify-content: flex-start; /* يضع الختم في اليسار */
+            margin-top: auto; /* يدفعه دائماً إلى أسفل الصفحة */
+            padding-top: 20px;
+        }
+        .bottom-stamp {
+            width: 140px; /* حجم الختم */
+            height: 140px;
+            object-fit: contain;
+            opacity: 0.85; /* شفافية خفيفة ليعطي واقعية */
+            transform: rotate(-12deg); /* ميلان بسيط مثل الختم الحقيقي */
+        }
 
         /* ═══ PDF Print Fixes ═══ */
         body.exporting .no-print { display: none !important; }
@@ -154,8 +150,8 @@
         <div class="w-full lg:w-2/3 preview-container">
             <div class="invoice-paper" id="invoice-paper">
                 
-                <!-- Watermark Stamp -->
-                <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="watermark" alt="BranZar Stamp" crossorigin="anonymous">
+                <!-- Watermark Center -->
+                <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="watermark" alt="BranZar Watermark" crossorigin="anonymous">
 
                 <div class="invoice-content">
                     
@@ -175,31 +171,16 @@
                         <!-- Store Info -->
                         <div class="info-box">
                             <h3>معلومات المتجر</h3>
-                            <div class="info-row">
-                                <span>اسم المتجر:</span>
-                                <span id="disp-store">---</span>
-                            </div>
-                            <div class="info-row">
-                                <span>رقم الفاتورة:</span>
-                                <span id="disp-num">---</span>
-                            </div>
-                            <div class="info-row">
-                                <span>التاريخ:</span>
-                                <span id="disp-date">---</span>
-                            </div>
+                            <div class="info-row"><span>اسم المتجر:</span><span id="disp-store">---</span></div>
+                            <div class="info-row"><span>رقم الفاتورة:</span><span id="disp-num">---</span></div>
+                            <div class="info-row"><span>التاريخ:</span><span id="disp-date">---</span></div>
                         </div>
 
                         <!-- Customer Info -->
                         <div class="info-box">
                             <h3>معلومات العميل</h3>
-                            <div class="info-row">
-                                <span>اسم العميل:</span>
-                                <span id="disp-customer">---</span>
-                            </div>
-                            <div class="info-row">
-                                <span>رقم الواتساب:</span>
-                                <span id="disp-wa" dir="ltr">---</span>
-                            </div>
+                            <div class="info-row"><span>اسم العميل:</span><span id="disp-customer">---</span></div>
+                            <div class="info-row"><span>رقم الواتساب:</span><span id="disp-wa" dir="ltr">---</span></div>
                         </div>
                     </div>
 
@@ -230,10 +211,10 @@
                         </div>
                     </div>
 
-                    <!-- Signatures -->
-                    <div class="signatures">
-                        <div class="sig-box">توقيع المستلم</div>
-                        <div class="sig-box">توقيع المدير / البائع</div>
+                    <!-- Bottom Fixed Stamp -->
+                    <div class="stamp-section">
+                        <!-- الختم الثابت -->
+                        <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="bottom-stamp" alt="ختم الفاتورة" crossorigin="anonymous">
                     </div>
 
                 </div>
@@ -263,7 +244,7 @@
             syncData();
         });
 
-        // 3. إضافة صف منتج (متناسق مع الحقول الأخرى)
+        // 3. إضافة صف منتج
         function addItemRow() {
             const container = document.getElementById('items-container');
             const rowId = 'row_' + Date.now() + Math.floor(Math.random() * 100);
@@ -302,7 +283,6 @@
 
         // 4. المزامنة والحسابات
         function syncData() {
-            // نصوص الترويسة
             document.getElementById('disp-store').textContent = document.getElementById('in-store').value || '---';
             document.getElementById('disp-customer').textContent = document.getElementById('in-customer').value || '---';
             
@@ -318,7 +298,6 @@
             document.getElementById('disp-wa').textContent = document.getElementById('in-wa').value || '---';
             document.getElementById('disp-currency').textContent = document.getElementById('in-currency').value;
 
-            // حساب الجدول
             const rows = document.querySelectorAll('#items-container .product-item-group');
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = '';
@@ -334,7 +313,6 @@
                 const rowTotal = qty * price;
                 grandTotal += rowTotal;
 
-                // طباعة الصف فقط إذا كان يحتوي على بيانات (أو نطبع 8 صفوف فارغة إذا كان أقل)
                 if (name || price > 0) {
                     validItemsCount++;
                     const tr = document.createElement('tr');
@@ -349,23 +327,15 @@
                 }
             });
 
-            // إضافة صفوف فارغة لتكملة شكل الفاتورة الرسمي (الحد الأدنى 8 صفوف)
             const minRows = 8;
             if (validItemsCount < minRows) {
                 for (let i = validItemsCount; i < minRows; i++) {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${i + 1}</td>
-                        <td class="text-right px-4"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    `;
+                    tr.innerHTML = `<td>${i + 1}</td><td></td><td></td><td></td><td></td>`;
                     tableBody.appendChild(tr);
                 }
             }
 
-            // تحديث الإجمالي
             document.getElementById('disp-total').textContent = grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
 
@@ -399,14 +369,14 @@
             });
         }
 
-        // 6. تكييف الشاشة (Responsive)
+        // 6. تكييف الشاشة
         function scalePreview() {
             const container = document.querySelector('.preview-container');
             const paper = document.getElementById('invoice-paper');
             const containerWidth = container.clientWidth - 32; 
             
-            if (window.innerWidth < 1024) { // للموبايل والتابلت
-                const scale = containerWidth / 794; // 794px = 210mm
+            if (window.innerWidth < 1024) {
+                const scale = containerWidth / 794; // 210mm
                 paper.style.transform = `scale(${scale})`;
                 container.style.height = (paper.offsetHeight * scale) + 'px';
             } else {
