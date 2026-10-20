@@ -57,10 +57,10 @@
         .total-label { background: #F8FAFC; color: #1E3A8A; padding: 12px 20px; font-weight: 800; font-size: 15px; border-left: 1px solid #1E3A8A; display: flex; align-items: center; }
         .total-value { background: #1E3A8A; color: white; padding: 12px 20px; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; flex: 1; direction: ltr; }
 
-        /* ═══ Signature/Stamp Section (Bottom) ═══ */
+        /* ═══ Signature Section (Bottom) ═══ */
         .signature-section { 
             display: flex; 
-            justify-content: flex-start; /* يضع الختم في اليسار */
+            justify-content: flex-start; /* يضع التوقيع في اليسار */
             margin-top: auto; /* يدفعه لأسفل الصفحة */
             padding-top: 20px;
         }
@@ -68,20 +68,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 180px;
+            width: 200px;
         }
         .signature-image {
             max-width: 100%;
             height: auto;
-            max-height: 90px; /* حجم مناسب للختم */
+            max-height: 90px; /* حجم مناسب للتوقيع */
             object-fit: contain;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
+        }
+        .signature-line {
+            width: 100%;
+            border-top: 1.5px dashed #94A3B8;
+            margin-bottom: 6px;
         }
         .signature-label {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
-            color: #1E3A8A; /* لون أزرق داكن ليتناسب مع التصميم */
-            letter-spacing: 1px;
+            color: #64748B;
         }
 
         /* ═══ PDF Print Fixes ═══ */
@@ -223,14 +227,12 @@
                         </div>
                     </div>
 
-                    <!-- Stamp/Signature Section -->
+                    <!-- Signature Section -->
                     <div class="signature-section">
                         <div class="signature-box">
-                            <!-- الصورة كختم -->
-                            <img src="https://i.ibb.co/R4bQVmF4/file-00000000057482108e19e99fe504f934.png" class="signature-image" alt="الختم الرسمي" crossorigin="anonymous">
-                            
-                            <!-- النص المقترح: (إذا أردت الختم لوحده بدون نص، احذف السطر التالي) -->
-                            <span class="signature-label">مختوم ومعتمد</span>
+                            <!-- الصورة الجديدة كتوقيع -->
+                            <img src="https://i.ibb.co/R4bQVmF4/file-00000000057482108e19e99fe504f934.png" class="signature-image" alt="ختم المتجر" crossorigin="anonymous">
+                                         <span class="signature-label">ختم المتجر</span>
                         </div>
                     </div>
 
