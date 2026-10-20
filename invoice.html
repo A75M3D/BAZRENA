@@ -27,30 +27,15 @@
         /* ═══ A4 Paper Layout ═══ */
         .preview-container { width: 100%; overflow-x: auto; padding: 10px; display: flex; justify-content: center; }
         .invoice-paper { 
-            width: 210mm; 
-            min-height: 297mm; 
-            background: white; 
-            position: relative; 
-            padding: 20mm; /* هوامش A4 الرسمية */
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            transform-origin: top center;
-            display: flex;
-            flex-direction: column;
+            width: 210mm; min-height: 297mm; background: white; position: relative; padding: 20mm;
+            overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform-origin: top center;
+            display: flex; flex-direction: column;
         }
         
         /* ═══ Watermark (Center) ═══ */
         .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            opacity: 0.04; /* خفيف جداً في المنتصف */
-            pointer-events: none;
-            z-index: 0;
-            mix-blend-mode: multiply;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 400px; height: 400px; opacity: 0.04; pointer-events: none; z-index: 0; mix-blend-mode: multiply;
         }
 
         /* ═══ Formal Invoice Elements ═══ */
@@ -72,18 +57,35 @@
         .total-label { background: #F8FAFC; color: #1E3A8A; padding: 12px 20px; font-weight: 800; font-size: 15px; border-left: 1px solid #1E3A8A; display: flex; align-items: center; }
         .total-value { background: #1E3A8A; color: white; padding: 12px 20px; font-weight: 900; font-size: 18px; display: flex; align-items: center; justify-content: center; flex: 1; direction: ltr; }
 
-        /* ═══ Bottom Fixed Stamp ═══ */
-        .stamp-section { 
+        /* ═══ Signature Section (Bottom) ═══ */
+        .signature-section { 
             display: flex; 
-            justify-content: flex-start; /* يضع الختم في الجهة اليسرى */
-            margin-top: auto; /* يضمن بقاءه في أسفل الصفحة دائماً */
-            padding-top: 10px;
+            justify-content: flex-start; /* يضع التوقيع في اليسار */
+            margin-top: auto; /* يدفعه لأسفل الصفحة */
+            padding-top: 20px;
         }
-        .bottom-stamp {
-            width: 120px; /* الحجم المناسب للختم */
-            height: 120px;
+        .signature-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 200px;
+        }
+        .signature-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 90px; /* حجم مناسب للتوقيع */
             object-fit: contain;
-            /* تم إزالة أي شفافية أو ميلان ليظهر الختم كما هو تماماً بألوانه الحقيقية */
+            margin-bottom: 5px;
+        }
+        .signature-line {
+            width: 100%;
+            border-top: 1.5px dashed #94A3B8;
+            margin-bottom: 6px;
+        }
+        .signature-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: #64748B;
         }
 
         /* ═══ PDF Print Fixes ═══ */
@@ -225,10 +227,15 @@
                         </div>
                     </div>
 
-                    <!-- Bottom Fixed Stamp -->
-                    <div class="stamp-section">
-                        <!-- الختم كما هو تماماً بدون أي تعديل -->
-                        <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="bottom-stamp" alt="ختم BranZar" crossorigin="anonymous">
+                    <!-- Signature Section -->
+                    <div class="signature-section">
+                        <div class="signature-box">
+                            <!-- الصورة الجديدة كتوقيع -->
+                            <img src="https://i.ibb.co/R4bQVmF4/file-00000000057482108e19e99fe504f934.png" class="signature-image" alt="التوقيع المعتمد" crossorigin="anonymous">
+                            <!-- خط التوقيع -->
+                            <div class="signature-line"></div>
+                            <span class="signature-label">التوقيع المعتمد</span>
+                        </div>
                     </div>
 
                 </div>
@@ -341,7 +348,6 @@
                 }
             });
 
-            // الحد الأدنى للصفوف الفارغة
             const minRows = 8;
             if (validItemsCount < minRows) {
                 for (let i = validItemsCount; i < minRows; i++) {
