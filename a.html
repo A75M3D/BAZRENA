@@ -631,14 +631,14 @@
                                     </label>
                                     <div class="price-input-wrap">
                                         <input type="number" id="product_price" class="form-input" required min="0" step="0.01" placeholder="0.00" dir="ltr" style="text-align: right;">
-                                        <span id="productCurrencySymbol" class="price-currency-badge">ج.س</span>
+                                        <span id="productCurrencySymbol" class="price-currency-badge">SDG</span>
                                     </div>
-                                    <input type="hidden" id="product_currency" value="ج.س">
+                                    <input type="hidden" id="product_currency" value="SDG">
                                     <div class="currency-selector">
-                                        <button type="button" class="currency-option active" data-currency="ج.س">
+                                        <button type="button" class="currency-option active" data-currency="SDG">
                                             <span class="flag">🇸🇩</span>
                                             <span class="curr-name">جنيه سوداني</span>
-                                            <span class="curr-symbol">ج.س</span>
+                                            <span class="curr-symbol">SDG</span>
                                         </button>
                                         <button type="button" class="currency-option" data-currency="USD">
                                             <span class="flag">🇺🇸</span>
@@ -879,13 +879,35 @@ const FIXED_CATEGORIES = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════
-   💱 CURRENCY SYSTEM — Per Product Only (No Store Currency)
+   💱 CURRENCY SYSTEM — Per Product Only (SDG default)
+   - SDG: جنيه سوداني (رمز "SDG")
+   - USD: دولار أمريكي (رمز "USD")
+   - Legacy migration: "ج.س" → "SDG" (auto handled)
    ═══════════════════════════════════════════════════════════════ */
 const CURRENCIES = {
-    SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'ج.س', flag: '🇸🇩' },
+    SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'SDG', flag: '🇸🇩' },
     USD: { code: 'USD', name: 'دولار أمريكي', symbol: 'USD', flag: '🇺🇸' }
 };
 const DEFAULT_CURRENCY_CODE = 'SDG';
+
+/* 🔄 Legacy symbols → canonical ("ج.س" → "SDG") */
+const LEGACY_CURRENCY_SYMBOLS = {
+    'ج.س': 'SDG',
+    'ج.س.': 'SDG',
+    'جنيه': 'SDG',
+    'جنية': 'SDG'
+};
+
+function normalizeCurrencySymbol(sym) {
+    if (!sym) return null;
+    const s = String(sym).trim();
+    if (LEGACY_CURRENCY_SYMBOLS[s]) return LEGACY_CURRENCY_SYMBOLS[s];
+    const lower = s.toLowerCase();
+    for (const k of Object.keys(LEGACY_CURRENCY_SYMBOLS)) {
+        if (k.toLowerCase() === lower) return LEGACY_CURRENCY_SYMBOLS[k];
+    }
+    return s;
+}
 
 function getCurrencyByCode(code) {
     if (!code) return CURRENCIES[DEFAULT_CURRENCY_CODE];
@@ -894,7 +916,7 @@ function getCurrencyByCode(code) {
 
 function getCurrencyBySymbol(sym) {
     if (!sym) return null;
-    const s = String(sym).trim();
+    const s = normalizeCurrencySymbol(sym);
     for (const c of Object.values(CURRENCIES)) {
         if (c.symbol === s || c.code === s) return c;
     }
@@ -910,7 +932,8 @@ function getProductCurrency(p) {
     if (p && p.currency) {
         const found = getCurrencyBySymbol(p.currency);
         if (found) return found;
-        const raw = String(p.currency).trim();
+        // رمز غير معروف — نُعيده كما هو (لكن مطبَّعًا)
+        const raw = normalizeCurrencySymbol(p.currency);
         return { code: raw, name: raw, symbol: raw, flag: '💱' };
     }
     return getStoreCurrency();
@@ -1211,7 +1234,7 @@ async function enterDashboard() {
     await loadMyProducts();
     setConn(true, currentStore.name);
     updateCooldownUI();
-    // العملة الافتراضية = جنيه سوداني (لا توجد عملة متجر الآن)
+    // العملة الافتراضية = جنيه سوداني (SDG)
     updateProductCurrencyDisplay(getStoreCurrency());
     setTimeout(setupImageFallbacks, 200);
 }
@@ -1613,8 +1636,9 @@ $('productForm').addEventListener('submit', async (e) => {
     const description = sanitize($('product_description').value).slice(0, PRODUCT_DESC_MAX);
     const price = toNumber($('product_price').value);
     const category = sanitize($('product_category').value);
-    // 🔑 القيمة المخزنة = الاسم المختصر (ج.س أو USD)
-    const currencySymbol = sanitize($('product_currency').value) || getStoreCurrency().symbol;
+    // 🔑 القيمة المخزنة = رمز العملة المختصر (SDG أو USD) — مطبَّع دائمًا
+    const rawCurrencySymbol = sanitize($('product_currency').value) || getStoreCurrency().symbol;
+    const currencySymbol = normalizeCurrencySymbol(rawCurrencySymbol) || getStoreCurrency().symbol;
 
     if (!name) { showToast('اسم المنتج مطلوب', 'error'); return; }
     if (!category) { showToast('اختر الفئة', 'error'); return; }
@@ -1633,7 +1657,7 @@ $('productForm').addEventListener('submit', async (e) => {
         store_id: currentStore.id,
         owner_uid: currentUser.uid,
         price,
-        currency: currencySymbol, // الاسم المختصر فقط
+        currency: currencySymbol, // الرمز المختصر فقط (SDG أو USD)
         img_url: sanitize($('product_img_url').value),
         colors: colors.length > 0 ? colors : null
     };
@@ -1672,7 +1696,7 @@ function resetProductForm() {
     
     $('productColorsContainer').innerHTML = '';
     $('productDescCounter').textContent = '0 / ' + PRODUCT_DESC_MAX;
-    // عملة افتراضية = جنيه سوداني
+    // عملة افتراضية = جنيه سوداني (SDG)
     updateProductCurrencyDisplay(getStoreCurrency());
     populateProductCategories('');
 }
@@ -1691,8 +1715,8 @@ window.editProduct = async (id) => {
         $('productDescCounter').textContent = (d.description || '').length + ' / ' + PRODUCT_DESC_MAX;
         populateProductCategories(d.category || '');
         
-        // 💱 استخدم عملة المنتج الخاصة به
-        const prodCurr = d.currency ? (getCurrencyBySymbol(d.currency) || getStoreCurrency()) : getStoreCurrency();
+        // 💱 عملة المنتج — يُطبَّع أي رمز قديم "ج.س" إلى "SDG"
+        const prodCurr = getProductCurrency(d);
         updateProductCurrencyDisplay(prodCurr);
         
         updateMainImgPreview();
@@ -1792,7 +1816,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v9.0 — Per-Product Currency (SDG/USD) + No Store Currency + Smart Color Dot', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v9.1 — SDG default currency (was ج.س) + auto-migration', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
