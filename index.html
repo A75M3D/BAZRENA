@@ -513,7 +513,7 @@ body.theme-dark .currency-badge {
   <div class="cart-footer">
     <div id="cartTotal" class="cart-total">
       <span>المجموع:</span>
-      <span id="cartTotalAmount">0 ج.س</span>
+      <span id="cartTotalAmount">0 SDG</span>
     </div>
     <button id="continueShopping" class="btn-ghost ripple">مواصلة التسوق</button>
     <button id="whatsappOrder" class="btn-whatsapp ripple"><svg class="mi mi-xs" aria-hidden="true"><use href="#mi-whatsapp"/></svg><span>طلب السلة عبر واتساب</span></button>
@@ -717,7 +717,7 @@ body.theme-dark .currency-badge {
 
   // 📌 العملات المدعومة — متطابقة مع لوحة تحكم المتجر (a.html)
   window.BZR_CURRENCIES = {
-    SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'ج.س', flag: '🇸🇩' },
+    SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'SDG', flag: '🇸🇩' },
     USD: { code: 'USD', name: 'دولار أمريكي', symbol: 'USD', flag: '🇺🇸' }
   };
   window.BZR_DEFAULT_CURRENCY = 'SDG';
@@ -729,7 +729,7 @@ body.theme-dark .currency-badge {
         || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
   };
 
-  // 🔎 جلب كائن العملة بالرمز المخزَّن داخل المنتج (مثل "ج.س" أو "USD")
+  // 🔎 جلب كائن العملة بالرمز المخزَّن داخل المنتج (مثل "SDG" أو "USD")
   window.bzrGetCurrencyBySymbol = function (sym) {
     if (!sym) return null;
     const s = String(sym).trim();
@@ -752,9 +752,9 @@ body.theme-dark .currency-badge {
   };
 
   // 💰 تنسيق سعر واحد مع رمز العملة
-  //   bzrFormatPrice(1500, "ج.س")   → "1,500 ج.س"
+  //   bzrFormatPrice(1500, "SDG")   → "1,500 SDG"
   //   bzrFormatPrice(12.5, "USD")   → "12.5 USD"
-  //   bzrFormatPrice(1500)          → "1,500 ج.س"   (افتراضي)
+  //   bzrFormatPrice(1500)          → "1,500 SDG"   (افتراضي)
   window.bzrFormatPrice = function (price, currencySymbol) {
     const p = parseFloat(price);
     const num = isNaN(p) ? 0 : p;
@@ -765,7 +765,7 @@ body.theme-dark .currency-badge {
   };
 
   // 🧮 حساب مجموع السلة مقسّماً حسب العملة (يدعم سلة بعملات مختلطة)
-  //   يُعيد كائن مثل: { "ج.س": 1500, "USD": 25 }
+  //   يُعيد كائن مثل: { "SDG": 1500, "USD": 25 }
   window.bzrComputeCartTotals = function (cart) {
     const totals = {};
     (cart || []).forEach(function (item) {
@@ -809,6 +809,25 @@ body.theme-dark .currency-badge {
     return window.bzrGetCurrencyBySymbol(productOrSymbol)
         || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
   };
+
+  // 🔄 ترحيل توافق خلفي: تحويل أي سلة قديمة مخزَّنة برمز "ج.س" إلى "SDG"
+  try {
+    var CART_KEY = 'branzar_cart';
+    var raw = localStorage.getItem(CART_KEY);
+    if (raw) {
+      var cart = JSON.parse(raw);
+      if (Array.isArray(cart)) {
+        var changed = false;
+        cart.forEach(function (it) {
+          if (it && it.currency && (it.currency === 'ج.س' || it.currency === 'ج.س.')) {
+            it.currency = 'SDG';
+            changed = true;
+          }
+        });
+        if (changed) localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      }
+    }
+  } catch (e) {}
 })();
 </script>
 
