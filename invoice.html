@@ -135,8 +135,8 @@
                     <input type="text" id="in-customer" class="form-input" placeholder="اسم العميل" oninput="syncData()">
                 </div>
                 <div>
-                    <label class="form-label">رقم الواتساب</label>
-                    <input type="tel" id="in-wa" class="form-input" placeholder="مثال: 249912345678" oninput="syncData()">
+                    <label class="form-label">الموقع</label>
+                    <input type="text" id="in-location" class="form-input" placeholder="مثال: الخرطوم - الرياض" oninput="syncData()">
                 </div>
             </div>
 
@@ -196,7 +196,7 @@
                         <div class="info-box">
                             <h3>معلومات العميل</h3>
                             <div class="info-row"><span>اسم العميل:</span><span id="disp-customer">---</span></div>
-                            <div class="info-row"><span>رقم الواتساب:</span><span id="disp-wa" dir="ltr">---</span></div>
+                            <div class="info-row"><span>الموقع:</span><span id="disp-location">---</span></div>
                         </div>
                     </div>
 
@@ -314,7 +314,7 @@
                 document.getElementById('disp-date').textContent = `${y}/${m}/${d}`;
             }
             
-            document.getElementById('disp-wa').textContent = document.getElementById('in-wa').value || '---';
+            document.getElementById('disp-location').textContent = document.getElementById('in-location').value || '---';
             document.getElementById('disp-currency').textContent = document.getElementById('in-currency').value;
 
             const rows = document.querySelectorAll('#items-container .product-item-group');
