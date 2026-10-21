@@ -1,8 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.11.0 — core.js
+   BranZar v9.12.0 — core.js
    Layer 1: Config + Utils + Security + Fingerprint + Cache + Firebase + Auth + State
-   ✅ v9.11.0: multi-currency support (helpers live in index.html;
-               state/cart automatically carry `currency` field)
+   ✅ v9.12.0: SDG default currency (was "ج.س")
+                - bzrNormalizeCurrencySymbol() exposed globally
+                - cart migrated on load: "ج.س" → "SDG"
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -86,6 +87,39 @@ const KEYS = Object.freeze({
 });
 
 const VERIFIED_BADGE_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true"><path fill="#1877F2" d="M12 1l2.35 2.05 3.09-.41 1.13 2.92 2.92 1.13-.41 3.09L23 12l-2.05 2.35.41 3.09-2.92 1.13-1.13 2.92-3.09-.41L12 23l-2.35-2.05-3.09.41-1.13-2.92-2.92-1.13.41-3.09L1 12l2.05-2.35-.41-3.09 2.92-1.13 1.13-2.92 3.09.41L12 1z"/><path fill="#fff" d="M10.6 16.2l-3.8-3.8 1.4-1.4 2.4 2.4 6-6 1.4 1.4z"/></svg>';
+
+/* ═══════════════════════════════════════════════════════════
+   💱 Currency Normalization — SDG default
+   - Legacy "ج.س" symbols auto-migrate to "SDG"
+   - Exposed globally so ui.js / data.js / app.js can reuse
+   ═══════════════════════════════════════════════════════════ */
+(function initCurrencyNormalizer() {
+  'use strict';
+  var LEGACY = {
+    'ج.س': 'SDG',
+    'ج.س.': 'SDG',
+    'جنيه': 'SDG',
+    'جنية': 'SDG',
+    'sdg': 'SDG',
+    'usd': 'USD'
+  };
+
+  function normalize(sym) {
+    if (!sym) return null;
+    var s = String(sym).trim();
+    if (LEGACY[s]) return LEGACY[s];
+    var lower = s.toLowerCase();
+    for (var k in LEGACY) {
+      if (LEGACY.hasOwnProperty(k) && k.toLowerCase() === lower) {
+        return LEGACY[k];
+      }
+    }
+    return s;
+  }
+
+  window.BZR_LEGACY_SYMBOLS = LEGACY;
+  window.bzrNormalizeCurrencySymbol = normalize;
+})();
 
 /* ═══ UTILS ═══ */
 function sanitizeHTML(str) {
@@ -514,9 +548,31 @@ async function getDeviceFingerprint() {
   return _fpPromise;
 }
 
-/* ═══ STATE ═══ */
+/* ═══════════════════════════════════════════════════════════
+   🛒 STATE — cart loaded with SDG auto-migration
+   Any legacy item stored with currency "ج.س" is rewritten
+   to "SDG" (or "USD" if applicable) immediately on load.
+   ═══════════════════════════════════════════════════════════ */
 let cart = [];
-try { cart = JSON.parse(localStorage.getItem(KEYS.CART)) || []; } catch(e){ cart = []; }
+try {
+  cart = JSON.parse(localStorage.getItem(KEYS.CART)) || [];
+  if (Array.isArray(cart) && typeof window.bzrNormalizeCurrencySymbol === 'function') {
+    var _cartMigrated = false;
+    cart.forEach(function (it) {
+      if (it && it.currency) {
+        var norm = window.bzrNormalizeCurrencySymbol(it.currency);
+        if (norm && norm !== it.currency) {
+          it.currency = norm;
+          _cartMigrated = true;
+        }
+      }
+    });
+    if (_cartMigrated) {
+      try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){}
+    }
+  }
+} catch(e){ cart = []; }
+
 let stores = [], categories = [];
 let currentCategory = null;
 let currentStore = null, currentStoreId = null;
@@ -795,4 +851,4 @@ function getFallbackHex(colorName) {
   return result;
 }
 
-console.log('[BZR] core.js loaded ✅ v9.11.0 (multi-currency: state ready)');
+console.log('[BZR] core.js loaded ✅ v9.12.0 — SDG default currency + legacy "ج.س" auto-migration on cart');
