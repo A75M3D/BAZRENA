@@ -1,9 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.11.0 — ui.js
+   BranZar v9.12.0 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
    ✅ Material SVG icons — native createElementNS
    ✅ Store cards: follow button + share button
    ✅ Multi-Currency (SDG/USD) — per-product currency, cart mixing
+   ✅ SDG is the default currency symbol (was "ج.س")
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -35,11 +36,39 @@ window.bzrSetIcon = bzrSetIcon;
 
 /* ═══════════════════════════════════════════════════════════════
    💱 Currency Resolution (multi-currency — SDG default)
-   - Products carry only the SYMBOL in `currency` field ("ج.س" | "USD")
+   - Products carry only the SYMBOL in `currency` field ("SDG" | "USD")
+   - Legacy products with "ج.س" symbol are auto-migrated to "SDG"
    - Legacy products without `currency` → fall back to store's currency
      (looked up by store_name) → else default SDG
    ═══════════════════════════════════════════════════════════════ */
-var _BZR_FALLBACK_CURRENCY = { code: 'SDG', name: 'جنيه سوداني', symbol: 'ج.س', flag: '🇸🇩' };
+var _BZR_FALLBACK_CURRENCY = { code: 'SDG', name: 'جنيه سوداني', symbol: 'SDG', flag: '🇸🇩' };
+
+/* 🔄 Legacy symbol aliases → canonical currency code */
+var _BZR_LEGACY_SYMBOLS = {
+  'ج.س': 'SDG',
+  'ج.س.': 'SDG',
+  'جنيه': 'SDG',
+  'جنية': 'SDG',
+  'sdg': 'SDG',
+  'SDG': 'SDG',
+  'usd': 'USD',
+  'USD': 'USD'
+};
+
+/* 🔄 Convert legacy symbols to canonical ones ("ج.س" → "SDG") */
+function bzrNormalizeCurrencySymbol(sym) {
+  if (!sym) return null;
+  var s = String(sym).trim();
+  if (_BZR_LEGACY_SYMBOLS[s]) return _BZR_LEGACY_SYMBOLS[s];
+  // also try lowercase match
+  var lower = s.toLowerCase();
+  for (var k in _BZR_LEGACY_SYMBOLS) {
+    if (_BZR_LEGACY_SYMBOLS.hasOwnProperty(k) && k.toLowerCase() === lower) {
+      return _BZR_LEGACY_SYMBOLS[k];
+    }
+  }
+  return s;
+}
 
 function bzrResolveProductCurrency(product) {
   if (typeof window.BZR_CURRENCIES === 'undefined') return _BZR_FALLBACK_CURRENCY;
@@ -48,13 +77,22 @@ function bzrResolveProductCurrency(product) {
 
   // 1) Explicit per-product currency (symbol snapshot)
   if (product.currency) {
+    var rawSymbol = String(product.currency).trim();
+    // 🔄 Normalize legacy symbols ("ج.س" → "SDG")
+    var normalized = bzrNormalizeCurrencySymbol(rawSymbol);
     var found = (typeof window.bzrGetCurrencyBySymbol === 'function')
-      ? window.bzrGetCurrencyBySymbol(product.currency)
+      ? window.bzrGetCurrencyBySymbol(normalized)
       : null;
     if (found) return found;
+
+    // Fallback: try the raw symbol directly (in case it's some other recognized currency)
+    var foundRaw = (typeof window.bzrGetCurrencyBySymbol === 'function')
+      ? window.bzrGetCurrencyBySymbol(rawSymbol)
+      : null;
+    if (foundRaw) return foundRaw;
+
     // Unknown symbol — preserve as-is
-    var raw = String(product.currency).trim();
-    return { code: raw, name: raw, symbol: raw, flag: '💱' };
+    return { code: normalized, name: normalized, symbol: normalized, flag: '💱' };
   }
 
   // 2) Legacy: use store's current currency if we know the store
@@ -72,17 +110,45 @@ function bzrResolveProductCurrency(product) {
 }
 
 function bzrSafeFormatPrice(price, currencySymbol) {
+  // 🔄 Normalize legacy symbols before formatting
+  var sym = bzrNormalizeCurrencySymbol(currencySymbol) || _BZR_FALLBACK_CURRENCY.symbol;
   if (typeof window.bzrFormatPrice === 'function') {
-    return window.bzrFormatPrice(price, currencySymbol);
+    return window.bzrFormatPrice(price, sym);
   }
   var p = parseFloat(price) || 0;
-  var sym = currencySymbol || _BZR_FALLBACK_CURRENCY.symbol;
   return p.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' ' + sym;
 }
 
 // expose (optional external use)
 window.bzrResolveProductCurrency = bzrResolveProductCurrency;
 window.bzrSafeFormatPrice = bzrSafeFormatPrice;
+window.bzrNormalizeCurrencySymbol = bzrNormalizeCurrencySymbol;
+
+/* ═══════════════════════════════════════════════════════════════
+   🔄 CART MIGRATION — convert legacy "ج.س" → "SDG" on load
+   (defensive duplicate of the migration already in index.html —
+    ensures compatibility if ui.js is loaded standalone)
+   ═══════════════════════════════════════════════════════════════ */
+(function migrateLegacyCartCurrencies() {
+  try {
+    var key = (typeof KEYS !== 'undefined' && KEYS.CART) ? KEYS.CART : 'branzar_cart';
+    var raw = localStorage.getItem(key);
+    if (!raw) return;
+    var list = JSON.parse(raw);
+    if (!Array.isArray(list)) return;
+    var changed = false;
+    list.forEach(function (it) {
+      if (it && it.currency) {
+        var norm = bzrNormalizeCurrencySymbol(it.currency);
+        if (norm && norm !== it.currency) {
+          it.currency = norm;
+          changed = true;
+        }
+      }
+    });
+    if (changed) localStorage.setItem(key, JSON.stringify(list));
+  } catch (e) { /* silent */ }
+})();
 
 /* ═══ THEME ═══ */
 function applyTheme(theme) {
@@ -733,7 +799,7 @@ function createSearchProductRow(product) {
       description: product.description || '',
       colors: product.colors || null,
       category: product.category || null,
-      currency: product.currency || null
+      currency: bzrNormalizeCurrencySymbol(product.currency) || null
     });
   });
   return row;
@@ -1423,7 +1489,7 @@ function buildProductCard(product, showStoreName) {
     description: product.description || '',
     colors: product.colors || null,
     category: product.category || null,
-    currency: product.currency || _pCurr.symbol   // 🆕 snapshot for modal & cart
+    currency: bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol   // 🆕 snapshot for modal & cart
   };
 
   const card = document.createElement('div');
@@ -1636,11 +1702,9 @@ function updateModalActionButtons() {
     p.selectedColor = selectedColorVariant.name;
     p.img_url = selectedColorVariant.image || currentModalProduct.img_url;
   }
-  /* 🆕 make sure currency is captured — used at cart-add time */
-  if (!p.currency) {
-    const _c = bzrResolveProductCurrency(p);
-    p.currency = _c.symbol;
-  }
+  /* 🆕 normalize currency before snapshotting — used at cart-add time */
+  const _c = bzrResolveProductCurrency(p);
+  p.currency = bzrNormalizeCurrencySymbol(p.currency) || _c.symbol;
   document.getElementById('addToCartFromModal').dataset.product = JSON.stringify(p);
   document.getElementById('buyNowFromModal').dataset.product = JSON.stringify(p);
 }
@@ -1688,13 +1752,14 @@ function addToCart(product) {
   const store = stores.find(s => s.name === product.store_name);
   const cartItemId = product.selectedColor ? product.id + '_' + product.selectedColor : product.id;
 
-  /* 💱 snapshot the resolved currency symbol on the cart item */
+  /* 💱 snapshot the resolved & normalized currency symbol on the cart item */
   const _pCurr = bzrResolveProductCurrency(product);
+  const finalSymbol = bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol;
 
   const item = {
     ...product,
     cartItemId,
-    currency: product.currency || _pCurr.symbol,   // 🆕 self-contained
+    currency: finalSymbol,   // 🆕 always canonical ("SDG" or "USD")
     quantity: 1,
     store_whatsapp: store?.whatsapp_number || ''
   };
@@ -1738,10 +1803,11 @@ function updateCartUI() {
   } else {
     const frag = document.createDocumentFragment();
     cart.forEach(item => {
-      /* 💱 per-item currency */
-      const itemCurr = item.currency
-        ? (window.bzrGetCurrencyBySymbol ? (window.bzrGetCurrencyBySymbol(item.currency) || { symbol: item.currency }) : { symbol: item.currency })
-        : _BZR_FALLBACK_CURRENCY;
+      /* 💱 per-item currency — normalize legacy "ج.س" → "SDG" on the fly */
+      const normalizedSymbol = bzrNormalizeCurrencySymbol(item.currency) || _BZR_FALLBACK_CURRENCY.symbol;
+      const itemCurr = (window.bzrGetCurrencyBySymbol
+        ? (window.bzrGetCurrencyBySymbol(normalizedSymbol) || { symbol: normalizedSymbol })
+        : { symbol: normalizedSymbol });
       const itemSym = itemCurr.symbol;
       const lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
       const lineTotalStr = bzrSafeFormatPrice(lineTotal, itemSym);
@@ -1777,7 +1843,12 @@ function updateCartUI() {
 
   /* 💱 grand total (currency-aware, mixed currencies supported) */
   if (typeof window.bzrRenderCartTotals === 'function') {
-    window.bzrRenderCartTotals(cart);
+    // Normalize currency symbols before rendering to avoid legacy "ج.س" totals
+    const normalizedCart = cart.map(i => ({
+      ...i,
+      currency: bzrNormalizeCurrencySymbol(i.currency) || _BZR_FALLBACK_CURRENCY.symbol
+    }));
+    window.bzrRenderCartTotals(normalizedCart);
   } else {
     const total = cart.reduce((s,i) => s + (parseFloat(i.price)||0) * (i.quantity||0), 0);
     const el = document.getElementById('cartTotalAmount');
@@ -1822,21 +1893,23 @@ document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   haptic('medium');
   let msg = '🛒 *طلب جديد من BranZar*\n\n📋 *تفاصيل الطلب:*\n━━━━━━━━━━━━━━\n';
   cart.forEach((item, index) => {
-    const _ci = item.currency
-      ? (window.bzrGetCurrencyBySymbol ? (window.bzrGetCurrencyBySymbol(item.currency) || { symbol: item.currency }) : { symbol: item.currency })
-      : _BZR_FALLBACK_CURRENCY;
+    const normalizedSymbol = bzrNormalizeCurrencySymbol(item.currency) || _BZR_FALLBACK_CURRENCY.symbol;
     const lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
-    msg += `${index + 1}. *${item.name}*\n   • الكمية: ${item.quantity}\n   • السعر: ${lineTotal.toLocaleString()} ${_ci.symbol}\n`;
+    msg += `${index + 1}. *${item.name}*\n   • الكمية: ${item.quantity}\n   • السعر: ${lineTotal.toLocaleString()} ${normalizedSymbol}\n`;
     if (item.selectedColor) msg += `   • اللون: ${item.selectedColor}\n`;
     if (item.store_name) msg += `   • المتجر: ${item.store_name}\n`;
     msg += '\n';
   });
   msg += '━━━━━━━━━━━━━━\n';
 
-  /* 💱 grand total across currencies */
+  /* 💱 grand total across currencies — normalize legacy symbols */
   let totalStr;
   if (typeof window.bzrComputeCartTotals === 'function' && typeof window.bzrFormatCartTotals === 'function') {
-    totalStr = window.bzrFormatCartTotals(window.bzrComputeCartTotals(cart));
+    const normalizedCart = cart.map(i => ({
+      ...i,
+      currency: bzrNormalizeCurrencySymbol(i.currency) || _BZR_FALLBACK_CURRENCY.symbol
+    }));
+    totalStr = window.bzrFormatCartTotals(window.bzrComputeCartTotals(normalizedCart));
   } else {
     const total = cart.reduce((s, i) => s + (parseFloat(i.price) || 0) * (i.quantity || 0), 0);
     totalStr = total.toLocaleString() + ' ' + _BZR_FALLBACK_CURRENCY.symbol;
@@ -2071,4 +2144,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.11.0 — multi-currency (SDG/USD) + follow + share');
+console.log('[BZR] ui.js loaded ✅ v9.12.0 — SDG default currency + legacy "ج.س" auto-migration');
