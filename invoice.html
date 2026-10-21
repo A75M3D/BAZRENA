@@ -134,9 +134,13 @@
                     <label class="form-label">اسم العميل</label>
                     <input type="text" id="in-customer" class="form-input" placeholder="اسم العميل" oninput="syncData()">
                 </div>
-                <div>
+                <div class="mb-4">
                     <label class="form-label">الموقع</label>
                     <input type="text" id="in-location" class="form-input" placeholder="مثال: الخرطوم - الرياض" oninput="syncData()">
+                </div>
+                <div>
+                    <label class="form-label">طريقة الدفع</label>
+                    <input type="text" id="in-payment" class="form-input" placeholder="مثال: بنكك" oninput="syncData()">
                 </div>
             </div>
 
@@ -197,6 +201,7 @@
                             <h3>معلومات العميل</h3>
                             <div class="info-row"><span>اسم العميل:</span><span id="disp-customer">---</span></div>
                             <div class="info-row"><span>الموقع:</span><span id="disp-location">---</span></div>
+                            <div class="info-row"><span>طريقة الدفع:</span><span id="disp-payment">---</span></div>
                         </div>
                     </div>
 
@@ -315,6 +320,7 @@
             }
             
             document.getElementById('disp-location').textContent = document.getElementById('in-location').value || '---';
+            document.getElementById('disp-payment').textContent = document.getElementById('in-payment').value || '---';
             document.getElementById('disp-currency').textContent = document.getElementById('in-currency').value;
 
             const rows = document.querySelectorAll('#items-container .product-item-group');
