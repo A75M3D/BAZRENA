@@ -1,11 +1,12 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.10.7 — Styles (Mobile App Optimized)
+   BranZar v9.10.8 — Styles (Mobile App Optimized)
    ✅ Premium Compact Account Modal
    ✅ Clean Header (شعار + بحث + سلة فقط — بدون زر حساب)
    ✅ Hero Slider (5 صور تتحرك تلقائياً)
    ✅ بطاقات متاجر محسّنة + صورة بروفايل كبيرة وواضحة
    ✅ Bottom Nav متناسق (5 أزرار)
    ✅ أيقونة تاج SVG احترافية للاشتراكات (بدون إيموجي)
+   ✅ 🆕 شريط السوشيال (فيسبوك/تيك توك/إنستغرام/بريد) في حسابي
    ═══════════════════════════════════════════════════════════ */
 
 :root {
@@ -553,17 +554,14 @@ body.theme-dark .bzr-search-icon-btn::after { color: #CBD5E1; }
   transition: filter 0.25s ease;
 }
 
-/* عند التمرير */
 .bzr-nav-item.bzr-nav-offers:hover .bzr-nav-offers-icon {
   filter: drop-shadow(0 2px 4px rgba(255, 122, 0, 0.45));
 }
 
-/* عند الضغط */
 .bzr-nav-item.bzr-nav-offers:active .bzr-nav-offers-icon {
   transform: scale(0.85);
 }
 
-/* عند التفعيل (active) */
 .bzr-nav-item.bzr-nav-offers.active .bzr-nav-offers-icon {
   transform: translateY(-2px) scale(1.1);
   filter: drop-shadow(0 3px 6px rgba(255, 122, 0, 0.55));
@@ -1396,6 +1394,142 @@ body.theme-dark .store-card .store-logo {
   box-shadow: 0 12px 26px -8px rgba(255, 122, 0, 0.85);
 }
 
+/* ═══════════════════════════════════════════════════════════
+   🌐 SOCIAL ROW — فيسبوك / تيك توك / إنستغرام / بريد
+   مضغوط: يظهر كاملاً بدون الحاجة للتمرير
+   ═══════════════════════════════════════════════════════════ */
+.acc-social-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 0 6px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.acc-social-btn {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: #F3F4F6;
+  color: #374151;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.25s ease;
+  box-shadow: 0 2px 6px -2px rgba(15, 23, 42, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.acc-social-btn:hover,
+.acc-social-btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -6px rgba(15, 23, 42, 0.25);
+  outline: none;
+}
+
+.acc-social-btn:active {
+  transform: translateY(0) scale(0.94);
+}
+
+.acc-social-btn svg.mi {
+  width: 20px;
+  height: 20px;
+  display: block;
+  pointer-events: none;
+  fill: currentColor;
+}
+
+/* ألوان كل منصة */
+.acc-social-fb {
+  background: #1877F2;
+  color: #fff;
+  box-shadow: 0 4px 12px -4px rgba(24, 119, 242, 0.55);
+}
+.acc-social-fb:hover,
+.acc-social-fb:focus-visible {
+  background: #0f63d1;
+  box-shadow: 0 10px 20px -6px rgba(24, 119, 242, 0.75);
+}
+
+.acc-social-tiktok {
+  background: #111111;
+  color: #fff;
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.55);
+}
+.acc-social-tiktok:hover,
+.acc-social-tiktok:focus-visible {
+  background: #000000;
+  box-shadow: 0 10px 20px -6px rgba(0, 0, 0, 0.75);
+}
+
+.acc-social-ig {
+  background: linear-gradient(135deg, #F58529 0%, #DD2A7B 50%, #8134AF 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px -4px rgba(221, 42, 123, 0.55);
+}
+.acc-social-ig:hover,
+.acc-social-ig:focus-visible {
+  filter: brightness(1.1) saturate(1.08);
+  box-shadow: 0 10px 22px -6px rgba(221, 42, 123, 0.8);
+}
+
+.acc-social-email {
+  background: #EA4335;
+  color: #fff;
+  box-shadow: 0 4px 12px -4px rgba(234, 67, 53, 0.55);
+}
+.acc-social-email:hover,
+.acc-social-email:focus-visible {
+  background: #c52318;
+  box-shadow: 0 10px 20px -6px rgba(234, 67, 53, 0.75);
+}
+
+/* دارك مود */
+body.theme-dark .acc-social-btn {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+body.theme-dark .acc-social-fb   { background: #1877F2; color: #fff; }
+body.theme-dark .acc-social-tiktok { background: #0B0B0B; color: #fff; }
+body.theme-dark .acc-social-email { background: #EA4335; color: #fff; }
+
+/* شاشات صغيرة — تصغير بسيط */
+@media (max-width: 400px) {
+  .acc-social-row { gap: 8px; padding: 2px 0 4px; }
+  .acc-social-btn {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+    border-radius: 12px;
+  }
+  .acc-social-btn svg.mi { width: 18px; height: 18px; }
+}
+
+@media (max-width: 340px) {
+  .acc-social-row { gap: 6px; }
+  .acc-social-btn {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    border-radius: 11px;
+  }
+  .acc-social-btn svg.mi { width: 16px; height: 16px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   بقية أقسام المودال (روابط / إعدادات / فوتَر)
+   ═══════════════════════════════════════════════════════════ */
 .acc-section-label {
   display: flex; align-items: center; gap: 6px;
   padding: 4px 4px 2px;
@@ -1540,6 +1674,9 @@ body.theme-dark .acc-setting-view .view-toggle-pill { background: var(--c-surfac
   .acc-header-title { font-size: 1rem; }
   .acc-body { padding: 10px 12px calc(10px + var(--safe-bottom, 0px)); gap: 8px; }
   .acc-quick-btn { height: 42px; font-size: 0.8rem; }
+  .acc-social-btn { width: 38px; height: 38px; flex-basis: 38px; border-radius: 12px; }
+  .acc-social-btn svg.mi { width: 18px; height: 18px; }
+  .acc-social-row { gap: 8px; padding: 2px 0 4px; }
   .acc-link { padding: 6px 8px; min-height: 40px; font-size: 0.82rem; }
   .acc-link-icon { width: 30px; height: 30px; }
   .acc-link-icon svg.mi { width: 15px; height: 15px; }
@@ -2357,6 +2494,7 @@ body.theme-dark .product-card-desc { color: #9CA3AF; }
   .bzr-all-subs-content small { font-size: 10px; }
   .bzr-all-subs-arrow { font-size: 26px; }
 }
+
 /* ═══════════════════════════════════════════════════════════
    🏪 زر "إنشاء متجر مجاناً" — أزرق بارز + نبض + نقطة "جديد"
    ═══════════════════════════════════════════════════════════ */
