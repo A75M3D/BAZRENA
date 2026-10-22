@@ -563,34 +563,6 @@ body.theme-dark .currency-badge {
         </a>
       </div>
 
-      <!-- 🌐 SOCIAL STRIP — كل الأيقونات ظاهرة بدون تمرير -->
-      <div class="acc-social-row" aria-label="تابعنا على وسائل التواصل">
-        <a href="https://www.facebook.com/profile.php?id=61595486162056"
-           target="_blank" rel="noopener noreferrer"
-           class="acc-social-btn acc-social-fb"
-           aria-label="فيسبوك" title="فيسبوك">
-          <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-facebook"/></svg>
-        </a>
-        <a href="https://vm.tiktok.com/ZS9UWWVDct1mE-HykLT/"
-           target="_blank" rel="noopener noreferrer"
-           class="acc-social-btn acc-social-tiktok"
-           aria-label="تيك توك" title="تيك توك">
-          <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-tiktok"/></svg>
-        </a>
-        <a href="https://www.instagram.com/branzar6?vrfl=MTJiNnIyaWFqMHpteg=="
-           target="_blank" rel="noopener noreferrer"
-           class="acc-social-btn acc-social-ig"
-           aria-label="انستغرام" title="انستغرام">
-          <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-instagram"/></svg>
-        </a>
-        <a href="mailto:branzarstore@gmail.com"
-           class="acc-social-btn acc-social-email"
-           aria-label="البريد الإلكتروني branzarstore@gmail.com"
-           title="branzarstore@gmail.com">
-          <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-email"/></svg>
-        </a>
-      </div>
-
       <div class="acc-section-label">
         <span class="acc-section-dot"></span>
         <span>روابط مهمة</span>
@@ -679,6 +651,34 @@ body.theme-dark .currency-badge {
         </div>
       </div>
 
+      <!-- 🌐 SOCIAL STRIP — بين الإعدادات ورقم الإصدار -->
+      <div class="acc-social-row" aria-label="تابعنا على وسائل التواصل">
+        <a href="https://www.facebook.com/profile.php?id=61595486162056"
+           target="_blank" rel="noopener noreferrer"
+           class="acc-social-btn acc-social-fb"
+           aria-label="فيسبوك" title="فيسبوك">
+          <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-facebook"/></svg>
+        </a>
+        <a href="https://vm.tiktok.com/ZS9UWWVDct1mE-HykLT/"
+           target="_blank" rel="noopener noreferrer"
+           class="acc-social-btn acc-social-tiktok"
+           aria-label="تيك توك" title="تيك توك">
+          <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-tiktok"/></svg>
+        </a>
+        <a href="https://www.instagram.com/branzar6?vrfl=MTJiNnIyaWFqMHpteg=="
+           target="_blank" rel="noopener noreferrer"
+           class="acc-social-btn acc-social-ig"
+           aria-label="انستغرام" title="انستغرام">
+          <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-instagram"/></svg>
+        </a>
+        <a href="mailto:branzarstore@gmail.com"
+           class="acc-social-btn acc-social-email"
+           aria-label="البريد الإلكتروني branzarstore@gmail.com"
+           title="branzarstore@gmail.com">
+          <svg class="mi mi-sm" aria-hidden="true"><use href="#mi-email"/></svg>
+        </a>
+      </div>
+
       <div class="acc-footer">
         <span class="acc-footer-version">نسخة التطبيق: v1.0.0</span>
       </div>
@@ -750,21 +750,18 @@ body.theme-dark .currency-badge {
 (function () {
   'use strict';
 
-  // 📌 العملات المدعومة — متطابقة مع لوحة تحكم المتجر (a.html)
   window.BZR_CURRENCIES = {
     SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'SDG', flag: '🇸🇩' },
     USD: { code: 'USD', name: 'دولار أمريكي', symbol: 'USD', flag: '🇺🇸' }
   };
   window.BZR_DEFAULT_CURRENCY = 'SDG';
 
-  // 🔎 جلب كائن العملة بالكود
   window.bzrGetCurrencyByCode = function (code) {
     if (!code) return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
     return window.BZR_CURRENCIES[String(code).toUpperCase()]
         || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
   };
 
-  // 🔎 جلب كائن العملة بالرمز المخزَّن داخل المنتج (مثل "SDG" أو "USD")
   window.bzrGetCurrencyBySymbol = function (sym) {
     if (!sym) return null;
     const s = String(sym).trim();
@@ -774,19 +771,16 @@ body.theme-dark .currency-badge {
     return null;
   };
 
-  // 🔎 جلب عملة منتج محدد (أولوية للحقل currency المخزَّن، ثم الافتراضي)
   window.bzrGetProductCurrency = function (product) {
     if (product && product.currency) {
       const found = window.bzrGetCurrencyBySymbol(product.currency);
       if (found) return found;
-      // رمز غير معروف — نعيده كما هو للحفاظ على البيانات
       const raw = String(product.currency).trim();
       return { code: raw, name: raw, symbol: raw, flag: '💱' };
     }
     return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
   };
 
-  // 💰 تنسيق سعر واحد مع رمز العملة
   window.bzrFormatPrice = function (price, currencySymbol) {
     const p = parseFloat(price);
     const num = isNaN(p) ? 0 : p;
@@ -796,7 +790,6 @@ body.theme-dark .currency-badge {
     return formatted + ' ' + sym;
   };
 
-  // 🧮 حساب مجموع السلة مقسّماً حسب العملة
   window.bzrComputeCartTotals = function (cart) {
     const totals = {};
     (cart || []).forEach(function (item) {
@@ -809,7 +802,6 @@ body.theme-dark .currency-badge {
     return totals;
   };
 
-  // 📝 تنسيق المجاميع كنص واحد للعرض
   window.bzrFormatCartTotals = function (totals) {
     const entries = Object.entries(totals || {});
     if (!entries.length) {
@@ -823,7 +815,6 @@ body.theme-dark .currency-badge {
       .join(' + ');
   };
 
-  // 🖨️ رسم مجموع السلة في عنصر محدد
   window.bzrRenderCartTotals = function (cart, elementId) {
     const el = document.getElementById(elementId || 'cartTotalAmount');
     if (!el) return;
@@ -831,7 +822,6 @@ body.theme-dark .currency-badge {
     el.textContent = window.bzrFormatCartTotals(totals);
   };
 
-  // 🌐 كشف الحالة لتطبيقات المتاجر في اللوحة (اختياري — للتناسق)
   window.bzrCurrencyInfo = function (productOrSymbol) {
     if (productOrSymbol && typeof productOrSymbol === 'object') {
       return window.bzrGetProductCurrency(productOrSymbol);
@@ -840,7 +830,6 @@ body.theme-dark .currency-badge {
         || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
   };
 
-  // 🔄 ترحيل توافق خلفي
   try {
     var CART_KEY = 'branzar_cart';
     var raw = localStorage.getItem(CART_KEY);
