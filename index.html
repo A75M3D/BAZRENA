@@ -2,8 +2,6 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#FF7A00">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,21 +19,33 @@
 <meta property="og:url" content="https://branzar.vercel.app/">
 <meta property="og:title" content="BranZar | بران زار - أكبر سوق إلكتروني">
 <meta property="og:description" content="🛒🛍️ اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن.">
-<meta property="og:image" content="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png">
+<!-- ✅ تحديث صورة المشاركة لاستخدام الرابط المطلق للشعار الجديد -->
+<meta property="og:image" content="https://branzar.vercel.app/b.webp">
 <meta property="og:locale" content="ar_AR">
 <meta property="og:site_name" content="BranZar">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BranZar | بران زار - أكبر سوق إلكتروني">
 <meta name="twitter:description" content="🛒🛍️ اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن.">
-<meta name="twitter:image" content="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png">
+<meta name="twitter:image" content="https://branzar.vercel.app/b.webp">
 
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png">
+<!-- ✅ تحديث الأيقونة (Favicon) للشعار الجديد -->
+<link rel="icon" type="image/webp" href="/b.webp">
+
+<!-- ✅ تقليل أوزان Cairo إلى 400 و700 فقط + font-display: swap -->
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- ✅ Preload لصورة الهيرو الأولى فقط (LCP) -->
+<link rel="preload" as="image"
+      href="https://i.ibb.co/gM7dRJDx/Picsart-26-10-07-22-17-27-300-3.jpg"
+      imagesrcset="https://i.ibb.co/gM7dRJDx/Picsart-26-10-07-22-17-27-300-3.jpg 1280w"
+      imagesizes="100vw"
+      fetchpriority="high">
+
 <link rel="stylesheet" href="styles.css">
 
 <style>
@@ -61,12 +71,10 @@
 .mi-spin { animation: miSpin 0.9s linear infinite; transform-origin: center; }
 @keyframes miSpin { to { transform: rotate(360deg); } }
 
-/* 🌙 Theme toggle */
 .mi-theme-sun { display: none; }
 body.theme-dark .mi-theme-moon { display: none !important; }
 body.theme-dark .mi-theme-sun { display: inline-block !important; }
 
-/* ❤️ Follow button */
 .mi-follow-check { display: none; }
 #storeFollowButton.following .mi-follow-heart { display: none !important; }
 #storeFollowButton.following .mi-follow-check { display: inline-block !important; }
@@ -79,6 +87,7 @@ i.fa-fallback { display: none !important; }
 .bzr-slide {
   position: relative;
   overflow: hidden;
+  aspect-ratio: 16 / 9; /* ✅ منع CLS */
 }
 .bzr-slide img {
   width: 100%;
@@ -86,12 +95,21 @@ i.fa-fallback { display: none !important; }
   object-fit: cover;
   display: block;
 }
-/* إزالة أي طبقة تعتيم كانت للنص */
 .bzr-slide-overlay { display: none !important; }
 
 /* ═══════════════════════════════════════════════════
+   ✅ content-visibility للأقسام أسفل الشاشة
+   ═══════════════════════════════════════════════════ */
+#followedStoresSection,
+#stores,
+#categories,
+#all-products {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px; /* قيمة تقريبية لتجنب CLS */
+}
+
+/* ═══════════════════════════════════════════════════
    💱 CURRENCY DISPLAY SYSTEM
-   (BranZar multi-currency — SDG default, USD support)
    ═══════════════════════════════════════════════════ */
 .bzr-price {
   display: inline-flex;
@@ -131,7 +149,6 @@ body.theme-dark .currency-badge {
   color: #FDE68A;
   border-color: #B45309;
 }
-/* أداة تأكيد لون العملة في السلة */
 .cart-total {
   display: flex;
   align-items: center;
@@ -212,9 +229,6 @@ body.theme-dark .currency-badge {
   <symbol id="mi-shield-check" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></symbol>
   <symbol id="mi-document" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 18H6V4h7v5h5v11zM8 12h8v2H8zm0 4h8v2H8zm0-8h5v2H8z"/></symbol>
 
-  <!-- ═══════════════════════════════════════════════════════
-       🌐 Brand Icons — Social Media & Contact
-       ═══════════════════════════════════════════════════════ -->
   <symbol id="mi-facebook" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></symbol>
   <symbol id="mi-tiktok" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></symbol>
   <symbol id="mi-instagram" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></symbol>
@@ -223,20 +237,31 @@ body.theme-dark .currency-badge {
 </svg>
 
 <div id="bzrSplash" role="status" aria-label="جاري التحميل">
-  <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" class="bzr-splash-logo" alt="BranZar" fetchpriority="high">
+  <!-- ✅ استخدام الشعار الجديد WebP -->
+  <img src="/b.webp"
+       class="bzr-splash-logo" alt="BranZar"
+       width="120" height="120"
+       decoding="async"
+       fetchpriority="high">
   <div class="bzr-splash-title">بران زار <span>- BranZar</span></div>
   <div class="bzr-splash-subtitle">أكبر سوق إلكتروني للبراندات</div>
   <div class="bzr-splash-loader"></div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     🎯 APP BAR — نظيف جداً (Logo + Search + Cart)
+     🎯 APP BAR
      ═══════════════════════════════════════════════════════════ -->
 <header class="bzr-app-bar">
   <div class="bzr-app-bar-inner">
     <button class="bzr-logo-btn" id="logoMenuBtn" aria-label="الصفحة الرئيسية">
       <div class="bzr-logo-circle">
-        <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="" fetchpriority="high">
+        <!-- ✅ استخدام الشعار الجديد WebP -->
+        <img src="/b.webp"
+             alt="BranZar Logo"
+             width="40" height="40"
+             decoding="async"
+             loading="lazy"
+             fetchpriority="low">
       </div>
       <div class="bzr-brand-text"><strong>بران زار</strong><small>BRANZAR</small></div>
     </button>
@@ -253,7 +278,7 @@ body.theme-dark .currency-badge {
 </header>
 
 <!-- ═══════════════════════════════════════════════════════════
-     🔍 SEARCH OVERLAY — يظهر عند الضغط على أيقونة البحث
+     🔍 SEARCH OVERLAY
      ═══════════════════════════════════════════════════════════ -->
 <div id="bzrSearchOverlay" class="bzr-search-overlay hidden" role="dialog" aria-modal="true" aria-label="البحث">
   <div class="bzr-search-overlay-head">
@@ -270,30 +295,58 @@ body.theme-dark .currency-badge {
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     🎯 HERO SLIDER — صور فقط بدون نصوص
+     🎯 HERO SLIDER
      ═══════════════════════════════════════════════════════════ -->
 <section class="bzr-hero-slider" aria-label="عروض مميزة">
   <div class="bzr-slider" id="bzrSlider">
     <div class="bzr-slider-track" id="bzrSliderTrack">
 
+      <!-- ✅ الشريحة الأولى: LCP - eager + fetchpriority=high + decoding=async -->
       <div class="bzr-slide">
-        <img src="https://i.ibb.co/gM7dRJDx/Picsart-26-10-07-22-17-27-300-3.jpg" alt="عرض 1" loading="eager" draggable="false">
+        <img src="https://i.ibb.co/gM7dRJDx/Picsart-26-10-07-22-17-27-300-3.jpg"
+             alt="عرض 1"
+             width="1280" height="720"
+             loading="eager"
+             fetchpriority="high"
+             decoding="async"
+             draggable="false">
+      </div>
+
+      <!-- ✅ باقي الشرائح: lazy + decoding=async + أبعاد ثابتة -->
+      <div class="bzr-slide">
+        <img src="https://i.ibb.co/rfHNwNTK/file-0000000040548246bcfc217b0de2355c.png"
+             alt="عرض 2"
+             width="1280" height="720"
+             loading="lazy"
+             decoding="async"
+             draggable="false">
       </div>
 
       <div class="bzr-slide">
-        <img src="https://i.ibb.co/rfHNwNTK/file-0000000040548246bcfc217b0de2355c.png" alt="عرض 2" loading="lazy" draggable="false">
+        <img src="https://i.ibb.co/jPygNd6b/file-00000000ba848246a5734224d75aa3fe.png"
+             alt="عرض 3"
+             width="1280" height="720"
+             loading="lazy"
+             decoding="async"
+             draggable="false">
       </div>
 
       <div class="bzr-slide">
-        <img src="https://i.ibb.co/jPygNd6b/file-00000000ba848246a5734224d75aa3fe.png" alt="عرض 3" loading="lazy" draggable="false">
+        <img src="https://i.ibb.co/5hx78vPq/file-0000000009a882109d90e93be4689617.png"
+             alt="عرض 4"
+             width="1280" height="720"
+             loading="lazy"
+             decoding="async"
+             draggable="false">
       </div>
 
       <div class="bzr-slide">
-        <img src="https://i.ibb.co/5hx78vPq/file-0000000009a882109d90e93be4689617.png" alt="عرض 4" loading="lazy" draggable="false">
-      </div>
-
-      <div class="bzr-slide">
-        <img src="https://i.ibb.co/rfHNwNTK/file-0000000040548246bcfc217b0de2355c.png" alt="عرض 5" loading="lazy" draggable="false">
+        <img src="https://i.ibb.co/rfHNwNTK/file-0000000040548246bcfc217b0de2355c.png"
+             alt="عرض 5"
+             width="1280" height="720"
+             loading="lazy"
+             decoding="async"
+             draggable="false">
       </div>
 
     </div>
@@ -391,13 +444,13 @@ body.theme-dark .currency-badge {
 <div id="storeModal" class="fullscreen-modal hidden" role="dialog" aria-modal="true" aria-labelledby="storeName">
   <div class="modal-content">
     <div class="store-cover-wrap">
-      <img id="storeCoverImage" src="" alt="غلاف المتجر">
+      <img id="storeCoverImage" src="" alt="غلاف المتجر" width="800" height="300" loading="lazy" decoding="async">
       <button id="closeStoreModal" class="store-close-btn" aria-label="إغلاق"><svg class="mi mi-sm" aria-hidden="true"><use href="#mi-close"/></svg></button>
       <button id="storeShareBtn" class="store-share-btn" type="button" aria-label="مشاركة"><svg class="mi mi-sm" aria-hidden="true"><use href="#mi-share"/></svg></button>
     </div>
     <div class="store-info-card">
       <div class="store-header-row">
-        <img id="storeLogo" class="store-header-logo" src="" alt="">
+        <img id="storeLogo" class="store-header-logo" src="" alt="" width="56" height="56" loading="lazy" decoding="async">
         <div class="store-header-info">
           <h3 id="storeName" class="store-header-name"></h3>
           <div class="store-header-meta">
@@ -462,7 +515,9 @@ body.theme-dark .currency-badge {
     <button id="closeProductModal" class="icon-btn modal-close" aria-label="إغلاق"><svg class="mi mi-sm" aria-hidden="true"><use href="#mi-close"/></svg></button>
     <div class="product-modal-grid">
       <div class="product-modal-left">
-        <div class="product-modal-image-wrapper"><img id="productModalImage" src="" alt="صورة المنتج"></div>
+        <div class="product-modal-image-wrapper">
+          <img id="productModalImage" src="" alt="صورة المنتج" width="600" height="600" loading="lazy" decoding="async">
+        </div>
         <div id="productColorsContainer" class="hidden colors-container">
           <div class="colors-label"><span>اللون:</span><span id="selectedColorName" class="color-name-badge"></span></div>
           <div id="productColorSwatches" class="color-swatches"></div>
@@ -518,7 +573,7 @@ body.theme-dark .currency-badge {
 </div>
 
 <!-- ═══════════════════════════════════════════════════════
-     ACCOUNT MODAL — Premium Compact
+     ACCOUNT MODAL
      ═══════════════════════════════════════════════════════ -->
 <div id="accountModal" class="hidden" role="dialog" aria-modal="true">
   <div class="account-overlay" id="accountOverlay"></div>
@@ -530,7 +585,12 @@ body.theme-dark .currency-badge {
       </button>
       <div class="acc-header-brand">
         <div class="acc-header-logo">
-          <img src="https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png" alt="BranZar">
+          <!-- ✅ استخدام الشعار الجديد WebP -->
+          <img src="/b.webp"
+               alt="BranZar"
+               width="48" height="48"
+               loading="lazy"
+               decoding="async">
         </div>
         <div class="acc-header-text">
           <div class="acc-header-title">حسابي</div>
@@ -640,7 +700,6 @@ body.theme-dark .currency-badge {
         </div>
       </div>
 
-      <!-- 🌐 SOCIAL STRIP — بين الإعدادات ورقم الإصدار -->
       <div class="acc-social-row" aria-label="تابعنا على وسائل التواصل">
         <a href="https://www.facebook.com/profile.php?id=61595486162056"
            target="_blank" rel="noopener noreferrer"
@@ -732,8 +791,7 @@ body.theme-dark .currency-badge {
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     💱 CURRENCY SYSTEM — Global Helpers
-     (يُستخدم من قبل data.js / ui.js / app.js / ad.js)
+     💱 CURRENCY SYSTEM
      ═══════════════════════════════════════════════════════════════ -->
 <script>
 (function () {
@@ -839,11 +897,70 @@ body.theme-dark .currency-badge {
 })();
 </script>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js" crossorigin="anonymous"></script>
+<!-- ═══════════════════════════════════════════════════════════════
+     ✅ تحميل Firebase ديناميكيًا فقط عند الحاجة
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
 
+  var firebaseLoaded = false;
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  window.ensureFirebase = function () {
+    if (firebaseLoaded) return Promise.resolve();
+    return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js')
+      .then(function () {
+        return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js');
+      })
+      .then(function () {
+        return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js');
+      })
+      .then(function () {
+        return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
+      })
+      .then(function () {
+        firebaseLoaded = true;
+      });
+  };
+
+  var started = false;
+  function startFirebase() {
+    if (started) return;
+    started = true;
+    window.ensureFirebase().catch(function (err) {
+      console.warn('Firebase load failed:', err);
+    });
+  }
+
+  if (document.readyState === 'complete') {
+    setTimeout(startFirebase, 3000);
+  } else {
+    window.addEventListener('load', function () {
+      setTimeout(startFirebase, 3000);
+    });
+  }
+
+  ['click', 'touchstart', 'keydown'].forEach(function (evt) {
+    window.addEventListener(evt, startFirebase, { once: true, passive: true });
+  });
+
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ✅ السكريبتات الأساسية
+     ═══════════════════════════════════════════════════════════════ -->
 <script src="js/core.js" defer></script>
 <script src="js/store-limits.js" defer></script>
 <script src="js/data.js" defer></script>
