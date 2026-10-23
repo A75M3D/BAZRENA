@@ -19,7 +19,6 @@
 <meta property="og:url" content="https://branzar.vercel.app/">
 <meta property="og:title" content="BranZar | بران زار - أكبر سوق إلكتروني">
 <meta property="og:description" content="🛒🛍️ اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن.">
-<!-- ✅ تحديث صورة المشاركة لاستخدام الرابط المطلق للشعار الجديد -->
 <meta property="og:image" content="https://branzar.vercel.app/b.webp">
 <meta property="og:locale" content="ar_AR">
 <meta property="og:site_name" content="BranZar">
@@ -30,10 +29,9 @@
 <meta name="twitter:image" content="https://branzar.vercel.app/b.webp">
 
 <link rel="manifest" href="manifest.json">
-<!-- ✅ تحديث الأيقونة (Favicon) للشعار الجديد -->
 <link rel="icon" type="image/webp" href="/b.webp">
 
-<!-- ✅ تقليل أوزان Cairo إلى 400 و700 فقط + font-display: swap -->
+<!-- ✅ تقليل أوزان Cairo إلى 400 و700 فقط -->
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
@@ -105,7 +103,7 @@ i.fa-fallback { display: none !important; }
 #categories,
 #all-products {
   content-visibility: auto;
-  contain-intrinsic-size: 0 500px; /* قيمة تقريبية لتجنب CLS */
+  contain-intrinsic-size: 0 500px; 
 }
 
 /* ═══════════════════════════════════════════════════
@@ -237,7 +235,6 @@ body.theme-dark .currency-badge {
 </svg>
 
 <div id="bzrSplash" role="status" aria-label="جاري التحميل">
-  <!-- ✅ استخدام الشعار الجديد WebP -->
   <img src="/b.webp"
        class="bzr-splash-logo" alt="BranZar"
        width="120" height="120"
@@ -248,14 +245,10 @@ body.theme-dark .currency-badge {
   <div class="bzr-splash-loader"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     🎯 APP BAR
-     ═══════════════════════════════════════════════════════════ -->
 <header class="bzr-app-bar">
   <div class="bzr-app-bar-inner">
     <button class="bzr-logo-btn" id="logoMenuBtn" aria-label="الصفحة الرئيسية">
       <div class="bzr-logo-circle">
-        <!-- ✅ استخدام الشعار الجديد WebP -->
         <img src="/b.webp"
              alt="BranZar Logo"
              width="40" height="40"
@@ -277,9 +270,6 @@ body.theme-dark .currency-badge {
   </div>
 </header>
 
-<!-- ═══════════════════════════════════════════════════════════
-     🔍 SEARCH OVERLAY
-     ═══════════════════════════════════════════════════════════ -->
 <div id="bzrSearchOverlay" class="bzr-search-overlay hidden" role="dialog" aria-modal="true" aria-label="البحث">
   <div class="bzr-search-overlay-head">
     <div class="bzr-search-input" id="bzrSearchWrapper">
@@ -294,14 +284,10 @@ body.theme-dark .currency-badge {
   <div id="searchResults" class="bzr-search-results-inline" role="region" aria-label="نتائج البحث"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     🎯 HERO SLIDER
-     ═══════════════════════════════════════════════════════════ -->
 <section class="bzr-hero-slider" aria-label="عروض مميزة">
   <div class="bzr-slider" id="bzrSlider">
     <div class="bzr-slider-track" id="bzrSliderTrack">
 
-      <!-- ✅ الشريحة الأولى: LCP - eager + fetchpriority=high + decoding=async -->
       <div class="bzr-slide">
         <img src="https://i.ibb.co/gM7dRJDx/Picsart-26-10-07-22-17-27-300-3.jpg"
              alt="عرض 1"
@@ -312,7 +298,6 @@ body.theme-dark .currency-badge {
              draggable="false">
       </div>
 
-      <!-- ✅ باقي الشرائح: lazy + decoding=async + أبعاد ثابتة -->
       <div class="bzr-slide">
         <img src="https://i.ibb.co/rfHNwNTK/file-0000000040548246bcfc217b0de2355c.png"
              alt="عرض 2"
@@ -572,9 +557,6 @@ body.theme-dark .currency-badge {
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     ACCOUNT MODAL
-     ═══════════════════════════════════════════════════════ -->
 <div id="accountModal" class="hidden" role="dialog" aria-modal="true">
   <div class="account-overlay" id="accountOverlay"></div>
   <div class="account-sheet">
@@ -585,7 +567,6 @@ body.theme-dark .currency-badge {
       </button>
       <div class="acc-header-brand">
         <div class="acc-header-logo">
-          <!-- ✅ استخدام الشعار الجديد WebP -->
           <img src="/b.webp"
                alt="BranZar"
                width="48" height="48"
@@ -796,19 +777,15 @@ body.theme-dark .currency-badge {
 <script>
 (function () {
   'use strict';
-
   window.BZR_CURRENCIES = {
     SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'SDG', flag: '🇸🇩' },
     USD: { code: 'USD', name: 'دولار أمريكي', symbol: 'USD', flag: '🇺🇸' }
   };
   window.BZR_DEFAULT_CURRENCY = 'SDG';
-
   window.bzrGetCurrencyByCode = function (code) {
     if (!code) return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
-    return window.BZR_CURRENCIES[String(code).toUpperCase()]
-        || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
+    return window.BZR_CURRENCIES[String(code).toUpperCase()] || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
   };
-
   window.bzrGetCurrencyBySymbol = function (sym) {
     if (!sym) return null;
     const s = String(sym).trim();
@@ -817,7 +794,6 @@ body.theme-dark .currency-badge {
     }
     return null;
   };
-
   window.bzrGetProductCurrency = function (product) {
     if (product && product.currency) {
       const found = window.bzrGetCurrencyBySymbol(product.currency);
@@ -827,7 +803,6 @@ body.theme-dark .currency-badge {
     }
     return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
   };
-
   window.bzrFormatPrice = function (price, currencySymbol) {
     const p = parseFloat(price);
     const num = isNaN(p) ? 0 : p;
@@ -836,7 +811,6 @@ body.theme-dark .currency-badge {
     const formatted = num.toLocaleString('en-US', { maximumFractionDigits: 2 });
     return formatted + ' ' + sym;
   };
-
   window.bzrComputeCartTotals = function (cart) {
     const totals = {};
     (cart || []).forEach(function (item) {
@@ -848,35 +822,28 @@ body.theme-dark .currency-badge {
     });
     return totals;
   };
-
   window.bzrFormatCartTotals = function (totals) {
     const entries = Object.entries(totals || {});
     if (!entries.length) {
       return '0 ' + window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY].symbol;
     }
-    return entries
-      .map(function (pair) {
-        const amt = (parseFloat(pair[1]) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
-        return amt + ' ' + pair[0];
-      })
-      .join(' + ');
+    return entries.map(function (pair) {
+      const amt = (parseFloat(pair[1]) || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
+      return amt + ' ' + pair[0];
+    }).join(' + ');
   };
-
   window.bzrRenderCartTotals = function (cart, elementId) {
     const el = document.getElementById(elementId || 'cartTotalAmount');
     if (!el) return;
     const totals = window.bzrComputeCartTotals(cart);
     el.textContent = window.bzrFormatCartTotals(totals);
   };
-
   window.bzrCurrencyInfo = function (productOrSymbol) {
     if (productOrSymbol && typeof productOrSymbol === 'object') {
       return window.bzrGetProductCurrency(productOrSymbol);
     }
-    return window.bzrGetCurrencyBySymbol(productOrSymbol)
-        || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
+    return window.bzrGetCurrencyBySymbol(productOrSymbol) || window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY];
   };
-
   try {
     var CART_KEY = 'branzar_cart';
     var raw = localStorage.getItem(CART_KEY);
@@ -898,65 +865,12 @@ body.theme-dark .currency-badge {
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     ✅ تحميل Firebase ديناميكيًا فقط عند الحاجة
+     🔥 تحميل Firebase فوراً (مثل الكود الأصلي لضمان عمل الموقع)
      ═══════════════════════════════════════════════════════════════ -->
-<script>
-(function () {
-  'use strict';
-
-  var firebaseLoaded = false;
-
-  function loadScript(src) {
-    return new Promise(function (resolve, reject) {
-      var s = document.createElement('script');
-      s.src = src;
-      s.async = true;
-      s.onload = resolve;
-      s.onerror = reject;
-      document.head.appendChild(s);
-    });
-  }
-
-  window.ensureFirebase = function () {
-    if (firebaseLoaded) return Promise.resolve();
-    return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js')
-      .then(function () {
-        return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js');
-      })
-      .then(function () {
-        return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js');
-      })
-      .then(function () {
-        return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
-      })
-      .then(function () {
-        firebaseLoaded = true;
-      });
-  };
-
-  var started = false;
-  function startFirebase() {
-    if (started) return;
-    started = true;
-    window.ensureFirebase().catch(function (err) {
-      console.warn('Firebase load failed:', err);
-    });
-  }
-
-  if (document.readyState === 'complete') {
-    setTimeout(startFirebase, 3000);
-  } else {
-    window.addEventListener('load', function () {
-      setTimeout(startFirebase, 3000);
-    });
-  }
-
-  ['click', 'touchstart', 'keydown'].forEach(function (evt) {
-    window.addEventListener(evt, startFirebase, { once: true, passive: true });
-  });
-
-})();
-</script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js" crossorigin="anonymous"></script>
 
 <!-- ═══════════════════════════════════════════════════════════════
      ✅ السكريبتات الأساسية
