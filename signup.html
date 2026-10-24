@@ -628,4 +628,1060 @@ input,textarea,select{outline:none}
             </div>
             <div class="error-msg" id="waError"><i class="fas fa-exclamation-circle"></i><span>رقم واتساب غير صحيح</span></div>
           </div>
-          <div
+          <div class="form-field">
+            <label class="form-label" for="phone"><span class="label-icon" style="color:#3B82F6;"><i class="fas fa-phone"></i></span><span>رقم الهاتف</span><span class="hint">اختياري</span></label>
+            <div class="input-wrap" id="phoneWrap"><div class="input-icon"><i class="fas fa-phone"></i></div><input class="input" type="tel" id="phone" placeholder="09xxxxxxxx" inputmode="numeric" maxlength="15" dir="ltr" style="text-align:left;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. الصور -->
+      <div class="bzr-card">
+        <div class="bzr-card-head"><div class="bzr-card-head-icon"><i class="fas fa-image"></i></div><h2>صور المتجر</h2><span class="bzr-card-step">4 / 5</span></div>
+        <div class="form-field">
+          <label class="form-label"><span class="label-icon"><i class="fas fa-panorama"></i></span><span>صورة الغلاف</span><span class="required">*</span></label>
+          <div class="upload-cover" id="coverUpload" role="button" tabindex="0">
+            <img id="coverPreview" alt="">
+            <div class="ph"><i class="fas fa-cloud-arrow-up"></i><b>اضغط لرفع صورة الغلاف</b><span>JPG • PNG • WEBP • حتى 8 ميجا</span></div>
+            <div class="upload-progress" id="coverProgress"><div class="ring"></div><span>جاري الرفع...</span></div>
+          </div>
+          <div class="error-msg" id="coverError"><i class="fas fa-exclamation-circle"></i><span>صورة الغلاف مطلوبة</span></div>
+          <input type="file" id="coverInput" accept="image/*" hidden>
+        </div>
+        <div class="upload-logo-wrap">
+          <div class="upload-logo" id="logoUpload" role="button" tabindex="0">
+            <img id="logoPreview" alt="">
+            <div class="ph"><i class="fas fa-camera"></i><span>شعار</span></div>
+            <div class="upload-progress" id="logoProgress"><div class="ring"></div></div>
+          </div>
+          <div class="upload-logo-info"><b>شعار المتجر <span style="color:var(--c-danger)">*</span></b><span>مربع 1:1 • يفضل 500 × 500 بكسل</span></div>
+        </div>
+        <div class="error-msg" id="logoError" style="margin-top:8px;"><i class="fas fa-exclamation-circle"></i><span>شعار المتجر مطلوب</span></div>
+        <input type="file" id="logoInput" accept="image/*" hidden>
+      </div>
+
+      <!-- 5. حساب الدخول -->
+      <div class="bzr-card">
+        <div class="bzr-card-head"><div class="bzr-card-head-icon"><i class="fas fa-lock"></i></div><h2>حساب الدخول</h2><span class="bzr-card-step">5 / 5</span></div>
+
+        <div class="form-field">
+          <label class="form-label" for="emailInput"><span class="label-icon"><i class="fas fa-envelope"></i></span><span>البريد الإلكتروني</span><span class="required">*</span><span class="hint">ستصلك رسالة تفعيل</span></label>
+          <div class="input-wrap" id="emailWrap"><div class="input-icon"><i class="fas fa-envelope"></i></div><input class="input" type="email" id="emailInput" placeholder="example@email.com" dir="ltr" style="text-align:left;" spellcheck="false" maxlength="120" autocomplete="email"></div>
+          <div class="error-msg" id="emailError"><i class="fas fa-exclamation-circle"></i><span>يرجى إدخال بريد صحيح</span></div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="password"><span class="label-icon"><i class="fas fa-key"></i></span><span>كلمة المرور</span><span class="required">*</span><span class="hint">6 أحرف على الأقل</span></label>
+          <div class="input-wrap" id="pwdWrap"><div class="input-icon"><i class="fas fa-lock"></i></div><input class="input" type="password" id="password" placeholder="••••••••" maxlength="128" autocomplete="new-password"><div class="input-suffix"><button type="button" class="input-icon-btn" id="togglePwd"><i class="fas fa-eye"></i></button></div></div>
+          <div class="error-msg" id="pwdError"><i class="fas fa-exclamation-circle"></i><span>كلمة المرور 6 أحرف على الأقل</span></div>
+          <div class="pwd-strength" id="pwdStrength"><div class="pwd-bars"><div class="pwd-bar"></div><div class="pwd-bar"></div><div class="pwd-bar"></div><div class="pwd-bar"></div></div><div class="pwd-strength-text" id="pwdStrengthText">قوة كلمة المرور</div></div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="confirmPassword"><span class="label-icon"><i class="fas fa-shield-halved"></i></span><span>تأكيد كلمة المرور</span><span class="required">*</span></label>
+          <div class="input-wrap" id="pwdConfirmWrap"><div class="input-icon"><i class="fas fa-shield-halved"></i></div><input class="input" type="password" id="confirmPassword" placeholder="••••••••" maxlength="128" autocomplete="new-password"><div class="input-suffix"><button type="button" class="input-icon-btn" id="togglePwdConfirm"><i class="fas fa-eye"></i></button></div></div>
+          <div class="error-msg" id="pwdConfirmError"><i class="fas fa-exclamation-circle"></i><span>كلمتا المرور غير متطابقتين</span></div>
+        </div>
+
+        <div style="padding:14px 16px;background:var(--c-primary-soft);border-radius:var(--radius-md);display:flex;gap:10px;align-items:flex-start;">
+          <i class="fas fa-circle-info" style="color:var(--c-primary);font-size:.95rem;margin-top:2px;flex-shrink:0;"></i>
+          <p style="font-size:.78rem;font-weight:600;color:#7c4a15;line-height:1.7;">ستسجّل الدخول بـ <b style="color:#5a3310;">البريد الإلكتروني + كلمة المرور</b>. سنرسل لك رابط تحقق لتفعيل الحساب.</p>
+        </div>
+      </div>
+
+      <!-- شروط -->
+      <div class="bzr-card">
+        <label class="terms-wrap">
+          <input type="checkbox" id="termsCheck">
+          <span class="terms-text">أُقر بأنني اطّلعت على <a href="#" onclick="event.preventDefault(); alert('الشروط:\n1. جميع البيانات صحيحة\n2. يمنع الاستخدام غير القانوني\n3. يُسمح بمتجر واحد فقط لكل جهاز');">الشروط والأحكام</a> وأوافق عليها. أتحمل مسؤولية صحة البيانات.</span>
+        </label>
+        <div class="error-msg" id="termsError" style="margin-top:8px;"><i class="fas fa-exclamation-circle"></i><span>يجب الموافقة على الشروط</span></div>
+      </div>
+
+      <div id="registerError" class="error-msg" style="font-size:.85rem;padding:10px;border-radius:10px;background:#FEF2F2;border:1px solid #FECACA;"></div>
+    </form>
+  </main>
+
+  <div class="bzr-footer">
+    <div class="bzr-footer-inner">
+      <button type="button" id="submitBtn" class="submit-btn"><i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span></button>
+      <div class="footer-note"><i class="fas fa-shield-alt"></i><span>بياناتك مشفّرة • متجر واحد لكل جهاز</span></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════
+// 🔥 Firebase
+// ═══════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyDUfiHqBPQuFKrsHxoSDdR0j7DMvekfYiA",
+  authDomain: "bazarena-725e4.firebaseapp.com",
+  databaseURL: "https://bazarena-725e4-default-rtdb.firebaseio.com",
+  projectId: "bazarena-725e4",
+  storageBucket: "bazarena-725e4.firebasestorage.app",
+  messagingSenderId: "977750898059",
+  appId: "1:977750898059:web:247e8513b48490ed622b8e"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+db.settings({ ignoreUndefinedProperties: true });
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+
+const STORES = 'stores';
+const DEVICES = 'device_registry';
+const CATEGORIES = 'categories';
+
+const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
+const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
+const RESEND_COOLDOWN_MS = 60*1000;
+
+// ═══════════════════════════════════════════════════════════
+// 🌍 Countries List (Sudan first = default)
+// ═══════════════════════════════════════════════════════════
+const COUNTRIES = [
+  { code: '+249', flag: '🇸🇩', name: 'السودان', iso: 'SD', placeholder: '9xxxxxxxx' },
+  { code: '+211', flag: '🇸🇸', name: 'جنوب السودان', iso: 'SS', placeholder: '9xxxxxxxx' },
+  { code: '+20',  flag: '🇪🇬', name: 'مصر', iso: 'EG', placeholder: '10xxxxxxxx' },
+  { code: '+966', flag: '🇸🇦', name: 'السعودية', iso: 'SA', placeholder: '5xxxxxxxx' },
+  { code: '+971', flag: '🇦🇪', name: 'الإمارات', iso: 'AE', placeholder: '5xxxxxxxx' },
+  { code: '+974', flag: '🇶🇦', name: 'قطر', iso: 'QA', placeholder: '3xxxxxxx' },
+  { code: '+965', flag: '🇰🇼', name: 'الكويت', iso: 'KW', placeholder: '9xxxxxxx' },
+  { code: '+973', flag: '🇧🇭', name: 'البحرين', iso: 'BH', placeholder: '3xxxxxxx' },
+  { code: '+968', flag: '🇴🇲', name: 'عُمان', iso: 'OM', placeholder: '9xxxxxxx' },
+  { code: '+962', flag: '🇯🇴', name: 'الأردن', iso: 'JO', placeholder: '7xxxxxxxx' },
+  { code: '+961', flag: '🇱🇧', name: 'لبنان', iso: 'LB', placeholder: '3xxxxxxx' },
+  { code: '+963', flag: '🇸🇾', name: 'سوريا', iso: 'SY', placeholder: '9xxxxxxxx' },
+  { code: '+964', flag: '🇮🇶', name: 'العراق', iso: 'IQ', placeholder: '7xxxxxxxxx' },
+  { code: '+967', flag: '🇾🇪', name: 'اليمن', iso: 'YE', placeholder: '7xxxxxxxx' },
+  { code: '+970', flag: '🇵🇸', name: 'فلسطين', iso: 'PS', placeholder: '5xxxxxxxx' },
+  { code: '+212', flag: '🇲🇦', name: 'المغرب', iso: 'MA', placeholder: '6xxxxxxxx' },
+  { code: '+213', flag: '🇩🇿', name: 'الجزائر', iso: 'DZ', placeholder: '5xxxxxxxx' },
+  { code: '+216', flag: '🇹🇳', name: 'تونس', iso: 'TN', placeholder: '2xxxxxxx' },
+  { code: '+218', flag: '🇱🇾', name: 'ليبيا', iso: 'LY', placeholder: '9xxxxxxxx' },
+  { code: '+222', flag: '🇲🇷', name: 'موريتانيا', iso: 'MR', placeholder: '4xxxxxxx' },
+  { code: '+252', flag: '🇸🇴', name: 'الصومال', iso: 'SO', placeholder: '6xxxxxxxx' },
+  { code: '+253', flag: '🇩🇯', name: 'جيبوتي', iso: 'DJ', placeholder: '7xxxxxxx' },
+  { code: '+254', flag: '🇰🇪', name: 'كينيا', iso: 'KE', placeholder: '7xxxxxxxx' },
+  { code: '+251', flag: '🇪🇹', name: 'إثيوبيا', iso: 'ET', placeholder: '9xxxxxxxx' },
+  { code: '+235', flag: '🇹🇩', name: 'تشاد', iso: 'TD', placeholder: '6xxxxxxx' },
+  { code: '+236', flag: '🇨🇫', name: 'أفريقيا الوسطى', iso: 'CF', placeholder: '7xxxxxxx' },
+  { code: '+291', flag: '🇪🇷', name: 'إريتريا', iso: 'ER', placeholder: '7xxxxxx' },
+  { code: '+256', flag: '🇺🇬', name: 'أوغندا', iso: 'UG', placeholder: '7xxxxxxxx' },
+  { code: '+27',  flag: '🇿🇦', name: 'جنوب أفريقيا', iso: 'ZA', placeholder: '8xxxxxxxx' },
+  { code: '+234', flag: '🇳🇬', name: 'نيجيريا', iso: 'NG', placeholder: '8xxxxxxxxx' },
+  { code: '+90',  flag: '🇹🇷', name: 'تركيا', iso: 'TR', placeholder: '5xxxxxxxxx' },
+  { code: '+44',  flag: '🇬🇧', name: 'بريطانيا', iso: 'GB', placeholder: '7xxxxxxxxx' },
+  { code: '+1',   flag: '🇺🇸', name: 'الولايات المتحدة', iso: 'US', placeholder: 'xxxxxxxxxx' },
+  { code: '+1',   flag: '🇨🇦', name: 'كندا', iso: 'CA', placeholder: 'xxxxxxxxxx' },
+  { code: '+33',  flag: '🇫🇷', name: 'فرنسا', iso: 'FR', placeholder: '6xxxxxxxx' },
+  { code: '+49',  flag: '🇩🇪', name: 'ألمانيا', iso: 'DE', placeholder: '15xxxxxxxx' },
+  { code: '+39',  flag: '🇮🇹', name: 'إيطاليا', iso: 'IT', placeholder: '3xxxxxxxxx' },
+  { code: '+34',  flag: '🇪🇸', name: 'إسبانيا', iso: 'ES', placeholder: '6xxxxxxxx' },
+  { code: '+31',  flag: '🇳🇱', name: 'هولندا', iso: 'NL', placeholder: '6xxxxxxxx' },
+  { code: '+91',  flag: '🇮🇳', name: 'الهند', iso: 'IN', placeholder: '9xxxxxxxxx' },
+  { code: '+92',  flag: '🇵🇰', name: 'باكستان', iso: 'PK', placeholder: '3xxxxxxxxx' },
+  { code: '+880', flag: '🇧🇩', name: 'بنغلاديش', iso: 'BD', placeholder: '1xxxxxxxxx' },
+  { code: '+60',  flag: '🇲🇾', name: 'ماليزيا', iso: 'MY', placeholder: '1xxxxxxxx' },
+  { code: '+62',  flag: '🇮🇩', name: 'إندونيسيا', iso: 'ID', placeholder: '8xxxxxxxxx' },
+  { code: '+63',  flag: '🇵🇭', name: 'الفلبين', iso: 'PH', placeholder: '9xxxxxxxxx' },
+  { code: '+86',  flag: '🇨🇳', name: 'الصين', iso: 'CN', placeholder: '1xxxxxxxxxx' },
+  { code: '+81',  flag: '🇯🇵', name: 'اليابان', iso: 'JP', placeholder: '9xxxxxxxxx' },
+  { code: '+82',  flag: '🇰🇷', name: 'كوريا الجنوبية', iso: 'KR', placeholder: '1xxxxxxxxx' },
+  { code: '+7',   flag: '🇷🇺', name: 'روسيا', iso: 'RU', placeholder: '9xxxxxxxxx' },
+  { code: '+55',  flag: '🇧🇷', name: 'البرازيل', iso: 'BR', placeholder: '9xxxxxxxxxx' },
+  { code: '+61',  flag: '🇦🇺', name: 'أستراليا', iso: 'AU', placeholder: '4xxxxxxxx' }
+];
+
+// ═══════════════════════════════════════════════════════════
+// 🎯 الفئات الافتراضية
+// ═══════════════════════════════════════════════════════════
+const DEFAULT_CATEGORIES = [
+  { id:'electronics', name:'إلكترونيات وتقنية', emoji:'📱' },
+  { id:'fashion', name:'أزياء وموضة', emoji:'👗' },
+  { id:'beauty', name:'جمال وعناية', emoji:'💄' },
+  { id:'perfumes', name:'عطور', emoji:'🌸' },
+  { id:'home', name:'منزل وديكور', emoji:'🏠' },
+  { id:'stationery', name:'أدوات مكتبية', emoji:'✏️' },
+  { id:'food', name:'أطعمة ومشروبات', emoji:'🍔' },
+  { id:'supermarket', name:'سوبرماركت ومواد', emoji:'🛒' },
+  { id:'cars', name:'سيارات وقطع', emoji:'🚗' },
+  { id:'kids', name:'أطفال ومواليد', emoji:'👶' },
+  { id:'gifts', name:'هدايا وإكسسوارات', emoji:'🎁' },
+  { id:'sports', name:'رياضة ولياقة', emoji:'🏋️' },
+  { id:'construction', name:'بناء ومعدات', emoji:'🏗️' },
+  { id:'agriculture', name:'زراعة ومنتجات', emoji:'🌾' },
+  { id:'training', name:'تعليم وتطوير', emoji:'🎓' },
+  { id:'medical', name:'خدمات طبية', emoji:'🏥' },
+  { id:'realestate', name:'عقارات وإيجارات', emoji:'🏢' },
+  { id:'services', name:'خدمات وأعمال', emoji:'💼' },
+  { id:'transport', name:'نقل وتوصيل', emoji:'🚚' },
+  { id:'travel', name:'سفر وسياحة', emoji:'✈️' }
+];
+
+// ═══════════════════════════════════════════════════════════
+// 🌐 State
+// ═══════════════════════════════════════════════════════════
+const state = {
+  persistentId:null, deviceFingerprint:null, selectedCategory:null,
+  coverUrl:null, logoUrl:null, submitting:false, alreadyRegistered:false,
+  pendingUser:null, pendingEmail:null, pendingStoreId:null,
+  pollTimer:null, lastResendAt:0,
+  allCategories: [], categoriesUnsub: null,
+  categoriesLoaded: false, categoriesSeeded: false,
+  // Country
+  countryCode: '+249',
+  countryFlag: '🇸🇩',
+  countryName: 'السودان',
+  countryPlaceholder: '9xxxxxxxx'
+};
+
+const $ = id => document.getElementById(id);
+const escapeHtml = s => { if(s==null) return ''; const d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; };
+const sanitize = s => !s ? '' : String(s).replace(/<[^>]*>/g,'').trim();
+const haptic = t => { if(!navigator.vibrate) return; try { navigator.vibrate({light:15,medium:30,heavy:60}[t]||15); } catch(e){} };
+
+// ═══════════════════════════════════════════════════════════
+// 🎨 UI Helpers
+// ═══════════════════════════════════════════════════════════
+let toastTimer = null;
+function showToast(msg, type='success') {
+  const t=$('toast'); if(!t) return;
+  const icons = {success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'};
+  t.className = type!=='info' ? type : '';
+  t.innerHTML = '<i class="fas '+(icons[type]||icons.info)+'"></i><span>'+escapeHtml(msg)+'</span>';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'),4000);
+}
+function setButtonLoading(btn,isLoading,loadingText,normalHTML) {
+  if(!btn) return;
+  if(isLoading){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> <span>'+loadingText+'</span>';}
+  else{btn.disabled=false;btn.innerHTML=normalHTML;}
+}
+function showGate(id) {
+  ['gateCheck','gateWaiting','gateVerified','gateBlocked','gateError','appContainer'].forEach(g=>{
+    const el=$(g); if(el) el.classList.toggle('hidden',g!==id);
+  });
+  if(id!=='gateWaiting') stopVerifyPolling();
+}
+function updateGateStep(text){const el=$('gateSteps');if(el){el.style.opacity='0';setTimeout(()=>{el.textContent=text;el.style.opacity='1';},150);}}
+function startProgress(){const b=$('topProgressBar');if(b){b.classList.remove('done');b.classList.add('active');}}
+function doneProgress(){const b=$('topProgressBar');if(!b)return;b.classList.remove('active');b.classList.add('done');setTimeout(()=>{b.classList.remove('done');b.style.transform='';},400);}
+function showErr(id){const el=$(id);if(el)el.classList.add('show');}
+function hideErr(id){const el=$(id);if(el)el.classList.remove('show');}
+function setFieldState(w,st){const el=$(w);if(!el)return;el.classList.remove('error','valid');if(st==='error')el.classList.add('error');else if(st==='valid')el.classList.add('valid');}
+
+function mapFbError(err){
+  const c = err&&err.code?String(err.code):'';
+  const m = {
+    'auth/email-already-in-use':'البريد الإلكتروني مستخدم بالفعل',
+    'auth/invalid-email':'البريد الإلكتروني غير صحيح',
+    'auth/weak-password':'كلمة المرور ضعيفة (6 أحرف على الأقل)',
+    'auth/network-request-failed':'تحقق من اتصالك بالإنترنت',
+    'auth/too-many-requests':'طلبات كثيرة، حاول لاحقاً',
+    'auth/operation-not-allowed':'طريقة التسجيل معطّلة',
+    'permission-denied':'لا تملك صلاحية تنفيذ هذه العملية',
+    'unavailable':'الخدمة غير متاحة مؤقتاً'
+  };
+  return m[c] || (err&&err.message) || 'حدث خطأ غير متوقع';
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🌍 Country Selector Logic
+// ═══════════════════════════════════════════════════════════
+function updatePhoneFieldForCountry() {
+  const codeDigits = state.countryCode.replace(/\D/g,'').length;
+  const wa = $('whatsapp');
+  if (wa) {
+    wa.maxLength = Math.max(6, 15 - codeDigits);
+    wa.placeholder = state.countryPlaceholder || 'رقم الواتساب';
+  }
+  const flagEl = $('countryFlag'); if (flagEl) flagEl.textContent = state.countryFlag;
+  const codeEl = $('countryCodeLabel'); if (codeEl) codeEl.textContent = state.countryCode;
+}
+
+function openCountryModal() {
+  const modal = $('countryModal');
+  if (!modal) return;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  $('countrySearch').value = '';
+  renderCountryList('');
+  setTimeout(() => { try { $('countrySearch').focus(); } catch(e){} }, 320);
+}
+
+function closeCountryModal() {
+  const modal = $('countryModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  const form = $('manualCodeForm');
+  if (form) form.classList.remove('open');
+  const input = $('manualCodeInput');
+  if (input) input.value = '';
+}
+
+function renderCountryList(filter) {
+  const list = $('countryList');
+  if (!list) return;
+  const q = (filter || '').toLowerCase().trim();
+  let filtered = COUNTRIES;
+  if (q) {
+    filtered = COUNTRIES.filter(c =>
+      c.name.toLowerCase().indexOf(q) > -1 ||
+      c.code.indexOf(q) > -1 ||
+      c.iso.toLowerCase().indexOf(q) > -1
+    );
+  }
+  if (!filtered.length) {
+    list.innerHTML = '<div class="country-empty"><i class="fas fa-search"></i>لا توجد نتائج مطابقة<br><span style="font-size:.75rem;color:#94A3B8;">جرّب البحث برمز الدولة أو استخدم الإدخال اليدوي</span></div>';
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  filtered.forEach(c => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    const isActive = state.countryCode === c.code && state.countryName === c.name;
+    btn.className = 'country-item' + (isActive ? ' active' : '');
+    btn.innerHTML =
+      '<span class="country-item-flag">' + c.flag + '</span>' +
+      '<span class="country-item-name">' + escapeHtml(c.name) + '</span>' +
+      '<span class="country-item-code">' + c.code + '</span>';
+    btn.addEventListener('click', () => selectCountry(c));
+    frag.appendChild(btn);
+  });
+  list.innerHTML = '';
+  list.appendChild(frag);
+}
+
+function selectCountry(c) {
+  state.countryCode = c.code;
+  state.countryFlag = c.flag;
+  state.countryName = c.name;
+  state.countryPlaceholder = c.placeholder || 'رقم الواتساب';
+  updatePhoneFieldForCountry();
+  closeCountryModal();
+  const digits = $('whatsapp').value.replace(/\D/g, '');
+  if (digits.length >= 6) { hideErr('waError'); setFieldState('waWrap', 'valid'); }
+  haptic('light');
+}
+
+function openManualCode() {
+  const form = $('manualCodeForm');
+  if (!form) return;
+  form.classList.add('open');
+  const input = $('manualCodeInput');
+  if (input) { input.value = ''; setTimeout(() => { try { input.focus(); } catch(e){} }, 80); }
+}
+
+function cancelManualCode() {
+  const form = $('manualCodeForm');
+  if (form) form.classList.remove('open');
+  const input = $('manualCodeInput');
+  if (input) input.value = '';
+}
+
+function saveManualCode() {
+  const input = $('manualCodeInput');
+  if (!input) return;
+  let raw = (input.value || '').trim();
+  raw = raw.replace(/[^\d]/g, '');
+  raw = raw.replace(/^0+/, '');
+  if (!raw || raw.length < 1 || raw.length > 4) {
+    showToast('رمز الدولة يجب أن يكون بين 1 و 4 أرقام', 'error');
+    return;
+  }
+  state.countryCode = '+' + raw;
+  state.countryFlag = '🌐';
+  state.countryName = 'رمز مخصص';
+  state.countryPlaceholder = 'رقم الواتساب';
+  updatePhoneFieldForCountry();
+  closeCountryModal();
+  showToast('✅ تم حفظ رمز الدولة +' + raw, 'success');
+  const digits = $('whatsapp').value.replace(/\D/g, '');
+  if (digits.length >= 6) { hideErr('waError'); setFieldState('waWrap', 'valid'); }
+  haptic('light');
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🆔 Persistent ID
+// ═══════════════════════════════════════════════════════════
+const PID_KEY='bzr_pid_v6';
+const PID_COOKIE='bzr_pid_v6';
+function uuid(){ if(crypto.randomUUID){try{return crypto.randomUUID();}catch(e){}} return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==='x'?r:((r&0x3)|0x8)).toString(16);});}
+function setCookie(n,v,d){try{const e=new Date(Date.now()+d*864e5).toUTCString();const s=location.protocol==='https:'?'; Secure':'';document.cookie=n+'='+encodeURIComponent(v)+'; expires='+e+'; path=/; SameSite=Lax'+s;}catch(e){}}
+function getCookie(n){try{const m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)'));return m?decodeURIComponent(m[2]):null;}catch(e){return null;}}
+function openIDB(){return new Promise((res,rej)=>{try{const r=indexedDB.open('bzr_guard_v6',1);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('ids'))d.createObjectStore('ids');};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});}
+async function idbGet(k){try{const d=await openIDB();return new Promise(r=>{const tx=d.transaction('ids','readonly');const q=tx.objectStore('ids').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null);});}catch(e){return null;}}
+async function idbSet(k,v){try{const d=await openIDB();return new Promise(r=>{const tx=d.transaction('ids','readwrite');tx.objectStore('ids').put(v,k);tx.oncomplete=()=>r(true);tx.onerror=()=>r(false);});}catch(e){return false;}}
+
+async function getOrCreatePersistentId(){
+  try{const v=localStorage.getItem(PID_KEY);if(v&&v.length>=10)return v;}catch(e){}
+  const c=getCookie(PID_COOKIE);
+  if(c&&c.length>=10){try{localStorage.setItem(PID_KEY,c);}catch(e){} return c;}
+  const idb=await idbGet('pid');
+  if(idb&&typeof idb==='string'&&idb.length>=10){try{localStorage.setItem(PID_KEY,idb);}catch(e){}setCookie(PID_COOKIE,idb,3650);return idb;}
+  const newId='pid_'+uuid().replace(/-/g,'')+Date.now().toString(36);
+  try{localStorage.setItem(PID_KEY,newId);}catch(e){}
+  setCookie(PID_COOKIE,newId,3650);
+  await idbSet('pid',newId);
+  return newId;
+}
+
+async function sha256(str){
+  try{const b=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+  catch(e){let h=0;for(let i=0;i<str.length;i++)h=((h<<5)-h+str.charCodeAt(i))|0;return 'fb_'+Math.abs(h).toString(36)+'_'+str.length;}
+}
+
+async function buildFingerprint(){
+  const pid = await getOrCreatePersistentId();
+  state.persistentId = pid;
+  const parts = ['v6',pid,screen.width+'x'+screen.height,screen.colorDepth||0,new Date().getTimezoneOffset(),navigator.language||'na',navigator.platform||'na',navigator.hardwareConcurrency||0];
+  const fp = await sha256(parts.join('|'));
+  state.deviceFingerprint = fp;
+  return fp;
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🔒 Device Check
+// ═══════════════════════════════════════════════════════════
+async function checkDeviceRegistration(pid, fp){
+  const r = {blocked:false, store:null, source:null};
+  try{ const d=await db.collection(DEVICES).doc(pid).get();
+    if(d.exists){ r.blocked=true; r.source='registry_pid';
+      const sid=d.data().storeId;
+      if(sid){try{const s=await db.collection(STORES).doc(sid).get();if(s.exists)r.store={id:s.id,...s.data()};}catch(e){}}
+      return r;
+    }
+  }catch(e){console.warn('[chk1]',e);}
+  if(fp){ try{ const d=await db.collection(DEVICES).doc(fp).get();
+    if(d.exists){ r.blocked=true; r.source='registry_fp';
+      const sid=d.data().storeId;
+      if(sid){try{const s=await db.collection(STORES).doc(sid).get();if(s.exists)r.store={id:s.id,...s.data()};}catch(e){}}
+      return r;
+    }
+  }catch(e){console.warn('[chk2]',e);} }
+  try{ const s=await db.collection(STORES).where('device_id','==',pid).limit(1).get();
+    if(!s.empty){ r.blocked=true; r.source='stores_pid'; r.store={id:s.docs[0].id,...s.docs[0].data()}; return r; }
+  }catch(e){console.warn('[chk3]',e);}
+  if(fp){ try{ const s=await db.collection(STORES).where('device_fingerprint','==',fp).limit(1).get();
+    if(!s.empty){ r.blocked=true; r.source='stores_fp'; r.store={id:s.docs[0].id,...s.docs[0].data()}; return r; }
+  }catch(e){console.warn('[chk4]',e);} }
+  return r;
+}
+
+async function showBlockedGate(storeInfo){
+  const card=$('blockedStoreCard'), nameEl=$('blockedStoreName');
+  if(card&&nameEl&&storeInfo&&storeInfo.name){nameEl.textContent=storeInfo.name;card.style.display='block';}
+  else if(card){card.style.display='none';}
+  showGate('gateBlocked');
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🖼️ Image Upload
+// ═══════════════════════════════════════════════════════════
+function compressImage(file,maxW,quality){return new Promise((res,rej)=>{const reader=new FileReader();reader.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxW){h=Math.round(maxW/w*h);w=maxW;}c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#FFFFFF';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);c.toBlob(b=>b?res(b):rej(new Error('compress_failed')),'image/jpeg',quality);};img.onerror=rej;img.src=e.target.result;};reader.onerror=rej;reader.readAsDataURL(file);});}
+async function uploadToCloudinary(blob){const fd=new FormData();fd.append('file',blob);fd.append('upload_preset',CLOUDINARY_UPLOAD_PRESET);fd.append('folder','branzar/stores');const r=await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD_NAME+'/image/upload',{method:'POST',body:fd});if(!r.ok)throw new Error('upload_failed');const d=await r.json();if(!d.secure_url)throw new Error('no_url');return d.secure_url;}
+function setupImageUpload(zoneEl,inputEl,previewEl,progressEl,onLoaded,isLogo){
+  if(!zoneEl||!inputEl)return;
+  zoneEl.addEventListener('click',()=>inputEl.click());
+  zoneEl.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inputEl.click();}});
+  inputEl.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)handle(f);inputEl.value='';});
+  async function handle(file){
+    if(!file.type||file.type.indexOf('image/')!==0){showToast('يجب اختيار صورة','error');return;}
+    if(file.size>8*1024*1024){showToast('الحجم أكبر من 8 ميجا','error');return;}
+    if(progressEl)progressEl.classList.add('active');
+    haptic('light');
+    try{const blob=await compressImage(file,isLogo?800:1600,isLogo?0.88:0.85);const url=await uploadToCloudinary(blob);previewEl.src=url;previewEl.onload=()=>previewEl.classList.add('loaded');onLoaded(url);showToast('✅ تم رفع الصورة','success');}
+    catch(err){showToast('تعذر رفع الصورة','error');}
+    finally{if(progressEl)progressEl.classList.remove('active');}
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🏷️ Categories
+// ═══════════════════════════════════════════════════════════
+async function ensureCategoriesSeeded() {
+  if (state.categoriesSeeded) return;
+  try {
+    const snap = await db.collection(CATEGORIES).limit(1).get();
+    if (!snap.empty) { state.categoriesSeeded = true; return; }
+    const batch = db.batch();
+    DEFAULT_CATEGORIES.forEach((cat, idx) => {
+      batch.set(db.collection(CATEGORIES).doc(cat.id), {
+        name: cat.name, emoji: cat.emoji, order: idx, is_default: true, created_at: Date.now()
+      });
+    });
+    await batch.commit();
+    state.categoriesSeeded = true;
+  } catch (err) { console.warn('[Categories] Seed failed:', err); }
+}
+
+function normalizeCategories(list) {
+  return list
+    .filter(c => c && c.name && String(c.name).trim())
+    .map((c, i) => ({
+      id: c.id || ('cat_' + i),
+      name: String(c.name).trim(),
+      emoji: c.emoji || '🏷️',
+      order: typeof c.order === 'number' ? c.order : i,
+      is_default: !!c.is_default
+    }))
+    .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+}
+
+async function loadCategoriesFromFirestore() {
+  try {
+    const snap = await db.collection(CATEGORIES).get();
+    const cats = normalizeCategories(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    state.allCategories = cats.length ? cats : normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
+    state.categoriesLoaded = true;
+    return state.allCategories;
+  } catch (err) {
+    state.allCategories = normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
+    state.categoriesLoaded = true;
+    return state.allCategories;
+  }
+}
+
+function subscribeCategoriesRealtime() {
+  if (state.categoriesUnsub) return;
+  state.categoriesUnsub = db.collection(CATEGORIES)
+    .onSnapshot((snapshot) => {
+      const cats = normalizeCategories(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+      const freshList = cats.length ? cats : normalizeCategories(DEFAULT_CATEGORIES.map((c, i) => ({...c, order: i})));
+      const oldSig = state.allCategories.map(c => c.id + ':' + c.name + ':' + c.emoji).join('|');
+      const newSig = freshList.map(c => c.id + ':' + c.name + ':' + c.emoji).join('|');
+      state.allCategories = freshList;
+      if (oldSig !== newSig) {
+        if ($('catsGrid')) renderCategories();
+        if (state.selectedCategory && !freshList.some(c => c.name === state.selectedCategory)) {
+          state.selectedCategory = null;
+          showToast('الفئة التي اخترتها لم تعد متاحة', 'warning');
+        }
+      }
+    }, err => { console.warn('[Categories] Listener error:', err); });
+}
+
+async function initCategories() {
+  await ensureCategoriesSeeded();
+  await loadCategoriesFromFirestore();
+  subscribeCategoriesRealtime();
+  renderCategories();
+}
+
+function renderCategories() {
+  const g = $('catsGrid');
+  if (!g) return;
+  if (!state.categoriesLoaded) {
+    g.innerHTML = '<div class="cats-loading"><div class="ring"></div><span>جارٍ تحميل الفئات...</span></div>';
+    return;
+  }
+  const cats = state.allCategories || [];
+  if (!cats.length) {
+    g.innerHTML = '<div class="cats-empty"><i class="fas fa-triangle-exclamation" style="font-size:1.4rem;margin-bottom:8px;display:block;"></i>لا توجد فئات متاحة حالياً</div>';
+    return;
+  }
+  g.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cat-chip' + (state.selectedCategory === c.name ? ' active' : '');
+    btn.dataset.cat = c.name;
+    btn.dataset.catId = c.id;
+    btn.innerHTML = '<span class="cat-emoji">' + escapeHtml(c.emoji) + '</span><span>' + escapeHtml(c.name) + '</span>';
+    btn.addEventListener('click', () => selectCategory(c.name));
+    frag.appendChild(btn);
+  });
+  g.appendChild(frag);
+  const hint = $('catsSourceHint');
+  if (hint) hint.style.display = cats.some(c => !c.is_default || c.id) ? 'inline-flex' : 'none';
+}
+
+function selectCategory(name) {
+  state.selectedCategory = name;
+  document.querySelectorAll('.cat-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.cat === name);
+  });
+  hideErr('catError');
+  haptic('light');
+}
+
+// ═══════════════════════════════════════════════════════════
+// 📝 Input Events
+// ═══════════════════════════════════════════════════════════
+const composingInputs = new WeakSet();
+
+function attachInputSafety(el) {
+  if (!el || el.__bzrSafe) return;
+  el.__bzrSafe = true;
+  el.addEventListener('compositionstart', () => composingInputs.add(el), true);
+  el.addEventListener('compositionend', () => {
+    composingInputs.delete(el);
+    try { el.dispatchEvent(new Event('input', { bubbles: true })); } catch(e) {}
+  }, true);
+}
+
+function isComposing(el) { return composingInputs.has(el); }
+
+function safeSetValue(el, newVal) {
+  if (!el || el.value === newVal) return;
+  const hadFocus = document.activeElement === el;
+  const start = el.selectionStart ?? 0;
+  const end = el.selectionEnd ?? 0;
+  el.value = newVal;
+  if (hadFocus) {
+    try {
+      const len = newVal.length;
+      if (start === end) { const pos = Math.min(start, len); el.setSelectionRange(pos, pos); }
+      else { el.setSelectionRange(Math.min(start, len), Math.min(end, len)); }
+    } catch(e) {}
+  }
+}
+
+document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea').forEach(attachInputSafety);
+
+// ─── اسم المتجر ───
+if ($('storeName')) {
+  $('storeName').addEventListener('input', () => {
+    const el = $('storeName');
+    if (isComposing(el)) { if ($('nameCount')) $('nameCount').textContent = el.value.length; return; }
+    const cleaned = el.value.replace(/[<>"`\\]/g, '');
+    safeSetValue(el, cleaned);
+    if ($('nameCount')) $('nameCount').textContent = cleaned.length;
+    if (cleaned.trim().length >= 3) { hideErr('nameError'); setFieldState('nameWrap', 'valid'); }
+    else { setFieldState('nameWrap', null); }
+  });
+}
+
+if ($('storeDescription')) {
+  $('storeDescription').addEventListener('input', (e) => {
+    if ($('descCount')) $('descCount').textContent = e.target.value.length;
+  });
+}
+
+// ─── الموقع ───
+if ($('locationInput')) {
+  const locEl = $('locationInput');
+  const STATES = ['الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','سنار','النيل الأبيض','النيل الأزرق','نهر النيل','الشمالية','شمال كردفان','جنوب كردفان','غرب كردفان','شمال دارفور','جنوب دارفور','غرب دارفور','شرق دارفور','وسط دارفور'];
+  locEl.addEventListener('input', (e) => {
+    if (isComposing(locEl)) return;
+    let v = locEl.value.replace(/[<>"`\\]/g, '');
+    safeSetValue(locEl, v);
+    const isDel = (e.inputType || '').indexOf('delete') === 0;
+    const t = v.trim();
+    if (!isDel && STATES.indexOf(t) > -1 && !v.endsWith(' - ')) {
+      const newVal = t + ' - ';
+      locEl.value = newVal;
+      try { locEl.setSelectionRange(newVal.length, newVal.length); } catch(err) {}
+      v = newVal;
+    }
+    if (v.replace(/\s*-\s*$/, '').trim().length >= 3) {
+      hideErr('locationError'); setFieldState('locationWrap', 'valid');
+    }
+  });
+}
+
+// ─── واتساب (بدون + — الرمز منفصل) ───
+const waEl = $('whatsapp');
+const phoneEl = $('phone');
+if (waEl) {
+  waEl.addEventListener('input', () => {
+    if (isComposing(waEl)) return;
+    const cleaned = waEl.value.replace(/\D/g, ''); // digits only
+    safeSetValue(waEl, cleaned);
+    const digits = cleaned.replace(/^0+/, '');
+    if (digits.length >= 6 && digits.length <= 15) {
+      hideErr('waError'); setFieldState('waWrap', 'valid');
+    } else {
+      setFieldState('waWrap', null);
+    }
+  });
+  waEl.addEventListener('paste', (e) => {
+    const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+    // إذا لصق المستخدم رقم كامل مع +، استخرج الرقم المحلي فقط
+    const matchIntl = text.match(/^\s*\+\s*(\d{1,4})[\s\-]?(\d+)\s*$/);
+    if (matchIntl) {
+      const pastedCode = matchIntl[1];
+      const pastedLocal = matchIntl[2];
+      // ابحث عن الدولة بهذا الرمز
+      const found = COUNTRIES.find(c => c.code.replace(/\D/g,'') === pastedCode);
+      if (found) {
+        e.preventDefault();
+        selectCountry(found);
+        waEl.value = pastedLocal.replace(/\D/g,'').replace(/^0+/,'');
+        hideErr('waError'); setFieldState('waWrap', 'valid');
+      }
+    }
+  });
+}
+if (phoneEl) {
+  phoneEl.addEventListener('input', () => {
+    if (isComposing(phoneEl)) return;
+    const cleaned = phoneEl.value.replace(/[^\d+]/g, '');
+    safeSetValue(phoneEl, cleaned);
+  });
+}
+
+// ─── البريد ───
+if ($('emailInput')) {
+  $('emailInput').addEventListener('input', () => {
+    const el = $('emailInput');
+    if (isComposing(el)) return;
+    const v = el.value.trim().toLowerCase();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { hideErr('emailError'); setFieldState('emailWrap', 'valid'); }
+    else { setFieldState('emailWrap', null); }
+  });
+}
+
+// ─── كلمة المرور ───
+if ($('password')) {
+  $('password').addEventListener('input', () => {
+    const p = $('password').value;
+    const el = $('pwdStrength');
+    if (!p) { el.classList.remove('show'); return; }
+    el.classList.add('show');
+    let sc = 0;
+    if (p.length >= 6) sc++;
+    if (p.length >= 10) sc++;
+    if (/[A-Z]/.test(p) && /[a-z]/.test(p)) sc++;
+    if (/\d/.test(p)) sc++;
+    if (/[^A-Za-z0-9]/.test(p)) sc++;
+    sc = Math.min(sc, 4);
+    const cs = ['#EF4444','#F59E0B','#F59E0B','#10B981','#10B981'];
+    const ls = ['ضعيفة','ضعيفة','متوسطة','قوية','قوية جداً'];
+    document.querySelectorAll('#pwdStrength .pwd-bar').forEach((b, i) => { b.style.background = i < sc ? cs[sc] : '#E2E8F0'; });
+    const t = $('pwdStrengthText');
+    t.textContent = ls[sc] || ''; t.style.color = cs[sc] || '';
+    if (p.length >= 6) { hideErr('pwdError'); setFieldState('pwdWrap', 'valid'); }
+  });
+}
+
+if ($('confirmPassword')) {
+  $('confirmPassword').addEventListener('input', () => {
+    if ($('confirmPassword').value && $('confirmPassword').value === $('password').value) {
+      hideErr('pwdConfirmError'); setFieldState('pwdConfirmWrap', 'valid');
+    }
+  });
+}
+
+if ($('termsCheck')) {
+  $('termsCheck').addEventListener('change', () => {
+    if ($('termsCheck').checked) hideErr('termsError');
+  });
+}
+
+$('togglePwd').addEventListener('click', () => {
+  const i = $('password'); const p = i.type === 'password';
+  i.type = p ? 'text' : 'password';
+  $('togglePwd').querySelector('i').className = p ? 'fas fa-eye-slash' : 'fas fa-eye';
+});
+$('togglePwdConfirm').addEventListener('click', () => {
+  const i = $('confirmPassword'); const p = i.type === 'password';
+  i.type = p ? 'text' : 'password';
+  $('togglePwdConfirm').querySelector('i').className = p ? 'fas fa-eye-slash' : 'fas fa-eye';
+});
+
+setupImageUpload($('coverUpload'),$('coverInput'),$('coverPreview'),$('coverProgress'),url=>{state.coverUrl=url;hideErr('coverError');},false);
+setupImageUpload($('logoUpload'),$('logoInput'),$('logoPreview'),$('logoProgress'),url=>{state.logoUrl=url;hideErr('logoError');},true);
+
+// ─── Country Selector Events ───
+if ($('countryBtn')) $('countryBtn').addEventListener('click', openCountryModal);
+if ($('countryModalClose')) $('countryModalClose').addEventListener('click', closeCountryModal);
+if ($('countryModal')) {
+  $('countryModal').addEventListener('click', (e) => {
+    if (e.target === $('countryModal')) closeCountryModal();
+  });
+}
+if ($('countrySearch')) {
+  $('countrySearch').addEventListener('input', (e) => renderCountryList(e.target.value));
+}
+if ($('manualCountryBtn')) $('manualCountryBtn').addEventListener('click', openManualCode);
+if ($('manualCodeSave')) $('manualCodeSave').addEventListener('click', saveManualCode);
+if ($('manualCodeCancel')) $('manualCodeCancel').addEventListener('click', cancelManualCode);
+if ($('manualCodeInput')) {
+  $('manualCodeInput').addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
+  });
+  $('manualCodeInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); saveManualCode(); }
+  });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && $('countryModal').classList.contains('open')) closeCountryModal();
+});
+
+// ═══════════════════════════════════════════════════════════
+// ✅ Validation
+// ═══════════════════════════════════════════════════════════
+function validateForm(){
+  let ok=true, first=null;
+  const name=sanitize($('storeName').value);
+  if(name.length<3||name.length>60){showErr('nameError');setFieldState('nameWrap','error');ok=false;first=first||'storeName';}else{hideErr('nameError');setFieldState('nameWrap','valid');}
+  if(!state.selectedCategory){showErr('catError');ok=false;first=first||'catsGrid';}else hideErr('catError');
+  const loc=sanitize($('locationInput').value).replace(/\s*-\s*$/,'').trim();
+  if(loc.length<3){showErr('locationError');setFieldState('locationWrap','error');ok=false;first=first||'locationInput';}else{hideErr('locationError');setFieldState('locationWrap','valid');}
+  // رقم الواتساب المحلي (بدون رمز الدولة)
+  const localDigits = $('whatsapp').value.replace(/\D/g,'').replace(/^0+/, '');
+  if(localDigits.length<6||localDigits.length>15){
+    showErr('waError');setFieldState('waWrap','error');ok=false;first=first||'whatsapp';
+  } else {
+    const full = state.countryCode.replace(/\D/g,'') + localDigits;
+    if (full.length > 15) {
+      showErr('waError');setFieldState('waWrap','error');ok=false;first=first||'whatsapp';
+    } else { hideErr('waError');setFieldState('waWrap','valid'); }
+  }
+  if(!state.coverUrl){showErr('coverError');ok=false;first=first||'coverUpload';}else hideErr('coverError');
+  if(!state.logoUrl){showErr('logoError');ok=false;first=first||'logoUpload';}else hideErr('logoError');
+  const email=($('emailInput').value||'').trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){showErr('emailError');setFieldState('emailWrap','error');ok=false;first=first||'emailInput';}else{hideErr('emailError');setFieldState('emailWrap','valid');}
+  const pwd=$('password').value;
+  if(pwd.length<6||pwd.length>128){showErr('pwdError');setFieldState('pwdWrap','error');ok=false;first=first||'password';}else{hideErr('pwdError');setFieldState('pwdWrap','valid');}
+  if(pwd!==$('confirmPassword').value||!$('confirmPassword').value){showErr('pwdConfirmError');setFieldState('pwdConfirmWrap','error');ok=false;first=first||'confirmPassword';}else{hideErr('pwdConfirmError');setFieldState('pwdConfirmWrap','valid');}
+  if(!$('termsCheck').checked){showErr('termsError');ok=false;first=first||'termsCheck';}else hideErr('termsError');
+  if(first){const el=$(first);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});haptic('heavy');}
+  return ok;
+}
+
+// ═══════════════════════════════════════════════════════════
+// 🚀 Submit
+// ═══════════════════════════════════════════════════════════
+$('submitBtn').addEventListener('click', async()=>{
+  if(state.alreadyRegistered){showToast('لديك متجر بالفعل','warning');return;}
+  if(state.submitting)return;
+  if(!state.categoriesLoaded){showToast('جارٍ تحميل الفئات، لحظة...','info');return;}
+  if(!validateForm()){showToast('يرجى تصحيح الحقول المطلوبة','error');return;}
+
+  const email=($('emailInput').value||'').trim().toLowerCase();
+  const password=$('password').value;
+  const storeName=sanitize($('storeName').value);
+  const description=sanitize($('storeDescription').value).slice(0,500);
+  const location=sanitize($('locationInput').value).replace(/\s*-\s*$/,'').trim();
+  const phone=($('phone').value||'').replace(/[^\d+]/g,'');
+  const category=state.selectedCategory;
+  // بناء رقم الواتساب الكامل برمز الدولة
+  const localDigits = $('whatsapp').value.replace(/\D/g,'').replace(/^0+/, '');
+  const whatsapp = state.countryCode + localDigits;
+
+  const btn=$('submitBtn');
+  state.submitting=true;
+  setButtonLoading(btn,true,'جارٍ التحقق ...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+  startProgress();haptic('medium');
+
+  let createdUser=null;
+  try{
+    const devCheck = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
+    if(devCheck.blocked){
+      await showBlockedGate(devCheck.store);
+      setButtonLoading(btn,false,'','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+      state.submitting=false; return;
+    }
+
+    setButtonLoading(btn,true,'جارٍ إنشاء الحساب...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    createdUser = cred.user;
+
+    setButtonLoading(btn,true,'جارٍ التحقق من البيانات...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+    const nChk=await db.collection(STORES).where('name','==',storeName).limit(1).get();
+    if(!nChk.empty){try{await createdUser.delete();}catch(e){} throw new Error('store_name_exists');}
+    const wChk=await db.collection(STORES).where('whatsapp_number','==',whatsapp).limit(1).get();
+    if(!wChk.empty){try{await createdUser.delete();}catch(e){} throw new Error('whatsapp_exists');}
+
+    const now=Date.now();
+    const storeRef=db.collection(STORES).doc();
+    const deviceRef=db.collection(DEVICES).doc(state.persistentId);
+
+    const storeData={
+      name:storeName, category:category, categories:[],
+      description:description, location:location,
+      whatsapp_number:whatsapp,
+      whatsapp_country_code:state.countryCode,
+      whatsapp_local:localDigits,
+      phone_number:phone||'',
+      logo_url:state.logoUrl||'', cover_url:state.coverUrl||'',
+      owner_uid:createdUser.uid, owner_email:email,
+      followers:0, products_count:0,
+      is_verified:false, is_subscribed:false,
+      device_fingerprint:state.deviceFingerprint,
+      device_id:state.persistentId,
+      created_at:now, updated_at:now
+    };
+    const deviceData={
+      storeId:storeRef.id, deviceId:state.persistentId,
+      owner_uid:createdUser.uid, owner_email:email,
+      fingerprint:state.deviceFingerprint,
+      registeredAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    setButtonLoading(btn,true,'جارٍ إنشاء المتجر...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+    const batch=db.batch();
+    batch.set(deviceRef,deviceData);
+    batch.set(storeRef,storeData);
+    try{ await batch.commit(); }
+    catch(bErr){ try{await createdUser.delete();}catch(e){} if(bErr.code==='permission-denied')throw new Error('device_blocked'); throw bErr; }
+
+    state.pendingStoreId=storeRef.id;
+
+    setButtonLoading(btn,true,'جارٍ إرسال رابط التحقق...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+    const acs={ url:window.location.origin+window.location.pathname+'?verified=1', handleCodeInApp:false };
+    let sent=false;
+    try{ await createdUser.sendEmailVerification(acs); sent=true; }
+    catch(e){ console.warn('[sendEmailVerification]',e); }
+
+    state.pendingUser=createdUser;
+    state.pendingEmail=email;
+    state.lastResendAt=sent?Date.now():0;
+
+    doneProgress(); haptic('heavy');
+    showToast(sent?'📧 تم إرسال رابط التحقق إلى بريدك':'⚠️ تعذر الإرسال — اضغط "إعادة إرسال"', sent?'success':'warning');
+
+    const emEl=$('waitingEmail'); if(emEl) emEl.textContent=email;
+    showGate('gateWaiting');
+    startVerifyPolling();
+  }catch(err){
+    console.error('[Register]',err);
+    doneProgress();
+    let msg='تعذر إنشاء المتجر — حاول مرة أخرى';
+    if(err.message==='device_blocked')msg='هذا الجهاز مسجّل مسبقًا';
+    else if(err.message==='store_name_exists')msg='اسم المتجر مستخدم بالفعل';
+    else if(err.message==='whatsapp_exists')msg='رقم الواتساب مستخدم بالفعل';
+    else if(err.code)msg=mapFbError(err);
+    const el=$('registerError'); el.textContent='❌ '+msg; el.classList.add('show'); el.scrollIntoView({behavior:'smooth',block:'center'});
+    showToast(msg,'error'); haptic('heavy');
+    if(err.message==='device_blocked'){setTimeout(async()=>{const c=await checkDeviceRegistration(state.persistentId,state.deviceFingerprint);await showBlockedGate(c.store);},800);}
+    setButtonLoading(btn,false,'','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+    state.submitting=false;
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// 🔄 Email Verification Polling
+// ═══════════════════════════════════════════════════════════
+function startVerifyPolling(){
+  stopVerifyPolling();
+  let attempts=0;
+  state.pollTimer=setInterval(async()=>{
+    attempts++;
+    const user=auth.currentUser||state.pendingUser;
+    if(!user)return;
+    try{ await user.reload(); }catch(e){}
+    if(user.emailVerified){ stopVerifyPolling(); onVerifiedSuccess(); return; }
+    if(attempts>=120){ stopVerifyPolling(); const el=$('waitingSteps'); if(el) el.textContent='انتهت المدة — اضغط "تحققت من البريد الآن"'; }
+  },3000);
+}
+function stopVerifyPolling(){ if(state.pollTimer){ clearInterval(state.pollTimer); state.pollTimer=null; } }
+
+async function onVerifiedSuccess(){
+  stopVerifyPolling();
+  haptic('heavy');
+  const s=$('verifiedSteps'); if(s) s.textContent='جارٍ التوجيه لتسجيل الدخول...';
+  showGate('gateVerified');
+  setTimeout(async()=>{
+    try{ if(auth.currentUser) await auth.signOut(); }catch(e){}
+    window.location.href='a.html?registered=1&email='+encodeURIComponent(state.pendingEmail||'');
+  },1800);
+}
+
+$('checkVerifyBtn').addEventListener('click',async()=>{
+  const b=$('checkVerifyBtn');
+  setButtonLoading(b,true,'جارٍ التحقق...','<i class="fas fa-check-circle"></i><span>تحققت من البريد الآن</span>');
+  try{
+    const u=auth.currentUser||state.pendingUser;
+    if(!u){showToast('تعذر التحقق','error');return;}
+    try{await u.reload();}catch(e){}
+    if(u.emailVerified){onVerifiedSuccess();return;}
+    showToast('لم يتم التحقق بعد — تفقد بريدك','warning');
+  }finally{setButtonLoading(b,false,'','<i class="fas fa-check-circle"></i><span>تحققت من البريد الآن</span>');}
+});
+
+$('resendVerifyBtn').addEventListener('click',async()=>{
+  const now=Date.now();
+  if(now-state.lastResendAt<RESEND_COOLDOWN_MS){const r=Math.ceil((RESEND_COOLDOWN_MS-(now-state.lastResendAt))/1000);showToast('انتظر '+r+' ثانية','warning');return;}
+  const u=auth.currentUser||state.pendingUser;
+  if(!u){showToast('تعذر الإعادة','error');return;}
+  const b=$('resendVerifyBtn');
+  setButtonLoading(b,true,'جارٍ الإرسال...','<i class="fas fa-redo"></i><span>إعادة إرسال الرابط</span>');
+  try{ await u.sendEmailVerification({url:window.location.origin+window.location.pathname+'?verified=1',handleCodeInApp:false}); state.lastResendAt=Date.now(); showToast('📧 تم إعادة الإرسال','success'); }
+  catch(e){ showToast('تعذر — حاول لاحقًا','error'); }
+  finally{ setButtonLoading(b,false,'','<i class="fas fa-redo"></i><span>إعادة إرسال الرابط</span>'); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// 🌐 Global Events
+// ═══════════════════════════════════════════════════════════
+$('retryCheckBtn').addEventListener('click',()=>{showGate('gateCheck');setTimeout(bootstrap,400);});
+$('backBtn').addEventListener('click',()=>{if(document.referrer&&document.referrer.indexOf(location.hostname)>-1)history.back();else window.location.href='index.html';});
+$('signupForm').addEventListener('submit',e=>{e.preventDefault();$('submitBtn').click();});
+$('signupForm').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA')e.preventDefault();});
+
+window.addEventListener('beforeunload', () => {
+  if (state.categoriesUnsub) { try { state.categoriesUnsub(); } catch(e){} }
+});
+
+// ═══════════════════════════════════════════════════════════
+// 🚀 Bootstrap
+// ═══════════════════════════════════════════════════════════
+async function bootstrap(){
+  showGate('gateCheck');
+  try{
+    updateGateStep('جارٍ التحقق من الجهاز...');
+    await new Promise(r=>setTimeout(r,200));
+    await buildFingerprint();
+
+    // تهيئة حقل الواتساب (السودان افتراضي)
+    updatePhoneFieldForCountry();
+
+    const devCheck = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
+    if(devCheck.blocked){
+      updateGateStep('هذا الجهاز مسجّل مسبقًا');
+      await new Promise(r=>setTimeout(r,400));
+      await showBlockedGate(devCheck.store);
+      return;
+    }
+
+    if(auth.currentUser){
+      if(auth.currentUser.emailVerified){
+        updateGateStep('لديك حساب فعّال — جارٍ التوجيه...');
+        try{await auth.signOut();}catch(e){}
+        window.location.href='a.html?already=1';
+        return;
+      }
+      try{
+        const snap=await db.collection(STORES).where('owner_uid','==',auth.currentUser.uid).limit(1).get();
+        if(!snap.empty){
+          state.pendingUser=auth.currentUser;
+          state.pendingEmail=auth.currentUser.email;
+          state.pendingStoreId=snap.docs[0].id;
+          const emEl=$('waitingEmail'); if(emEl) emEl.textContent=auth.currentUser.email;
+          showGate('gateWaiting'); startVerifyPolling(); return;
+        }
+        await auth.currentUser.delete();
+      }catch(e){ try{await auth.signOut();}catch(_){} }
+    }
+
+    updateGateStep('جارٍ تحميل الفئات...');
+    showGate('appContainer');
+    renderCategories();
+
+    await initCategories();
+    updateGateStep('جاهز للتسجيل ✅');
+  }catch(err){
+    console.error('[Bootstrap]',err);
+    const el=$('errorReason'); if(el) el.textContent='تعذّر إتمام التحقق.';
+    showGate('gateError');
+  }
+}
+
+document.addEventListener('DOMContentLoaded',bootstrap);
+console.log('[BZR] signup v10.0 — countries dropdown + Sudan default + manual code + safe input ✅');
+</script>
+</body>
+</html>
