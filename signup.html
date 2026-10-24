@@ -150,7 +150,7 @@ input,textarea,select{outline:none}
 #topProgressBar.active{transform:scaleX(.75);transition:transform 1.5s}
 #topProgressBar.done{transform:scaleX(1);transition:transform .2s;opacity:0}
 
-/* ═══════ Phone with Country Selector ═══════ */
+/* ═══════ Phone Input with Country ═══════ */
 .input-wrap.phone-input { direction: ltr; }
 .country-btn {
   display: flex; align-items: center; justify-content: center; gap: 5px;
@@ -167,10 +167,27 @@ input,textarea,select{outline:none}
 .country-btn .cf { font-size: 1.25rem; line-height: 1; }
 .country-btn .cc { direction: ltr; font-family: 'Cairo', monospace; letter-spacing: .3px; }
 .country-btn .fa-chevron-down { font-size: .58rem; color: var(--c-text-muted); margin-inline-start: 2px; }
+.country-btn.synced .cc::before { content: '🔗'; font-size: .7rem; margin-inline-end: 2px; }
 .input-wrap:focus-within .country-btn { background: var(--c-primary-soft); color: var(--c-primary); border-inline-end-color: var(--c-primary); }
 .input-wrap.error .country-btn { background: #FEE2E2; color: var(--c-danger); border-inline-end-color: var(--c-danger); }
 .input-wrap.valid .country-btn { background: #DCFCE7; color: var(--c-success); border-inline-end-color: var(--c-success); }
 .input-wrap.phone-input .input { padding-inline-start: 14px; font-family: 'Cairo', monospace; letter-spacing: .5px; }
+
+/* ═══════ Phone Example Note ═══════ */
+.phone-example-note {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 8px; padding: 8px 10px;
+  background: #F0F9FF; border: 1px dashed #BAE6FD;
+  border-radius: 8px; font-size: .72rem; font-weight: 600;
+  color: #0369A1; line-height: 1.5;
+}
+.phone-example-note i { color: #0284C7; font-size: .8rem; flex-shrink: 0; }
+.phone-example-note code {
+  background: #E0F2FE; padding: 1px 6px; border-radius: 4px;
+  font-family: 'Cairo', monospace; font-weight: 800; direction: ltr;
+  color: #075985; font-size: .75rem;
+}
+.phone-example-note b { color: #DC2626; font-weight: 900; }
 
 /* ═══════ Country Modal ═══════ */
 .country-modal {
@@ -312,79 +329,33 @@ input,textarea,select{outline:none}
 }
 
 /* ═══════ Security Guidelines Card ═══════ */
-.security-card{
-  position:relative;overflow:hidden;
-  border:2px solid rgba(255,122,0,.18);
-  background:linear-gradient(180deg,#FFFFFF 0%,#FFFBF5 100%);
-  animation:secFadeUp .6s cubic-bezier(.34,1.56,.64,1) both;
-}
+.security-card{position:relative;overflow:hidden;border:2px solid rgba(255,122,0,.18);background:linear-gradient(180deg,#FFFFFF 0%,#FFFBF5 100%);animation:secFadeUp .6s cubic-bezier(.34,1.56,.64,1) both}
 @keyframes secFadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.security-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:4px;
-  background:linear-gradient(90deg,#FF7A00 0%,#25D366 50%,#FF7A00 100%);
-  background-size:200% 100%;animation:secShine 3s linear infinite;
-}
+.security-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#FF7A00 0%,#25D366 50%,#FF7A00 100%);background-size:200% 100%;animation:secShine 3s linear infinite}
 @keyframes secShine{0%{background-position:0% 0}100%{background-position:200% 0}}
-.security-card .sec-head-icon{
-  width:38px;height:38px;border-radius:11px;flex-shrink:0;
-  background:linear-gradient(135deg,#10B981,#059669);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:1rem;
-  box-shadow:0 8px 20px -6px rgba(16,185,129,.6);
-  animation:secPulse 2.6s ease-in-out infinite;
-}
+.security-card .sec-head-icon{width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#10B981,#059669);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 8px 20px -6px rgba(16,185,129,.6);animation:secPulse 2.6s ease-in-out infinite}
 @keyframes secPulse{0%,100%{box-shadow:0 8px 20px -6px rgba(16,185,129,.6),0 0 0 0 rgba(16,185,129,.35)}50%{box-shadow:0 8px 20px -6px rgba(16,185,129,.6),0 0 0 10px rgba(16,185,129,0)}}
-.sec-badge{
-  display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;
-  font-size:.7rem;font-weight:900;color:#92400E;
-  background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid #FCD34D;
-}
+.sec-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;font-size:.7rem;font-weight:900;color:#92400E;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid #FCD34D}
 .sec-badge i{font-size:.62rem}
-.sec-intro{
-  display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;
-  background:linear-gradient(135deg,#FFF1E0,#FFF8EE);
-  border-radius:14px;border:1px solid rgba(255,122,0,.16);
-}
+.sec-intro{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;margin-bottom:16px;background:linear-gradient(135deg,#FFF1E0,#FFF8EE);border-radius:14px;border:1px solid rgba(255,122,0,.16)}
 .sec-intro i{color:var(--c-primary);font-size:1.1rem;margin-top:2px;flex-shrink:0}
 .sec-intro p{font-size:.83rem;font-weight:600;color:#7c4a15;line-height:1.75;margin:0}
 .sec-intro strong{color:var(--c-primary-dark);font-weight:900}
 .sec-list{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-direction:column;gap:10px}
-.sec-list li{
-  display:flex;gap:12px;align-items:flex-start;padding:12px 14px;
-  background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;
-  transition:all .25s ease;
-}
+.sec-list li{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;transition:all .25s ease}
 .sec-list li:hover{background:#F0FDF4;border-color:#86EFAC;transform:translateX(-3px)}
-.sec-check{
-  width:28px;height:28px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,#10B981,#059669);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:.72rem;
-  box-shadow:0 4px 12px -3px rgba(16,185,129,.55);
-}
+.sec-check{width:28px;height:28px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#10B981,#059669);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.72rem;box-shadow:0 4px 12px -3px rgba(16,185,129,.55)}
 .sec-list li>div{flex:1;min-width:0}
 .sec-list li b{display:block;font-size:.86rem;font-weight:800;color:var(--c-text);line-height:1.4;margin-bottom:2px}
 .sec-list li span{display:block;font-size:.76rem;font-weight:600;color:var(--c-text-soft);line-height:1.55}
-.sec-howto{
-  padding:16px;margin-bottom:16px;border-radius:14px;
-  background:linear-gradient(135deg,#F0FDF4,#DCFCE7);
-  border:1.5px dashed #86EFAC;
-}
+.sec-howto{padding:16px;margin-bottom:16px;border-radius:14px;background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1.5px dashed #86EFAC}
 .sec-howto-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:#065F46;font-size:.88rem;font-weight:900}
 .sec-howto-head i{color:#25D366;font-size:1.25rem}
 .sec-steps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px}
-.sec-step{
-  padding:6px 12px;background:#fff;border:1px solid #86EFAC;border-radius:999px;
-  font-size:.74rem;font-weight:800;color:#065F46;
-  box-shadow:0 2px 6px rgba(16,185,129,.1);
-}
+.sec-step{padding:6px 12px;background:#fff;border:1px solid #86EFAC;border-radius:999px;font-size:.74rem;font-weight:800;color:#065F46;box-shadow:0 2px 6px rgba(16,185,129,.1)}
 .sec-steps>i{color:#10B981;font-size:.6rem}
 .sec-howto-note{font-size:.76rem;font-weight:600;color:#166534;line-height:1.65;margin:0}
-.sec-footer{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:13px 16px;border-radius:12px;color:#fff;
-  background:var(--c-primary-gradient);
-  font-size:.79rem;font-weight:700;text-align:center;
-  box-shadow:0 10px 24px -10px rgba(255,122,0,.65);
-}
+.sec-footer{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 16px;border-radius:12px;color:#fff;background:var(--c-primary-gradient);font-size:.79rem;font-weight:700;text-align:center;box-shadow:0 10px 24px -10px rgba(255,122,0,.65)}
 .sec-footer i{color:#fff;font-size:.85rem;animation:secHeart 1.6s ease-in-out infinite}
 .sec-footer b{font-weight:900;letter-spacing:.3px}
 @keyframes secHeart{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
@@ -557,67 +528,35 @@ input,textarea,select{outline:none}
           <h2>إرشادات الأمان لحسابك</h2>
           <span class="sec-badge"><i class="fas fa-star"></i> مهم</span>
         </div>
-
         <div class="sec-intro">
           <i class="fas fa-lock"></i>
           <p>لضمان تجربة أكثر أمانًا على منصة <strong>BranZar</strong>، نوصي باتباع إجراءات الأمان التالية قبل إضافة رقم التواصل الخاص بمتجرك:</p>
         </div>
-
         <ul class="sec-list">
-          <li>
-            <div class="sec-check"><i class="fas fa-check"></i></div>
-            <div>
-              <b>ربط واتساب ببريدك الإلكتروني</b>
-              <span>لاستعادة حسابك بسهولة عند الحاجة.</span>
-            </div>
-          </li>
-          <li>
-            <div class="sec-check"><i class="fas fa-check"></i></div>
-            <div>
-              <b>تفعيل التحقق بخطوتين</b>
-              <span>من إعدادات واتساب لمزيد من الحماية.</span>
-            </div>
-          </li>
-          <li>
-            <div class="sec-check"><i class="fas fa-check"></i></div>
-            <div>
-              <b>الاحتفاظ برمز PIN</b>
-              <span>لا تشاركه مع أي شخص آخر مهما كان السبب.</span>
-            </div>
-          </li>
+          <li><div class="sec-check"><i class="fas fa-check"></i></div><div><b>ربط واتساب ببريدك الإلكتروني</b><span>لاستعادة حسابك بسهولة عند الحاجة.</span></div></li>
+          <li><div class="sec-check"><i class="fas fa-check"></i></div><div><b>تفعيل التحقق بخطوتين</b><span>من إعدادات واتساب لمزيد من الحماية.</span></div></li>
+          <li><div class="sec-check"><i class="fas fa-check"></i></div><div><b>الاحتفاظ برمز PIN</b><span>لا تشاركه مع أي شخص آخر مهما كان السبب.</span></div></li>
         </ul>
-
         <div class="sec-howto">
-          <div class="sec-howto-head">
-            <i class="fab fa-whatsapp"></i>
-            <span>طريقة التفعيل</span>
-          </div>
+          <div class="sec-howto-head"><i class="fab fa-whatsapp"></i><span>طريقة التفعيل</span></div>
           <div class="sec-steps">
-            <span class="sec-step">واتساب</span>
-            <i class="fas fa-chevron-left"></i>
-            <span class="sec-step">الإعدادات</span>
-            <i class="fas fa-chevron-left"></i>
-            <span class="sec-step">الحساب</span>
-            <i class="fas fa-chevron-left"></i>
+            <span class="sec-step">واتساب</span><i class="fas fa-chevron-left"></i>
+            <span class="sec-step">الإعدادات</span><i class="fas fa-chevron-left"></i>
+            <span class="sec-step">الحساب</span><i class="fas fa-chevron-left"></i>
             <span class="sec-step">عنوان البريد الإلكتروني</span>
           </div>
-          <p class="sec-howto-note">
-            اربط بريدك أولاً، ثم عد إلى <strong>«التحقق بخطوتين»</strong> وقم بتفعيل الميزة.
-          </p>
+          <p class="sec-howto-note">اربط بريدك أولاً، ثم عد إلى <strong>«التحقق بخطوتين»</strong> وقم بتفعيل الميزة.</p>
         </div>
-
-        <div class="sec-footer">
-          <i class="fas fa-heart"></i>
-          <span><b>BranZar</b> — نهتم بأمانك ونساعدك على إدارة متجرك بثقة</span>
-        </div>
+        <div class="sec-footer"><i class="fas fa-heart"></i><span><b>BranZar</b> — نهتم بأمانك ونساعدك على إدارة متجرك بثقة</span></div>
       </div>
 
       <!-- 3. التواصل -->
       <div class="bzr-card">
         <div class="bzr-card-head"><div class="bzr-card-head-icon"><i class="fas fa-address-book"></i></div><h2>بيانات التواصل</h2><span class="bzr-card-step">3 / 5</span></div>
         <div class="form-row">
+          <!-- WhatsApp -->
           <div class="form-field">
-            <label class="form-label" for="whatsapp"><span class="label-icon" style="color:#25D366;"><i class="fab fa-whatsapp"></i></span><span>رقم الواتساب</span><span class="required">*</span><span class="hint">مع رمز الدولة</span></label>
+            <label class="form-label" for="whatsapp"><span class="label-icon" style="color:#25D366;"><i class="fab fa-whatsapp"></i></span><span>رقم الواتساب</span><span class="required">*</span></label>
             <div class="input-wrap phone-input" id="waWrap">
               <button type="button" class="country-btn" id="countryBtn" aria-label="اختر الدولة">
                 <span class="cf" id="countryFlag">🇸🇩</span>
@@ -627,10 +566,26 @@ input,textarea,select{outline:none}
               <input class="input" type="tel" id="whatsapp" placeholder="9xxxxxxxx" inputmode="numeric" maxlength="12" dir="ltr" style="text-align:left;">
             </div>
             <div class="error-msg" id="waError"><i class="fas fa-exclamation-circle"></i><span>رقم واتساب غير صحيح</span></div>
+            <div class="phone-example-note">
+              <i class="fas fa-info-circle"></i>
+              <span>بدون <b>0</b> وبدون <b>+</b> — مثال: <code>912345678</code></span>
+            </div>
           </div>
+          <!-- Phone -->
           <div class="form-field">
             <label class="form-label" for="phone"><span class="label-icon" style="color:#3B82F6;"><i class="fas fa-phone"></i></span><span>رقم الهاتف</span><span class="hint">اختياري</span></label>
-            <div class="input-wrap" id="phoneWrap"><div class="input-icon"><i class="fas fa-phone"></i></div><input class="input" type="tel" id="phone" placeholder="09xxxxxxxx" inputmode="numeric" maxlength="15" dir="ltr" style="text-align:left;"></div>
+            <div class="input-wrap phone-input" id="phoneWrap">
+              <button type="button" class="country-btn synced" id="phoneCountryBtn" aria-label="اختر الدولة">
+                <span class="cf" id="phoneCountryFlag">🇸🇩</span>
+                <span class="cc" id="phoneCountryCodeLabel">+249</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <input class="input" type="tel" id="phone" placeholder="9xxxxxxxx" inputmode="numeric" maxlength="12" dir="ltr" style="text-align:left;">
+            </div>
+            <div class="phone-example-note">
+              <i class="fas fa-info-circle"></i>
+              <span>بدون <b>0</b> وبدون <b>+</b> — مثال: <code>912345678</code></span>
+            </div>
           </div>
         </div>
       </div>
@@ -663,26 +618,22 @@ input,textarea,select{outline:none}
       <!-- 5. حساب الدخول -->
       <div class="bzr-card">
         <div class="bzr-card-head"><div class="bzr-card-head-icon"><i class="fas fa-lock"></i></div><h2>حساب الدخول</h2><span class="bzr-card-step">5 / 5</span></div>
-
         <div class="form-field">
           <label class="form-label" for="emailInput"><span class="label-icon"><i class="fas fa-envelope"></i></span><span>البريد الإلكتروني</span><span class="required">*</span><span class="hint">ستصلك رسالة تفعيل</span></label>
           <div class="input-wrap" id="emailWrap"><div class="input-icon"><i class="fas fa-envelope"></i></div><input class="input" type="email" id="emailInput" placeholder="example@email.com" dir="ltr" style="text-align:left;" spellcheck="false" maxlength="120" autocomplete="email"></div>
           <div class="error-msg" id="emailError"><i class="fas fa-exclamation-circle"></i><span>يرجى إدخال بريد صحيح</span></div>
         </div>
-
         <div class="form-field">
           <label class="form-label" for="password"><span class="label-icon"><i class="fas fa-key"></i></span><span>كلمة المرور</span><span class="required">*</span><span class="hint">6 أحرف على الأقل</span></label>
           <div class="input-wrap" id="pwdWrap"><div class="input-icon"><i class="fas fa-lock"></i></div><input class="input" type="password" id="password" placeholder="••••••••" maxlength="128" autocomplete="new-password"><div class="input-suffix"><button type="button" class="input-icon-btn" id="togglePwd"><i class="fas fa-eye"></i></button></div></div>
           <div class="error-msg" id="pwdError"><i class="fas fa-exclamation-circle"></i><span>كلمة المرور 6 أحرف على الأقل</span></div>
           <div class="pwd-strength" id="pwdStrength"><div class="pwd-bars"><div class="pwd-bar"></div><div class="pwd-bar"></div><div class="pwd-bar"></div><div class="pwd-bar"></div></div><div class="pwd-strength-text" id="pwdStrengthText">قوة كلمة المرور</div></div>
         </div>
-
         <div class="form-field">
           <label class="form-label" for="confirmPassword"><span class="label-icon"><i class="fas fa-shield-halved"></i></span><span>تأكيد كلمة المرور</span><span class="required">*</span></label>
           <div class="input-wrap" id="pwdConfirmWrap"><div class="input-icon"><i class="fas fa-shield-halved"></i></div><input class="input" type="password" id="confirmPassword" placeholder="••••••••" maxlength="128" autocomplete="new-password"><div class="input-suffix"><button type="button" class="input-icon-btn" id="togglePwdConfirm"><i class="fas fa-eye"></i></button></div></div>
           <div class="error-msg" id="pwdConfirmError"><i class="fas fa-exclamation-circle"></i><span>كلمتا المرور غير متطابقتين</span></div>
         </div>
-
         <div style="padding:14px 16px;background:var(--c-primary-soft);border-radius:var(--radius-md);display:flex;gap:10px;align-items:flex-start;">
           <i class="fas fa-circle-info" style="color:var(--c-primary);font-size:.95rem;margin-top:2px;flex-shrink:0;"></i>
           <p style="font-size:.78rem;font-weight:600;color:#7c4a15;line-height:1.7;">ستسجّل الدخول بـ <b style="color:#5a3310;">البريد الإلكتروني + كلمة المرور</b>. سنرسل لك رابط تحقق لتفعيل الحساب.</p>
@@ -737,13 +688,12 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
 const STORES = 'stores';
 const DEVICES = 'device_registry';
 const CATEGORIES = 'categories';
-
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 const RESEND_COOLDOWN_MS = 60*1000;
 
 // ═══════════════════════════════════════════════════════════
-// 🌍 Countries List (Sudan first = default)
+// 🌍 Countries (Sudan first = default)
 // ═══════════════════════════════════════════════════════════
 const COUNTRIES = [
   { code: '+249', flag: '🇸🇩', name: 'السودان', iso: 'SD', placeholder: '9xxxxxxxx' },
@@ -800,7 +750,7 @@ const COUNTRIES = [
 ];
 
 // ═══════════════════════════════════════════════════════════
-// 🎯 الفئات الافتراضية
+// 🎯 Default Categories
 // ═══════════════════════════════════════════════════════════
 const DEFAULT_CATEGORIES = [
   { id:'electronics', name:'إلكترونيات وتقنية', emoji:'📱' },
@@ -835,11 +785,19 @@ const state = {
   pollTimer:null, lastResendAt:0,
   allCategories: [], categoriesUnsub: null,
   categoriesLoaded: false, categoriesSeeded: false,
-  // Country
+  // WhatsApp country
   countryCode: '+249',
   countryFlag: '🇸🇩',
   countryName: 'السودان',
-  countryPlaceholder: '9xxxxxxxx'
+  countryPlaceholder: '9xxxxxxxx',
+  // Phone country (independent, auto-sync)
+  phoneCountryCode: '+249',
+  phoneCountryFlag: '🇸🇩',
+  phoneCountryName: 'السودان',
+  phoneCountryPlaceholder: '9xxxxxxxx',
+  phoneCountryManuallySet: false,
+  // Modal target
+  countryModalTarget: 'whatsapp'
 };
 
 const $ = id => document.getElementById(id);
@@ -894,20 +852,34 @@ function mapFbError(err){
 }
 
 // ═══════════════════════════════════════════════════════════
-// 🌍 Country Selector Logic
+// 🌍 Country Selector Logic (WhatsApp + Phone)
 // ═══════════════════════════════════════════════════════════
-function updatePhoneFieldForCountry() {
-  const codeDigits = state.countryCode.replace(/\D/g,'').length;
-  const wa = $('whatsapp');
-  if (wa) {
-    wa.maxLength = Math.max(6, 15 - codeDigits);
-    wa.placeholder = state.countryPlaceholder || 'رقم الواتساب';
+function updateFieldForCountry(target) {
+  const isPhone = target === 'phone';
+  const code = isPhone ? state.phoneCountryCode : state.countryCode;
+  const flag = isPhone ? state.phoneCountryFlag : state.countryFlag;
+  const placeholder = isPhone ? state.phoneCountryPlaceholder : state.countryPlaceholder;
+  const inputEl = isPhone ? $('phone') : $('whatsapp');
+  const flagEl = isPhone ? $('phoneCountryFlag') : $('countryFlag');
+  const codeEl = isPhone ? $('phoneCountryCodeLabel') : $('countryCodeLabel');
+  const btnEl = isPhone ? $('phoneCountryBtn') : $('countryBtn');
+
+  const codeDigits = code.replace(/\D/g,'').length;
+  if (inputEl) {
+    inputEl.maxLength = Math.max(6, 15 - codeDigits);
+    inputEl.placeholder = placeholder || 'أدخل الرقم';
   }
-  const flagEl = $('countryFlag'); if (flagEl) flagEl.textContent = state.countryFlag;
-  const codeEl = $('countryCodeLabel'); if (codeEl) codeEl.textContent = state.countryCode;
+  if (flagEl) flagEl.textContent = flag;
+  if (codeEl) codeEl.textContent = code;
+  // mark phone button "synced" state
+  if (btnEl && isPhone) {
+    if (state.phoneCountryManuallySet) btnEl.classList.remove('synced');
+    else btnEl.classList.add('synced');
+  }
 }
 
-function openCountryModal() {
+function openCountryModal(target) {
+  state.countryModalTarget = target || 'whatsapp';
   const modal = $('countryModal');
   if (!modal) return;
   modal.classList.add('open');
@@ -944,11 +916,14 @@ function renderCountryList(filter) {
     list.innerHTML = '<div class="country-empty"><i class="fas fa-search"></i>لا توجد نتائج مطابقة<br><span style="font-size:.75rem;color:#94A3B8;">جرّب البحث برمز الدولة أو استخدم الإدخال اليدوي</span></div>';
     return;
   }
+  const currentCode = state.countryModalTarget === 'phone' ? state.phoneCountryCode : state.countryCode;
+  const currentName = state.countryModalTarget === 'phone' ? state.phoneCountryName : state.countryName;
+
   const frag = document.createDocumentFragment();
   filtered.forEach(c => {
     const btn = document.createElement('button');
     btn.type = 'button';
-    const isActive = state.countryCode === c.code && state.countryName === c.name;
+    const isActive = currentCode === c.code && currentName === c.name;
     btn.className = 'country-item' + (isActive ? ' active' : '');
     btn.innerHTML =
       '<span class="country-item-flag">' + c.flag + '</span>' +
@@ -961,15 +936,45 @@ function renderCountryList(filter) {
   list.appendChild(frag);
 }
 
+function applyCountryToState(target, code, flag, name, placeholder) {
+  if (target === 'phone') {
+    state.phoneCountryCode = code;
+    state.phoneCountryFlag = flag;
+    state.phoneCountryName = name;
+    state.phoneCountryPlaceholder = placeholder || 'رقم الهاتف';
+    // If user picked same country as WhatsApp, re-enable auto-sync
+    if (code === state.countryCode) state.phoneCountryManuallySet = false;
+    else state.phoneCountryManuallySet = true;
+    updateFieldForCountry('phone');
+  } else {
+    state.countryCode = code;
+    state.countryFlag = flag;
+    state.countryName = name;
+    state.countryPlaceholder = placeholder || 'رقم الواتساب';
+    updateFieldForCountry('whatsapp');
+    // Auto-sync phone if not manually set
+    if (!state.phoneCountryManuallySet) {
+      state.phoneCountryCode = code;
+      state.phoneCountryFlag = flag;
+      state.phoneCountryName = name;
+      state.phoneCountryPlaceholder = placeholder || 'رقم الهاتف';
+      updateFieldForCountry('phone');
+    }
+  }
+}
+
 function selectCountry(c) {
-  state.countryCode = c.code;
-  state.countryFlag = c.flag;
-  state.countryName = c.name;
-  state.countryPlaceholder = c.placeholder || 'رقم الواتساب';
-  updatePhoneFieldForCountry();
+  const target = state.countryModalTarget || 'whatsapp';
+  applyCountryToState(target, c.code, c.flag, c.name, c.placeholder);
   closeCountryModal();
-  const digits = $('whatsapp').value.replace(/\D/g, '');
-  if (digits.length >= 6) { hideErr('waError'); setFieldState('waWrap', 'valid'); }
+  // revalidate whichever field is relevant
+  const fieldId = target === 'phone' ? 'phone' : 'whatsapp';
+  const wrapId = target === 'phone' ? 'phoneWrap' : 'waWrap';
+  const digits = $(fieldId).value.replace(/\D/g,'').replace(/^0+/,'');
+  if (target === 'whatsapp') {
+    if (digits.length >= 6) { hideErr('waError'); setFieldState(wrapId, 'valid'); }
+    else setFieldState(wrapId, null);
+  }
   haptic('light');
 }
 
@@ -991,22 +996,19 @@ function cancelManualCode() {
 function saveManualCode() {
   const input = $('manualCodeInput');
   if (!input) return;
-  let raw = (input.value || '').trim();
-  raw = raw.replace(/[^\d]/g, '');
-  raw = raw.replace(/^0+/, '');
+  let raw = (input.value || '').trim().replace(/[^\d]/g, '').replace(/^0+/, '');
   if (!raw || raw.length < 1 || raw.length > 4) {
     showToast('رمز الدولة يجب أن يكون بين 1 و 4 أرقام', 'error');
     return;
   }
-  state.countryCode = '+' + raw;
-  state.countryFlag = '🌐';
-  state.countryName = 'رمز مخصص';
-  state.countryPlaceholder = 'رقم الواتساب';
-  updatePhoneFieldForCountry();
+  const target = state.countryModalTarget || 'whatsapp';
+  applyCountryToState(target, '+' + raw, '🌐', 'رمز مخصص (+' + raw + ')', 'أدخل الرقم');
   closeCountryModal();
   showToast('✅ تم حفظ رمز الدولة +' + raw, 'success');
-  const digits = $('whatsapp').value.replace(/\D/g, '');
-  if (digits.length >= 6) { hideErr('waError'); setFieldState('waWrap', 'valid'); }
+  const fieldId = target === 'phone' ? 'phone' : 'whatsapp';
+  const wrapId = target === 'phone' ? 'phoneWrap' : 'waWrap';
+  const digits = $(fieldId).value.replace(/\D/g,'').replace(/^0+/,'');
+  if (target === 'whatsapp' && digits.length >= 6) { hideErr('waError'); setFieldState(wrapId, 'valid'); }
   haptic('light');
 }
 
@@ -1219,7 +1221,6 @@ function selectCategory(name) {
 // 📝 Input Events
 // ═══════════════════════════════════════════════════════════
 const composingInputs = new WeakSet();
-
 function attachInputSafety(el) {
   if (!el || el.__bzrSafe) return;
   el.__bzrSafe = true;
@@ -1229,7 +1230,6 @@ function attachInputSafety(el) {
     try { el.dispatchEvent(new Event('input', { bubbles: true })); } catch(e) {}
   }, true);
 }
-
 function isComposing(el) { return composingInputs.has(el); }
 
 function safeSetValue(el, newVal) {
@@ -1290,44 +1290,82 @@ if ($('locationInput')) {
   });
 }
 
-// ─── واتساب (بدون + — الرمز منفصل) ───
+// ─── WhatsApp (أرقام فقط، بدون + أو 0) ───
 const waEl = $('whatsapp');
 const phoneEl = $('phone');
+
+function sanitizeLocalDigits(str) {
+  // remove everything except digits, strip leading zeros
+  return (str || '').replace(/\D/g, '').replace(/^0+/, '');
+}
+
 if (waEl) {
   waEl.addEventListener('input', () => {
     if (isComposing(waEl)) return;
-    const cleaned = waEl.value.replace(/\D/g, ''); // digits only
+    const cleaned = waEl.value.replace(/\D/g, '');
     safeSetValue(waEl, cleaned);
-    const digits = cleaned.replace(/^0+/, '');
+    const digits = sanitizeLocalDigits(cleaned);
     if (digits.length >= 6 && digits.length <= 15) {
       hideErr('waError'); setFieldState('waWrap', 'valid');
     } else {
       setFieldState('waWrap', null);
     }
   });
+  waEl.addEventListener('blur', () => {
+    // auto-strip leading zeros on blur (visual)
+    const digits = sanitizeLocalDigits(waEl.value);
+    if (digits !== waEl.value.replace(/\D/g,'')) safeSetValue(waEl, digits);
+  });
   waEl.addEventListener('paste', (e) => {
     const text = (e.clipboardData || window.clipboardData).getData('text') || '';
-    // إذا لصق المستخدم رقم كامل مع +، استخرج الرقم المحلي فقط
-    const matchIntl = text.match(/^\s*\+\s*(\d{1,4})[\s\-]?(\d+)\s*$/);
-    if (matchIntl) {
-      const pastedCode = matchIntl[1];
-      const pastedLocal = matchIntl[2];
-      // ابحث عن الدولة بهذا الرمز
-      const found = COUNTRIES.find(c => c.code.replace(/\D/g,'') === pastedCode);
+    // Case: user pasted full international number like +249 912345678 or 00249912345678
+    let code = null, local = null;
+    const plusMatch = text.match(/^\s*\+\s*(\d{1,4})[\s\-]?(\d+)\s*$/);
+    const zeroZeroMatch = text.match(/^\s*00(\d{1,4})[\s\-]?(\d+)\s*$/);
+    if (plusMatch) { code = plusMatch[1]; local = plusMatch[2]; }
+    else if (zeroZeroMatch) { code = zeroZeroMatch[1]; local = zeroZeroMatch[2]; }
+    if (code && local) {
+      const found = COUNTRIES.find(c => c.code.replace(/\D/g,'') === code);
       if (found) {
         e.preventDefault();
-        selectCountry(found);
-        waEl.value = pastedLocal.replace(/\D/g,'').replace(/^0+/,'');
+        // apply to WhatsApp as target
+        state.countryModalTarget = 'whatsapp';
+        applyCountryToState('whatsapp', found.code, found.flag, found.name, found.placeholder);
+        const localClean = sanitizeLocalDigits(local);
+        safeSetValue(waEl, localClean);
         hideErr('waError'); setFieldState('waWrap', 'valid');
       }
     }
   });
 }
+
 if (phoneEl) {
   phoneEl.addEventListener('input', () => {
     if (isComposing(phoneEl)) return;
-    const cleaned = phoneEl.value.replace(/[^\d+]/g, '');
+    const cleaned = phoneEl.value.replace(/\D/g, '');
     safeSetValue(phoneEl, cleaned);
+  });
+  phoneEl.addEventListener('blur', () => {
+    const digits = sanitizeLocalDigits(phoneEl.value);
+    if (digits !== phoneEl.value.replace(/\D/g,'')) safeSetValue(phoneEl, digits);
+  });
+  phoneEl.addEventListener('paste', (e) => {
+    const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+    let code = null, local = null;
+    const plusMatch = text.match(/^\s*\+\s*(\d{1,4})[\s\-]?(\d+)\s*$/);
+    const zeroZeroMatch = text.match(/^\s*00(\d{1,4})[\s\-]?(\d+)\s*$/);
+    if (plusMatch) { code = plusMatch[1]; local = plusMatch[2]; }
+    else if (zeroZeroMatch) { code = zeroZeroMatch[1]; local = zeroZeroMatch[2]; }
+    if (code && local) {
+      const found = COUNTRIES.find(c => c.code.replace(/\D/g,'') === code);
+      if (found) {
+        e.preventDefault();
+        state.countryModalTarget = 'phone';
+        applyCountryToState('phone', found.code, found.flag, found.name, found.placeholder);
+        const localClean = sanitizeLocalDigits(local);
+        safeSetValue(phoneEl, localClean);
+      }
+    }
   });
 }
 
@@ -1394,7 +1432,8 @@ setupImageUpload($('coverUpload'),$('coverInput'),$('coverPreview'),$('coverProg
 setupImageUpload($('logoUpload'),$('logoInput'),$('logoPreview'),$('logoProgress'),url=>{state.logoUrl=url;hideErr('logoError');},true);
 
 // ─── Country Selector Events ───
-if ($('countryBtn')) $('countryBtn').addEventListener('click', openCountryModal);
+if ($('countryBtn')) $('countryBtn').addEventListener('click', () => openCountryModal('whatsapp'));
+if ($('phoneCountryBtn')) $('phoneCountryBtn').addEventListener('click', () => openCountryModal('phone'));
 if ($('countryModalClose')) $('countryModalClose').addEventListener('click', closeCountryModal);
 if ($('countryModal')) {
   $('countryModal').addEventListener('click', (e) => {
@@ -1429,15 +1468,20 @@ function validateForm(){
   if(!state.selectedCategory){showErr('catError');ok=false;first=first||'catsGrid';}else hideErr('catError');
   const loc=sanitize($('locationInput').value).replace(/\s*-\s*$/,'').trim();
   if(loc.length<3){showErr('locationError');setFieldState('locationWrap','error');ok=false;first=first||'locationInput';}else{hideErr('locationError');setFieldState('locationWrap','valid');}
-  // رقم الواتساب المحلي (بدون رمز الدولة)
-  const localDigits = $('whatsapp').value.replace(/\D/g,'').replace(/^0+/, '');
-  if(localDigits.length<6||localDigits.length>15){
+  // WhatsApp local digits
+  const waLocal = sanitizeLocalDigits($('whatsapp').value);
+  const waCodeDigits = state.countryCode.replace(/\D/g,'').length;
+  if (waLocal.length < 6 || (waCodeDigits + waLocal.length) > 15) {
     showErr('waError');setFieldState('waWrap','error');ok=false;first=first||'whatsapp';
-  } else {
-    const full = state.countryCode.replace(/\D/g,'') + localDigits;
-    if (full.length > 15) {
-      showErr('waError');setFieldState('waWrap','error');ok=false;first=first||'whatsapp';
-    } else { hideErr('waError');setFieldState('waWrap','valid'); }
+  } else { hideErr('waError');setFieldState('waWrap','valid'); }
+  // Phone (optional) — if user typed something, validate
+  const phoneLocal = sanitizeLocalDigits($('phone').value);
+  if (phoneLocal.length > 0) {
+    const phCodeDigits = state.phoneCountryCode.replace(/\D/g,'').length;
+    if (phoneLocal.length < 6 || (phCodeDigits + phoneLocal.length) > 15) {
+      // not strictly required, but if filled wrong, block
+      showToast('رقم الهاتف غير صحيح — راجع الرقم', 'warning');
+    }
   }
   if(!state.coverUrl){showErr('coverError');ok=false;first=first||'coverUpload';}else hideErr('coverError');
   if(!state.logoUrl){showErr('logoError');ok=false;first=first||'logoUpload';}else hideErr('logoError');
@@ -1465,11 +1509,16 @@ $('submitBtn').addEventListener('click', async()=>{
   const storeName=sanitize($('storeName').value);
   const description=sanitize($('storeDescription').value).slice(0,500);
   const location=sanitize($('locationInput').value).replace(/\s*-\s*$/,'').trim();
-  const phone=($('phone').value||'').replace(/[^\d+]/g,'');
   const category=state.selectedCategory;
-  // بناء رقم الواتساب الكامل برمز الدولة
-  const localDigits = $('whatsapp').value.replace(/\D/g,'').replace(/^0+/, '');
-  const whatsapp = state.countryCode + localDigits;
+
+  // ═══ Build phone numbers as pure digits (no +, no leading 0) ═══
+  const waLocal = sanitizeLocalDigits($('whatsapp').value);
+  const waCode = state.countryCode.replace(/\D/g, ''); // '249'
+  const whatsappFull = waCode + waLocal; // '249912345678'
+
+  const phoneLocal = sanitizeLocalDigits($('phone').value);
+  const phCode = state.phoneCountryCode.replace(/\D/g, '');
+  const phoneFull = phoneLocal ? (phCode + phoneLocal) : '';
 
   const btn=$('submitBtn');
   state.submitting=true;
@@ -1492,20 +1541,23 @@ $('submitBtn').addEventListener('click', async()=>{
     setButtonLoading(btn,true,'جارٍ التحقق من البيانات...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
     const nChk=await db.collection(STORES).where('name','==',storeName).limit(1).get();
     if(!nChk.empty){try{await createdUser.delete();}catch(e){} throw new Error('store_name_exists');}
-    const wChk=await db.collection(STORES).where('whatsapp_number','==',whatsapp).limit(1).get();
+    const wChk=await db.collection(STORES).where('whatsapp_number','==',whatsappFull).limit(1).get();
     if(!wChk.empty){try{await createdUser.delete();}catch(e){} throw new Error('whatsapp_exists');}
 
     const now=Date.now();
     const storeRef=db.collection(STORES).doc();
     const deviceRef=db.collection(DEVICES).doc(state.persistentId);
 
+    // ═══ Store as pure digits (numbers only, no +, no leading 0) ═══
     const storeData={
       name:storeName, category:category, categories:[],
       description:description, location:location,
-      whatsapp_number:whatsapp,
-      whatsapp_country_code:state.countryCode,
-      whatsapp_local:localDigits,
-      phone_number:phone||'',
+      whatsapp_number:whatsappFull,       // '249912345678'
+      whatsapp_country_code:waCode,       // '249'
+      whatsapp_local:waLocal,             // '912345678'
+      phone_number:phoneFull,             // '249912345678' or ''
+      phone_country_code:phoneLocal?phCode:'',
+      phone_local:phoneLocal,
       logo_url:state.logoUrl||'', cover_url:state.coverUrl||'',
       owner_uid:createdUser.uid, owner_email:email,
       followers:0, products_count:0,
@@ -1636,8 +1688,9 @@ async function bootstrap(){
     await new Promise(r=>setTimeout(r,200));
     await buildFingerprint();
 
-    // تهيئة حقل الواتساب (السودان افتراضي)
-    updatePhoneFieldForCountry();
+    // Initialize both phone fields with Sudan default
+    updateFieldForCountry('whatsapp');
+    updateFieldForCountry('phone');
 
     const devCheck = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
     if(devCheck.blocked){
@@ -1681,7 +1734,7 @@ async function bootstrap(){
 }
 
 document.addEventListener('DOMContentLoaded',bootstrap);
-console.log('[BZR] signup v10.0 — countries dropdown + Sudan default + manual code + safe input ✅');
+console.log('[BZR] signup v11.0 — WhatsApp + Phone country selectors + pure-digit storage ✅');
 </script>
 </body>
 </html>
