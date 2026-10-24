@@ -178,7 +178,7 @@ body.theme-dark .currency-badge {
 }
 
 /* ═══════════════════════════════════════════════════
-   🔥 CINEMATIC IGNITION — 3.5s (Splash → Content)
+   🔥 CINEMATIC IGNITION — 5s (Splash → Content)
    ═══════════════════════════════════════════════════ */
 :root {
   --bzr-ease-pro: cubic-bezier(0.22, 1, 0.36, 1);
@@ -212,7 +212,7 @@ body.theme-dark .currency-badge {
   will-change: transform, opacity;
 }
 .bzr-ignite-overlay.active::before {
-  animation: bzrBurst1 2400ms var(--bzr-ease-pro) 200ms forwards;
+  animation: bzrBurst1 3400ms var(--bzr-ease-pro) 300ms forwards;
 }
 @keyframes bzrBurst1 {
   0%   { transform: scale(0.15); opacity: 0; }
@@ -240,7 +240,7 @@ body.theme-dark .currency-badge {
   will-change: transform, opacity, filter;
 }
 .bzr-ignite-overlay.active::after {
-  animation: bzrBurst2 2400ms var(--bzr-ease-pro) 300ms forwards;
+  animation: bzrBurst2 3400ms var(--bzr-ease-pro) 400ms forwards;
 }
 @keyframes bzrBurst2 {
   0%   { transform: scale(0.3); opacity: 0; filter: blur(40px); }
@@ -261,7 +261,7 @@ body.theme-dark .currency-badge {
   will-change: transform, opacity;
 }
 .bzr-ignite-overlay.active .bzr-ignite-overlay-inner {
-  animation: bzrBurstInner 2400ms var(--bzr-ease-pro) 200ms forwards;
+  animation: bzrBurstInner 3400ms var(--bzr-ease-pro) 300ms forwards;
 }
 @keyframes bzrBurstInner {
   0%   { transform: scale(0.6); opacity: 0; }
@@ -279,7 +279,7 @@ body.theme-dark .currency-badge {
   will-change: opacity;
 }
 .bzr-ignite-flash.active {
-  animation: bzrFlash 750ms ease-out 400ms forwards;
+  animation: bzrFlash 1000ms ease-out 600ms forwards;
 }
 @keyframes bzrFlash {
   0%   { opacity: 0; }
@@ -301,7 +301,7 @@ body.theme-dark .currency-badge {
   will-change: opacity;
 }
 .bzr-logo-reveal.active {
-  animation: bzrRevealWrapper 1700ms ease-in-out 800ms forwards;
+  animation: bzrRevealWrapper 2400ms ease-in-out 1100ms forwards;
 }
 @keyframes bzrRevealWrapper {
   0%   { opacity: 0; }
@@ -324,7 +324,7 @@ body.theme-dark .currency-badge {
   will-change: transform, opacity, box-shadow;
 }
 .bzr-logo-reveal.active .bzr-logo-reveal-circle {
-  animation: bzrLogoPop 1400ms cubic-bezier(0.25, 0.9, 0.35, 1) 800ms forwards;
+  animation: bzrLogoPop 2000ms cubic-bezier(0.25, 0.9, 0.35, 1) 1100ms forwards;
 }
 @keyframes bzrLogoPop {
   0% {
@@ -375,7 +375,7 @@ body.theme-dark .currency-badge {
   will-change: transform, opacity;
 }
 .bzr-logo-reveal.active .bzr-logo-reveal-ring {
-  animation: bzrRingPulse 1600ms ease-out 1000ms forwards;
+  animation: bzrRingPulse 2200ms ease-out 1400ms forwards;
 }
 @keyframes bzrRingPulse {
   0%   { transform: scale(0.6); opacity: 0; }
@@ -467,7 +467,7 @@ body.theme-dark .currency-badge {
 </svg>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     🔥 CINEMATIC IGNITION LAYERS (New — 3.5s Sequence)
+     🔥 CINEMATIC IGNITION LAYERS (5s Sequence)
      ═══════════════════════════════════════════════════════════════ -->
 <div class="bzr-ignite-overlay" id="bzrIgniteOverlay" aria-hidden="true">
   <div class="bzr-ignite-overlay-inner"></div>
@@ -1114,7 +1114,7 @@ body.theme-dark .currency-badge {
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     🔥 CINEMATIC IGNITION SCRIPT — 3.5s Sequence
+     🔥 CINEMATIC IGNITION SCRIPT — 5s Sequence
      Runs on every visit (new & returning) after splash appears.
      Blocks nothing — overlays cover splash & content, then fade.
      ═══════════════════════════════════════════════════════════════ -->
@@ -1144,55 +1144,55 @@ body.theme-dark .currency-badge {
     }
 
     // ══════════════════════════════════════════════════════
-    // Cinematic sequence — total 3500ms
+    // Cinematic sequence — total 5000ms
     // Splash → Orange Burst → Peak Flash → Logo Reveal → Content
     // ══════════════════════════════════════════════════════
 
-    // 200ms — Ignition overlay starts + splash begins to fade behind it
+    // 300ms — Ignition overlay starts + splash begins to fade behind it
     setTimeout(function () {
       igniteOverlay.classList.add('active');
       if (splash) {
-        splash.style.transition = 'opacity 0.5s ease';
+        splash.style.transition = 'opacity 0.7s ease';
         splash.style.opacity = '0.15';
       }
-    }, 200);
+    }, 300);
 
-    // 400ms — Peak white flash
+    // 600ms — Peak white flash
     setTimeout(function () {
       igniteFlash.classList.add('active');
-    }, 400);
+    }, 600);
 
-    // 800ms — Logo reveal with cinematic glow
+    // 1100ms — Logo reveal with cinematic glow
     setTimeout(function () {
       logoReveal.classList.add('active');
-    }, 800);
+    }, 1100);
 
-    // 2000ms — Splash fully hidden
+    // 2800ms — Splash fully hidden
     setTimeout(function () {
       if (splash) {
         splash.style.opacity = '0';
         splash.style.pointerEvents = 'none';
       }
-    }, 2000);
+    }, 2800);
 
-    // 2500ms — Ignition + flash begin fading out
+    // 3500ms — Ignition + flash begin fading out
     setTimeout(function () {
       igniteOverlay.classList.remove('active');
       igniteFlash.classList.remove('active');
-    }, 2500);
+    }, 3500);
 
-    // 2900ms — Logo reveal starts fading
+    // 4200ms — Logo reveal starts fading
     setTimeout(function () {
       logoReveal.classList.remove('active');
-    }, 2900);
+    }, 4200);
 
-    // 3500ms — Cleanup: remove splash & hide reveal
+    // 5000ms — Cleanup: remove splash & hide reveal
     setTimeout(function () {
       if (splash && splash.parentNode) splash.remove();
       logoReveal.style.display = 'none';
       igniteOverlay.style.display = 'none';
       igniteFlash.style.display = 'none';
-    }, 3500);
+    }, 5000);
 
   } catch (e) {
     // Safety: if anything fails, ensure splash doesn't block the UI
