@@ -46,13 +46,11 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/webp" href="/b.webp">
 
-<!-- ✅ تقليل أوزان Cairo إلى 400 و700 فقط -->
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- ✅ Preload لصورة الهيرو الأولى فقط (LCP) -->
 <link rel="preload" as="image"
       href="https://i.ibb.co/gM7dRJDx/Picsart-26-10-07-22-17-27-300-3.jpg"
       imagesrcset="https://i.ibb.co/gM7dRJDx/Picsart-26-10-07-22-17-27-300-3.jpg 1280w"
@@ -100,7 +98,7 @@ i.fa-fallback { display: none !important; }
 .bzr-slide {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 16 / 9; /* ✅ منع CLS */
+  aspect-ratio: 16 / 9;
 }
 .bzr-slide img {
   width: 100%;
@@ -178,6 +176,225 @@ body.theme-dark .currency-badge {
   direction: ltr;
   unicode-bidi: isolate;
 }
+
+/* ═══════════════════════════════════════════════════
+   🔥 CINEMATIC IGNITION — 3.5s (Splash → Content)
+   ═══════════════════════════════════════════════════ */
+:root {
+  --bzr-ease-pro: cubic-bezier(0.22, 1, 0.36, 1);
+  --bzr-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bzr-ignite-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999998;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+  contain: strict;
+}
+.bzr-ignite-overlay.active { opacity: 1; }
+
+.bzr-ignite-overlay::before {
+  content: '';
+  position: absolute;
+  inset: -25vmax;
+  background: radial-gradient(circle at center,
+    rgba(255,255,255,0.98) 0%,
+    rgba(255,200,130,0.95) 12%,
+    rgba(255,145,40,0.9) 30%,
+    rgba(255,122,0,0.75) 50%,
+    rgba(255,100,0,0.4) 70%,
+    rgba(255,122,0,0) 90%);
+  transform: scale(0.15);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.bzr-ignite-overlay.active::before {
+  animation: bzrBurst1 2400ms var(--bzr-ease-pro) 200ms forwards;
+}
+@keyframes bzrBurst1 {
+  0%   { transform: scale(0.15); opacity: 0; }
+  20%  { transform: scale(0.5);  opacity: 0.75; }
+  50%  { transform: scale(1.1);  opacity: 1; }
+  75%  { transform: scale(1.6);  opacity: 1; }
+  100% { transform: scale(2.4);  opacity: 0; }
+}
+
+.bzr-ignite-overlay::after {
+  content: '';
+  position: absolute;
+  inset: -20vmax;
+  background: radial-gradient(circle at center,
+    #FFFFFF 0%,
+    #FFFFFF 8%,
+    #FFE0B5 20%,
+    #FF9A33 40%,
+    rgba(255,122,0,0.4) 60%,
+    transparent 80%);
+  mix-blend-mode: screen;
+  transform: scale(0.3);
+  opacity: 0;
+  filter: blur(30px);
+  will-change: transform, opacity, filter;
+}
+.bzr-ignite-overlay.active::after {
+  animation: bzrBurst2 2400ms var(--bzr-ease-pro) 300ms forwards;
+}
+@keyframes bzrBurst2 {
+  0%   { transform: scale(0.3); opacity: 0; filter: blur(40px); }
+  20%  { transform: scale(0.9); opacity: 1; filter: blur(20px); }
+  50%  { transform: scale(1.5); opacity: 1; filter: blur(28px); }
+  100% { transform: scale(2.4); opacity: 0; filter: blur(60px); }
+}
+
+.bzr-ignite-overlay-inner {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255,180,100,0.5) 0%, transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(255,140,40,0.4) 0%, transparent 40%);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transform: scale(0.6);
+  will-change: transform, opacity;
+}
+.bzr-ignite-overlay.active .bzr-ignite-overlay-inner {
+  animation: bzrBurstInner 2400ms var(--bzr-ease-pro) 200ms forwards;
+}
+@keyframes bzrBurstInner {
+  0%   { transform: scale(0.6); opacity: 0; }
+  30%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.bzr-ignite-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #FFFFFF;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+.bzr-ignite-flash.active {
+  animation: bzrFlash 750ms ease-out 400ms forwards;
+}
+@keyframes bzrFlash {
+  0%   { opacity: 0; }
+  30%  { opacity: 0.8; }
+  50%  { opacity: 0.35; }
+  100% { opacity: 0; }
+}
+
+/* Logo Reveal */
+.bzr-logo-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+}
+.bzr-logo-reveal.active {
+  animation: bzrRevealWrapper 1700ms ease-in-out 800ms forwards;
+}
+@keyframes bzrRevealWrapper {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.bzr-logo-reveal-circle {
+  width: clamp(120px, 20vw, 160px);
+  height: clamp(120px, 20vw, 160px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #FFE8CC 45%, #FF9A33 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform: scale(0.3);
+  opacity: 0;
+  will-change: transform, opacity, box-shadow;
+}
+.bzr-logo-reveal.active .bzr-logo-reveal-circle {
+  animation: bzrLogoPop 1400ms cubic-bezier(0.25, 0.9, 0.35, 1) 800ms forwards;
+}
+@keyframes bzrLogoPop {
+  0% {
+    transform: scale(0.3); opacity: 0;
+    box-shadow: 0 0 0 0 rgba(255,122,0,0);
+  }
+  20% {
+    transform: scale(0.6); opacity: 0.5;
+    box-shadow: 0 0 40px 12px rgba(255,122,0,0.4);
+  }
+  50% {
+    transform: scale(1.05); opacity: 1;
+    box-shadow:
+      0 0 120px 45px rgba(255,122,0,1),
+      0 0 200px 80px rgba(255,166,77,0.65),
+      0 0 300px 130px rgba(255,122,0,0.35);
+  }
+  75% {
+    transform: scale(0.98); opacity: 1;
+    box-shadow:
+      0 0 100px 35px rgba(255,122,0,0.9),
+      0 0 170px 65px rgba(255,166,77,0.55);
+  }
+  100% {
+    transform: scale(1); opacity: 1;
+    box-shadow:
+      0 0 70px 25px rgba(255,122,0,0.75),
+      0 0 140px 50px rgba(255,166,77,0.4),
+      0 0 220px 90px rgba(255,122,0,0.22);
+  }
+}
+
+.bzr-logo-reveal-circle img {
+  width: 65%;
+  height: 65%;
+  object-fit: contain;
+  border-radius: 50%;
+  display: block;
+  filter: drop-shadow(0 4px 14px rgba(255,122,0,0.45));
+}
+
+.bzr-logo-reveal-ring {
+  position: absolute;
+  inset: -12%;
+  border: 2.5px solid rgba(255,255,255,0.8);
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.bzr-logo-reveal.active .bzr-logo-reveal-ring {
+  animation: bzrRingPulse 1600ms ease-out 1000ms forwards;
+}
+@keyframes bzrRingPulse {
+  0%   { transform: scale(0.6); opacity: 0; }
+  25%  { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .bzr-ignite-overlay::before,
+  .bzr-ignite-overlay::after,
+  .bzr-ignite-overlay-inner,
+  .bzr-ignite-flash,
+  .bzr-logo-reveal,
+  .bzr-logo-reveal-circle,
+  .bzr-logo-reveal-ring {
+    display: none !important;
+  }
+}
 </style>
 </head>
 <body class="font-cairo">
@@ -249,6 +466,23 @@ body.theme-dark .currency-badge {
 
 </svg>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     🔥 CINEMATIC IGNITION LAYERS (New — 3.5s Sequence)
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="bzr-ignite-overlay" id="bzrIgniteOverlay" aria-hidden="true">
+  <div class="bzr-ignite-overlay-inner"></div>
+</div>
+<div class="bzr-ignite-flash" id="bzrIgniteFlash" aria-hidden="true"></div>
+<div class="bzr-logo-reveal" id="bzrLogoReveal" aria-hidden="true">
+  <div class="bzr-logo-reveal-circle">
+    <div class="bzr-logo-reveal-ring"></div>
+    <img src="/b.webp" alt="">
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ORIGINAL SPLASH
+     ═══════════════════════════════════════════════════════════════ -->
 <div id="bzrSplash" role="status" aria-label="جاري التحميل">
   <img src="/b.webp"
        class="bzr-splash-logo" alt="BranZar"
@@ -880,16 +1114,104 @@ body.theme-dark .currency-badge {
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     🔥 تحميل Firebase فوراً (مثل الكود الأصلي لضمان عمل الموقع)
+     🔥 CINEMATIC IGNITION SCRIPT — 3.5s Sequence
+     Runs on every visit (new & returning) after splash appears.
+     Blocks nothing — overlays cover splash & content, then fade.
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+  try {
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var igniteOverlay = document.getElementById('bzrIgniteOverlay');
+    var igniteFlash = document.getElementById('bzrIgniteFlash');
+    var logoReveal = document.getElementById('bzrLogoReveal');
+    var splash = document.getElementById('bzrSplash');
+
+    if (!igniteOverlay || !igniteFlash || !logoReveal) return;
+
+    // Reduced motion: quick cross-fade, skip cinematic
+    if (reducedMotion) {
+      if (splash) {
+        setTimeout(function () {
+          splash.style.transition = 'opacity 0.3s ease';
+          splash.style.opacity = '0';
+          splash.style.pointerEvents = 'none';
+          setTimeout(function () { if (splash.parentNode) splash.remove(); }, 350);
+        }, 600);
+      }
+      return;
+    }
+
+    // ══════════════════════════════════════════════════════
+    // Cinematic sequence — total 3500ms
+    // Splash → Orange Burst → Peak Flash → Logo Reveal → Content
+    // ══════════════════════════════════════════════════════
+
+    // 200ms — Ignition overlay starts + splash begins to fade behind it
+    setTimeout(function () {
+      igniteOverlay.classList.add('active');
+      if (splash) {
+        splash.style.transition = 'opacity 0.5s ease';
+        splash.style.opacity = '0.15';
+      }
+    }, 200);
+
+    // 400ms — Peak white flash
+    setTimeout(function () {
+      igniteFlash.classList.add('active');
+    }, 400);
+
+    // 800ms — Logo reveal with cinematic glow
+    setTimeout(function () {
+      logoReveal.classList.add('active');
+    }, 800);
+
+    // 2000ms — Splash fully hidden
+    setTimeout(function () {
+      if (splash) {
+        splash.style.opacity = '0';
+        splash.style.pointerEvents = 'none';
+      }
+    }, 2000);
+
+    // 2500ms — Ignition + flash begin fading out
+    setTimeout(function () {
+      igniteOverlay.classList.remove('active');
+      igniteFlash.classList.remove('active');
+    }, 2500);
+
+    // 2900ms — Logo reveal starts fading
+    setTimeout(function () {
+      logoReveal.classList.remove('active');
+    }, 2900);
+
+    // 3500ms — Cleanup: remove splash & hide reveal
+    setTimeout(function () {
+      if (splash && splash.parentNode) splash.remove();
+      logoReveal.style.display = 'none';
+      igniteOverlay.style.display = 'none';
+      igniteFlash.style.display = 'none';
+    }, 3500);
+
+  } catch (e) {
+    // Safety: if anything fails, ensure splash doesn't block the UI
+    try {
+      var s = document.getElementById('bzrSplash');
+      if (s) { s.style.opacity = '0'; s.style.pointerEvents = 'none'; setTimeout(function(){ if(s.parentNode) s.remove(); }, 400); }
+    } catch (_) {}
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     🔥 Firebase & Core Scripts
      ═══════════════════════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js" crossorigin="anonymous"></script>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     ✅ السكريبتات الأساسية
-     ═══════════════════════════════════════════════════════════════ -->
 <script src="js/core.js" defer></script>
 <script src="js/store-limits.js" defer></script>
 <script src="js/data.js" defer></script>
