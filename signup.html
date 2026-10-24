@@ -365,6 +365,221 @@ input,textarea,select{outline:none}
   .sec-step{font-size:.7rem;padding:5px 10px}
   .sec-intro p{font-size:.78rem}
 }
+
+/* ═══════════════════════════════════════════════════
+   🔥 CINEMATIC IGNITION — 5s (Signup Success Animation)
+   ═══════════════════════════════════════════════════ */
+:root {
+  --bzr-ease-pro: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bzr-ignite-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999998;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  will-change: opacity;
+  contain: strict;
+}
+.bzr-ignite-overlay.active { opacity: 1; }
+
+.bzr-ignite-overlay::before {
+  content: '';
+  position: absolute;
+  inset: -25vmax;
+  background: radial-gradient(circle at center,
+    rgba(255,255,255,0.98) 0%,
+    rgba(255,200,130,0.95) 12%,
+    rgba(255,145,40,0.9) 30%,
+    rgba(255,122,0,0.75) 50%,
+    rgba(255,100,0,0.4) 70%,
+    rgba(255,122,0,0) 90%);
+  transform: scale(0.15);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.bzr-ignite-overlay.active::before {
+  animation: bzrBurst1 3400ms var(--bzr-ease-pro) 300ms forwards;
+}
+@keyframes bzrBurst1 {
+  0%   { transform: scale(0.15); opacity: 0; }
+  20%  { transform: scale(0.5);  opacity: 0.75; }
+  50%  { transform: scale(1.1);  opacity: 1; }
+  75%  { transform: scale(1.6);  opacity: 1; }
+  100% { transform: scale(2.4);  opacity: 0; }
+}
+
+.bzr-ignite-overlay::after {
+  content: '';
+  position: absolute;
+  inset: -20vmax;
+  background: radial-gradient(circle at center,
+    #FFFFFF 0%, #FFFFFF 8%, #FFE0B5 20%, #FF9A33 40%,
+    rgba(255,122,0,0.4) 60%, transparent 80%);
+  mix-blend-mode: screen;
+  transform: scale(0.3);
+  opacity: 0;
+  filter: blur(30px);
+  will-change: transform, opacity, filter;
+}
+.bzr-ignite-overlay.active::after {
+  animation: bzrBurst2 3400ms var(--bzr-ease-pro) 400ms forwards;
+}
+@keyframes bzrBurst2 {
+  0%   { transform: scale(0.3); opacity: 0; filter: blur(40px); }
+  20%  { transform: scale(0.9); opacity: 1; filter: blur(20px); }
+  50%  { transform: scale(1.5); opacity: 1; filter: blur(28px); }
+  100% { transform: scale(2.4); opacity: 0; filter: blur(60px); }
+}
+
+.bzr-ignite-overlay-inner {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255,180,100,0.5) 0%, transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(255,140,40,0.4) 0%, transparent 40%);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transform: scale(0.6);
+  will-change: transform, opacity;
+}
+.bzr-ignite-overlay.active .bzr-ignite-overlay-inner {
+  animation: bzrBurstInner 3400ms var(--bzr-ease-pro) 300ms forwards;
+}
+@keyframes bzrBurstInner {
+  0%   { transform: scale(0.6); opacity: 0; }
+  30%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.bzr-ignite-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: #FFFFFF;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  will-change: opacity;
+}
+.bzr-ignite-flash.active {
+  animation: bzrFlash 1000ms ease-out 600ms forwards;
+}
+@keyframes bzrFlash {
+  0%   { opacity: 0; }
+  30%  { opacity: 0.8; }
+  50%  { opacity: 0.35; }
+  100% { opacity: 0; }
+}
+
+.bzr-logo-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  will-change: opacity;
+}
+.bzr-logo-reveal.active {
+  animation: bzrRevealWrapper 2400ms ease-in-out 1100ms forwards;
+}
+@keyframes bzrRevealWrapper {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.bzr-logo-reveal-circle {
+  width: clamp(120px, 20vw, 160px);
+  height: clamp(120px, 20vw, 160px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, #FFE8CC 45%, #FF9A33 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform: scale(0.3);
+  opacity: 0;
+  will-change: transform, opacity, box-shadow;
+}
+.bzr-logo-reveal.active .bzr-logo-reveal-circle {
+  animation: bzrLogoPop 2000ms cubic-bezier(0.25, 0.9, 0.35, 1) 1100ms forwards;
+}
+@keyframes bzrLogoPop {
+  0% {
+    transform: scale(0.3); opacity: 0;
+    box-shadow: 0 0 0 0 rgba(255,122,0,0);
+  }
+  20% {
+    transform: scale(0.6); opacity: 0.5;
+    box-shadow: 0 0 40px 12px rgba(255,122,0,0.4);
+  }
+  50% {
+    transform: scale(1.05); opacity: 1;
+    box-shadow:
+      0 0 120px 45px rgba(255,122,0,1),
+      0 0 200px 80px rgba(255,166,77,0.65),
+      0 0 300px 130px rgba(255,122,0,0.35);
+  }
+  75% {
+    transform: scale(0.98); opacity: 1;
+    box-shadow:
+      0 0 100px 35px rgba(255,122,0,0.9),
+      0 0 170px 65px rgba(255,166,77,0.55);
+  }
+  100% {
+    transform: scale(1); opacity: 1;
+    box-shadow:
+      0 0 70px 25px rgba(255,122,0,0.75),
+      0 0 140px 50px rgba(255,166,77,0.4),
+      0 0 220px 90px rgba(255,122,0,0.22);
+  }
+}
+
+.bzr-logo-reveal-circle img {
+  width: 65%;
+  height: 65%;
+  object-fit: contain;
+  border-radius: 50%;
+  display: block;
+  filter: drop-shadow(0 4px 14px rgba(255,122,0,0.45));
+}
+
+.bzr-logo-reveal-ring {
+  position: absolute;
+  inset: -12%;
+  border: 2.5px solid rgba(255,255,255,0.8);
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.bzr-logo-reveal.active .bzr-logo-reveal-ring {
+  animation: bzrRingPulse 2200ms ease-out 1400ms forwards;
+}
+@keyframes bzrRingPulse {
+  0%   { transform: scale(0.6); opacity: 0; }
+  25%  { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bzr-ignite-overlay::before,
+  .bzr-ignite-overlay::after,
+  .bzr-ignite-overlay-inner,
+  .bzr-ignite-flash,
+  .bzr-logo-reveal,
+  .bzr-logo-reveal-circle,
+  .bzr-logo-reveal-ring {
+    display: none !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -458,6 +673,18 @@ input,textarea,select{outline:none}
         <button type="button" class="manual-code-cancel" id="manualCodeCancel">إلغاء</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ═══════ CINEMATIC IGNITION LAYERS (5s) ═══════ -->
+<div class="bzr-ignite-overlay" id="bzrIgniteOverlay" aria-hidden="true">
+  <div class="bzr-ignite-overlay-inner"></div>
+</div>
+<div class="bzr-ignite-flash" id="bzrIgniteFlash" aria-hidden="true"></div>
+<div class="bzr-logo-reveal" id="bzrLogoReveal" aria-hidden="true">
+  <div class="bzr-logo-reveal-circle">
+    <div class="bzr-logo-reveal-ring"></div>
+    <img src="/b.webp" alt="">
   </div>
 </div>
 
@@ -656,7 +883,7 @@ input,textarea,select{outline:none}
   <div class="bzr-footer">
     <div class="bzr-footer-inner">
       <button type="button" id="submitBtn" class="submit-btn"><i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span></button>
-      <div class="footer-note"><i class="fas fa-shield-alt"></i><span>بياناتك مشفّرة • متجر واحد لكل جهاز</span></div>
+      <div class="footer-note"><i class="fas fa-shield-alt"></i><span>بياناتك مشفّرة • </span></div>
     </div>
   </div>
 </div>
@@ -691,6 +918,7 @@ const CATEGORIES = 'categories';
 const CLOUDINARY_CLOUD_NAME = 'n4qu1xfh';
 const CLOUDINARY_UPLOAD_PRESET = 'branzar_unsigned';
 const RESEND_COOLDOWN_MS = 60*1000;
+const IGNITION_DURATION_MS = 5000;
 
 // ═══════════════════════════════════════════════════════════
 // 🌍 Countries (Sudan first = default)
@@ -785,18 +1013,15 @@ const state = {
   pollTimer:null, lastResendAt:0,
   allCategories: [], categoriesUnsub: null,
   categoriesLoaded: false, categoriesSeeded: false,
-  // WhatsApp country
   countryCode: '+249',
   countryFlag: '🇸🇩',
   countryName: 'السودان',
   countryPlaceholder: '9xxxxxxxx',
-  // Phone country (independent, auto-sync)
   phoneCountryCode: '+249',
   phoneCountryFlag: '🇸🇩',
   phoneCountryName: 'السودان',
   phoneCountryPlaceholder: '9xxxxxxxx',
   phoneCountryManuallySet: false,
-  // Modal target
   countryModalTarget: 'whatsapp'
 };
 
@@ -804,6 +1029,83 @@ const $ = id => document.getElementById(id);
 const escapeHtml = s => { if(s==null) return ''; const d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; };
 const sanitize = s => !s ? '' : String(s).replace(/<[^>]*>/g,'').trim();
 const haptic = t => { if(!navigator.vibrate) return; try { navigator.vibrate({light:15,medium:30,heavy:60}[t]||15); } catch(e){} };
+
+// ═══════════════════════════════════════════════════════════
+// 🔥 CINEMATIC IGNITION — 5s Sequence
+// ═══════════════════════════════════════════════════════════
+let _currentIgnition = null;
+
+function playIgnitionAnimation() {
+  if (_currentIgnition) {
+    _currentIgnition.cancelled = true;
+    _currentIgnition.timeouts.forEach(id => clearTimeout(id));
+    _currentIgnition = null;
+  }
+  const overlay = $('bzrIgniteOverlay');
+  const flash = $('bzrIgniteFlash');
+  const logoReveal = $('bzrLogoReveal');
+  if (!overlay || !flash || !logoReveal) return { cancelled: false, timeouts: [] };
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return { cancelled: false, timeouts: [], duration: 0 };
+
+  const token = { cancelled: false, timeouts: [] };
+  _currentIgnition = token;
+
+  // Reset
+  overlay.classList.remove('active');
+  flash.classList.remove('active');
+  logoReveal.classList.remove('active');
+  overlay.style.display = '';
+  flash.style.display = '';
+  logoReveal.style.display = '';
+
+  const setT = (fn, delay) => {
+    const id = setTimeout(() => {
+      if (!token.cancelled) fn();
+    }, delay);
+    token.timeouts.push(id);
+  };
+
+  setT(() => overlay.classList.add('active'), 300);
+  setT(() => flash.classList.add('active'), 600);
+  setT(() => logoReveal.classList.add('active'), 1100);
+  setT(() => {
+    overlay.classList.remove('active');
+    flash.classList.remove('active');
+  }, 3500);
+  setT(() => logoReveal.classList.remove('active'), 4200);
+  setT(() => {
+    overlay.style.display = 'none';
+    flash.style.display = 'none';
+    logoReveal.style.display = 'none';
+  }, IGNITION_DURATION_MS);
+
+  return token;
+}
+
+function stopIgnitionAnimation() {
+  if (_currentIgnition) {
+    _currentIgnition.cancelled = true;
+    _currentIgnition.timeouts.forEach(id => clearTimeout(id));
+    _currentIgnition = null;
+  }
+  const overlay = $('bzrIgniteOverlay');
+  const flash = $('bzrIgniteFlash');
+  const logoReveal = $('bzrLogoReveal');
+  if (overlay) {
+    overlay.classList.remove('active');
+    setTimeout(() => { overlay.style.display = 'none'; }, 450);
+  }
+  if (flash) {
+    flash.classList.remove('active');
+    setTimeout(() => { flash.style.display = 'none'; }, 450);
+  }
+  if (logoReveal) {
+    logoReveal.classList.remove('active');
+    setTimeout(() => { logoReveal.style.display = 'none'; }, 450);
+  }
+}
 
 // ═══════════════════════════════════════════════════════════
 // 🎨 UI Helpers
@@ -852,7 +1154,7 @@ function mapFbError(err){
 }
 
 // ═══════════════════════════════════════════════════════════
-// 🌍 Country Selector Logic (WhatsApp + Phone)
+// 🌍 Country Selector Logic
 // ═══════════════════════════════════════════════════════════
 function updateFieldForCountry(target) {
   const isPhone = target === 'phone';
@@ -871,7 +1173,6 @@ function updateFieldForCountry(target) {
   }
   if (flagEl) flagEl.textContent = flag;
   if (codeEl) codeEl.textContent = code;
-  // mark phone button "synced" state
   if (btnEl && isPhone) {
     if (state.phoneCountryManuallySet) btnEl.classList.remove('synced');
     else btnEl.classList.add('synced');
@@ -942,7 +1243,6 @@ function applyCountryToState(target, code, flag, name, placeholder) {
     state.phoneCountryFlag = flag;
     state.phoneCountryName = name;
     state.phoneCountryPlaceholder = placeholder || 'رقم الهاتف';
-    // If user picked same country as WhatsApp, re-enable auto-sync
     if (code === state.countryCode) state.phoneCountryManuallySet = false;
     else state.phoneCountryManuallySet = true;
     updateFieldForCountry('phone');
@@ -952,7 +1252,6 @@ function applyCountryToState(target, code, flag, name, placeholder) {
     state.countryName = name;
     state.countryPlaceholder = placeholder || 'رقم الواتساب';
     updateFieldForCountry('whatsapp');
-    // Auto-sync phone if not manually set
     if (!state.phoneCountryManuallySet) {
       state.phoneCountryCode = code;
       state.phoneCountryFlag = flag;
@@ -967,7 +1266,6 @@ function selectCountry(c) {
   const target = state.countryModalTarget || 'whatsapp';
   applyCountryToState(target, c.code, c.flag, c.name, c.placeholder);
   closeCountryModal();
-  // revalidate whichever field is relevant
   const fieldId = target === 'phone' ? 'phone' : 'whatsapp';
   const wrapId = target === 'phone' ? 'phoneWrap' : 'waWrap';
   const digits = $(fieldId).value.replace(/\D/g,'').replace(/^0+/,'');
@@ -1249,7 +1547,6 @@ function safeSetValue(el, newVal) {
 
 document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea').forEach(attachInputSafety);
 
-// ─── اسم المتجر ───
 if ($('storeName')) {
   $('storeName').addEventListener('input', () => {
     const el = $('storeName');
@@ -1268,7 +1565,6 @@ if ($('storeDescription')) {
   });
 }
 
-// ─── الموقع ───
 if ($('locationInput')) {
   const locEl = $('locationInput');
   const STATES = ['الخرطوم','الجزيرة','البحر الأحمر','كسلا','القضارف','سنار','النيل الأبيض','النيل الأزرق','نهر النيل','الشمالية','شمال كردفان','جنوب كردفان','غرب كردفان','شمال دارفور','جنوب دارفور','غرب دارفور','شرق دارفور','وسط دارفور'];
@@ -1290,12 +1586,10 @@ if ($('locationInput')) {
   });
 }
 
-// ─── WhatsApp (أرقام فقط، بدون + أو 0) ───
 const waEl = $('whatsapp');
 const phoneEl = $('phone');
 
 function sanitizeLocalDigits(str) {
-  // remove everything except digits, strip leading zeros
   return (str || '').replace(/\D/g, '').replace(/^0+/, '');
 }
 
@@ -1312,13 +1606,11 @@ if (waEl) {
     }
   });
   waEl.addEventListener('blur', () => {
-    // auto-strip leading zeros on blur (visual)
     const digits = sanitizeLocalDigits(waEl.value);
     if (digits !== waEl.value.replace(/\D/g,'')) safeSetValue(waEl, digits);
   });
   waEl.addEventListener('paste', (e) => {
     const text = (e.clipboardData || window.clipboardData).getData('text') || '';
-    // Case: user pasted full international number like +249 912345678 or 00249912345678
     let code = null, local = null;
     const plusMatch = text.match(/^\s*\+\s*(\d{1,4})[\s\-]?(\d+)\s*$/);
     const zeroZeroMatch = text.match(/^\s*00(\d{1,4})[\s\-]?(\d+)\s*$/);
@@ -1328,7 +1620,6 @@ if (waEl) {
       const found = COUNTRIES.find(c => c.code.replace(/\D/g,'') === code);
       if (found) {
         e.preventDefault();
-        // apply to WhatsApp as target
         state.countryModalTarget = 'whatsapp';
         applyCountryToState('whatsapp', found.code, found.flag, found.name, found.placeholder);
         const localClean = sanitizeLocalDigits(local);
@@ -1349,27 +1640,8 @@ if (phoneEl) {
     const digits = sanitizeLocalDigits(phoneEl.value);
     if (digits !== phoneEl.value.replace(/\D/g,'')) safeSetValue(phoneEl, digits);
   });
-  phoneEl.addEventListener('paste', (e) => {
-    const text = (e.clipboardData || window.clipboardData).getData('text') || '';
-    let code = null, local = null;
-    const plusMatch = text.match(/^\s*\+\s*(\d{1,4})[\s\-]?(\d+)\s*$/);
-    const zeroZeroMatch = text.match(/^\s*00(\d{1,4})[\s\-]?(\d+)\s*$/);
-    if (plusMatch) { code = plusMatch[1]; local = plusMatch[2]; }
-    else if (zeroZeroMatch) { code = zeroZeroMatch[1]; local = zeroZeroMatch[2]; }
-    if (code && local) {
-      const found = COUNTRIES.find(c => c.code.replace(/\D/g,'') === code);
-      if (found) {
-        e.preventDefault();
-        state.countryModalTarget = 'phone';
-        applyCountryToState('phone', found.code, found.flag, found.name, found.placeholder);
-        const localClean = sanitizeLocalDigits(local);
-        safeSetValue(phoneEl, localClean);
-      }
-    }
-  });
 }
 
-// ─── البريد ───
 if ($('emailInput')) {
   $('emailInput').addEventListener('input', () => {
     const el = $('emailInput');
@@ -1380,7 +1652,6 @@ if ($('emailInput')) {
   });
 }
 
-// ─── كلمة المرور ───
 if ($('password')) {
   $('password').addEventListener('input', () => {
     const p = $('password').value;
@@ -1431,7 +1702,6 @@ $('togglePwdConfirm').addEventListener('click', () => {
 setupImageUpload($('coverUpload'),$('coverInput'),$('coverPreview'),$('coverProgress'),url=>{state.coverUrl=url;hideErr('coverError');},false);
 setupImageUpload($('logoUpload'),$('logoInput'),$('logoPreview'),$('logoProgress'),url=>{state.logoUrl=url;hideErr('logoError');},true);
 
-// ─── Country Selector Events ───
 if ($('countryBtn')) $('countryBtn').addEventListener('click', () => openCountryModal('whatsapp'));
 if ($('phoneCountryBtn')) $('phoneCountryBtn').addEventListener('click', () => openCountryModal('phone'));
 if ($('countryModalClose')) $('countryModalClose').addEventListener('click', closeCountryModal);
@@ -1468,18 +1738,15 @@ function validateForm(){
   if(!state.selectedCategory){showErr('catError');ok=false;first=first||'catsGrid';}else hideErr('catError');
   const loc=sanitize($('locationInput').value).replace(/\s*-\s*$/,'').trim();
   if(loc.length<3){showErr('locationError');setFieldState('locationWrap','error');ok=false;first=first||'locationInput';}else{hideErr('locationError');setFieldState('locationWrap','valid');}
-  // WhatsApp local digits
   const waLocal = sanitizeLocalDigits($('whatsapp').value);
   const waCodeDigits = state.countryCode.replace(/\D/g,'').length;
   if (waLocal.length < 6 || (waCodeDigits + waLocal.length) > 15) {
     showErr('waError');setFieldState('waWrap','error');ok=false;first=first||'whatsapp';
   } else { hideErr('waError');setFieldState('waWrap','valid'); }
-  // Phone (optional) — if user typed something, validate
   const phoneLocal = sanitizeLocalDigits($('phone').value);
   if (phoneLocal.length > 0) {
     const phCodeDigits = state.phoneCountryCode.replace(/\D/g,'').length;
     if (phoneLocal.length < 6 || (phCodeDigits + phoneLocal.length) > 15) {
-      // not strictly required, but if filled wrong, block
       showToast('رقم الهاتف غير صحيح — راجع الرقم', 'warning');
     }
   }
@@ -1496,7 +1763,7 @@ function validateForm(){
 }
 
 // ═══════════════════════════════════════════════════════════
-// 🚀 Submit
+// 🚀 Submit — With Cinematic Ignition Animation
 // ═══════════════════════════════════════════════════════════
 $('submitBtn').addEventListener('click', async()=>{
   if(state.alreadyRegistered){showToast('لديك متجر بالفعل','warning');return;}
@@ -1511,10 +1778,9 @@ $('submitBtn').addEventListener('click', async()=>{
   const location=sanitize($('locationInput').value).replace(/\s*-\s*$/,'').trim();
   const category=state.selectedCategory;
 
-  // ═══ Build phone numbers as pure digits (no +, no leading 0) ═══
   const waLocal = sanitizeLocalDigits($('whatsapp').value);
-  const waCode = state.countryCode.replace(/\D/g, ''); // '249'
-  const whatsappFull = waCode + waLocal; // '249912345678'
+  const waCode = state.countryCode.replace(/\D/g, '');
+  const whatsappFull = waCode + waLocal;
 
   const phoneLocal = sanitizeLocalDigits($('phone').value);
   const phCode = state.phoneCountryCode.replace(/\D/g, '');
@@ -1523,95 +1789,160 @@ $('submitBtn').addEventListener('click', async()=>{
   const btn=$('submitBtn');
   state.submitting=true;
   setButtonLoading(btn,true,'جارٍ التحقق ...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
-  startProgress();haptic('medium');
+  startProgress();
+  haptic('medium');
 
-  let createdUser=null;
-  try{
+  // 🔥 PLAY CINEMATIC IGNITION ANIMATION (5s)
+  const animStart = Date.now();
+  playIgnitionAnimation();
+
+  let createdUser = null;
+  let outcome = null;       // 'success' | 'blocked' | 'error'
+  let outcomeData = null;
+
+  try {
+    // ── Step 1: Device check ──
     const devCheck = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
-    if(devCheck.blocked){
-      await showBlockedGate(devCheck.store);
-      setButtonLoading(btn,false,'','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
-      state.submitting=false; return;
+    if (devCheck.blocked) {
+      outcome = 'blocked';
+      outcomeData = devCheck.store;
+    } else {
+      // ── Step 2: Create account ──
+      setButtonLoading(btn,true,'جارٍ إنشاء الحساب...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      createdUser = cred.user;
+
+      // ── Step 3: Uniqueness checks ──
+      setButtonLoading(btn,true,'جارٍ التحقق من البيانات...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+      const nChk = await db.collection(STORES).where('name','==',storeName).limit(1).get();
+      if(!nChk.empty){
+        try{ await createdUser.delete(); }catch(e){}
+        throw new Error('store_name_exists');
+      }
+      const wChk = await db.collection(STORES).where('whatsapp_number','==',whatsappFull).limit(1).get();
+      if(!wChk.empty){
+        try{ await createdUser.delete(); }catch(e){}
+        throw new Error('whatsapp_exists');
+      }
+
+      // ── Step 4: Write store + device ──
+      const now = Date.now();
+      const storeRef = db.collection(STORES).doc();
+      const deviceRef = db.collection(DEVICES).doc(state.persistentId);
+
+      const storeData = {
+        name: storeName, category: category, categories: [],
+        description: description, location: location,
+        whatsapp_number: whatsappFull,
+        whatsapp_country_code: waCode,
+        whatsapp_local: waLocal,
+        phone_number: phoneFull,
+        phone_country_code: phoneLocal ? phCode : '',
+        phone_local: phoneLocal,
+        logo_url: state.logoUrl || '', cover_url: state.coverUrl || '',
+        owner_uid: createdUser.uid, owner_email: email,
+        followers: 0, products_count: 0,
+        is_verified: false, is_subscribed: false,
+        device_fingerprint: state.deviceFingerprint,
+        device_id: state.persistentId,
+        created_at: now, updated_at: now
+      };
+      const deviceData = {
+        storeId: storeRef.id, deviceId: state.persistentId,
+        owner_uid: createdUser.uid, owner_email: email,
+        fingerprint: state.deviceFingerprint,
+        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      setButtonLoading(btn,true,'جارٍ إنشاء المتجر...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+      const batch = db.batch();
+      batch.set(deviceRef, deviceData);
+      batch.set(storeRef, storeData);
+      try { await batch.commit(); }
+      catch(bErr){
+        try{ await createdUser.delete(); }catch(e){}
+        if(bErr.code === 'permission-denied') throw new Error('device_blocked');
+        throw bErr;
+      }
+
+      state.pendingStoreId = storeRef.id;
+
+      // ── Step 5: Send verification ──
+      setButtonLoading(btn,true,'جارٍ إرسال رابط التحقق...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+      const acs = { url: window.location.origin + window.location.pathname + '?verified=1', handleCodeInApp: false };
+      let sent = false;
+      try { await createdUser.sendEmailVerification(acs); sent = true; }
+      catch(e){ console.warn('[sendEmailVerification]', e); }
+
+      state.pendingUser = createdUser;
+      state.pendingEmail = email;
+      state.lastResendAt = sent ? Date.now() : 0;
+
+      outcome = 'success';
+      outcomeData = { sent: sent, email: email };
     }
-
-    setButtonLoading(btn,true,'جارٍ إنشاء الحساب...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
-    const cred = await auth.createUserWithEmailAndPassword(email, password);
-    createdUser = cred.user;
-
-    setButtonLoading(btn,true,'جارٍ التحقق من البيانات...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
-    const nChk=await db.collection(STORES).where('name','==',storeName).limit(1).get();
-    if(!nChk.empty){try{await createdUser.delete();}catch(e){} throw new Error('store_name_exists');}
-    const wChk=await db.collection(STORES).where('whatsapp_number','==',whatsappFull).limit(1).get();
-    if(!wChk.empty){try{await createdUser.delete();}catch(e){} throw new Error('whatsapp_exists');}
-
-    const now=Date.now();
-    const storeRef=db.collection(STORES).doc();
-    const deviceRef=db.collection(DEVICES).doc(state.persistentId);
-
-    // ═══ Store as pure digits (numbers only, no +, no leading 0) ═══
-    const storeData={
-      name:storeName, category:category, categories:[],
-      description:description, location:location,
-      whatsapp_number:whatsappFull,       // '249912345678'
-      whatsapp_country_code:waCode,       // '249'
-      whatsapp_local:waLocal,             // '912345678'
-      phone_number:phoneFull,             // '249912345678' or ''
-      phone_country_code:phoneLocal?phCode:'',
-      phone_local:phoneLocal,
-      logo_url:state.logoUrl||'', cover_url:state.coverUrl||'',
-      owner_uid:createdUser.uid, owner_email:email,
-      followers:0, products_count:0,
-      is_verified:false, is_subscribed:false,
-      device_fingerprint:state.deviceFingerprint,
-      device_id:state.persistentId,
-      created_at:now, updated_at:now
-    };
-    const deviceData={
-      storeId:storeRef.id, deviceId:state.persistentId,
-      owner_uid:createdUser.uid, owner_email:email,
-      fingerprint:state.deviceFingerprint,
-      registeredAt:firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    setButtonLoading(btn,true,'جارٍ إنشاء المتجر...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
-    const batch=db.batch();
-    batch.set(deviceRef,deviceData);
-    batch.set(storeRef,storeData);
-    try{ await batch.commit(); }
-    catch(bErr){ try{await createdUser.delete();}catch(e){} if(bErr.code==='permission-denied')throw new Error('device_blocked'); throw bErr; }
-
-    state.pendingStoreId=storeRef.id;
-
-    setButtonLoading(btn,true,'جارٍ إرسال رابط التحقق...','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
-    const acs={ url:window.location.origin+window.location.pathname+'?verified=1', handleCodeInApp:false };
-    let sent=false;
-    try{ await createdUser.sendEmailVerification(acs); sent=true; }
-    catch(e){ console.warn('[sendEmailVerification]',e); }
-
-    state.pendingUser=createdUser;
-    state.pendingEmail=email;
-    state.lastResendAt=sent?Date.now():0;
-
-    doneProgress(); haptic('heavy');
-    showToast(sent?'📧 تم إرسال رابط التحقق إلى بريدك':'⚠️ تعذر الإرسال — اضغط "إعادة إرسال"', sent?'success':'warning');
-
-    const emEl=$('waitingEmail'); if(emEl) emEl.textContent=email;
-    showGate('gateWaiting');
-    startVerifyPolling();
-  }catch(err){
-    console.error('[Register]',err);
-    doneProgress();
-    let msg='تعذر إنشاء المتجر — حاول مرة أخرى';
-    if(err.message==='device_blocked')msg='هذا الجهاز مسجّل مسبقًا';
-    else if(err.message==='store_name_exists')msg='اسم المتجر مستخدم بالفعل';
-    else if(err.message==='whatsapp_exists')msg='رقم الواتساب مستخدم بالفعل';
-    else if(err.code)msg=mapFbError(err);
-    const el=$('registerError'); el.textContent='❌ '+msg; el.classList.add('show'); el.scrollIntoView({behavior:'smooth',block:'center'});
-    showToast(msg,'error'); haptic('heavy');
-    if(err.message==='device_blocked'){setTimeout(async()=>{const c=await checkDeviceRegistration(state.persistentId,state.deviceFingerprint);await showBlockedGate(c.store);},800);}
-    setButtonLoading(btn,false,'','<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
-    state.submitting=false;
+  } catch(err) {
+    console.error('[Register]', err);
+    outcome = 'error';
+    outcomeData = err;
+    if (createdUser) { try { await createdUser.delete(); } catch(e){} }
   }
+
+  // ═══ WAIT FOR ANIMATION TO COMPLETE ═══
+  if (outcome === 'blocked') {
+    // Cancel early — blocked is a special case, no need to celebrate
+    stopIgnitionAnimation();
+    await new Promise(r => setTimeout(r, 500));
+  } else {
+    // Wait for the full 5s animation
+    const elapsed = Date.now() - animStart;
+    if (elapsed < IGNITION_DURATION_MS) {
+      await new Promise(r => setTimeout(r, IGNITION_DURATION_MS - elapsed));
+    }
+  }
+
+  // ═══ SHOW OUTCOME ═══
+  if (outcome === 'blocked') {
+    await showBlockedGate(outcomeData);
+    setButtonLoading(btn, false, '', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+    state.submitting = false;
+    return;
+  }
+
+  if (outcome === 'error') {
+    doneProgress();
+    let msg = 'تعذر إنشاء المتجر — حاول مرة أخرى';
+    if (outcomeData.message === 'device_blocked') msg = 'هذا الجهاز مسجّل مسبقًا';
+    else if (outcomeData.message === 'store_name_exists') msg = 'اسم المتجر مستخدم بالفعل';
+    else if (outcomeData.message === 'whatsapp_exists') msg = 'رقم الواتساب مستخدم بالفعل';
+    else if (outcomeData.code) msg = mapFbError(outcomeData);
+    const el = $('registerError');
+    el.textContent = '❌ ' + msg;
+    el.classList.add('show');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showToast(msg, 'error');
+    haptic('heavy');
+    if (outcomeData.message === 'device_blocked') {
+      setTimeout(async () => {
+        const c = await checkDeviceRegistration(state.persistentId, state.deviceFingerprint);
+        await showBlockedGate(c.store);
+      }, 800);
+    }
+    setButtonLoading(btn, false, '', '<i class="fas fa-rocket"></i><span>إنشاء المتجر الآن</span>');
+    state.submitting = false;
+    return;
+  }
+
+  // ═══ SUCCESS ═══
+  doneProgress();
+  haptic('heavy');
+  const sent = outcomeData.sent;
+  showToast(sent ? '📧 تم إرسال رابط التحقق إلى بريدك' : '⚠️ تعذر الإرسال — اضغط "إعادة إرسال"', sent ? 'success' : 'warning');
+
+  const emEl = $('waitingEmail');
+  if (emEl) emEl.textContent = email;
+  showGate('gateWaiting');
+  startVerifyPolling();
 });
 
 // ═══════════════════════════════════════════════════════════
@@ -1688,7 +2019,6 @@ async function bootstrap(){
     await new Promise(r=>setTimeout(r,200));
     await buildFingerprint();
 
-    // Initialize both phone fields with Sudan default
     updateFieldForCountry('whatsapp');
     updateFieldForCountry('phone');
 
@@ -1734,7 +2064,7 @@ async function bootstrap(){
 }
 
 document.addEventListener('DOMContentLoaded',bootstrap);
-console.log('[BZR] signup v11.0 — WhatsApp + Phone country selectors + pure-digit storage ✅');
+console.log('[BZR] signup v11.1 — Cinematic 5s ignition on submit ✅');
 </script>
 </body>
 </html>
