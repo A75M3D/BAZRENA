@@ -217,88 +217,23 @@
         .btn-delete-account { width: 100%; padding: 0.9rem 1.1rem; background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #fff; border: none; border-radius: 0.95rem; font-weight: 900; font-size: 0.92rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 12px 26px -10px rgba(239,68,68,0.75); transition: all 0.22s; font-family: 'Cairo', sans-serif; text-decoration: none; }
         .btn-delete-account:hover { transform: translateY(-2px); box-shadow: 0 18px 34px -12px rgba(239,68,68,0.9); }
 
-        /* معاينة صورة المنتج الرئيسية وصور الألوان */
         .product-img-preview-wrapper { position: relative; width: 46px; height: 46px; flex-shrink: 0; align-self: center; margin-right: 4px; }
         .product-img-preview { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1.5px solid #FF7A00; display: block; }
         .remove-img-btn { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; background: #EF4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; padding: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; }
 
-        /* ═══ CURRENCY ═══ */
         .image-preview { max-width: 100px; max-height: 100px; border-radius: 12px; border: 2px solid #FFE0BD; margin-top: 10px; padding: 4px; object-fit: contain; background: #fff; display: block; }
         .price-input-wrap { position: relative; }
         .price-input-wrap .form-input { padding-left: 92px; }
-        .price-currency-badge {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: linear-gradient(135deg, #FF7A00, #FFA64D);
-            color: #fff;
-            padding: 0.3rem 0.7rem;
-            border-radius: 0.55rem;
-            font-weight: 900;
-            font-size: 0.78rem;
-            pointer-events: none;
-            box-shadow: 0 4px 10px -4px rgba(255,122,0,0.7);
-            letter-spacing: 0.2px;
-        }
+        .price-currency-badge { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: linear-gradient(135deg, #FF7A00, #FFA64D); color: #fff; padding: 0.3rem 0.7rem; border-radius: 0.55rem; font-weight: 900; font-size: 0.78rem; pointer-events: none; box-shadow: 0 4px 10px -4px rgba(255,122,0,0.7); letter-spacing: 0.2px; }
 
-        /* ═══ Currency Selector (Product Form Only) ═══ */
-        .currency-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .currency-option {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 0.7rem 0.5rem;
-            border-radius: 0.85rem;
-            border: 2px solid #E5E7EB;
-            background: #fff;
-            color: #6B7280;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 800;
-            font-size: 0.78rem;
-            cursor: pointer;
-            transition: all 0.22s;
-            overflow: hidden;
-            min-width: 0;
-        }
-        .currency-option:hover {
-            border-color: #FFA64D;
-            background: #FFF7ED;
-            color: #FF7A00;
-        }
-        .currency-option.active {
-            border-color: #FF7A00;
-            background: linear-gradient(135deg, #FFF7ED 0%, #FFF1E0 100%);
-            color: #C2410C;
-            box-shadow: 0 6px 16px -8px rgba(255,122,0,0.5);
-        }
-        .currency-option .flag {
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-        .currency-option .curr-name {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            min-width: 0;
-        }
-        .currency-option .curr-symbol {
-            font-size: 0.66rem;
-            background: rgba(255,122,0,0.15);
-            padding: 0.1rem 0.35rem;
-            border-radius: 0.4rem;
-            font-weight: 900;
-            flex-shrink: 0;
-        }
-        .currency-option.active .curr-symbol {
-            background: rgba(255,122,0,0.25);
-        }
+        .currency-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .currency-option { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0.7rem 0.5rem; border-radius: 0.85rem; border: 2px solid #E5E7EB; background: #fff; color: #6B7280; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 0.78rem; cursor: pointer; transition: all 0.22s; overflow: hidden; min-width: 0; }
+        .currency-option:hover { border-color: #FFA64D; background: #FFF7ED; color: #FF7A00; }
+        .currency-option.active { border-color: #FF7A00; background: linear-gradient(135deg, #FFF7ED 0%, #FFF1E0 100%); color: #C2410C; box-shadow: 0 6px 16px -8px rgba(255,122,0,0.5); }
+        .currency-option .flag { font-size: 1rem; flex-shrink: 0; }
+        .currency-option .curr-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+        .currency-option .curr-symbol { font-size: 0.66rem; background: rgba(255,122,0,0.15); padding: 0.1rem 0.35rem; border-radius: 0.4rem; font-weight: 900; flex-shrink: 0; }
+        .currency-option.active .curr-symbol { background: rgba(255,122,0,0.25); }
         @media (max-width: 400px) {
             .currency-option { font-size: 0.72rem; padding: 0.65rem 0.35rem; gap: 4px; }
             .currency-option .flag { font-size: 0.9rem; }
@@ -348,8 +283,6 @@
         </form>
         <div class="login-footer-hint">
             <a href="signup.html"><i class="fas fa-user-plus"></i> ليس لديك متجر؟ أنشئ واحداً الآن</a>
-            <br>
-            <a href="https://wa.me/249908280115" target="_blank" rel="noopener noreferrer" style="margin-top: 0.6rem;"><i class="fab fa-whatsapp"></i> تواصل مع الدعم +249 908 280 115</a>
             <br>
             <a href="index.html" style="margin-top: 0.6rem;"><i class="fas fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
         </div>
@@ -550,7 +483,6 @@
                             </div>
                         </form>
 
-                        <!-- 🗑️ Danger Zone -->
                         <div class="danger-zone">
                             <div class="danger-zone-header">
                                 <div class="danger-zone-icon"><i class="fas fa-triangle-exclamation"></i></div>
@@ -582,113 +514,63 @@
                                 <input type="hidden" id="product_id">
 
                                 <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-box"></i>
-                                        <span>اسم المنتج</span>
-                                        <span class="req">*</span>
-                                    </label>
+                                    <label class="form-label"><i class="fas fa-box"></i><span>اسم المنتج</span><span class="req">*</span></label>
                                     <input type="text" id="product_name" class="form-input" required placeholder="مثال: هاتف ذكي" maxlength="150">
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-align-right"></i>
-                                        <span>وصف المنتج</span>
-                                    </label>
+                                    <label class="form-label"><i class="fas fa-align-right"></i><span>وصف المنتج</span></label>
                                     <textarea id="product_description" class="form-input" rows="2" placeholder="وصف مختصر..." maxlength="100"></textarea>
-                                    <div class="char-counter">
-                                        <span style="font-size:0.68rem;color:#9CA3AF;font-weight:700;"><i class="fas fa-info-circle"></i> الحد الأقصى 100 حرف</span>
-                                        <span class="count" id="productDescCounter">0 / 100</span>
-                                    </div>
+                                    <div class="char-counter"><span style="font-size:0.68rem;color:#9CA3AF;font-weight:700;"><i class="fas fa-info-circle"></i> الحد الأقصى 100 حرف</span><span class="count" id="productDescCounter">0 / 100</span></div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-tags"></i>
-                                        <span>فئة المنتج</span>
-                                        <span class="req">*</span>
-                                    </label>
+                                    <label class="form-label"><i class="fas fa-tags"></i><span>فئة المنتج</span><span class="req">*</span></label>
                                     <select id="product_category" class="form-input" required>
                                         <option value="">— اختر الفئة —</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-store"></i>
-                                        <span>المتجر</span>
-                                    </label>
+                                    <label class="form-label"><i class="fas fa-store"></i><span>المتجر</span></label>
                                     <input type="text" id="product_store_name_display" class="form-input" disabled>
                                     <input type="hidden" id="product_store_name">
                                 </div>
 
-                                <!-- 💰 السعر مع اختيار العملة (هنا فقط) -->
                                 <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-money-bill-wave"></i>
-                                        <span>السعر</span>
-                                        <span class="req">*</span>
-                                    </label>
+                                    <label class="form-label"><i class="fas fa-money-bill-wave"></i><span>السعر</span><span class="req">*</span></label>
                                     <div class="price-input-wrap">
                                         <input type="number" id="product_price" class="form-input" required min="0" step="0.01" placeholder="0.00" dir="ltr" style="text-align: right;">
                                         <span id="productCurrencySymbol" class="price-currency-badge">SDG</span>
                                     </div>
                                     <input type="hidden" id="product_currency" value="SDG">
                                     <div class="currency-selector">
-                                        <button type="button" class="currency-option active" data-currency="SDG">
-                                            <span class="flag">🇸🇩</span>
-                                            <span class="curr-name">جنيه سوداني</span>
-                                            <span class="curr-symbol">SDG</span>
-                                        </button>
-                                        <button type="button" class="currency-option" data-currency="USD">
-                                            <span class="flag">🇺🇸</span>
-                                            <span class="curr-name">دولار أمريكي</span>
-                                            <span class="curr-symbol">USD</span>
-                                        </button>
+                                        <button type="button" class="currency-option active" data-currency="SDG"><span class="flag">🇸🇩</span><span class="curr-name">جنيه سوداني</span><span class="curr-symbol">SDG</span></button>
+                                        <button type="button" class="currency-option" data-currency="USD"><span class="flag">🇺🇸</span><span class="curr-name">دولار أمريكي</span><span class="curr-symbol">USD</span></button>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">
-                                        <i class="fas fa-image"></i>
-                                        <span>رابط الصورة الأساسية</span>
-                                    </label>
+                                    <label class="form-label"><i class="fas fa-image"></i><span>رابط الصورة الأساسية</span></label>
                                     <div class="url-upload-group">
                                         <input type="url" id="product_img_url" class="form-input" placeholder="https://..." dir="ltr" style="text-align: left;">
-                                        <button type="button" class="upload-btn" data-upload-target="product_img_url">
-                                            <i class="fas fa-cloud-upload-alt"></i>
-                                            <span>رفع</span>
-                                        </button>
+                                        <button type="button" class="upload-btn" data-upload-target="product_img_url"><i class="fas fa-cloud-upload-alt"></i><span>رفع</span></button>
                                         <div id="product_img_preview_wrapper" class="product-img-preview-wrapper hidden">
                                             <img id="product_img_preview" class="product-img-preview" alt="">
-                                            <button type="button" id="removeProductImgBtn" class="remove-img-btn" aria-label="حذف الصورة">
-                                                <i class="fas fa-times"></i>
-                                            </button>
+                                            <button type="button" id="removeProductImgBtn" class="remove-img-btn" aria-label="حذف الصورة"><i class="fas fa-times"></i></button>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="section-divider">
-                                    <i class="fas fa-palette"></i>
-                                    <span>ألوان المنتج (اختياري)</span>
-                                </div>
+                                <div class="section-divider"><i class="fas fa-palette"></i><span>ألوان المنتج (اختياري)</span></div>
                                 <div class="form-group">
                                     <div id="productColorsContainer"></div>
-                                    <button type="button" id="addColorBtn">
-                                        <i class="fas fa-plus-circle"></i>
-                                        <span>إضافة لون جديد</span>
-                                    </button>
+                                    <button type="button" id="addColorBtn"><i class="fas fa-plus-circle"></i><span>إضافة لون جديد</span></button>
                                 </div>
 
                                 <div class="btn-row">
-                                    <button type="submit" id="productSubmitBtn" class="btn btn-primary">
-                                        <i class="fas fa-save"></i>
-                                        <span>حفظ</span>
-                                    </button>
-                                    <button type="button" id="cancelEditProduct" class="btn btn-danger hidden" style="max-width: 110px;">
-                                        <i class="fas fa-times"></i>
-                                        <span>إلغاء</span>
-                                    </button>
+                                    <button type="submit" id="productSubmitBtn" class="btn btn-primary"><i class="fas fa-save"></i><span>حفظ</span></button>
+                                    <button type="button" id="cancelEditProduct" class="btn btn-danger hidden" style="max-width: 110px;"><i class="fas fa-times"></i><span>إلغاء</span></button>
                                 </div>
                             </form>
                         </div>
@@ -879,10 +761,7 @@ const FIXED_CATEGORIES = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════
-   💱 CURRENCY SYSTEM — Per Product Only (SDG default)
-   - SDG: جنيه سوداني (رمز "SDG")
-   - USD: دولار أمريكي (رمز "USD")
-   - Legacy migration: "ج.س" → "SDG" (auto handled)
+   💱 CURRENCY SYSTEM
    ═══════════════════════════════════════════════════════════════ */
 const CURRENCIES = {
     SDG: { code: 'SDG', name: 'جنيه سوداني', symbol: 'SDG', flag: '🇸🇩' },
@@ -890,12 +769,8 @@ const CURRENCIES = {
 };
 const DEFAULT_CURRENCY_CODE = 'SDG';
 
-/* 🔄 Legacy symbols → canonical ("ج.س" → "SDG") */
 const LEGACY_CURRENCY_SYMBOLS = {
-    'ج.س': 'SDG',
-    'ج.س.': 'SDG',
-    'جنيه': 'SDG',
-    'جنية': 'SDG'
+    'ج.س': 'SDG', 'ج.س.': 'SDG', 'جنيه': 'SDG', 'جنية': 'SDG'
 };
 
 function normalizeCurrencySymbol(sym) {
@@ -923,16 +798,12 @@ function getCurrencyBySymbol(sym) {
     return null;
 }
 
-// العملة الافتراضية دائمًا هي الجنيه السوداني (لا توجد عملة متجر)
-function getStoreCurrency() {
-    return CURRENCIES[DEFAULT_CURRENCY_CODE];
-}
+function getStoreCurrency() { return CURRENCIES[DEFAULT_CURRENCY_CODE]; }
 
 function getProductCurrency(p) {
     if (p && p.currency) {
         const found = getCurrencyBySymbol(p.currency);
         if (found) return found;
-        // رمز غير معروف — نُعيده كما هو (لكن مطبَّعًا)
         const raw = normalizeCurrencySymbol(p.currency);
         return { code: raw, name: raw, symbol: raw, flag: '💱' };
     }
@@ -949,7 +820,6 @@ function updateProductCurrencyDisplay(currency) {
     });
 }
 
-// تفعيل أزرار اختيار العملة
 document.querySelectorAll('.currency-option').forEach(btn => {
     btn.addEventListener('click', () => {
         const currSymbol = btn.getAttribute('data-currency');
@@ -958,7 +828,6 @@ document.querySelectorAll('.currency-option').forEach(btn => {
     });
 });
 
-// خريطة الألوان الذكية
 const COLOR_MAP = {
     'أسود': '#000000', 'black': '#000000',
     'أبيض': '#FFFFFF', 'white': '#FFFFFF',
@@ -997,6 +866,10 @@ let productsUnsubscribe = null;
 let storeUnsubscribe = null;
 let lastProductsFingerprint = '';
 let _cooldownTicker = null;
+
+/* 🆕 FIX: تتبع محاولات الدخول الصريحة لمنع ظهور خطأ "لا يوجد متجر" عند استعادة الجلسة */
+let isExplicitLoginAttempt = false;
+let lastLoginAttemptAt = 0;
 
 const $ = id => document.getElementById(id);
 const escapeHtml = s => { if (s == null) return ''; const d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; };
@@ -1157,6 +1030,10 @@ $('loginForm').addEventListener('submit', async (e) => {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { showMsg('loginError', '⚠️ البريد الإلكتروني غير صحيح'); return; }
     if (!password || password.length < 6 || password.length > 128) { showMsg('loginError', '⚠️ كلمة المرور غير صحيحة'); return; }
 
+    /* 🆕 FIX: تسجيل وقت المحاولة الصريحة قبل signInWithEmailAndPassword */
+    isExplicitLoginAttempt = true;
+    lastLoginAttemptAt = Date.now();
+
     setBtnLoad($('loginSubmitBtn'), true, 'جارٍ التحقق...', '<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');
     try {
         const cred = await auth.signInWithEmailAndPassword(email, password);
@@ -1165,10 +1042,12 @@ $('loginForm').addEventListener('submit', async (e) => {
             try { await cred.user.sendEmailVerification(); } catch (e) {}
             showMsg('loginError', '⚠️ يجب تأكيد بريدك الإلكتروني أولاً — تفقد صندوق الوارد');
             await auth.signOut();
+            isExplicitLoginAttempt = false;
             return;
         }
     } catch (err) {
         console.error('[Login]', err);
+        isExplicitLoginAttempt = false;
         const rl2 = recordLoginFailure();
         let msg = '❌ البريد أو كلمة المرور غير صحيحة';
         if (rl2.lockedUntil && Date.now() < rl2.lockedUntil) msg = '🔒 تجاوزت الحد — قفل 15 دقيقة';
@@ -1203,6 +1082,7 @@ async function findStoreByUid(uid) {
 auth.onAuthStateChanged(async (user) => {
     if (!user) {
         currentUser = null; currentStore = null;
+        isExplicitLoginAttempt = false;
         $('loginOverlay').classList.remove('hidden');
         $('dashboard').classList.add('hidden');
         return;
@@ -1211,15 +1091,27 @@ auth.onAuthStateChanged(async (user) => {
     setConn(true, user.email || '');
     try {
         const store = await findStoreByUid(user.uid);
-        if (!store) { showMsg('loginError', '❌ لا يوجد متجر مرتبط بهذا الحساب'); await auth.signOut(); return; }
+        if (!store) {
+            /* 🆕 FIX: يظهر الخطأ فقط عند محاولة دخول صريحة حديثة (خلال 20 ثانية) */
+            const wasExplicitLogin = isExplicitLoginAttempt && (Date.now() - lastLoginAttemptAt < 20000);
+            isExplicitLoginAttempt = false;
+            if (wasExplicitLogin) {
+                showMsg('loginError', '❌ لا يوجد متجر مرتبط بهذا الحساب');
+            }
+            try { await auth.signOut(); } catch (e) {}
+            return;
+        }
+        /* ✅ تم العثور على المتجر — إعادة تعيين العلامة */
+        isExplicitLoginAttempt = false;
         currentStore = store;
         $('loginOverlay').classList.add('hidden');
         $('dashboard').classList.remove('hidden');
         await enterDashboard();
     } catch (err) {
         console.error('[AuthState]', err);
+        isExplicitLoginAttempt = false;
         showToast('تعذر تحميل المتجر: ' + mapFbError(err), 'error');
-        await auth.signOut();
+        try { await auth.signOut(); } catch (e) {}
     }
 });
 
@@ -1234,7 +1126,6 @@ async function enterDashboard() {
     await loadMyProducts();
     setConn(true, currentStore.name);
     updateCooldownUI();
-    // العملة الافتراضية = جنيه سوداني (SDG)
     updateProductCurrencyDisplay(getStoreCurrency());
     setTimeout(setupImageFallbacks, 200);
 }
@@ -1518,9 +1409,6 @@ function renderProductsList() {
     setTimeout(setupImageFallbacks, 50);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   🎨 COLOR ROW WITH SMART DOT AND SQUARE PREVIEW
-   ═══════════════════════════════════════════════════════════════ */
 function addColorRow(name, image) {
     const c = $('productColorsContainer'); if (!c) return;
     const row = document.createElement('div');
@@ -1584,9 +1472,6 @@ function addColorRow(name, image) {
     updateImagePreview();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   🖼️ MAIN PRODUCT IMAGE PREVIEW LOGIC
-   ═══════════════════════════════════════════════════════════════ */
 const prodImgInput = $('product_img_url');
 const prodImgWrapper = $('product_img_preview_wrapper');
 const prodImgPreview = $('product_img_preview');
@@ -1595,24 +1480,17 @@ const removeProdImgBtn = $('removeProductImgBtn');
 function updateMainImgPreview() {
     if (!prodImgInput || !prodImgWrapper || !prodImgPreview) return;
     const val = prodImgInput.value.trim();
-    
     if (val) {
         prodImgPreview.src = val;
         prodImgWrapper.classList.remove('hidden');
-        prodImgPreview.onerror = () => { 
-            prodImgPreview.src = FALLBACK_ICON_SVG; 
-            prodImgPreview.onerror = null; 
-        };
+        prodImgPreview.onerror = () => { prodImgPreview.src = FALLBACK_ICON_SVG; prodImgPreview.onerror = null; };
     } else {
         prodImgWrapper.classList.add('hidden');
         prodImgPreview.removeAttribute('src');
     }
 }
 
-if (prodImgInput) {
-    prodImgInput.addEventListener('input', updateMainImgPreview);
-}
-
+if (prodImgInput) prodImgInput.addEventListener('input', updateMainImgPreview);
 if (removeProdImgBtn) {
     removeProdImgBtn.addEventListener('click', () => {
         prodImgInput.value = '';
@@ -1636,7 +1514,6 @@ $('productForm').addEventListener('submit', async (e) => {
     const description = sanitize($('product_description').value).slice(0, PRODUCT_DESC_MAX);
     const price = toNumber($('product_price').value);
     const category = sanitize($('product_category').value);
-    // 🔑 القيمة المخزنة = رمز العملة المختصر (SDG أو USD) — مطبَّع دائمًا
     const rawCurrencySymbol = sanitize($('product_currency').value) || getStoreCurrency().symbol;
     const currencySymbol = normalizeCurrencySymbol(rawCurrencySymbol) || getStoreCurrency().symbol;
 
@@ -1657,7 +1534,7 @@ $('productForm').addEventListener('submit', async (e) => {
         store_id: currentStore.id,
         owner_uid: currentUser.uid,
         price,
-        currency: currencySymbol, // الرمز المختصر فقط (SDG أو USD)
+        currency: currencySymbol,
         img_url: sanitize($('product_img_url').value),
         colors: colors.length > 0 ? colors : null
     };
@@ -1690,13 +1567,10 @@ function resetProductForm() {
     $('product_id').value = '';
     $('productFormTitle').textContent = 'إضافة منتج جديد';
     $('cancelEditProduct').classList.add('hidden');
-    
     if (prodImgWrapper) prodImgWrapper.classList.add('hidden');
     if (prodImgPreview) prodImgPreview.removeAttribute('src');
-    
     $('productColorsContainer').innerHTML = '';
     $('productDescCounter').textContent = '0 / ' + PRODUCT_DESC_MAX;
-    // عملة افتراضية = جنيه سوداني (SDG)
     updateProductCurrencyDisplay(getStoreCurrency());
     populateProductCategories('');
 }
@@ -1714,13 +1588,9 @@ window.editProduct = async (id) => {
         $('product_img_url').value = d.img_url || '';
         $('productDescCounter').textContent = (d.description || '').length + ' / ' + PRODUCT_DESC_MAX;
         populateProductCategories(d.category || '');
-        
-        // 💱 عملة المنتج — يُطبَّع أي رمز قديم "ج.س" إلى "SDG"
         const prodCurr = getProductCurrency(d);
         updateProductCurrencyDisplay(prodCurr);
-        
         updateMainImgPreview();
-
         $('productColorsContainer').innerHTML = '';
         if (Array.isArray(d.colors)) d.colors.forEach(x => addColorRow(x.name, x.image));
         $('productFormTitle').textContent = 'تعديل: ' + d.name;
@@ -1816,7 +1686,7 @@ document.addEventListener('click', (e) => {
 
 if ($('supportFloat')) $('supportFloat').addEventListener('click', () => openSupportChat('general'));
 
-console.log('%c🛡️ a.html v9.1 — SDG default currency (was ج.س) + auto-migration', 'color:#10B981;font-weight:bold;font-size:14px');
+console.log('%c🛡️ a.html v10.0 — Fixed auto-logout + no WhatsApp on login', 'color:#10B981;font-weight:bold;font-size:14px');
 </script>
 
 </body>
