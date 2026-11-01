@@ -32,7 +32,7 @@ try {
 
     const options = {
       body: notif.body || data.body || 'لديك إشعار جديد',
-      icon: notif.icon || data.icon || 'https://i.ibb.co/fG8PmHV2/file-0000000072408210b10e441c56a8683e.png',
+      icon: notif.icon || data.icon || 'https://branzar.vercel.app/b.webp',
       dir: 'rtl',
       lang: 'ar',
       tag: data.tag || 'branzar-bg',
