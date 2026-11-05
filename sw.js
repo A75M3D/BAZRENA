@@ -1,5 +1,8 @@
-/* BranZar Service Worker v1.0.020 */
-const SW_VERSION = '1.01.1130';
+/* ═══════════════════════════════════════════════════════════
+   BranZar Service Worker v9.15.0
+   ✅ v9.15.0: Dexie added to precache, store-limits removed
+   ═══════════════════════════════════════════════════════════ */
+const SW_VERSION = '9.15.0';
 const CACHE_NAME = `branzar-${SW_VERSION}`;
 const STATIC_CACHE = `${CACHE_NAME}-static`;
 const RUNTIME_CACHE = `${CACHE_NAME}-runtime`;
@@ -46,14 +49,15 @@ try {
   console.warn('[SW] FCM init failed (non-fatal):', e);
 }
 
+/* 🆕 v9.15.0: Dexie مضاف، store-limits محذوف */
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/onboarding.html',
   '/manifest.json',
   '/sw.js',
+  '/js/dexie.min.js',
   '/js/core.js',
-  '/js/store-limits.js',
   '/js/data.js',
   '/js/ui.js',
   '/js/app.js',
@@ -135,7 +139,6 @@ self.addEventListener('fetch', (event) => {
               cache.put(request, copy).catch(() => {});
             });
           }
-
           return response;
         })
         .catch(() =>
@@ -148,11 +151,10 @@ self.addEventListener('fetch', (event) => {
           )
         )
     );
-
     return;
   }
 
-  // الصور والخطوط: الكاش أولاً لتحسين السرعة
+  // الصور والخطوط: الكاش أولاً
   if (
     request.destination === 'image' ||
     request.destination === 'font' ||
@@ -166,20 +168,17 @@ self.addEventListener('fetch', (event) => {
               if (response && (response.status === 200 || response.type === 'opaque')) {
                 cache.put(request, response.clone()).catch(() => {});
               }
-
               return response;
             })
             .catch(() => cached);
-
           return cached || networkFetch;
         })
       )
     );
-
     return;
   }
 
-  // JavaScript وCSS: الشبكة أولاً حتى تصل إصلاحات الإشعارات فوراً
+  // JavaScript وCSS: الشبكة أولاً
   if (
     request.destination === 'script' ||
     request.destination === 'style' ||
@@ -194,16 +193,14 @@ self.addEventListener('fetch', (event) => {
               cache.put(request, copy).catch(() => {});
             });
           }
-
           return response;
         })
         .catch(() => caches.match(request))
     );
-
     return;
   }
 
-  // باقي الملفات: الشبكة أولاً مع استخدام الكاش عند انقطاع الإنترنت
+  // باقي الملفات
   event.respondWith(
     fetch(request)
       .then((response) => {
@@ -213,7 +210,6 @@ self.addEventListener('fetch', (event) => {
             cache.put(request, copy).catch(() => {});
           });
         }
-
         return response;
       })
       .catch(() => caches.match(request))
@@ -229,21 +225,13 @@ self.addEventListener('message', (event) => {
   }
 
   if (data.type === 'GET_VERSION') {
-    const payload = {
-      type: 'SW_VERSION',
-      version: SW_VERSION
-    };
+    const payload = { type: 'SW_VERSION', version: SW_VERSION };
 
     if (event.ports && event.ports[0]) {
-      try {
-        event.ports[0].postMessage(payload);
-      } catch (e) {}
+      try { event.ports[0].postMessage(payload); } catch (e) {}
     } else if (event.source && event.source.postMessage) {
-      try {
-        event.source.postMessage(payload);
-      } catch (e) {}
+      try { event.source.postMessage(payload); } catch (e) {}
     }
-
     return;
   }
 
@@ -255,8 +243,7 @@ self.addEventListener('message', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  let targetUrl =
-    (event.notification.data && event.notification.data.url) || './';
+  let targetUrl = (event.notification.data && event.notification.data.url) || './';
 
   try {
     targetUrl = new URL(targetUrl, self.location.origin).href;
@@ -265,28 +252,22 @@ self.addEventListener('notificationclick', (event) => {
   }
 
   event.waitUntil(
-    self.clients.matchAll({
-      type: 'window',
-      includeUncontrolled: true
-    }).then((clientList) => {
-      for (const client of clientList) {
-        try {
-          const current = new URL(client.url);
-          const target = new URL(targetUrl);
-
-          if (
-            current.origin === target.origin &&
-            current.pathname === target.pathname &&
-            'focus' in client
-          ) {
-            return client.focus();
-          }
-        } catch (e) {}
-      }
-
-      if (self.clients.openWindow) {
-        return self.clients.openWindow(targetUrl);
-      }
-    })
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          try {
+            const current = new URL(client.url);
+            const target = new URL(targetUrl);
+            if (current.origin === target.origin &&
+                current.pathname === target.pathname &&
+                'focus' in client) {
+              return client.focus();
+            }
+          } catch (e) {}
+        }
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(targetUrl);
+        }
+      })
   );
 });
