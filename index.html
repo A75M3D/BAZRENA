@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<script src= "js/redirect-to-download.js"></script>
-        <script>
+<script src="js/redirect-to-download.js"></script>
+<script>
 (function() {
   try {
     var seen = localStorage.getItem('branzar_onboarding_seen');
@@ -14,9 +14,8 @@
     }
   } catch(e) {}
 })();
-  </script> 
-       
-      
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#FF7A00">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -288,7 +287,6 @@ body.theme-dark .currency-badge {
   100% { opacity: 0; }
 }
 
-/* Logo Reveal */
 .bzr-logo-reveal {
   position: fixed;
   inset: 0;
@@ -383,7 +381,6 @@ body.theme-dark .currency-badge {
   100% { transform: scale(2.2); opacity: 0; }
 }
 
-/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .bzr-ignite-overlay::before,
   .bzr-ignite-overlay::after,
@@ -1115,8 +1112,6 @@ body.theme-dark .currency-badge {
 
 <!-- ═══════════════════════════════════════════════════════════════
      🔥 CINEMATIC IGNITION SCRIPT — 5s Sequence
-     Runs on every visit (new & returning) after splash appears.
-     Blocks nothing — overlays cover splash & content, then fade.
      ═══════════════════════════════════════════════════════════════ -->
 <script>
 (function () {
@@ -1130,7 +1125,6 @@ body.theme-dark .currency-badge {
 
     if (!igniteOverlay || !igniteFlash || !logoReveal) return;
 
-    // Reduced motion: quick cross-fade, skip cinematic
     if (reducedMotion) {
       if (splash) {
         setTimeout(function () {
@@ -1143,12 +1137,6 @@ body.theme-dark .currency-badge {
       return;
     }
 
-    // ══════════════════════════════════════════════════════
-    // Cinematic sequence — total 5000ms
-    // Splash → Orange Burst → Peak Flash → Logo Reveal → Content
-    // ══════════════════════════════════════════════════════
-
-    // 300ms — Ignition overlay starts + splash begins to fade behind it
     setTimeout(function () {
       igniteOverlay.classList.add('active');
       if (splash) {
@@ -1157,17 +1145,14 @@ body.theme-dark .currency-badge {
       }
     }, 300);
 
-    // 600ms — Peak white flash
     setTimeout(function () {
       igniteFlash.classList.add('active');
     }, 600);
 
-    // 1100ms — Logo reveal with cinematic glow
     setTimeout(function () {
       logoReveal.classList.add('active');
     }, 1100);
 
-    // 2800ms — Splash fully hidden
     setTimeout(function () {
       if (splash) {
         splash.style.opacity = '0';
@@ -1175,18 +1160,15 @@ body.theme-dark .currency-badge {
       }
     }, 2800);
 
-    // 3500ms — Ignition + flash begin fading out
     setTimeout(function () {
       igniteOverlay.classList.remove('active');
       igniteFlash.classList.remove('active');
     }, 3500);
 
-    // 4200ms — Logo reveal starts fading
     setTimeout(function () {
       logoReveal.classList.remove('active');
     }, 4200);
 
-    // 5000ms — Cleanup: remove splash & hide reveal
     setTimeout(function () {
       if (splash && splash.parentNode) splash.remove();
       logoReveal.style.display = 'none';
@@ -1195,7 +1177,6 @@ body.theme-dark .currency-badge {
     }, 5000);
 
   } catch (e) {
-    // Safety: if anything fails, ensure splash doesn't block the UI
     try {
       var s = document.getElementById('bzrSplash');
       if (s) { s.style.opacity = '0'; s.style.pointerEvents = 'none'; setTimeout(function(){ if(s.parentNode) s.remove(); }, 400); }
@@ -1206,15 +1187,15 @@ body.theme-dark .currency-badge {
 
 <!-- ═══════════════════════════════════════════════════════════════
      🔥 Firebase & Core Scripts
+     ✅ v9.15.0: Dexie محلي (بدون CDN) + حذف store-limits.js (404)
      ═══════════════════════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js" crossorigin="anonymous"></script>
 
- <script src="https://unpkg.com/dexie@4.0.1/dist/dexie.min.js"></script>
+<script src="js/dexie.min.js"></script>
 <script src="js/core.js" defer></script>
-<script src="js/store-limits.js" defer></script>
 <script src="js/data.js" defer></script>
 <script src="js/ui.js" defer></script>
 <script src="js/app.js" defer></script>
