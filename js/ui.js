@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.12.0 — ui.js
+   BranZar v9.15.0 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
-   ✅ Material SVG icons — native createElementNS
-   ✅ Store cards: follow button + share button
-   ✅ Multi-Currency (SDG/USD) — per-product currency, cart mixing
-   ✅ SDG is the default currency symbol (was "ج.س")
+   ✅ v9.15.0: renderProductsBatch supports prepend + dedup
+                - buildProductCard adds data-product-id
+                - refreshProductsBtn clears Dexie too
+   ✅ v9.12.0: SDG default currency + legacy "ج.س" auto-migration
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -36,14 +36,9 @@ window.bzrSetIcon = bzrSetIcon;
 
 /* ═══════════════════════════════════════════════════════════════
    💱 Currency Resolution (multi-currency — SDG default)
-   - Products carry only the SYMBOL in `currency` field ("SDG" | "USD")
-   - Legacy products with "ج.س" symbol are auto-migrated to "SDG"
-   - Legacy products without `currency` → fall back to store's currency
-     (looked up by store_name) → else default SDG
    ═══════════════════════════════════════════════════════════════ */
 var _BZR_FALLBACK_CURRENCY = { code: 'SDG', name: 'جنيه سوداني', symbol: 'SDG', flag: '🇸🇩' };
 
-/* 🔄 Legacy symbol aliases → canonical currency code */
 var _BZR_LEGACY_SYMBOLS = {
   'ج.س': 'SDG',
   'ج.س.': 'SDG',
@@ -55,12 +50,10 @@ var _BZR_LEGACY_SYMBOLS = {
   'USD': 'USD'
 };
 
-/* 🔄 Convert legacy symbols to canonical ones ("ج.س" → "SDG") */
 function bzrNormalizeCurrencySymbol(sym) {
   if (!sym) return null;
   var s = String(sym).trim();
   if (_BZR_LEGACY_SYMBOLS[s]) return _BZR_LEGACY_SYMBOLS[s];
-  // also try lowercase match
   var lower = s.toLowerCase();
   for (var k in _BZR_LEGACY_SYMBOLS) {
     if (_BZR_LEGACY_SYMBOLS.hasOwnProperty(k) && k.toLowerCase() === lower) {
@@ -75,27 +68,22 @@ function bzrResolveProductCurrency(product) {
 
   if (!product) return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY] || _BZR_FALLBACK_CURRENCY;
 
-  // 1) Explicit per-product currency (symbol snapshot)
   if (product.currency) {
     var rawSymbol = String(product.currency).trim();
-    // 🔄 Normalize legacy symbols ("ج.س" → "SDG")
     var normalized = bzrNormalizeCurrencySymbol(rawSymbol);
     var found = (typeof window.bzrGetCurrencyBySymbol === 'function')
       ? window.bzrGetCurrencyBySymbol(normalized)
       : null;
     if (found) return found;
 
-    // Fallback: try the raw symbol directly (in case it's some other recognized currency)
     var foundRaw = (typeof window.bzrGetCurrencyBySymbol === 'function')
       ? window.bzrGetCurrencyBySymbol(rawSymbol)
       : null;
     if (foundRaw) return foundRaw;
 
-    // Unknown symbol — preserve as-is
     return { code: normalized, name: normalized, symbol: normalized, flag: '💱' };
   }
 
-  // 2) Legacy: use store's current currency if we know the store
   try {
     if (product.store_name && typeof stores !== 'undefined' && Array.isArray(stores)) {
       var store = stores.find(function (s) { return s && s.name === product.store_name; });
@@ -105,12 +93,10 @@ function bzrResolveProductCurrency(product) {
     }
   } catch (e) { /* ignore */ }
 
-  // 3) Default
   return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY] || _BZR_FALLBACK_CURRENCY;
 }
 
 function bzrSafeFormatPrice(price, currencySymbol) {
-  // 🔄 Normalize legacy symbols before formatting
   var sym = bzrNormalizeCurrencySymbol(currencySymbol) || _BZR_FALLBACK_CURRENCY.symbol;
   if (typeof window.bzrFormatPrice === 'function') {
     return window.bzrFormatPrice(price, sym);
@@ -119,16 +105,11 @@ function bzrSafeFormatPrice(price, currencySymbol) {
   return p.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' ' + sym;
 }
 
-// expose (optional external use)
 window.bzrResolveProductCurrency = bzrResolveProductCurrency;
 window.bzrSafeFormatPrice = bzrSafeFormatPrice;
 window.bzrNormalizeCurrencySymbol = bzrNormalizeCurrencySymbol;
 
-/* ═══════════════════════════════════════════════════════════════
-   🔄 CART MIGRATION — convert legacy "ج.س" → "SDG" on load
-   (defensive duplicate of the migration already in index.html —
-    ensures compatibility if ui.js is loaded standalone)
-   ═══════════════════════════════════════════════════════════════ */
+/* Cart migration */
 (function migrateLegacyCartCurrencies() {
   try {
     var key = (typeof KEYS !== 'undefined' && KEYS.CART) ? KEYS.CART : 'branzar_cart';
@@ -351,9 +332,7 @@ createStoreModal?.addEventListener('click', (e) => {
 });
 document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
-/* ═══════════════════════════════════════════════════════════════
-   🆕 زر مشاركة التطبيق من نافذة الحساب
-   ═══════════════════════════════════════════════════════════════ */
+/* Share App Button */
 document.getElementById('accountShareAppBtn')?.addEventListener('click', async () => {
   haptic('medium');
   const shareData = {
@@ -382,9 +361,7 @@ document.getElementById('accountShareAppBtn')?.addEventListener('click', async (
   } catch (e) { showToast('تعذر نسخ الرابط'); }
 });
 
-/* ═══════════════════════════════════════════════════════════
-   📱 PWA INSTALL
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ PWA INSTALL ═══ */
 let deferredPrompt = null;
 const INSTALL_DISMISS_KEY = 'branzar_install_dismissed_v2';
 const INSTALL_DISMISS_DAYS = 3;
@@ -520,7 +497,6 @@ if (isStandaloneMode()) {
 
 /* ═══ NOTIFICATIONS (FCM) ═══ */
 let messaging = null;
-
 const NOTIF_PROMPT_KEY = 'branzarNotifPromptShownAt';
 const NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
 const NOTIF_DELAY_DAYS = 7;
@@ -782,7 +758,6 @@ function createSearchProductRow(product) {
   nm.textContent = product.name || '';
   const meta = document.createElement('div');
   meta.style.cssText = 'font-size:0.72rem;color:#FF7A00;margin-top:2px;font-weight:800;';
-  /* 💱 currency-aware price */
   const _pCurr = bzrResolveProductCurrency(product);
   meta.textContent = bzrSafeFormatPrice(parseFloat(product.price) || 0, _pCurr.symbol);
   info.appendChild(nm); info.appendChild(meta);
@@ -815,9 +790,7 @@ function goToCategory(cat) {
   if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🏪 RENDER STORES — بطاقة المتجر: زر متابعة + زر مشاركة
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ RENDER STORES ═══ */
 function displayStores() {
   const c = document.getElementById('storesScrollContainer');
   c.innerHTML = '';
@@ -1474,8 +1447,10 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     btn.disabled = false;
   }
 });
-
-/* 🎨 بطاقة المنتج — multi-currency aware */
+/* ═══════════════════════════════════════════════════════════
+   🎨 بطاقة المنتج — multi-currency aware + data-product-id
+   ✅ v9.15.0: إضافة data-product-id لمنع التكرار في onSnapshot
+   ═══════════════════════════════════════════════════════════ */
 function buildProductCard(product, showStoreName) {
   const price = parseFloat(product.price) || 0;
   const fav = isProductFav(product.id);
@@ -1489,11 +1464,15 @@ function buildProductCard(product, showStoreName) {
     description: product.description || '',
     colors: product.colors || null,
     category: product.category || null,
-    currency: bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol   // 🆕 snapshot for modal & cart
+    currency: bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol
   };
 
   const card = document.createElement('div');
   card.className = 'store-product-card';
+  // 🆕 v9.15.0: data-product-id for dedup in prepend mode
+  if (product.id) {
+    card.setAttribute('data-product-id', String(product.id));
+  }
 
   const favBtn = document.createElement('button');
   favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
@@ -1538,7 +1517,6 @@ function buildProductCard(product, showStoreName) {
     info.appendChild(storeEl);
   }
 
-  /* 💱 price with product's currency */
   const priceEl = document.createElement('div');
   priceEl.className = 'store-product-price';
   priceEl.textContent = bzrSafeFormatPrice(price, _pCurr.symbol);
@@ -1560,24 +1538,74 @@ function buildProductCard(product, showStoreName) {
   return card;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   🎯 renderProductsBatch — v9.15.0
+   Modes:
+     false / 'replace'  → clear grid, then add (fresh render)
+     true  / 'prepend'  → add at top (new products from onSnapshot)
+     undefined / 'append' → add at end (pagination / load more)
+   Dedup: skips products whose data-product-id already exists in grid
+   ═══════════════════════════════════════════════════════════ */
+function renderProductsBatch(products, mode) {
+  const grid = document.getElementById('allProductsGrid');
+  if (!grid) return;
+  if (!Array.isArray(products) || products.length === 0) return;
+
+  // Determine operation
+  let operation = 'append';
+  if (mode === false || mode === 'replace') {
+    operation = 'replace';
+  } else if (mode === true || mode === 'prepend') {
+    operation = 'prepend';
+  } else if (mode === 'append') {
+    operation = 'append';
+  } else {
+    // mode === undefined → auto-detect
+    operation = grid.children.length > 0 ? 'append' : 'replace';
+  }
+
+  // Replace: clear grid first
+  if (operation === 'replace') {
+    grid.innerHTML = '';
+  }
+
+  // Build dedup set from existing DOM
+  const existingIds = new Set();
+  if (operation !== 'replace') {
+    grid.querySelectorAll('[data-product-id]').forEach((el) => {
+      existingIds.add(el.getAttribute('data-product-id'));
+    });
+  }
+
+  // Build fragment with dedup
+  const frag = document.createDocumentFragment();
+  const addedIds = new Set();
+  let addedCount = 0;
+
+  products.forEach((product) => {
+    const id = product && product.id ? String(product.id) : null;
+    if (id) {
+      if (existingIds.has(id) || addedIds.has(id)) return; // dedup
+      addedIds.add(id);
+    }
+    frag.appendChild(buildProductCard(product, true));
+    addedCount++;
+  });
+
+  if (addedCount === 0) return; // nothing to add
+
+  if (operation === 'prepend') {
+    grid.insertBefore(frag, grid.firstChild);
+  } else {
+    grid.appendChild(frag);
+  }
+}
+
 function renderStoreProducts(products, append) {
   const grid = document.getElementById('storeProductsGrid');
   if (!append) grid.innerHTML = '';
   const frag = document.createDocumentFragment();
   products.forEach(product => frag.appendChild(buildProductCard(product, false)));
-  grid.appendChild(frag);
-}
-
-function renderProductsBatch(products, append) {
-  const grid = document.getElementById('allProductsGrid');
-  if (!grid) return;
-  if (!Array.isArray(products) || products.length === 0) return;
-  if (typeof append !== 'boolean') {
-    append = Array.isArray(allProductsLocal) && allProductsLocal.length > products.length;
-  }
-  if (!append) grid.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  products.forEach(product => frag.appendChild(buildProductCard(product, true)));
   grid.appendChild(frag);
 }
 
@@ -1594,7 +1622,6 @@ function openProductModal(product) {
   document.getElementById('productModalName').textContent = product.name;
   document.getElementById('productModalStore').textContent = product.store_name || 'غير محدد';
 
-  /* 💱 resolve product currency once */
   const _pCurr = bzrResolveProductCurrency(product);
 
   document.getElementById('productModalPrice').textContent =
@@ -1702,7 +1729,6 @@ function updateModalActionButtons() {
     p.selectedColor = selectedColorVariant.name;
     p.img_url = selectedColorVariant.image || currentModalProduct.img_url;
   }
-  /* 🆕 normalize currency before snapshotting — used at cart-add time */
   const _c = bzrResolveProductCurrency(p);
   p.currency = bzrNormalizeCurrencySymbol(p.currency) || _c.symbol;
   document.getElementById('addToCartFromModal').dataset.product = JSON.stringify(p);
@@ -1736,7 +1762,6 @@ document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
   if (!wa) { showToast('رقم الواتساب غير متوفر'); return; }
   haptic('medium');
 
-  /* 💱 currency-aware message */
   const _pCurr = bzrResolveProductCurrency(p);
   const priceStr = bzrSafeFormatPrice(p.price || 0, _pCurr.symbol);
 
@@ -1752,14 +1777,13 @@ function addToCart(product) {
   const store = stores.find(s => s.name === product.store_name);
   const cartItemId = product.selectedColor ? product.id + '_' + product.selectedColor : product.id;
 
-  /* 💱 snapshot the resolved & normalized currency symbol on the cart item */
   const _pCurr = bzrResolveProductCurrency(product);
   const finalSymbol = bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol;
 
   const item = {
     ...product,
     cartItemId,
-    currency: finalSymbol,   // 🆕 always canonical ("SDG" or "USD")
+    currency: finalSymbol,
     quantity: 1,
     store_whatsapp: store?.whatsapp_number || ''
   };
@@ -1803,7 +1827,6 @@ function updateCartUI() {
   } else {
     const frag = document.createDocumentFragment();
     cart.forEach(item => {
-      /* 💱 per-item currency — normalize legacy "ج.س" → "SDG" on the fly */
       const normalizedSymbol = bzrNormalizeCurrencySymbol(item.currency) || _BZR_FALLBACK_CURRENCY.symbol;
       const itemCurr = (window.bzrGetCurrencyBySymbol
         ? (window.bzrGetCurrencyBySymbol(normalizedSymbol) || { symbol: normalizedSymbol })
@@ -1841,9 +1864,7 @@ function updateCartUI() {
     items.querySelectorAll('.remove-btn').forEach(b => b.onclick = () => { haptic('light'); removeFromCart(b.dataset.id); });
   }
 
-  /* 💱 grand total (currency-aware, mixed currencies supported) */
   if (typeof window.bzrRenderCartTotals === 'function') {
-    // Normalize currency symbols before rendering to avoid legacy "ج.س" totals
     const normalizedCart = cart.map(i => ({
       ...i,
       currency: bzrNormalizeCurrencySymbol(i.currency) || _BZR_FALLBACK_CURRENCY.symbol
@@ -1902,7 +1923,6 @@ document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   });
   msg += '━━━━━━━━━━━━━━\n';
 
-  /* 💱 grand total across currencies — normalize legacy symbols */
   let totalStr;
   if (typeof window.bzrComputeCartTotals === 'function' && typeof window.bzrFormatCartTotals === 'function') {
     const normalizedCart = cart.map(i => ({
@@ -2088,7 +2108,10 @@ if ('serviceWorker' in navigator) {
 }
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
 
-/* ═══ MANUAL REFRESH BUTTON ═══ */
+/* ═══════════════════════════════════════════════════════════
+   🔄 زر التحديث اليدوي — v9.15.0
+   ✅ يمسح Dexie + localStorage قبل إعادة الجلب
+   ═══════════════════════════════════════════════════════════ */
 document.getElementById('refreshProductsBtn')?.addEventListener('click', async (e) => {
   const btn = e.currentTarget;
   const svgIcon = btn.querySelector('svg');
@@ -2097,15 +2120,28 @@ document.getElementById('refreshProductsBtn')?.addEventListener('click', async (
   if (svgIcon) svgIcon.classList.add('mi-spin');
   haptic('light');
   try {
+    // مسح localStorage cache
     cacheManager.remove('all_products_page1');
     cacheManager.remove('stores_list');
+
+    // مسح IndexedDB (Dexie) — إن كانت الدوال متاحة
+    if (typeof dexieClearProducts === 'function') await dexieClearProducts();
+    if (typeof dexieClearStores === 'function') await dexieClearStores();
+
+    // إعادة الجلب القسري
     await Promise.all([loadStores(true), loadAllProducts(true)]);
+
     showToast('✅ تم تحديث البيانات');
-  } catch(err) { showToast('تعذر التحديث، حاول مرة أخرى'); }
-  finally { if (svgIcon) svgIcon.classList.remove('mi-spin'); btn.disabled = false; }
+  } catch(err) {
+    console.warn('[BZR] refreshProductsBtn failed:', err);
+    showToast('تعذر التحديث، حاول مرة أخرى');
+  } finally {
+    if (svgIcon) svgIcon.classList.remove('mi-spin');
+    btn.disabled = false;
+  }
 });
 
-/* --- إصلاح زر البحث وإضافة أيقونة الحساب العلوية --- */
+/* ═══ Search button + Account button ═══ */
 document.addEventListener('DOMContentLoaded', () => {
   const searchBtn = document.getElementById('openSearchBtn');
   const searchOverlay = document.getElementById('bzrSearchOverlay');
@@ -2144,4 +2180,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.12.0 — SDG default currency + legacy "ج.س" auto-migration');
+console.log('[BZR] ui.js loaded ✅ v9.15.0 — renderProductsBatch (prepend + dedup) + data-product-id');
