@@ -1,10 +1,13 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.10.0 — data.js
-   Layer 2: Data Loading + Follow System + Polling + Deep Link
-   ✅ Cache-first stores loading
-   ✅ Firebase listener for newest stores only
-   ✅ Original stores sorting (followers desc, then newest)
-   ✅ Elegant new-store toast with store name
+   BranZar v9.14.0 — data.js
+   Layer 2: Data Loading + Follow System + SMART Stores + Deep Link
+
+   🧠 Smart Stores Strategy:
+     - المتاجر القديمة في IndexedDB (Dexie) — لا تُقرأ من Firestore
+     - أحدث 10 متاجر تُراقب عبر onSnapshot (live)
+     - أول تثبيت: جلب 100 متجر مرة واحدة
+     - فتح عادي: 10 قراءات فقط
+     - متجر جديد: 1 قراءة + ظهور فوري
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -33,10 +36,17 @@ const SUPPORT_MESSAGES = Object.freeze({
   subscribe: 'السلام عليكم ورحمة الله 👋\nأرغب بالاشتراك في إحدى باقات BranZar.\nأرجو موافاتي بالتفاصيل والأسعار.\nشكراً لكم 🌸'
 });
 
-/* ═══ STORES: CACHE-FIRST + NEW STORES LISTENER ═══ */
-const NEW_STORES_CHECK_LIMIT = 10;
-let storesChangesUnsubscribe = null;
+/* ═══════════════════════════════════════════════════════════
+   🏪 SMART STORES SYSTEM (v9.14.0)
+   ═══════════════════════════════════════════════════════════ */
+const LIVE_WINDOW = 10;
+const INITIAL_FETCH_LIMIT = 100;
 
+let storesLiveUnsubscribe = null;
+let _storesFirstSyncDone = false;
+let _isLoadingStores = false;
+
+/* ─── إعادة بناء الفئات من المتاجر ─── */
 function rebuildStoreCategories() {
   const cats = [];
 
@@ -51,7 +61,7 @@ function rebuildStoreCategories() {
   displayCategories();
 }
 
-/* الترتيب الأصلي: الأكثر متابعة أولاً، ثم الأحدث إنشاءً */
+/* ─── الترتيب الأصلي (محفوظ كما هو) ─── */
 function sortStoresLikeOriginal(list) {
   return list.slice().sort((a, b) => {
     const followersA = Number(b.followers) || 0;
@@ -66,6 +76,7 @@ function sortStoresLikeOriginal(list) {
   });
 }
 
+/* ─── رسم من الذاكرة ─── */
 function renderStoresFromMemory() {
   const empty = document.getElementById('storesEmpty');
   const errorMessage = document.getElementById('storesErrorMessage');
@@ -76,7 +87,6 @@ function renderStoresFromMemory() {
     if (errorMessage) {
       errorMessage.textContent = '⚠️ لا توجد متاجر متاحة حالياً';
     }
-
     empty?.classList.remove('hidden');
     renderFollowedStores();
     return;
@@ -89,159 +99,179 @@ function renderStoresFromMemory() {
   localStorage.setItem(KEYS.VISITED, 'true');
 }
 
-function mergeLatestStores(latestStores) {
-  const result = { hasNew: false, newStores: [] };
-
-  if (!Array.isArray(latestStores) || !latestStores.length) {
-    return result;
-  }
-
-  const existingById = new Map(
-    stores.map((store) => [String(getStoreId(store)), store])
-  );
-
-  const previousIds = new Set(existingById.keys());
-
-  latestStores.forEach((freshStore) => {
-    const id = String(getStoreId(freshStore));
-
-    if (!previousIds.has(id)) {
-      result.newStores.push(freshStore);
-    }
-
-    existingById.set(id, {
-      ...(existingById.get(id) || {}),
-      ...freshStore
-    });
-  });
-
-  // إعادة الترتيب الأصلي الكامل (المتابعون ثم الأحدث)
-  stores = sortStoresLikeOriginal(Array.from(existingById.values()));
-
-  cacheManager.set(
-    'stores_list',
-    stores,
-    CONFIG.CACHE_TTL_STORES
-  );
-
-  result.hasNew = result.newStores.length > 0;
-  return result;
-}
-
-function startStoresChangesListener() {
-  if (storesChangesUnsubscribe) return;
-
-  try {
-    storesChangesUnsubscribe = db.collection('stores')
-      .orderBy('created_at', 'desc')
-      .limit(NEW_STORES_CHECK_LIMIT)
-      .onSnapshot((snapshot) => {
-        const latestStores = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-
-        const { hasNew, newStores } = mergeLatestStores(latestStores);
-
-        // لا نعيد الرسم عند أول اتصال إلا إذا وُجد متجر جديد فعلاً.
-        if (hasNew) {
-          renderStoresFromMemory();
-
-          const names = newStores
-            .map((store) => (store && store.name ? String(store.name).trim() : ''))
-            .filter(Boolean);
-
-          if (names.length === 1) {
-            showNewStoreToast(names[0]);
-          } else if (names.length > 1) {
-            showNewStoreToast(names.slice(0, 3).join(' • '));
-          } else {
-            showNewStoreToast('');
-          }
-        }
-      }, (error) => {
-        console.warn('[BZR] New stores listener failed:', error);
-      });
-  } catch (error) {
-    console.warn('[BZR] Cannot start stores listener:', error);
-  }
-}
-
+/* ═══════════════════════════════════════════════════════════
+   🚀 loadStores — نقطة الدخول الرئيسية
+   ═══════════════════════════════════════════════════════════ */
 async function loadStores() {
+  if (_isLoadingStores) return;
+  _isLoadingStores = true;
+
   const loader = document.getElementById('storesLoader');
   const empty = document.getElementById('storesEmpty');
-  const container = document.getElementById('storesScrollContainer');
 
   loader?.classList.remove('hidden');
   empty?.classList.add('hidden');
 
   try {
-    const cachedStores = cacheManager.get('stores_list');
+    // 1. اقرأ من IndexedDB — فوري بدون شبكة
+    const local = await dexieGetAllStores();
 
-    if (Array.isArray(cachedStores) && cachedStores.length) {
-      // عرض المتاجر القديمة فوراً من الكاش.
-      stores = cachedStores;
+    if (local && local.length > 0) {
+      stores = sortStoresLikeOriginal(local);
       renderStoresFromMemory();
-
-      // مراقبة أحدث 10 متاجر فقط في Firebase.
-      startStoresChangesListener();
-      return;
+      console.log('[BZR] ⚡ Instant render:', local.length, 'stores from IDB (0 reads)');
+      loader?.classList.add('hidden');
     }
 
-    // أول تشغيل فقط: لا يوجد كاش، لذلك نجلب أول 30 متجراً.
-    let snapshot;
+    // 2. إذا كانت IDB فارغة (أول تثبيت): اجلب دفعة أولية
+    if (!local || local.length === 0) {
+      await fetchInitialStores();
+    }
 
+    // 3. ابدأ المستمع الحي لأحدث 10
+    startStoresLiveListener();
+  } catch (error) {
+    console.error('[BZR] loadStores failed:', error);
+    const errorMessage = document.getElementById('storesErrorMessage');
+    if (errorMessage) {
+      errorMessage.textContent = '⚠️ تعذر تحميل المتاجر — تحقق من الاتصال';
+    }
+    empty?.classList.remove('hidden');
+  } finally {
+    loader?.classList.add('hidden');
+    _isLoadingStores = false;
+  }
+}
+
+/* ─── جلب أولي (مرة واحدة عند أول تثبيت) ─── */
+async function fetchInitialStores() {
+  try {
+    let snapshot;
     try {
       snapshot = await db.collection('stores')
         .orderBy('created_at', 'desc')
-        .limit(30)
+        .limit(INITIAL_FETCH_LIMIT)
         .get();
-    } catch (error) {
-      console.warn('[BZR] Ordered stores query failed:', error);
+    } catch (orderedError) {
+      // fallback: بدون orderBy (لو created_at غير مفهرس)
+      console.warn('[BZR] Ordered initial fetch failed, using fallback:', orderedError);
       snapshot = await db.collection('stores')
-        .limit(30)
+        .limit(INITIAL_FETCH_LIMIT)
         .get();
     }
 
-    stores = snapshot.docs.map((doc) => ({
+    const initial = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
 
-    // الحفاظ على ترتيب التطبيق الأصلي عند أول تحميل.
-    stores = sortStoresLikeOriginal(stores);
+    await dexieBulkUpsertStores(initial);
+    await dexieSetMeta('stores_lastInitialFetch', Date.now());
 
-    cacheManager.set(
-      'stores_list',
-      stores,
-      CONFIG.CACHE_TTL_STORES
-    );
-
+    stores = sortStoresLikeOriginal(initial);
     renderStoresFromMemory();
-    startStoresChangesListener();
+
+    console.log('[BZR] 📥 Initial fetch:', initial.length, 'stores (one-time)');
   } catch (error) {
-    console.error('[BZR] Stores loading failed:', error);
-
-    const errorMessage = document.getElementById('storesErrorMessage');
-    if (errorMessage) {
-      errorMessage.textContent =
-        '⚠️ تعذر تحميل المتاجر — تحقق من الاتصال وحاول مجدداً';
-    }
-
-    empty?.classList.remove('hidden');
-  } finally {
-    loader?.classList.add('hidden');
+    console.warn('[BZR] fetchInitialStores failed:', error);
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   🔴 LIVE LISTENER — أحدث 10 متاجر
+   ═══════════════════════════════════════════════════════════ */
+function startStoresLiveListener() {
+  if (storesLiveUnsubscribe) return;
+
+  try {
+    storesLiveUnsubscribe = db.collection('stores')
+      .orderBy('created_at', 'desc')
+      .limit(LIVE_WINDOW)
+      .onSnapshot(
+        { includeMetadataChanges: false },
+        async (snapshot) => {
+          const isFirstSync = !_storesFirstSyncDone;
+          const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+          // 1. اكتشف الجديد الحقيقي (ليس موجوداً في Dexie)
+          let added = [];
+          if (!isFirstSync) {
+            for (const c of snapshot.docChanges()) {
+              if (c.type === 'added') {
+                let exists = false;
+                if (bzrDB) {
+                  try {
+                    const row = await bzrDB.stores.get(c.doc.id);
+                    exists = !!row;
+                  } catch (e) {}
+                }
+                if (!exists) {
+                  added.push({ id: c.doc.id, ...c.doc.data() });
+                }
+              }
+            }
+          }
+
+          // 2. حدّث Dexie (bulkPut — لا تكرار)
+          await dexieBulkUpsertStores(docs);
+
+          // 3. اقرأ كل المتاجر من Dexie (المصدر الموثوق)
+          let all = await dexieGetAllStores();
+
+          // 4. إذا فشلت Dexie: استخدم snapshot كـ fallback
+          if (!all || !all.length) {
+            all = docs;
+          }
+
+          stores = sortStoresLikeOriginal(all);
+
+          // 5. ارسم
+          if (!isFirstSync || stores.length > 0) {
+            renderStoresFromMemory();
+          }
+
+          // 6. toast للمتاجر الجديدة الحقيقية فقط
+          if (!isFirstSync && added.length > 0) {
+            const names = added.map(s => s.name).filter(Boolean);
+            if (names.length === 1) showNewStoreToast(names[0]);
+            else if (names.length > 1) showNewStoreToast(names.slice(0, 3).join(' • '));
+            else showNewStoreToast('');
+            console.log('[BZR] 🆕 Truly new stores:', added.length);
+          }
+
+          if (isFirstSync) {
+            _storesFirstSyncDone = true;
+            console.log('[BZR] Live listener: first sync done (' + docs.length + ' watched)');
+          }
+        },
+        (error) => {
+          console.warn('[BZR] Stores listener error:', error);
+          storesLiveUnsubscribe = null;
+          setTimeout(() => {
+            if (!storesLiveUnsubscribe) startStoresLiveListener();
+          }, 5000);
+        }
+      );
+  } catch (error) {
+    console.warn('[BZR] Cannot start stores listener:', error);
+    storesLiveUnsubscribe = null;
+  }
+}
+
+/* ─── زر retry ─── */
 document.getElementById('retryStoresBtn')?.addEventListener('click', () => {
-  // إعادة المحاولة لا تعيد تحميل كل المتاجر؛ تعيد تشغيل مراقبة الجديد فقط.
-  startStoresChangesListener();
+  if (storesLiveUnsubscribe) {
+    try { storesLiveUnsubscribe(); } catch(e){}
+    storesLiveUnsubscribe = null;
+  }
+  _storesFirstSyncDone = false;
+  loadStores();
 });
 
-/* ═══ NEW STORE TOAST (أنيق) ═══ */
+/* ═══════════════════════════════════════════════════════════
+   🎉 NEW STORE TOAST
+   ═══════════════════════════════════════════════════════════ */
 function showNewStoreToast(storeName) {
-  // إزالة أي إشعار سابق
   document.getElementById('bzrNewStoreToast')?.remove();
 
   if (!document.getElementById('bzrNewStoreToastStyles')) {
@@ -371,7 +401,6 @@ function showNewStoreToast(storeName) {
   toast.appendChild(body);
   document.body.appendChild(toast);
 
-  // نقرة لإغلاق فوري
   toast.addEventListener('click', () => {
     toast.classList.add('hide');
     setTimeout(() => toast.remove(), 380);
@@ -384,7 +413,9 @@ function showNewStoreToast(storeName) {
   }, 4200);
 }
 
-/* ═══ PRODUCTS ═══ */
+/* ═══════════════════════════════════════════════════════════
+   📦 PRODUCTS (كما هو — بدون تغيير)
+   ═══════════════════════════════════════════════════════════ */
 async function loadAllProducts(force) {
   if (isLoadingProducts) return;
 
@@ -584,7 +615,6 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
     if (!silent) {
       document.getElementById('allProductsGrid').innerHTML = '';
     }
-
     document.getElementById('allProductsEmpty').classList.remove('hidden');
     document.getElementById('loadMoreProductsBtn').classList.add('hidden');
     hasMoreProducts = false;
@@ -682,42 +712,32 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
   }
 }
 
+/* ─── loadCategories (محدّث ليعتمد على loadStores) ─── */
 async function loadCategories(force) {
-  if (!force && stores && stores.length) {
+  if (force) {
+    await dexieClearStores();
+    cacheManager.remove('stores_list'); // legacy cleanup
+    _storesFirstSyncDone = false;
+    if (storesLiveUnsubscribe) {
+      try { storesLiveUnsubscribe(); } catch(e){}
+      storesLiveUnsubscribe = null;
+    }
+    stores = [];
+    await loadStores();
+    return;
+  }
+
+  if (stores && stores.length) {
     rebuildStoreCategories();
     return;
   }
 
-  try {
-    const storesData = await fetchWithCache(
-      'stores_list',
-      async () => {
-        const snapshot = await db.collection('stores').limit(30).get();
-        return snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-      },
-      force,
-      CONFIG.CACHE_TTL_STORES
-    );
-
-    const cats = [];
-    storesData.forEach((store) => {
-      const category = store.category;
-      if (category && String(category).trim() && !cats.includes(category)) {
-        cats.push(category);
-      }
-    });
-
-    categories = cats;
-    displayCategories();
-  } catch (error) {
-    console.error('[BZR] loadCategories:', error);
-  }
+  await loadStores();
 }
 
-/* ═══ FOLLOW SYSTEM ═══ */
+/* ═══════════════════════════════════════════════════════════
+   👥 FOLLOW SYSTEM (كما هو — بدون تغيير)
+   ═══════════════════════════════════════════════════════════ */
 async function syncFollowedStoresFromServer() {
   try {
     const ok = await ensureAuth();
@@ -851,7 +871,9 @@ async function checkFollowStatusFromServer(storeId) {
   }
 }
 
-/* ═══ POLLING ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ⏱️ POLLING (Products only — Stores are real-time via IDB)
+   ═══════════════════════════════════════════════════════════ */
 function setupRealtimeProducts() {
   if (allProductsUnsubscribe) return;
 
@@ -908,11 +930,12 @@ function setupRealtimeProducts() {
 }
 
 function setupRealtimeStores() {
-  // لا تعيد تحميل كل المتاجر؛ راقب أحدث 10 متاجر فقط.
-  startStoresChangesListener();
+  startStoresLiveListener();
 }
 
-/* ═══ DEEP LINK ═══ */
+/* ═══════════════════════════════════════════════════════════
+   🔗 DEEP LINK (كما هو — بدون تغيير)
+   ═══════════════════════════════════════════════════════════ */
 async function handleDeepLink() {
   try {
     const params = new URLSearchParams(window.location.search);
@@ -970,4 +993,4 @@ function openSupportWhatsApp(context) {
   window.open(url, '_blank', 'noopener,noreferrer');
 }
 
-console.log('[BZR] data.js loaded ✅ v9.10.0 — cache-first stores enabled');
+console.log('[BZR] data.js loaded ✅ v9.14.0 — Smart Stores (IDB + live window)');
