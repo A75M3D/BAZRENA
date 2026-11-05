@@ -1,9 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.12.0 — core.js
-   Layer 1: Config + Utils + Security + Fingerprint + Cache + Firebase + Auth + State
+   BranZar v9.14.0 — core.js
+   Layer 1: Config + Utils + Security + Fingerprint + Cache
+            + Firebase + Dexie (IndexedDB) + Auth + State
+   ✅ v9.14.0: Dexie.js layer — persistent store cache in IndexedDB
+   ✅ v9.13.0: Real-time stores, 10-min cache TTL
    ✅ v9.12.0: SDG default currency (was "ج.س")
-                - bzrNormalizeCurrencySymbol() exposed globally
-                - cart migrated on load: "ج.س" → "SDG"
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -17,10 +18,10 @@ const CONFIG = Object.freeze({
   SEARCH_CAP: 800,
   SEARCH_DEBOUNCE_MS: 200,
 
-  /* 🆕 v9.10.0: حد وصف المنتج */
   PRODUCT_DESCRIPTION_MAX: 100,
 
-  CACHE_TTL_STORES: 6 * 60 * 60 * 1000,
+  /* كاش المتاجر (أصبح غير مستخدم مع IDB — محفوظ للتوافق) */
+  CACHE_TTL_STORES: 10 * 60 * 1000,
   CACHE_TTL_PRODUCTS: 30 * 60 * 1000,
   CACHE_TTL_CATEGORIES: 30 * 60 * 60 * 1000,
   CACHE_PREFIX: 'branzar_cache_',
@@ -88,35 +89,23 @@ const KEYS = Object.freeze({
 
 const VERIFIED_BADGE_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" aria-hidden="true"><path fill="#1877F2" d="M12 1l2.35 2.05 3.09-.41 1.13 2.92 2.92 1.13-.41 3.09L23 12l-2.05 2.35.41 3.09-2.92 1.13-1.13 2.92-3.09-.41L12 23l-2.35-2.05-3.09.41-1.13-2.92-2.92-1.13.41-3.09L1 12l2.05-2.35-.41-3.09 2.92-1.13 1.13-2.92 3.09.41L12 1z"/><path fill="#fff" d="M10.6 16.2l-3.8-3.8 1.4-1.4 2.4 2.4 6-6 1.4 1.4z"/></svg>';
 
-/* ═══════════════════════════════════════════════════════════
-   💱 Currency Normalization — SDG default
-   - Legacy "ج.س" symbols auto-migrate to "SDG"
-   - Exposed globally so ui.js / data.js / app.js can reuse
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ Currency Normalization ═══ */
 (function initCurrencyNormalizer() {
   'use strict';
   var LEGACY = {
-    'ج.س': 'SDG',
-    'ج.س.': 'SDG',
-    'جنيه': 'SDG',
-    'جنية': 'SDG',
-    'sdg': 'SDG',
-    'usd': 'USD'
+    'ج.س': 'SDG', 'ج.س.': 'SDG', 'جنيه': 'SDG', 'جنية': 'SDG',
+    'sdg': 'SDG', 'usd': 'USD'
   };
-
   function normalize(sym) {
     if (!sym) return null;
     var s = String(sym).trim();
     if (LEGACY[s]) return LEGACY[s];
     var lower = s.toLowerCase();
     for (var k in LEGACY) {
-      if (LEGACY.hasOwnProperty(k) && k.toLowerCase() === lower) {
-        return LEGACY[k];
-      }
+      if (LEGACY.hasOwnProperty(k) && k.toLowerCase() === lower) return LEGACY[k];
     }
     return s;
   }
-
   window.BZR_LEGACY_SYMBOLS = LEGACY;
   window.bzrNormalizeCurrencySymbol = normalize;
 })();
@@ -155,7 +144,6 @@ function optimizeCloudinaryUrl(url) {
   return url.replace('/upload/', '/upload/q_auto,f_auto,w_800,c_limit/');
 }
 
-/* 🆕 v9.10.0: قصّ النص لطول محدد بشكل آمن */
 function truncateText(text, max) {
   if (text == null) return '';
   const str = String(text).trim();
@@ -548,11 +536,7 @@ async function getDeviceFingerprint() {
   return _fpPromise;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🛒 STATE — cart loaded with SDG auto-migration
-   Any legacy item stored with currency "ج.س" is rewritten
-   to "SDG" (or "USD" if applicable) immediately on load.
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ STATE — cart with SDG auto-migration ═══ */
 let cart = [];
 try {
   cart = JSON.parse(localStorage.getItem(KEYS.CART)) || [];
@@ -603,6 +587,77 @@ try {
   });
 } catch(e){}
 
+/* ═══════════════════════════════════════════════════════════
+   🗄️ Dexie.js — Local IndexedDB Cache (v9.14.0)
+   Stores persistent cache for stores, products, meta
+   ═══════════════════════════════════════════════════════════ */
+let bzrDB = null;
+
+if (typeof Dexie !== 'undefined') {
+  try {
+    bzrDB = new Dexie('branzar_v1');
+    bzrDB.version(1).stores({
+      stores: 'id, created_at, followers, category, name',
+      meta: 'key'
+    });
+    bzrDB.open()
+      .then(() => console.log('[BZR] Dexie opened ✅ (IndexedDB ready)'))
+      .catch((e) => console.warn('[BZR] Dexie open failed:', e));
+  } catch (e) {
+    console.warn('[BZR] Dexie init failed:', e);
+    bzrDB = null;
+  }
+} else {
+  console.warn('[BZR] ⚠️ Dexie.js not loaded — add <script src="https://unpkg.com/dexie@4.0.1/dist/dexie.min.js"></script> before core.js');
+}
+
+async function dexieBulkUpsertStores(list) {
+  if (!bzrDB || !Array.isArray(list) || !list.length) return;
+  try {
+    const now = Date.now();
+    await bzrDB.stores.bulkPut(
+      list.map(s => ({ ...s, _fetchedAt: now }))
+    );
+  } catch (e) {
+    console.warn('[BZR] dexieBulkUpsertStores failed:', e);
+  }
+}
+
+async function dexieGetAllStores() {
+  if (!bzrDB) return [];
+  try {
+    return await bzrDB.stores.toArray();
+  } catch (e) {
+    console.warn('[BZR] dexieGetAllStores failed:', e);
+    return [];
+  }
+}
+
+async function dexieGetMeta(key) {
+  if (!bzrDB) return null;
+  try {
+    const row = await bzrDB.meta.get(key);
+    return row ? row.value : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function dexieSetMeta(key, value) {
+  if (!bzrDB) return;
+  try {
+    await bzrDB.meta.put({ key, value });
+  } catch (e) {}
+}
+
+async function dexieClearStores() {
+  if (!bzrDB) return;
+  try {
+    await bzrDB.stores.clear();
+  } catch (e) {}
+}
+
+/* ═══ VISIBILITY ═══ */
 document.addEventListener('visibilitychange', () => {
   isPageVisible = !document.hidden;
   if (isPageVisible) {
@@ -665,7 +720,7 @@ document.addEventListener('pointerdown', (e) => {
   el.classList.add('animate');
 }, { passive: true });
 
-/* ═══ CACHE ═══ */
+/* ═══ CACHE (localStorage — for products & categories) ═══ */
 let _cacheWriteQueue = new Map(), _cacheWriteTimer = null;
 function _flushCacheWrites() {
   _cacheWriteQueue.forEach((entry, key) => {
@@ -851,4 +906,4 @@ function getFallbackHex(colorName) {
   return result;
 }
 
-console.log('[BZR] core.js loaded ✅ v9.12.0 — SDG default currency + legacy "ج.س" auto-migration on cart');
+console.log('[BZR] core.js loaded ✅ v9.14.0 — Dexie IDB cache + Smart Stores');
