@@ -1,9 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.15.0 — app.js
+   BranZar v9.15.1 — app.js
    Layer 4: Init + Public API
-   ✅ v9.15.0: Smart products + stores (Dexie + onSnapshot)
-                - Unsubscribe on unload (no clearInterval)
-                - refreshAll clears Dexie + cache
+   ✅ v9.15.1: Hides Splash only when data is fully loaded
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -11,40 +9,60 @@
 async function initApp() {
   initTheme();
   initViewMode();
-  const ok = await ensureAuth();
-  if (!ok) { window.__bzrHideSplash(); return; }
+  
+  try {
+    // 1. التأكد من تسجيل الدخول
+    const ok = await ensureAuth();
+    if (!ok) throw new Error('Auth failed');
 
-  updateCartUI();
-  initFCM().catch(() => {});
-  getDeviceFingerprint().catch(() => {});
+    updateCartUI();
+    initFCM().catch(() => {});
+    getDeviceFingerprint().catch(() => {});
 
-  // المتاجر أولاً (لأن الفئات تعتمد عليها)
-  await loadStores();
+    // 2. تحميل المتاجر (من IndexedDB أو الشبكة)
+    await loadStores();
 
-  // المنتجات + الفئات بالتوازي
-  await Promise.all([loadCategories(), loadAllProducts()]);
+    // 3. تحميل المنتجات والفئات بالتوازي
+    await Promise.all([loadCategories(), loadAllProducts()]);
 
-  // مستمعات حية (onSnapshot)
-  setupRealtimeStores();
-  setupRealtimeProducts();
+    // 4. تشغيل المستمعات الحية (onSnapshot)
+    setupRealtimeStores();
+    setupRealtimeProducts();
 
-  handleDeepLink();
-  setActiveNav('home');
-  setTimeout(() => window.__bzrHideSplash(), 400);
-  syncFollowedStoresFromServer().catch(() => {});
+    handleDeepLink();
+    setActiveNav('home');
+    
+    // ✅ 5. الآن فقط، بعد أن جهزت كل البيانات، نخفي شاشة التحميل بسلاسة
+    if (window.__bzrHideSplash) window.__bzrHideSplash();
+    
+    syncFollowedStoresFromServer().catch(() => {});
+    
+  } catch (error) {
+    console.error('[BZR] Init failed:', error);
+    
+    // ❌ في حال حدوث خطأ، نخفي الشاشة حتى لا يعلق المستخدم
+    if (window.__bzrHideSplash) window.__bzrHideSplash();
+    
+    // إظهار رسالة خطأ للمستخدم
+    if (typeof showToast === 'function') {
+      showToast('⚠️ تعذر تحميل البيانات. تحقق من اتصالك بالإنترنت.');
+    }
+    
+    // إظهار قسم المتاجر مع رسالة الخطأ
+    const empty = document.getElementById('storesEmpty');
+    if (empty) empty.classList.remove('hidden');
+  }
 }
 
 /* ═══ CLEANUP (on unload) ═══ */
 window.addEventListener('beforeunload', () => {
   try {
-    // 🆕 v9.15.0: unsubscribe من onSnapshot
     if (typeof storesLiveUnsubscribe !== 'undefined' && storesLiveUnsubscribe) {
       try { storesLiveUnsubscribe(); } catch(e){}
     }
     if (typeof productsLiveUnsubscribe !== 'undefined' && productsLiveUnsubscribe) {
       try { productsLiveUnsubscribe(); } catch(e){}
     }
-    // توافق خلفي مع المتغيرات القديمة (لو بقيت)
     if (typeof allProductsUnsubscribe !== 'undefined' &&
         typeof allProductsUnsubscribe === 'number') {
       try { clearInterval(allProductsUnsubscribe); } catch(e){}
@@ -71,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.15.0',
+  version: '9.15.1',
 
   openStore: openStoreModal,
   openProduct: openProductModal,
@@ -83,18 +101,14 @@ window.BranZar = {
   getFingerprint: getDeviceFingerprint,
   syncFollows: syncFollowedStoresFromServer,
 
-  // 🆕 v9.15.0: مسح شامل (Dexie + localStorage) ثم إعادة تحميل
   refreshAll: async () => {
     try {
-      // امسح localStorage cache
       cacheManager.remove('all_products_page1');
       cacheManager.remove('stores_list');
 
-      // امسح IndexedDB (Dexie)
       if (typeof dexieClearProducts === 'function') await dexieClearProducts();
       if (typeof dexieClearStores === 'function') await dexieClearStores();
 
-      // أوقف المستمعات القديمة
       if (typeof storesLiveUnsubscribe !== 'undefined' && storesLiveUnsubscribe) {
         try { storesLiveUnsubscribe(); } catch(e){}
       }
@@ -102,14 +116,12 @@ window.BranZar = {
         try { productsLiveUnsubscribe(); } catch(e){}
       }
 
-      // أعد التحميل
       await Promise.all([loadStores(true), loadAllProducts(true)]);
     } catch (e) {
       console.warn('[BZR] refreshAll failed:', e);
     }
   },
 
-  // 🆕 v9.15.0: مسح كاش المنتجات فقط (للتطوير)
   clearProductsCache: async () => {
     if (typeof window.__bzrClearProductsCache === 'function') {
       return window.__bzrClearProductsCache();
@@ -123,4 +135,4 @@ window.BranZar = {
   }
 };
 
-console.log('[BZR] app.js loaded ✅ v9.15.0 — Smart products + stores (Dexie + onSnapshot)');
+console.log('[BZR] app.js loaded ✅ v9.15.1 — Splash waits for data');
