@@ -1174,10 +1174,10 @@ body.theme-dark .currency-badge {
 
 <!-- ═══════════════════════════════════════════════════════════════
      🔥 CINEMATIC IGNITION SCRIPT — 5s Sequence
+     (Wrapped in a global function, triggered manually by app.js)
      ═══════════════════════════════════════════════════════════════ -->
 <script>
-(function () {
-  'use strict';
+window.__bzrPlayCinematic = function() {
   try {
     var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var igniteOverlay = document.getElementById('bzrIgniteOverlay');
@@ -1192,6 +1192,11 @@ body.theme-dark .currency-badge {
       logoReveal.style.display = 'none';
       return;
     }
+
+    // Reset any previous state
+    igniteOverlay.style.display = '';
+    igniteFlash.style.display = '';
+    logoReveal.style.display = '';
 
     setTimeout(function () {
       igniteOverlay.classList.add('active');
@@ -1221,7 +1226,7 @@ body.theme-dark .currency-badge {
     }, 5000);
 
   } catch (e) {}
-})();
+};
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════
