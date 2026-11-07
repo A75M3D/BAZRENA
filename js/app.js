@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
    BranZar v9.15.1 — app.js
    Layer 4: Init + Public API
-   ✅ v9.15.1: Hides Splash only when data is fully loaded
+   ✅ v9.15.1: Plays Cinematic 5s Animation ONLY AFTER data loads
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -32,8 +32,16 @@ async function initApp() {
     handleDeepLink();
     setActiveNav('home');
     
-    // ✅ 5. الآن فقط، بعد أن جهزت كل البيانات، نخفي شاشة التحميل بسلاسة
+    // ✅ 5. الآن فقط، بعد أن جهزت كل البيانات، نخفي شاشة التحميل
     if (window.__bzrHideSplash) window.__bzrHideSplash();
+    
+    // ✅ 6. ثم نشغل أنيميشن الشعار السينمائي (5 ثوانٍ) 
+    if (window.__bzrPlayCinematic) {
+      // تأخير بسيط جداً للتأكد من أن اللودر بدأ بالاختفاء
+      setTimeout(() => {
+        window.__bzrPlayCinematic();
+      }, 300);
+    }
     
     syncFollowedStoresFromServer().catch(() => {});
     
@@ -135,4 +143,4 @@ window.BranZar = {
   }
 };
 
-console.log('[BZR] app.js loaded ✅ v9.15.1 — Splash waits for data');
+console.log('[BZR] app.js loaded ✅ v9.15.1 — Splash + Cinematic sequence');
