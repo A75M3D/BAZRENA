@@ -1,8 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.15.1 — core.js
+   BranZar v9.16.0 — core.js
    Layer 1: Config + Utils + Security + Fingerprint + Cache
             + Firebase + Dexie (IndexedDB) + Auth + State
-   ✅ v9.15.1: Splash control is now manual (no automatic timers)
+   ✅ v9.16.0: Dexie v3 — adds store_id index to products
+                - Auto-migration: maps store_name to store_id
+                - Dexie helpers now fetch by store_id
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -18,6 +20,7 @@ const CONFIG = Object.freeze({
 
   PRODUCT_DESCRIPTION_MAX: 100,
 
+  /* كاش المتاجر */
   CACHE_TTL_STORES: 10 * 60 * 1000,
   CACHE_TTL_PRODUCTS: 30 * 60 * 1000,
   CACHE_TTL_CATEGORIES: 30 * 60 * 60 * 1000,
@@ -533,7 +536,7 @@ async function getDeviceFingerprint() {
   return _fpPromise;
 }
 
-/* ═══ STATE — cart with SDG auto-migration ═══ */
+/* ═══ STATE ═══ */
 let cart = [];
 try {
   cart = JSON.parse(localStorage.getItem(KEYS.CART)) || [];
@@ -590,47 +593,88 @@ try {
   });
 } catch(e){}
 
-/* ═══ Dexie.js ═══ */
+/* ═══════════════════════════════════════════════════════════
+   🗄️ Dexie.js — Local IndexedDB Cache (v9.16.0)
+   - v1: stores + meta
+   - v2: + products table
+   - v3: + store_id index to products (for stable linking)
+   ═══════════════════════════════════════════════════════════ */
 let bzrDB = null;
 
 if (typeof Dexie !== 'undefined') {
   try {
     bzrDB = new Dexie('branzar_v1');
 
+    // v1
     bzrDB.version(1).stores({
       stores: 'id, created_at, followers, category, name',
       meta: 'key'
     });
 
+    // v2
     bzrDB.version(2).stores({
       stores: 'id, created_at, followers, category, name',
       meta: 'key',
       products: 'id, created_at, store_name, category'
     });
 
+    // 🆕 v3: Adds store_id index and auto-migrates existing data
+    bzrDB.version(3).stores({
+      stores: 'id, created_at, followers, category, name',
+      meta: 'key',
+      products: 'id, created_at, store_id, store_name, category'
+    }).upgrade(async (tx) => {
+      console.log('[BZR] Upgrading Dexie to v3: mapping store_name to store_id...');
+      try {
+        const allStores = await tx.table('stores').toArray();
+        const storeMap = new Map(allStores.map(s => [String(s.name).trim(), s.id]));
+        
+        await tx.table('products').toCollection().modify(product => {
+          // If product lacks store_id but has store_name, try to resolve it
+          if (!product.store_id && product.store_name) {
+            const cleanName = String(product.store_name).trim();
+            if (storeMap.has(cleanName)) {
+              product.store_id = storeMap.get(cleanName);
+            }
+          }
+        });
+        console.log('[BZR] Dexie migration v3 complete.');
+      } catch (err) {
+        console.warn('[BZR] Dexie migration warning:', err);
+      }
+    });
+
     bzrDB.open()
-      .then(() => console.log('[BZR] Dexie opened ✅ v2 (stores + products)'))
+      .then(() => console.log('[BZR] Dexie opened ✅ v3 (store_id indexed)'))
       .catch((e) => console.warn('[BZR] Dexie open failed:', e));
   } catch (e) {
     console.warn('[BZR] Dexie init failed:', e);
     bzrDB = null;
   }
 } else {
-  console.warn('[BZR] ⚠️ Dexie.js not loaded — add <script src="js/dexie.min.js"></script> before core.js');
+  console.warn('[BZR] ⚠️ Dexie.js not loaded.');
 }
 
-/* ═══ Dexie Helpers ═══ */
+/* ═══ Dexie Helpers — Stores ═══ */
 async function dexieBulkUpsertStores(list) {
   if (!bzrDB || !Array.isArray(list) || !list.length) return;
   try {
     const now = Date.now();
     await bzrDB.stores.bulkPut(list.map(s => ({ ...s, _fetchedAt: now })));
-  } catch (e) {}
+  } catch (e) {
+    console.warn('[BZR] dexieBulkUpsertStores failed:', e);
+  }
 }
+
 async function dexieGetAllStores() {
   if (!bzrDB) return [];
-  try { return await bzrDB.stores.toArray(); } catch (e) { return []; }
+  try {
+    return await bzrDB.stores.toArray();
+  } catch (e) {
+    return [];
+  }
 }
+
 async function dexieGetMeta(key) {
   if (!bzrDB) return null;
   try {
@@ -638,49 +682,66 @@ async function dexieGetMeta(key) {
     return row ? row.value : null;
   } catch (e) { return null; }
 }
+
 async function dexieSetMeta(key, value) {
   if (!bzrDB) return;
   try { await bzrDB.meta.put({ key, value }); } catch (e) {}
 }
+
 async function dexieClearStores() {
   if (!bzrDB) return;
   try { await bzrDB.stores.clear(); } catch (e) {}
 }
+
+/* ═══ 🆕 v9.16.0: Dexie Helpers — Products (By Store ID) ═══ */
 async function dexieBulkUpsertProducts(list) {
   if (!bzrDB || !Array.isArray(list) || !list.length) return;
   try {
     const now = Date.now();
     await bzrDB.products.bulkPut(list.map(p => ({ ...p, _fetchedAt: now })));
-  } catch (e) {}
+  } catch (e) {
+    console.warn('[BZR] dexieBulkUpsertProducts failed:', e);
+  }
 }
+
 async function dexieGetRecentProducts(limit) {
   if (!bzrDB) return [];
   try {
     const cap = Math.max(1, parseInt(limit) || 100);
     return await bzrDB.products.orderBy('created_at').reverse().limit(cap).toArray();
-  } catch (e) { return []; }
+  } catch (e) {
+    return [];
+  }
 }
-async function dexieGetProductsByStore(storeName, limit) {
-  if (!bzrDB || !storeName) return [];
+
+// 🆕 Replaced storeName with storeId
+async function dexieGetProductsByStore(storeId, limit) {
+  if (!bzrDB || !storeId) return [];
   try {
-    const arr = await bzrDB.products.where('store_name').equals(String(storeName)).toArray();
+    const arr = await bzrDB.products.where('store_id').equals(String(storeId)).toArray();
     arr.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
     return (limit && limit > 0) ? arr.slice(0, limit) : arr;
-  } catch (e) { return []; }
+  } catch (e) {
+    return [];
+  }
 }
+
 async function dexieGetProductById(id) {
   if (!bzrDB || !id) return null;
   try { return await bzrDB.products.get(String(id)); } catch (e) { return null; }
 }
+
 async function dexieClearProducts() {
   if (!bzrDB) return;
   try { await bzrDB.products.clear(); } catch (e) {}
 }
+
 async function dexieCountProducts() {
   if (!bzrDB) return 0;
   try { return await bzrDB.products.count(); } catch (e) { return 0; }
 }
 
+/* 🧹 Manual product cache clear */
 window.__bzrClearProductsCache = async function () {
   try {
     await dexieClearProducts();
@@ -719,7 +780,7 @@ function getUserIdentity() {
   } catch(e) { return null; }
 }
 
-/* ═══ SPLASH CONTROL (v9.15.1) ═══ */
+/* ═══ SPLASH CONTROL ═══ */
 let _splashHidden = false;
 function __bzrHideSplash() {
   if (_splashHidden) return;
@@ -937,4 +998,4 @@ function getFallbackHex(colorName) {
   return result;
 }
 
-console.log('[BZR] core.js loaded ✅ v9.15.1 — Splash Control Manual');
+console.log('[BZR] core.js loaded ✅ v9.16.0 — store_id indexed & ready');
