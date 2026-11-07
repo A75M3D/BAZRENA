@@ -1,13 +1,8 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.15.0 — core.js
+   BranZar v9.15.1 — core.js
    Layer 1: Config + Utils + Security + Fingerprint + Cache
             + Firebase + Dexie (IndexedDB) + Auth + State
-   ✅ v9.15.0: Dexie v2 — adds products table + product helpers
-                - productsLiveUnsubscribe + _productsFirstSyncDone
-                - __bzrClearProductsCache exposed
-   ✅ v9.14.0: Dexie.js layer — persistent store cache in IndexedDB
-   ✅ v9.13.0: Real-time stores, 10-min cache TTL
-   ✅ v9.12.0: SDG default currency (was "ج.س")
+   ✅ v9.15.1: Splash control is now manual (no automatic timers)
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -23,7 +18,6 @@ const CONFIG = Object.freeze({
 
   PRODUCT_DESCRIPTION_MAX: 100,
 
-  /* كاش المتاجر (أصبح غير مستخدم مع IDB — محفوظ للتوافق) */
   CACHE_TTL_STORES: 10 * 60 * 1000,
   CACHE_TTL_PRODUCTS: 30 * 60 * 1000,
   CACHE_TTL_CATEGORIES: 30 * 60 * 60 * 1000,
@@ -569,12 +563,10 @@ let lastVisibleDoc = null;
 let hasMoreProducts = true;
 let isLoadingProducts = false;
 
-/* 🆕 v9.15.0: متغيرات المنتجات الحية (onSnapshot) */
 let productsLiveUnsubscribe = null;
 let _productsFirstSyncDone = false;
 let _isLoadingSmartProducts = false;
 
-/* توافق خلفي — لن تُستخدم لكن مفيدة لو أي ملف قديم ما زال يستدعيها */
 let allProductsUnsubscribe = null;
 let storesPollInterval = null;
 
@@ -598,24 +590,18 @@ try {
   });
 } catch(e){}
 
-/* ═══════════════════════════════════════════════════════════
-   🗄️ Dexie.js — Local IndexedDB Cache (v9.15.0)
-   - v1: stores + meta
-   - v2: + products table (for smart products system)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ Dexie.js ═══ */
 let bzrDB = null;
 
 if (typeof Dexie !== 'undefined') {
   try {
     bzrDB = new Dexie('branzar_v1');
 
-    // v1 schema (previous)
     bzrDB.version(1).stores({
       stores: 'id, created_at, followers, category, name',
       meta: 'key'
     });
 
-    // 🆕 v2: adds products table
     bzrDB.version(2).stores({
       stores: 'id, created_at, followers, category, name',
       meta: 'key',
@@ -633,27 +619,18 @@ if (typeof Dexie !== 'undefined') {
   console.warn('[BZR] ⚠️ Dexie.js not loaded — add <script src="js/dexie.min.js"></script> before core.js');
 }
 
-/* ═══ Dexie Helpers — Stores ═══ */
+/* ═══ Dexie Helpers ═══ */
 async function dexieBulkUpsertStores(list) {
   if (!bzrDB || !Array.isArray(list) || !list.length) return;
   try {
     const now = Date.now();
     await bzrDB.stores.bulkPut(list.map(s => ({ ...s, _fetchedAt: now })));
-  } catch (e) {
-    console.warn('[BZR] dexieBulkUpsertStores failed:', e);
-  }
+  } catch (e) {}
 }
-
 async function dexieGetAllStores() {
   if (!bzrDB) return [];
-  try {
-    return await bzrDB.stores.toArray();
-  } catch (e) {
-    console.warn('[BZR] dexieGetAllStores failed:', e);
-    return [];
-  }
+  try { return await bzrDB.stores.toArray(); } catch (e) { return []; }
 }
-
 async function dexieGetMeta(key) {
   if (!bzrDB) return null;
   try {
@@ -661,91 +638,57 @@ async function dexieGetMeta(key) {
     return row ? row.value : null;
   } catch (e) { return null; }
 }
-
 async function dexieSetMeta(key, value) {
   if (!bzrDB) return;
   try { await bzrDB.meta.put({ key, value }); } catch (e) {}
 }
-
 async function dexieClearStores() {
   if (!bzrDB) return;
   try { await bzrDB.stores.clear(); } catch (e) {}
 }
-
-/* ═══ 🆕 v9.15.0: Dexie Helpers — Products ═══ */
 async function dexieBulkUpsertProducts(list) {
   if (!bzrDB || !Array.isArray(list) || !list.length) return;
   try {
     const now = Date.now();
     await bzrDB.products.bulkPut(list.map(p => ({ ...p, _fetchedAt: now })));
-  } catch (e) {
-    console.warn('[BZR] dexieBulkUpsertProducts failed:', e);
-  }
+  } catch (e) {}
 }
-
 async function dexieGetRecentProducts(limit) {
   if (!bzrDB) return [];
   try {
     const cap = Math.max(1, parseInt(limit) || 100);
-    const arr = await bzrDB.products
-      .orderBy('created_at')
-      .reverse()
-      .limit(cap)
-      .toArray();
-    return arr;
-  } catch (e) {
-    console.warn('[BZR] dexieGetRecentProducts failed:', e);
-    return [];
-  }
+    return await bzrDB.products.orderBy('created_at').reverse().limit(cap).toArray();
+  } catch (e) { return []; }
 }
-
 async function dexieGetProductsByStore(storeName, limit) {
   if (!bzrDB || !storeName) return [];
   try {
-    const arr = await bzrDB.products
-      .where('store_name').equals(String(storeName))
-      .toArray();
-    // sort in memory by created_at desc (Dexie index on store_name only)
+    const arr = await bzrDB.products.where('store_name').equals(String(storeName)).toArray();
     arr.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
-    if (limit && limit > 0) return arr.slice(0, limit);
-    return arr;
-  } catch (e) {
-    console.warn('[BZR] dexieGetProductsByStore failed:', e);
-    return [];
-  }
+    return (limit && limit > 0) ? arr.slice(0, limit) : arr;
+  } catch (e) { return []; }
 }
-
 async function dexieGetProductById(id) {
   if (!bzrDB || !id) return null;
-  try {
-    return await bzrDB.products.get(String(id));
-  } catch (e) {
-    return null;
-  }
+  try { return await bzrDB.products.get(String(id)); } catch (e) { return null; }
 }
-
 async function dexieClearProducts() {
   if (!bzrDB) return;
   try { await bzrDB.products.clear(); } catch (e) {}
 }
-
 async function dexieCountProducts() {
   if (!bzrDB) return 0;
   try { return await bzrDB.products.count(); } catch (e) { return 0; }
 }
 
-/* 🧹 Manual product cache clear (exposed for dev/testing) */
 window.__bzrClearProductsCache = async function () {
   try {
     await dexieClearProducts();
     cacheManager.remove('all_products_page1');
     _productsFirstSyncDone = false;
-    console.log('[BZR] ✅ Products cache cleared. Reload to refetch.');
+    console.log('[BZR] ✅ Products cache cleared.');
     return true;
-  } catch (e) {
-    console.warn('[BZR] __bzrClearProductsCache failed:', e);
-    return false;
-  }
+  } catch (e) { return false; }
 };
 
 /* ═══ VISIBILITY ═══ */
@@ -776,21 +719,18 @@ function getUserIdentity() {
   } catch(e) { return null; }
 }
 
-/* ═══ SPLASH ═══ */
-(function(){
-  let hidden = false;
-  function hideSplash(){
-    if (hidden) return; hidden = true;
-    const sp = document.getElementById('bzrSplash');
-    if (sp && !sp.classList.contains('hide')) {
-      sp.classList.add('hide');
-      setTimeout(() => { try { sp.remove(); } catch(e){} }, 600);
-    }
+/* ═══ SPLASH CONTROL (v9.15.1) ═══ */
+let _splashHidden = false;
+function __bzrHideSplash() {
+  if (_splashHidden) return;
+  _splashHidden = true;
+  const sp = document.getElementById('bzrSplash');
+  if (sp && !sp.classList.contains('hide')) {
+    sp.classList.add('hide');
+    setTimeout(() => { try { sp.remove(); } catch(e){} }, 600);
   }
-  window.__bzrHideSplash = hideSplash;
-  window.addEventListener('load', () => setTimeout(hideSplash, 700));
-  setTimeout(hideSplash, 3000);
-})();
+}
+window.__bzrHideSplash = __bzrHideSplash;
 
 /* ═══ TOAST ═══ */
 function showToast(msg) {
@@ -811,7 +751,7 @@ document.addEventListener('pointerdown', (e) => {
   el.classList.add('animate');
 }, { passive: true });
 
-/* ═══ CACHE (localStorage — for products & categories legacy) ═══ */
+/* ═══ CACHE ═══ */
 let _cacheWriteQueue = new Map(), _cacheWriteTimer = null;
 function _flushCacheWrites() {
   _cacheWriteQueue.forEach((entry, key) => {
@@ -997,4 +937,4 @@ function getFallbackHex(colorName) {
   return result;
 }
 
-console.log('[BZR] core.js loaded ✅ v9.15.0 — Dexie v2 (stores + products) + Smart Products Ready');
+console.log('[BZR] core.js loaded ✅ v9.15.1 — Splash Control Manual');
