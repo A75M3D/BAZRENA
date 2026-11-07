@@ -392,6 +392,59 @@ body.theme-dark .currency-badge {
     display: none !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   ✨ Premium SVG Circular Loader (Modern & Elegant)
+   ═══════════════════════════════════════════════════ */
+.bzr-modern-loader-wrap {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.bzr-modern-loader {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+.bzr-loader-svg {
+  width: 100%;
+  height: 100%;
+  animation: bzrRotate 2s linear infinite;
+}
+.bzr-loader-path {
+  fill: none;
+  stroke: #FF7A00;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1, 150;
+  stroke-dashoffset: 0;
+  animation: bzrDash 1.5s ease-in-out infinite, bzrColorPulse 2s ease-in-out infinite;
+}
+@keyframes bzrRotate {
+  100% { transform: rotate(360deg); }
+}
+@keyframes bzrDash {
+  0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+  100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+}
+@keyframes bzrColorPulse {
+  0%, 100% { stroke: #FF7A00; filter: drop-shadow(0 0 4px rgba(255,122,0,0.4)); }
+  50% { stroke: #FFA64D; filter: drop-shadow(0 0 10px rgba(255,166,77,0.8)); }
+}
+.bzr-loader-text {
+  color: #FF7A00;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  animation: bzrPulseText 1.5s ease-in-out infinite;
+}
+@keyframes bzrPulseText {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
 </style>
 </head>
 <body class="font-cairo">
@@ -478,7 +531,7 @@ body.theme-dark .currency-badge {
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     ORIGINAL SPLASH
+     ORIGINAL SPLASH (With Modern SVG Loader)
      ═══════════════════════════════════════════════════════════════ -->
 <div id="bzrSplash" role="status" aria-label="جاري التحميل">
   <img src="/b.webp"
@@ -488,7 +541,16 @@ body.theme-dark .currency-badge {
        fetchpriority="high">
   <div class="bzr-splash-title">بران زار <span>- BranZar</span></div>
   <div class="bzr-splash-subtitle">أكبر سوق إلكتروني للبراندات</div>
-  <div class="bzr-splash-loader"></div>
+  
+  <!-- اللودر الاحترافي الجديد -->
+  <div class="bzr-modern-loader-wrap">
+    <div class="bzr-modern-loader">
+      <svg class="bzr-loader-svg" viewBox="0 0 50 50">
+        <circle class="bzr-loader-path" cx="25" cy="25" r="20"></circle>
+      </svg>
+    </div>
+    <div class="bzr-loader-text">جاري تحضير المتاجر والمنتجات...</div>
+  </div>
 </div>
 
 <header class="bzr-app-bar">
@@ -1121,28 +1183,18 @@ body.theme-dark .currency-badge {
     var igniteOverlay = document.getElementById('bzrIgniteOverlay');
     var igniteFlash = document.getElementById('bzrIgniteFlash');
     var logoReveal = document.getElementById('bzrLogoReveal');
-    var splash = document.getElementById('bzrSplash');
 
     if (!igniteOverlay || !igniteFlash || !logoReveal) return;
 
     if (reducedMotion) {
-      if (splash) {
-        setTimeout(function () {
-          splash.style.transition = 'opacity 0.3s ease';
-          splash.style.opacity = '0';
-          splash.style.pointerEvents = 'none';
-          setTimeout(function () { if (splash.parentNode) splash.remove(); }, 350);
-        }, 600);
-      }
+      igniteOverlay.style.display = 'none';
+      igniteFlash.style.display = 'none';
+      logoReveal.style.display = 'none';
       return;
     }
 
     setTimeout(function () {
       igniteOverlay.classList.add('active');
-      if (splash) {
-        splash.style.transition = 'opacity 0.7s ease';
-        splash.style.opacity = '0.15';
-      }
     }, 300);
 
     setTimeout(function () {
@@ -1154,13 +1206,6 @@ body.theme-dark .currency-badge {
     }, 1100);
 
     setTimeout(function () {
-      if (splash) {
-        splash.style.opacity = '0';
-        splash.style.pointerEvents = 'none';
-      }
-    }, 2800);
-
-    setTimeout(function () {
       igniteOverlay.classList.remove('active');
       igniteFlash.classList.remove('active');
     }, 3500);
@@ -1170,24 +1215,17 @@ body.theme-dark .currency-badge {
     }, 4200);
 
     setTimeout(function () {
-      if (splash && splash.parentNode) splash.remove();
       logoReveal.style.display = 'none';
       igniteOverlay.style.display = 'none';
       igniteFlash.style.display = 'none';
     }, 5000);
 
-  } catch (e) {
-    try {
-      var s = document.getElementById('bzrSplash');
-      if (s) { s.style.opacity = '0'; s.style.pointerEvents = 'none'; setTimeout(function(){ if(s.parentNode) s.remove(); }, 400); }
-    } catch (_) {}
-  }
+  } catch (e) {}
 })();
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════
      🔥 Firebase & Core Scripts
-     ✅ v9.15.0: Dexie محلي (بدون CDN) + حذف store-limits.js (404)
      ═══════════════════════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js" crossorigin="anonymous"></script>
