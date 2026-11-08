@@ -1,7 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.15.1 — app.js
+   BranZar v9.16.1 — app.js
    Layer 4: Init + Public API
-   ✅ v9.15.1: Plays Cinematic 5s Animation ONLY AFTER data loads
+   ✅ v9.16.1: Smart Path (Fast vs Slow loading)
+                - Cache Hit: Instant content (no splash, no 5s delay)
+                - Cache Miss: 5s Cinematic + Loader → Content
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -11,52 +13,77 @@ async function initApp() {
   initViewMode();
   
   try {
-    // 1. التأكد من تسجيل الدخول
-    const ok = await ensureAuth();
-    if (!ok) throw new Error('Auth failed');
-
-    updateCartUI();
-    initFCM().catch(() => {});
-    getDeviceFingerprint().catch(() => {});
-
-    // 2. تحميل المتاجر (من IndexedDB أو الشبكة)
-    await loadStores();
-
-    // 3. تحميل المنتجات والفئات بالتوازي
-    await Promise.all([loadCategories(), loadAllProducts()]);
-
-    // 4. تشغيل المستمعات الحية (onSnapshot)
-    setupRealtimeStores();
-    setupRealtimeProducts();
-
+    // 🔍 الخطوة 1: فحص الكاش أولاً (بدون شبكة)
+    let hasCachedContent = false;
+    try {
+      const cachedStores = await dexieGetAllStores();
+      hasCachedContent = cachedStores && cachedStores.length > 0;
+    } catch (e) {
+      hasCachedContent = false;
+    }
+    
+    if (hasCachedContent) {
+      // ⚡ المسار السريع: المحتوى موجود في الكاش
+      console.log('[BZR] ⚡ Fast Path: Cache Hit → Rendering instantly');
+      
+      // 1. ارسم المتاجر والمنتجات من الكاش أولاً (يستغرق < 50ms)
+      await loadStores();
+      await Promise.all([loadCategories(), loadAllProducts()]);
+      
+      // 2. الآن المحتوى جاهز، نخفي شاشة التحميل بسلاسة (بدون أنيميشن 5 ثوانٍ)
+      if (window.__bzrHideSplash) window.__bzrHideSplash();
+      
+      // 3. تشغيل المراقبة الحية (onSnapshot) في الخلفية
+      setupRealtimeStores();
+      setupRealtimeProducts();
+      
+      // 4. تشغيل المصادقة والإشعارات في الخلفية (بدون تعطيل واجهة المستخدم)
+      ensureAuth().then(ok => {
+        if (!ok) return;
+        updateCartUI();
+        initFCM().catch(() => {});
+        getDeviceFingerprint().catch(() => {});
+        syncFollowedStoresFromServer().catch(() => {});
+      }).catch(() => {});
+      
+    } else {
+      // 🐢 المسار البطيء: لا يوجد كاش، جلب من Firebase لأول مرة
+      console.log('[BZR] 🐢 Slow Path: Cache Miss → Fetching from Firestore');
+      
+      // 1. تشغيل أنيميشن الشعار السينمائي (5 ثوانٍ)
+      if (window.__bzrPlayCinematic) window.__bzrPlayCinematic();
+      
+      // 2. التأكد من تسجيل الدخول
+      const ok = await ensureAuth();
+      if (!ok) throw new Error('Auth failed');
+      
+      updateCartUI();
+      initFCM().catch(() => {});
+      getDeviceFingerprint().catch(() => {});
+      
+      // 3. جلب البيانات من Firebase
+      await loadStores();
+      await Promise.all([loadCategories(), loadAllProducts()]);
+      
+      // 4. تشغيل المراقبة الحية
+      setupRealtimeStores();
+      setupRealtimeProducts();
+      
+      // 5. إخفاء شاشة التحميل بعد اكتمال كل شيء (قد يكون الأنيميشن انتهى أو لا يزال يعمل)
+      if (window.__bzrHideSplash) window.__bzrHideSplash();
+      
+      syncFollowedStoresFromServer().catch(() => {});
+    }
+    
+    // تشغيل الروابط العميقة وتحديد القائمة السفلية
     handleDeepLink();
     setActiveNav('home');
     
-    // ✅ 5. الآن فقط، بعد أن جهزت كل البيانات، نخفي شاشة التحميل
-    if (window.__bzrHideSplash) window.__bzrHideSplash();
-    
-    // ✅ 6. ثم نشغل أنيميشن الشعار السينمائي (5 ثوانٍ) 
-    if (window.__bzrPlayCinematic) {
-      // تأخير بسيط جداً للتأكد من أن اللودر بدأ بالاختفاء
-      setTimeout(() => {
-        window.__bzrPlayCinematic();
-      }, 300);
-    }
-    
-    syncFollowedStoresFromServer().catch(() => {});
-    
   } catch (error) {
     console.error('[BZR] Init failed:', error);
-    
-    // ❌ في حال حدوث خطأ، نخفي الشاشة حتى لا يعلق المستخدم
+    // في حال حدوث خطأ، نخفي الشاشة حتى لا يعلق المستخدم
     if (window.__bzrHideSplash) window.__bzrHideSplash();
-    
-    // إظهار رسالة خطأ للمستخدم
-    if (typeof showToast === 'function') {
-      showToast('⚠️ تعذر تحميل البيانات. تحقق من اتصالك بالإنترنت.');
-    }
-    
-    // إظهار قسم المتاجر مع رسالة الخطأ
+    if (typeof showToast === 'function') showToast('⚠️ تعذر تحميل البيانات. تحقق من اتصالك.');
     const empty = document.getElementById('storesEmpty');
     if (empty) empty.classList.remove('hidden');
   }
@@ -70,13 +97,6 @@ window.addEventListener('beforeunload', () => {
     }
     if (typeof productsLiveUnsubscribe !== 'undefined' && productsLiveUnsubscribe) {
       try { productsLiveUnsubscribe(); } catch(e){}
-    }
-    if (typeof allProductsUnsubscribe !== 'undefined' &&
-        typeof allProductsUnsubscribe === 'number') {
-      try { clearInterval(allProductsUnsubscribe); } catch(e){}
-    }
-    if (typeof storesPollInterval !== 'undefined' && storesPollInterval) {
-      try { clearInterval(storesPollInterval); } catch(e){}
     }
     stopAutoScroll();
     stopCategoriesAutoScroll();
@@ -97,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ═══ PUBLIC API ═══ */
 window.BranZar = {
-  version: '9.15.1',
+  version: '9.16.1',
 
   openStore: openStoreModal,
   openProduct: openProductModal,
@@ -143,4 +163,4 @@ window.BranZar = {
   }
 };
 
-console.log('[BZR] app.js loaded ✅ v9.15.1 — Splash + Cinematic sequence');
+console.log('[BZR] app.js loaded ✅ v9.16.1 — Smart Path (Instant on Cache, 5s on First Visit)');
