@@ -1,9 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.16.0 — ui.js
+   BranZar v9.16.1 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
-   ✅ v9.16.0: Replaced store_name with store_id in loadStoreProducts
-                - Dynamically updates store name in product cards
-                - Cart & WhatsApp actions use store_id for accuracy
+   ✅ v9.16.1: Smart WhatsApp Routing (Store WhatsApp vs Platform)
+                - 1 store in cart → send to store's WhatsApp
+                - >1 store in cart → send to Platform WhatsApp
+                - Fallback to Platform if store number is missing
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -452,7 +453,7 @@ function createSearchProductRow(product) {
       id: product.id, name: product.name, img_url: product.img_url,
       price: parseFloat(product.price) || 0,
       original_price: product.original_price ? parseFloat(product.original_price) : null,
-      store_id: product.store_id, // 🆕
+      store_id: product.store_id,
       store_name: product.store_name,
       description: product.description || '',
       colors: product.colors || null,
@@ -600,7 +601,6 @@ function selectStoreCategoryTab(tab, category) {
   if (container) container.querySelectorAll('.store-cat-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
   tab.classList.add('active'); tab.setAttribute('aria-selected', 'true'); haptic('light');
   currentStoreCategoryForProducts = category || null;
-  // 🆕 استخدام ID بدلاً من الاسم
   if (currentStore) loadStoreProducts(currentStore.id, currentStoreCategoryForProducts);
 }
 async function refreshStoreDataOnOpen(storeId) {
@@ -623,21 +623,16 @@ async function refreshStoreDataOnOpen(storeId) {
       const locked = !newSub && isExtra;
       if (locked || (!mainCat && !isExtra)) currentStoreCategoryForProducts = mainCat;
       renderStoreCategoryTabs(fresh);
-      
-      // 🆕 إعادة التحميل بالـ ID لضمان أحدث المنتجات وتحديث الاسم
       loadStoreProducts(fresh.id, currentStoreCategoryForProducts);
-      
       const catVal = (fresh.category && String(fresh.category).trim()) ? fresh.category : 'عام';
       const catEl = document.getElementById('storeCategory');
       if (catEl) { catEl.innerHTML = ''; catEl.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); const sp = document.createElement('span'); sp.textContent = catVal; catEl.appendChild(sp); }
-      
       if (nameChanged) {
         const storeNameEl = document.getElementById('storeName');
         if (fresh.is_verified) {
           storeNameEl.innerHTML = ''; const badge = document.createElement('span'); badge.className = 'verified-icon'; badge.style.cssText = 'display:inline-flex;width:20px;height:20px;flex-shrink:0;'; badge.innerHTML = VERIFIED_BADGE_SVG; const nameTxt = document.createElement('span'); nameTxt.textContent = fresh.name; storeNameEl.appendChild(badge); storeNameEl.appendChild(nameTxt);
         } else { document.getElementById('storeName').textContent = fresh.name; }
       }
-      
       renderStoreLocationInModal(fresh);
     }
   } catch(e) { /* silent */ }
@@ -670,10 +665,7 @@ function openStoreModal(store) {
   if (phone) { callBtn.href = 'tel:' + phone; callBtn.style.display = ''; } else callBtn.style.display = 'none';
   if (wa) { waBtn.href = 'https://wa.me/' + wa.replace(/[^0-9]/g, ''); waBtn.style.display = ''; } else waBtn.style.display = 'none';
   renderStoreCategoryTabs(store);
-  
-  // 🆕 تمرير ID بدلاً من الاسم
   loadStoreProducts(store.id, currentStoreCategoryForProducts);
-  
   document.getElementById('storeModal').classList.remove('hidden'); updateBodyScroll();
   document.getElementById('storeModal').querySelector('.modal-content').scrollTop = 0; bzrPushModal();
   refreshStoreDataOnOpen(currentStoreId);
@@ -714,9 +706,7 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
   finally { isUpdatingFollow = false; btn.disabled = false; }
 });
 
-/* ═══════════════════════════════════════════════════════════
-   🚀 v9.16.0: loadStoreProducts (By Store ID)
-   ═══════════════════════════════════════════════════════════ */
+/* ═══ STORE PRODUCTS (By Store ID) ═══ */
 function filterStoreProductsByCategory(products, category) {
   if (!Array.isArray(products)) return [];
   if (!category) return products;
@@ -732,11 +722,10 @@ async function loadStoreProducts(storeId, category) {
   const lbl = document.createElement('span'); lbl.textContent = 'عرض المزيد'; loadMoreBtn.appendChild(lbl); loadMoreBtn.appendChild(bzrSvgIcon('mi-chevron-down', 'mi mi-xs'));
   grid.innerHTML = ''; const spin = bzrSvgIcon('mi-refresh', 'mi mi-spin'); spin.style.cssText = 'color:#FF7A00;width:32px;height:32px;'; const spinWrap = document.createElement('div'); spinWrap.style.cssText = 'grid-column:1/-1;text-align:center;padding:2rem 0;'; spinWrap.appendChild(spin); grid.appendChild(spinWrap);
   
-  currentStoreNameForProducts = storeId; // 🆕 نحتفظ بالـ ID هنا الآن
+  currentStoreNameForProducts = storeId;
   currentStoreCategoryForProducts = category || null;
   storeProductsLastDoc = null; storeProductsHasMore = false;
 
-  // 🆕 استخدام ID في مفتاح الكاش
   const cacheKey = 'store_products_page1_' + storeId + '_' + (category || 'main');
   const cached = cacheManager.get(cacheKey);
   if (cached && Array.isArray(cached.items)) {
@@ -749,7 +738,6 @@ async function loadStoreProducts(storeId, category) {
 
   if (!RateLimiter.canRequest('store_products')) return;
   try {
-    // 🆕 استخدام store_id في الاستعلام
     let q = db.collection('products').where('store_id', '==', String(storeId)).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
     let snap;
@@ -757,7 +745,6 @@ async function loadStoreProducts(storeId, category) {
     
     let rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     
-    // 🆕 تحديث الاسم ديناميكياً
     const displayName = currentStore ? currentStore.name : null;
     if (displayName) { rawList.forEach(p => { p.store_name = displayName; }); }
 
@@ -781,7 +768,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
   btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-refresh', 'mi mi-xs mi-spin')); const l2 = document.createElement('span'); l2.textContent = 'جاري التحميل...'; btn.appendChild(l2);
   haptic('light');
   try {
-    // 🆕 استخدام store_id
     let q = db.collection('products').where('store_id', '==', String(currentStoreNameForProducts)).startAfter(storeProductsLastDoc).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
     let snap;
@@ -789,7 +775,6 @@ document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', a
     
     let rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     
-    // 🆕 تحديث الاسم
     const displayName = currentStore ? currentStore.name : null;
     if (displayName) rawList.forEach(p => { p.store_name = displayName; });
 
@@ -818,7 +803,7 @@ function buildProductCard(product, showStoreName) {
     id: product.id, name: product.name, img_url: product.img_url,
     price,
     original_price: product.original_price ? parseFloat(product.original_price) : null,
-    store_id: product.store_id, // 🆕 تضمين ID
+    store_id: product.store_id,
     store_name: product.store_name,
     description: product.description || '',
     colors: product.colors || null,
@@ -947,7 +932,6 @@ document.getElementById('addToCartFromModal')?.addEventListener('click', (e) => 
 });
 document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
   const p = JSON.parse(e.currentTarget.dataset.product);
-  // 🆕 البحث بواسطة ID أولاً ثم الاسم كاحتياط
   const store = stores.find(s => s.id === p.store_id || s.name === p.store_name);
   let wa = store && store.whatsapp_number ? store.whatsapp_number : '';
   if (!wa) { showToast('رقم الواتساب غير متوفر'); return; } haptic('medium');
@@ -958,7 +942,6 @@ document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
 
 /* ═══ CART ═══ */
 function addToCart(product) {
-  // 🆕 البحث بواسطة ID أولاً
   const store = stores.find(s => s.id === product.store_id || s.name === product.store_name);
   const cartItemId = product.selectedColor ? product.id + '_' + product.selectedColor : product.id;
   const _pCurr = bzrResolveProductCurrency(product); const finalSymbol = bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol;
@@ -1005,9 +988,12 @@ document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
 
-/* ═══ WHATSAPP ORDER ═══ */
+/* ═══════════════════════════════════════════════════════════
+   ═══ WHATSAPP ORDER (v9.16.1 Smart Routing) ═══
+   ═══════════════════════════════════════════════════════════ */
 document.getElementById('whatsappOrder')?.addEventListener('click', () => {
   if (cart.length === 0) { showToast('السلة فارغة'); return; } haptic('medium');
+  
   let msg = '🛒 *طلب جديد من BranZar*\n\n📋 *تفاصيل الطلب:*\n━━━━━━━━━━━━━━\n';
   cart.forEach((item, index) => {
     const normalizedSymbol = bzrNormalizeCurrencySymbol(item.currency) || _BZR_FALLBACK_CURRENCY.symbol; const lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
@@ -1017,12 +1003,44 @@ document.getElementById('whatsappOrder')?.addEventListener('click', () => {
     msg += '\n';
   });
   msg += '━━━━━━━━━━━━━━\n';
+  
   let totalStr;
   if (typeof window.bzrComputeCartTotals === 'function' && typeof window.bzrFormatCartTotals === 'function') { const normalizedCart = cart.map(i => ({ ...i, currency: bzrNormalizeCurrencySymbol(i.currency) || _BZR_FALLBACK_CURRENCY.symbol })); totalStr = window.bzrFormatCartTotals(window.bzrComputeCartTotals(normalizedCart)); }
   else { const total = cart.reduce((s, i) => s + (parseFloat(i.price) || 0) * (i.quantity || 0), 0); totalStr = total.toLocaleString() + ' ' + _BZR_FALLBACK_CURRENCY.symbol; }
+  
   const itemCount = cart.reduce((s, i) => s + (i.quantity || 0), 0);
   msg += `💰 *المجموع الكلي:* ${totalStr}\n\n📦 عدد المنتجات: ${itemCount}\n\nشكراً لاستخدامكم BranZar 🌟`;
-  window.open('https://wa.me/' + CONFIG.FIXED_WHATSAPP + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
+
+  // ═══ 🆕 التوجيه الذكي للواتساب ═══
+  // 1. استخراج معرفات المتاجر الفريدة من السلة
+  const uniqueStoreIds = new Set(cart.map(item => item.store_id).filter(Boolean));
+  
+  // 2. الافتراضي: رقم المنصة
+  let targetWhatsapp = CONFIG.FIXED_WHATSAPP;
+
+  // 3. إذا كانت السلة تحتوي على متجر واحد فقط
+  if (uniqueStoreIds.size === 1) {
+    const singleStoreId = Array.from(uniqueStoreIds)[0];
+    const storeObj = stores.find(s => String(s.id) === String(singleStoreId));
+    
+    let storeWa = storeObj ? storeObj.whatsapp_number : null;
+    
+    // احتياطي: البحث في بيانات السلة
+    if (!storeWa) {
+      const cartItem = cart.find(i => String(i.store_id) === String(singleStoreId));
+      if (cartItem && cartItem.store_whatsapp) storeWa = cartItem.store_whatsapp;
+    }
+    
+    // إذا وُجد رقم صاحب المتجر، نستخدمه
+    if (storeWa && String(storeWa).trim() !== '') {
+      targetWhatsapp = storeWa;
+    }
+  }
+  
+  // تنظيف الرقم من أي رموز
+  targetWhatsapp = String(targetWhatsapp).replace(/[^0-9]/g, '');
+
+  window.open('https://wa.me/' + targetWhatsapp + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
 });
 
 /* ═══ SHARE STORE ═══ */
@@ -1114,4 +1132,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.16.0 — store_id indexed & ready');
+console.log('[BZR] ui.js loaded ✅ v9.16.1 — Smart WhatsApp Routing');
