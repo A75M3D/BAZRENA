@@ -1,7 +1,11 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.16.0 — data.js
+   BranZar v9.17.0 — data.js
    Layer 2: Data Loading + Smart Stores + Smart Products
-   ✅ v9.16.0: Category fetching uses store_id (stable) instead of store_name
+   ✅ v9.17.0: Store rename propagation
+                - startStoresLiveListener detects 'modified' (rename)
+                - Calls __bzrHandleStoreRename on live rename
+                - startProductsLiveListener handles 'modified' events
+                - sortStoresLikeOriginal uses _bzrMillis
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -40,7 +44,10 @@ function sortStoresLikeOriginal(list) {
   return list.slice().sort((a, b) => {
     const followersA = Number(b.followers) || 0, followersB = Number(a.followers) || 0;
     if (followersA !== followersB) return followersB - followersA;
-    return String(b.created_at || '').localeCompare(String(a.created_at || ''));
+    // ✅ v9.17.0: use _bzrMillis for stable secondary sort
+    const tA = (typeof _bzrMillis === 'function') ? _bzrMillis(a.created_at) : 0;
+    const tB = (typeof _bzrMillis === 'function') ? _bzrMillis(b.created_at) : 0;
+    return tB - tA;
   });
 }
 
@@ -68,23 +75,15 @@ async function loadStores(force) {
   const empty = document.getElementById('storesEmpty');
   loader?.classList.remove('hidden');
   empty?.classList.add('hidden');
-
   try {
     let local = force ? [] : await dexieGetAllStores();
-    if (local && local.length > 0) {
-      stores = sortStoresLikeOriginal(local);
-      renderStoresFromMemory();
-      loader?.classList.add('hidden');
-    }
+    if (local && local.length > 0) { stores = sortStoresLikeOriginal(local); renderStoresFromMemory(); loader?.classList.add('hidden'); }
     if (!local || local.length === 0) await fetchInitialStores();
     startStoresLiveListener();
   } catch (error) {
     console.error('[BZR] loadStores failed:', error);
     empty?.classList.remove('hidden');
-  } finally {
-    loader?.classList.add('hidden');
-    _isLoadingStores = false;
-  }
+  } finally { loader?.classList.add('hidden'); _isLoadingStores = false; }
 }
 
 async function fetchInitialStores() {
@@ -99,6 +98,7 @@ async function fetchInitialStores() {
   } catch (error) {}
 }
 
+/* ✅ v9.17.0 — Detects renames via 'modified' events */
 function startStoresLiveListener() {
   if (storesLiveUnsubscribe) return;
   try {
@@ -106,23 +106,51 @@ function startStoresLiveListener() {
       .onSnapshot({ includeMetadataChanges: false }, async (snapshot) => {
         const isFirstSync = !_storesFirstSyncDone;
         const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // 🆕 Detect renames BEFORE upserting (compare against old Dexie state)
+        const renames = [];
+        if (!isFirstSync && bzrDB) {
+          for (const c of snapshot.docChanges()) {
+            if (c.type === 'modified') {
+              try {
+                const oldStore = await bzrDB.stores.get(c.doc.id);
+                const newName = String(c.doc.data().name || '').trim();
+                const oldName = oldStore ? String(oldStore.name || '').trim() : '';
+                if (oldName && newName && oldName !== newName) {
+                  renames.push({ id: c.doc.id, oldName, newName });
+                }
+              } catch (e) {}
+            }
+          }
+        }
+
         let added = [];
         if (!isFirstSync) {
           for (const c of snapshot.docChanges()) {
             if (c.type === 'added') {
-              let exists = false; if (bzrDB) { try { exists = !!(await bzrDB.stores.get(c.doc.id)); } catch (e) {} }
+              let exists = false;
+              if (bzrDB) { try { exists = !!(await bzrDB.stores.get(c.doc.id)); } catch (e) {} }
               if (!exists) added.push({ id: c.doc.id, ...c.doc.data() });
             }
           }
         }
+
         await dexieBulkUpsertStores(docs);
+
+        // 🆕 Apply renames — updates products Dexie + clears caches
+        for (const r of renames) {
+          if (typeof window.__bzrHandleStoreRename === 'function') {
+            await window.__bzrHandleStoreRename(r.id, r.newName);
+            console.log('[BZR] Store rename synced:', r.oldName, '→', r.newName);
+          } else {
+            console.warn('[BZR] ⚠️ __bzrHandleStoreRename missing — Dexie products may show stale names');
+          }
+        }
+
         let all = await dexieGetAllStores();
         stores = sortStoresLikeOriginal(all.length ? all : docs);
         if (!isFirstSync || stores.length > 0) renderStoresFromMemory();
-        if (!isFirstSync && added.length > 0) {
-          const names = added.map(s => s.name).filter(Boolean);
-          showNewStoreToast(names.join(' • '));
-        }
+        if (!isFirstSync && added.length > 0) { const names = added.map(s => s.name).filter(Boolean); showNewStoreToast(names.join(' • ')); }
         if (isFirstSync) _storesFirstSyncDone = true;
       }, (error) => { storesLiveUnsubscribe = null; setTimeout(startStoresLiveListener, 5000); });
   } catch (error) { storesLiveUnsubscribe = null; }
@@ -135,15 +163,15 @@ document.getElementById('retryStoresBtn')?.addEventListener('click', () => {
 
 function showNewStoreToast(storeName) {
   document.getElementById('bzrNewStoreToast')?.remove();
-  // ... (كود التوست كامل كما هو لم يتغير، اختصاراً للنص)
-  const toast = document.createElement('div'); toast.id = 'bzrNewStoreToast'; toast.className = 'bzr-new-store-toast';
+  const toast = document.createElement('div');
+  toast.id = 'bzrNewStoreToast'; toast.className = 'bzr-new-store-toast';
   toast.innerHTML = `<span class="bzr-icon">🎉</span><div class="bzr-body"><span class="bzr-title">متجر جديد انضم إلى BranZar</span><span class="bzr-name">${storeName || 'مرحباً'}</span></div>`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 4200);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   📦 SMART PRODUCTS SYSTEM (v9.16.0)
+   📦 SMART PRODUCTS SYSTEM (v9.17.0)
    ═══════════════════════════════════════════════════════════ */
 const PRODUCTS_LIVE_WINDOW = 20;
 const PRODUCTS_INITIAL_FETCH = 100;
@@ -158,7 +186,6 @@ async function loadAllProducts(force) {
   loader?.classList.remove('hidden'); empty?.classList.add('hidden');
   if (grid) grid.innerHTML = ''; loadMoreBtn?.classList.add('hidden');
   allProductsLocal = []; lastVisibleDoc = null; hasMoreProducts = true;
-
   try {
     let local = force ? [] : await dexieGetRecentProducts(PRODUCTS_INITIAL_FETCH);
     if (local && local.length > 0) {
@@ -194,6 +221,7 @@ async function fetchInitialProducts() {
   } catch (error) {}
 }
 
+/* ✅ v9.17.0 — handles both 'added' and 'modified' */
 function startProductsLiveListener() {
   if (productsLiveUnsubscribe) return;
   try {
@@ -201,15 +229,29 @@ function startProductsLiveListener() {
       .onSnapshot({ includeMetadataChanges: false }, async (snapshot) => {
         const isFirstSync = !_productsFirstSyncDone;
         const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        let added = [];
+        let added = [], modified = [];
         for (const c of snapshot.docChanges()) {
           if (c.type === 'added') {
-            let exists = false; if (bzrDB) { try { exists = !!(await bzrDB.products.get(c.doc.id)); } catch (e) {} }
+            let exists = false;
+            if (bzrDB) { try { exists = !!(await bzrDB.products.get(c.doc.id)); } catch (e) {} }
             if (!exists) added.push({ id: c.doc.id, ...c.doc.data() });
+          } else if (c.type === 'modified') {
+            // 🆕 Detect updates (e.g., store_name after rename, price changes)
+            modified.push({ id: c.doc.id, ...c.doc.data() });
           }
         }
         await dexieBulkUpsertProducts(docs);
         if (currentCategory) { if (isFirstSync) _productsFirstSyncDone = true; return; }
+        if (!isFirstSync && modified.length > 0) {
+          const modMap = new Map(modified.map(p => [p.id, p]));
+          let anyChange = false;
+          allProductsLocal = allProductsLocal.map(p => { if (modMap.has(p.id)) { anyChange = true; return { ...p, ...modMap.get(p.id) }; } return p; });
+          if (anyChange) {
+            const grid = document.getElementById('allProductsGrid');
+            if (grid) grid.innerHTML = '';
+            if (typeof renderProductsBatch === 'function' && allProductsLocal.length > 0) renderProductsBatch(allProductsLocal, 'replace');
+          }
+        }
         if (!isFirstSync && added.length > 0) {
           const existingIds = new Set(allProductsLocal.map(p => p.id));
           const trulyNew = added.filter(p => !existingIds.has(p.id));
@@ -226,16 +268,11 @@ function startProductsLiveListener() {
 async function fetchProductsPage(cursorDoc, silent) {
   if (!RateLimiter.canRequest('products')) { if (silent) return; throw new Error('rate_limit'); }
   let query, skipCount = 0;
-  if (cursorDoc) {
-    query = db.collection('products').orderBy('created_at', 'desc').startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE);
-  } else if (allProductsLocal.length > 0) {
-    skipCount = allProductsLocal.length;
-    query = db.collection('products').orderBy('created_at', 'desc').limit(skipCount + CONFIG.PRODUCTS_PER_PAGE);
-  } else {
-    query = db.collection('products').orderBy('created_at', 'desc').limit(CONFIG.PRODUCTS_PER_PAGE);
-  }
+  if (cursorDoc) { query = db.collection('products').orderBy('created_at', 'desc').startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE); }
+  else if (allProductsLocal.length > 0) { skipCount = allProductsLocal.length; query = db.collection('products').orderBy('created_at', 'desc').limit(skipCount + CONFIG.PRODUCTS_PER_PAGE); }
+  else { query = db.collection('products').orderBy('created_at', 'desc').limit(CONFIG.PRODUCTS_PER_PAGE); }
   let snapshot;
-  try { snapshot = await query.get(); } 
+  try { snapshot = await query.get(); }
   catch (error) {
     let fallbackQuery = db.collection('products').limit(skipCount + CONFIG.PRODUCTS_PER_PAGE || CONFIG.PRODUCTS_PER_PAGE);
     if (cursorDoc) fallbackQuery = db.collection('products').startAfter(cursorDoc).limit(CONFIG.PRODUCTS_PER_PAGE);
@@ -252,7 +289,7 @@ async function fetchProductsPage(cursorDoc, silent) {
   if (!silent) renderProductsBatch(newItems);
   const loadButton = document.getElementById('loadMoreProductsBtn');
   const emptyElement = document.getElementById('allProductsEmpty');
-  if (allProductsLocal.length === 0) { emptyElement?.classList.remove('hidden'); loadButton?.classList.add('hidden'); } 
+  if (allProductsLocal.length === 0) { emptyElement?.classList.remove('hidden'); loadButton?.classList.add('hidden'); }
   else { emptyElement?.classList.add('hidden'); if (hasMoreProducts) loadButton?.classList.remove('hidden'); else loadButton?.classList.add('hidden'); }
 }
 
@@ -260,10 +297,8 @@ document.getElementById('loadMoreProductsBtn')?.addEventListener('click', async 
   const button = document.getElementById('loadMoreProductsBtn');
   if (button.disabled || !hasMoreProducts || _isLoadingSmartProducts) return;
   button.disabled = true; haptic('light');
-  try {
-    if (currentCategory) await fetchProductsByCategoryPage(lastVisibleDoc, false);
-    else await fetchProductsPage(lastVisibleDoc, false);
-  } catch (error) { showToast('تعذر تحميل المزيد'); }
+  try { if (currentCategory) await fetchProductsByCategoryPage(lastVisibleDoc, false); else await fetchProductsPage(lastVisibleDoc, false); }
+  catch (error) { showToast('تعذر تحميل المزيد'); }
   button.disabled = false;
 });
 
@@ -293,20 +328,11 @@ async function applyProductsFilter(category) {
   try { await fetchProductsByCategoryPage(null, false); } catch (error) { emptyElement?.classList.remove('hidden'); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🚀 v9.16.0: fetchProductsByCategoryPage uses store_id
-   ═══════════════════════════════════════════════════════════ */
 async function fetchProductsByCategoryPage(cursorDoc, silent) {
   const category = currentCategory;
   if (!category) return;
   if (!RateLimiter.canRequest('products_cat')) { if (!silent) throw new Error('rate_limit'); return; }
-
-  // 🆕 استخدم الـ ID الثابت بدلاً من الاسم
-  const storeIds = stores
-    .filter((store) => store.category === category)
-    .map((store) => String(store.id))
-    .filter(Boolean);
-
+  const storeIds = stores.filter((store) => store.category === category).map((store) => String(store.id)).filter(Boolean);
   if (!storeIds.length) {
     if (!silent) document.getElementById('allProductsGrid').innerHTML = '';
     document.getElementById('allProductsEmpty').classList.remove('hidden');
@@ -314,12 +340,10 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
     hasMoreProducts = false;
     return;
   }
-
   const chunks = [];
   for (let i = 0; i < storeIds.length; i += 10) chunks.push(storeIds.slice(i, i + 10));
   const fetched = [];
   let newCursor = cursorDoc;
-
   for (const chunk of chunks) {
     try {
       let query = db.collection('products').where('store_id', 'in', chunk).limit(CONFIG.PRODUCTS_PER_PAGE);
@@ -338,18 +362,15 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
       } catch (fallbackError) {}
     }
   }
-
   fetched.sort((a, b) => (b.data().created_at?.seconds || 0) - (a.data().created_at?.seconds || 0));
   const limited = fetched.slice(0, CONFIG.PRODUCTS_PER_PAGE);
   if (limited.length > 0) lastVisibleDoc = limited[limited.length - 1];
   hasMoreProducts = fetched.length >= CONFIG.PRODUCTS_PER_PAGE;
   const items = limited.map((doc) => ({ id: doc.id, ...doc.data() }));
-  
   await dexieBulkUpsertProducts(items);
   const existingIds = new Set(allProductsLocal.map((product) => product.id));
   const newItems = items.filter((item) => !existingIds.has(item.id));
   allProductsLocal = allProductsLocal.concat(newItems);
-  
   if (!silent) renderProductsBatch(newItems);
   if (allProductsLocal.length === 0) document.getElementById('allProductsEmpty').classList.remove('hidden');
   else document.getElementById('allProductsEmpty').classList.add('hidden');
@@ -368,7 +389,7 @@ async function loadCategories(force) {
   await loadStores();
 }
 
-/* ═══ FOLLOW SYSTEM & HELPERS (مختصر) ═══ */
+/* ═══ FOLLOW SYSTEM ═══ */
 async function syncFollowedStoresFromServer() {
   try {
     if (!await ensureAuth()) return;
@@ -429,4 +450,4 @@ function getProductDescription(product) { return ((product?.description && Strin
 function hasProductDescription(product) { return getProductDescription(product).length > 0; }
 function openSupportWhatsApp(context) { window.open(`https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(SUPPORT_MESSAGES[context] || SUPPORT_MESSAGES.general)}`, '_blank'); }
 
-console.log('[BZR] data.js loaded ✅ v9.16.0 — Products by store_id');
+console.log('[BZR] data.js loaded ✅ v9.17.0 — store rename propagation enabled');
