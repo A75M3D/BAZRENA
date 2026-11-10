@@ -1,19 +1,18 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.16.1 — ui.js
+   BranZar v9.17.1 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
-   ✅ v9.16.1: Smart WhatsApp Routing (Store WhatsApp vs Platform)
-                - 1 store in cart → send to store's WhatsApp
-                - >1 store in cart → send to Platform WhatsApp
-                - Fallback to Platform if store number is missing
+   ✅ v9.17.1: Live store name resolution
+                - Product card shows live store name (by store_id lookup)
+                - Product modal shows live store name
+                - WhatsApp cart message uses live store name per item
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════════
-   🎨 SVG Icon Engine — Native createElementNS
+   🎨 SVG Icon Engine
    ═══════════════════════════════════════════════════════════════ */
 var SVG_NS = 'http://www.w3.org/2000/svg';
 var XLINK_NS = 'http://www.w3.org/1999/xlink';
-
 function bzrSvgIcon(iconId, className) {
   var svg = document.createElementNS(SVG_NS, 'svg');
   svg.setAttribute('class', className || 'mi mi-sm');
@@ -34,54 +33,37 @@ function bzrSetIcon(parentEl, iconId, className) {
 window.bzrSvgIcon = bzrSvgIcon;
 window.bzrSetIcon = bzrSetIcon;
 
-/* ═══════════════════════════════════════════════════════════════
-   💱 Currency Resolution (multi-currency — SDG default)
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══ Currency ═══ */
 var _BZR_FALLBACK_CURRENCY = { code: 'SDG', name: 'جنيه سوداني', symbol: 'SDG', flag: '🇸🇩' };
-
-var _BZR_LEGACY_SYMBOLS = {
-  'ج.س': 'SDG', 'ج.س.': 'SDG', 'جنيه': 'SDG', 'جنية': 'SDG',
-  'sdg': 'SDG', 'SDG': 'SDG', 'usd': 'USD', 'USD': 'USD'
-};
+var _BZR_LEGACY_SYMBOLS = { 'ج.س': 'SDG', 'ج.س.': 'SDG', 'جنيه': 'SDG', 'جنية': 'SDG', 'sdg': 'SDG', 'SDG': 'SDG', 'usd': 'USD', 'USD': 'USD' };
 
 function bzrNormalizeCurrencySymbol(sym) {
   if (!sym) return null;
   var s = String(sym).trim();
   if (_BZR_LEGACY_SYMBOLS[s]) return _BZR_LEGACY_SYMBOLS[s];
   var lower = s.toLowerCase();
-  for (var k in _BZR_LEGACY_SYMBOLS) {
-    if (_BZR_LEGACY_SYMBOLS.hasOwnProperty(k) && k.toLowerCase() === lower) {
-      return _BZR_LEGACY_SYMBOLS[k];
-    }
-  }
+  for (var k in _BZR_LEGACY_SYMBOLS) { if (_BZR_LEGACY_SYMBOLS.hasOwnProperty(k) && k.toLowerCase() === lower) return _BZR_LEGACY_SYMBOLS[k]; }
   return s;
 }
 
 function bzrResolveProductCurrency(product) {
   if (typeof window.BZR_CURRENCIES === 'undefined') return _BZR_FALLBACK_CURRENCY;
   if (!product) return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY] || _BZR_FALLBACK_CURRENCY;
-
   if (product.currency) {
     var normalized = bzrNormalizeCurrencySymbol(String(product.currency).trim());
     var found = (typeof window.bzrGetCurrencyBySymbol === 'function') ? window.bzrGetCurrencyBySymbol(normalized) : null;
     if (found) return found;
     return { code: normalized, name: normalized, symbol: normalized, flag: '💱' };
   }
-
   try {
     if (product.store_id && typeof stores !== 'undefined' && Array.isArray(stores)) {
       var store = stores.find(function (s) { return s && s.id === product.store_id; });
-      if (store && store.currency && typeof window.bzrGetCurrencyByCode === 'function') {
-        return window.bzrGetCurrencyByCode(store.currency);
-      }
+      if (store && store.currency && typeof window.bzrGetCurrencyByCode === 'function') return window.bzrGetCurrencyByCode(store.currency);
     } else if (product.store_name && typeof stores !== 'undefined' && Array.isArray(stores)) {
       var storeByName = stores.find(function (s) { return s && s.name === product.store_name; });
-      if (storeByName && storeByName.currency && typeof window.bzrGetCurrencyByCode === 'function') {
-        return window.bzrGetCurrencyByCode(storeByName.currency);
-      }
+      if (storeByName && storeByName.currency && typeof window.bzrGetCurrencyByCode === 'function') return window.bzrGetCurrencyByCode(storeByName.currency);
     }
-  } catch (e) { /* ignore */ }
-
+  } catch (e) {}
   return window.BZR_CURRENCIES[window.BZR_DEFAULT_CURRENCY] || _BZR_FALLBACK_CURRENCY;
 }
 
@@ -95,127 +77,115 @@ window.bzrResolveProductCurrency = bzrResolveProductCurrency;
 window.bzrSafeFormatPrice = bzrSafeFormatPrice;
 window.bzrNormalizeCurrencySymbol = bzrNormalizeCurrencySymbol;
 
-/* Cart migration */
+/* 🆕 v9.17.1 — Live store name resolver */
+function bzrResolveStoreName(product) {
+  if (!product) return '';
+  try {
+    if (product.store_id && typeof stores !== 'undefined' && Array.isArray(stores)) {
+      var live = stores.find(function (s) { return s && String(s.id) === String(product.store_id); });
+      if (live && live.name) return live.name;
+    }
+  } catch (e) {}
+  return product.store_name || '';
+}
+window.bzrResolveStoreName = bzrResolveStoreName;
+
 (function migrateLegacyCartCurrencies() {
   try {
     var key = (typeof KEYS !== 'undefined' && KEYS.CART) ? KEYS.CART : 'branzar_cart';
-    var raw = localStorage.getItem(key);
-    if (!raw) return;
-    var list = JSON.parse(raw);
-    if (!Array.isArray(list)) return;
+    var raw = localStorage.getItem(key); if (!raw) return;
+    var list = JSON.parse(raw); if (!Array.isArray(list)) return;
     var changed = false;
-    list.forEach(function (it) {
-      if (it && it.currency) {
-        var norm = bzrNormalizeCurrencySymbol(it.currency);
-        if (norm && norm !== it.currency) { it.currency = norm; changed = true; }
-      }
-    });
+    list.forEach(function (it) { if (it && it.currency) { var norm = bzrNormalizeCurrencySymbol(it.currency); if (norm && norm !== it.currency) { it.currency = norm; changed = true; } } });
     if (changed) localStorage.setItem(key, JSON.stringify(list));
-  } catch (e) { /* silent */ }
+  } catch (e) {}
 })();
 
 /* ═══ THEME ═══ */
 function applyTheme(theme) {
   document.body.classList.toggle('theme-dark', theme === 'dark');
-  const accountSwitch = document.getElementById('accountThemeSwitch');
+  var accountSwitch = document.getElementById('accountThemeSwitch');
   if (accountSwitch) accountSwitch.classList.toggle('on', theme === 'dark');
-  const meta = document.querySelector('meta[name="theme-color"]');
+  var meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', theme === 'dark' ? '#0F172A' : '#FF7A00');
 }
 function initTheme() {
-  const saved = localStorage.getItem(KEYS.THEME);
+  var saved = localStorage.getItem(KEYS.THEME);
   if (saved) { applyTheme(saved); return; }
   applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 }
 function toggleTheme() {
-  const current = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
+  var current = document.body.classList.contains('theme-dark') ? 'dark' : 'light';
+  var next = current === 'dark' ? 'light' : 'dark';
   applyTheme(next); localStorage.setItem(KEYS.THEME, next); haptic('light');
 }
 document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
 document.getElementById('accountThemeSwitch')?.addEventListener('click', toggleTheme);
-document.getElementById('accountThemeSwitch')?.addEventListener('keydown', (e) => {
+document.getElementById('accountThemeSwitch')?.addEventListener('keydown', function (e) {
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
 });
 
 /* ═══ VIEW MODE ═══ */
 function applyViewMode(mode) {
-  document.body.classList.remove('view-mobile','view-desktop');
+  document.body.classList.remove('view-mobile', 'view-desktop');
   document.body.classList.add('view-' + mode);
-  $$('.view-toggle-pill button').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+  $$('.view-toggle-pill button').forEach(function(b){ b.classList.toggle('active', b.dataset.view === mode); });
   localStorage.setItem(KEYS.VIEW, mode);
 }
 function initViewMode() {
-  const saved = localStorage.getItem(KEYS.VIEW);
+  var saved = localStorage.getItem(KEYS.VIEW);
   if (saved) { applyViewMode(saved); return; }
-  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent) || window.matchMedia('(max-width: 767px)').matches;
+  var isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent) || window.matchMedia('(max-width: 767px)').matches;
   applyViewMode(isMobile ? 'mobile' : 'desktop');
 }
 function setView(mode) { applyViewMode(mode); haptic('light'); }
-document.getElementById('viewMobileBtn')?.addEventListener('click', () => setView('mobile'));
-document.getElementById('viewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
-document.getElementById('accountViewMobileBtn')?.addEventListener('click', () => setView('mobile'));
-document.getElementById('accountViewDesktopBtn')?.addEventListener('click', () => setView('desktop'));
+document.getElementById('viewMobileBtn')?.addEventListener('click', function(){ setView('mobile'); });
+document.getElementById('viewDesktopBtn')?.addEventListener('click', function(){ setView('desktop'); });
+document.getElementById('accountViewMobileBtn')?.addEventListener('click', function(){ setView('mobile'); });
+document.getElementById('accountViewDesktopBtn')?.addEventListener('click', function(){ setView('desktop'); });
 
 /* ═══ AUTO-SCROLL ═══ */
-let isHoveringStores = false;
-let lastStoresInteraction = 0;
-let _scrollRAFId = null;
-let _lastScrollFrame = 0;
-let isHoveringCategories = false;
-let lastCategoriesInteraction = 0;
-let _catScrollRAFId = null;
-let _lastCatScrollFrame = 0;
-
-function getStoresMaxScroll() { const c = document.getElementById('storesScrollContainer'); return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0; }
-function getCategoriesMaxScroll() { const c = document.getElementById('categoriesContainer'); return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0; }
+var isHoveringStores = false, lastStoresInteraction = 0, _scrollRAFId = null, _lastScrollFrame = 0;
+var isHoveringCategories = false, lastCategoriesInteraction = 0, _catScrollRAFId = null, _lastCatScrollFrame = 0;
+function getStoresMaxScroll() { var c = document.getElementById('storesScrollContainer'); return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0; }
+function getCategoriesMaxScroll() { var c = document.getElementById('categoriesContainer'); return c ? Math.max(0, c.scrollWidth - c.clientWidth) : 0; }
 function _autoScrollLoop(ts) {
-  const c = document.getElementById('storesScrollContainer');
-  if (!c) { _scrollRAFId = null; return; }
+  var c = document.getElementById('storesScrollContainer'); if (!c) { _scrollRAFId = null; return; }
   if (!isPageVisible) { _scrollRAFId = requestAnimationFrame(_autoScrollLoop); return; }
   if (isHoveringStores || (Date.now() - lastStoresInteraction < CONFIG.AUTO_SCROLL_RESUME)) { _scrollRAFId = requestAnimationFrame(_autoScrollLoop); return; }
   if (ts - _lastScrollFrame < CONFIG.AUTO_SCROLL_INTERVAL) { _scrollRAFId = requestAnimationFrame(_autoScrollLoop); return; }
   _lastScrollFrame = ts;
-  const max = getStoresMaxScroll();
-  if (max <= 0) { _scrollRAFId = null; return; }
+  var max = getStoresMaxScroll(); if (max <= 0) { _scrollRAFId = null; return; }
   if (c.scrollLeft <= 1) c.scrollLeft = max; else c.scrollLeft -= CONFIG.SCROLL_STEP;
   _scrollRAFId = requestAnimationFrame(_autoScrollLoop);
 }
-function startAutoScroll() {
-  stopAutoScroll(); const c = document.getElementById('storesScrollContainer'); if (!c) return;
-  requestAnimationFrame(() => { c.scrollLeft = getStoresMaxScroll(); _scrollRAFId = requestAnimationFrame(_autoScrollLoop); });
-}
+function startAutoScroll() { stopAutoScroll(); var c = document.getElementById('storesScrollContainer'); if (!c) return; requestAnimationFrame(function(){ c.scrollLeft = getStoresMaxScroll(); _scrollRAFId = requestAnimationFrame(_autoScrollLoop); }); }
 function stopAutoScroll() { if (_scrollRAFId) { cancelAnimationFrame(_scrollRAFId); _scrollRAFId = null; } }
 function _categoriesAutoScrollLoop(ts) {
-  const c = document.getElementById('categoriesContainer');
-  if (!c) { _catScrollRAFId = null; return; }
+  var c = document.getElementById('categoriesContainer'); if (!c) { _catScrollRAFId = null; return; }
   if (!isPageVisible) { _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return; }
   if (isHoveringCategories || (Date.now() - lastCategoriesInteraction < CONFIG.AUTO_SCROLL_RESUME)) { _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return; }
   if (ts - _lastCatScrollFrame < CONFIG.AUTO_SCROLL_INTERVAL) { _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); return; }
   _lastCatScrollFrame = ts;
-  const max = getCategoriesMaxScroll();
-  if (max <= 0) { _catScrollRAFId = null; return; }
+  var max = getCategoriesMaxScroll(); if (max <= 0) { _catScrollRAFId = null; return; }
   if (c.scrollLeft <= 1) c.scrollLeft = max; else c.scrollLeft -= CONFIG.SCROLL_STEP;
   _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop);
 }
-function startCategoriesAutoScroll() {
-  stopCategoriesAutoScroll(); const c = document.getElementById('categoriesContainer'); if (!c) return;
-  requestAnimationFrame(() => { c.scrollLeft = getCategoriesMaxScroll(); _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); });
-}
+function startCategoriesAutoScroll() { stopCategoriesAutoScroll(); var c = document.getElementById('categoriesContainer'); if (!c) return; requestAnimationFrame(function(){ c.scrollLeft = getCategoriesMaxScroll(); _catScrollRAFId = requestAnimationFrame(_categoriesAutoScrollLoop); }); }
 function stopCategoriesAutoScroll() { if (_catScrollRAFId) { cancelAnimationFrame(_catScrollRAFId); _catScrollRAFId = null; } }
 
 /* ═══ BODY SCROLL LOCK ═══ */
 function updateBodyScroll() {
-  const anyOpen = !document.getElementById('storeModal').classList.contains('hidden') ||
-                  !document.getElementById('productModal').classList.contains('hidden') ||
-                  document.getElementById('cartSidebar').classList.contains('open') ||
-                  !document.getElementById('accountModal').classList.contains('hidden');
+  var anyOpen = !document.getElementById('storeModal').classList.contains('hidden') ||
+                !document.getElementById('productModal').classList.contains('hidden') ||
+                document.getElementById('cartSidebar').classList.contains('open') ||
+                !document.getElementById('accountModal').classList.contains('hidden');
   document.body.style.overflow = anyOpen ? 'hidden' : '';
   document.body.classList.toggle('modal-open', anyOpen);
 }
 
 /* ═══ ANDROID BACK ═══ */
-let _ignoreNextPop = false;
+var _ignoreNextPop = false;
 function bzrPushModal() { try { history.pushState({ bzrModal: Date.now() }, ''); } catch(e){} }
 function bzrCloseModalUI() { if (history.state && history.state.bzrModal) { _ignoreNextPop = true; try { history.back(); } catch(e){ _ignoreNextPop = false; } } }
 function closeTopmostModal() {
@@ -225,121 +195,117 @@ function closeTopmostModal() {
   if (document.getElementById('cartSidebar').classList.contains('open')) { closeCartInternal(); return true; }
   return false;
 }
-window.addEventListener('popstate', () => { if (_ignoreNextPop) { _ignoreNextPop = false; return; } closeTopmostModal(); });
+window.addEventListener('popstate', function () { if (_ignoreNextPop) { _ignoreNextPop = false; return; } closeTopmostModal(); });
 
 /* ═══ BOTTOM NAV ═══ */
-const bottomNav = document.getElementById('bzrBottomNav');
-const bottomNavBadge = document.getElementById('bottomNavCartBadge');
-function setActiveNav(nav) { if (!bottomNav) return; bottomNav.querySelectorAll('.bzr-nav-item').forEach(b => b.classList.toggle('active', b.dataset.nav === nav)); }
-bottomNav?.addEventListener('click', (e) => {
-  const btn = e.target.closest('.bzr-nav-item'); if (!btn) return; haptic('light');
-  const nav = btn.dataset.nav;
+var bottomNav = document.getElementById('bzrBottomNav');
+var bottomNavBadge = document.getElementById('bottomNavCartBadge');
+function setActiveNav(nav) { if (!bottomNav) return; bottomNav.querySelectorAll('.bzr-nav-item').forEach(function(b){ b.classList.toggle('active', b.dataset.nav === nav); }); }
+bottomNav?.addEventListener('click', function (e) {
+  var btn = e.target.closest('.bzr-nav-item'); if (!btn) return; haptic('light');
+  var nav = btn.dataset.nav;
   if (nav === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveNav('home'); }
-  else if (nav === 'categories') { const sec = document.getElementById('categories'); if (sec) { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); setActiveNav('categories'); } }
+  else if (nav === 'categories') { var sec = document.getElementById('categories'); if (sec) { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); setActiveNav('categories'); } }
   else if (nav === 'cart') { openCart(); }
   else if (nav === 'account') { openAccountModal(); }
 });
 function updateBottomNavBadge() {
   if (!bottomNavBadge) return;
-  const total = cart.reduce((s, i) => s + i.quantity, 0);
+  var total = cart.reduce(function(s,i){ return s + i.quantity; }, 0);
   if (total > 0) { bottomNavBadge.textContent = total > 99 ? '99+' : total; bottomNavBadge.style.display = 'flex'; }
   else bottomNavBadge.style.display = 'none';
 }
 
 /* ═══ ACCOUNT MODAL ═══ */
-const accountModal = document.getElementById('accountModal');
-const createStoreModal = document.getElementById('createStoreModal');
+var accountModal = document.getElementById('accountModal');
+var createStoreModal = document.getElementById('createStoreModal');
 function openAccountModal() { accountModal.classList.remove('hidden'); updateBodyScroll(); haptic('light'); bzrPushModal(); }
 function closeAccountModalInternal() { accountModal.classList.add('hidden'); updateBodyScroll(); }
 function closeAccountModal() { closeAccountModalInternal(); bzrCloseModalUI(); }
 document.getElementById('closeAccountModal')?.addEventListener('click', closeAccountModal);
 document.getElementById('accountOverlay')?.addEventListener('click', closeAccountModal);
-document.getElementById('logoMenuBtn')?.addEventListener('click', () => { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
-document.getElementById('accountShareAppBtn')?.addEventListener('click', async () => {
+document.getElementById('logoMenuBtn')?.addEventListener('click', function () { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+document.getElementById('accountShareAppBtn')?.addEventListener('click', async function () {
   haptic('medium');
-  const shareData = { title: 'BranZar - بران زار', text: 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد 🛒🛍️', url: window.location.origin };
+  var shareData = { title: 'BranZar - بران زار', text: 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد 🛒🛍️', url: window.location.origin };
   if (navigator.share) { try { await navigator.share(shareData); return; } catch (err) { if (err && err.name === 'AbortError') return; } }
   try {
     if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(shareData.url); showToast('✅ تم نسخ رابط التطبيق'); }
-    else { const ta = document.createElement('textarea'); ta.value = shareData.url; ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✅ تم نسخ رابط التطبيق'); }
+    else { var ta = document.createElement('textarea'); ta.value = shareData.url; ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✅ تم نسخ رابط التطبيق'); }
   } catch (e) { showToast('تعذر نسخ الرابط'); }
 });
 
-/* ═══ PWA INSTALL ═══ */
-let deferredPrompt = null;
-const INSTALL_DISMISS_KEY = 'branzar_install_dismissed_v2';
-const INSTALL_DISMISS_DAYS = 3;
+/* ═══ PWA (shortened) ═══ */
+var deferredPrompt = null;
+var INSTALL_DISMISS_KEY = 'branzar_install_dismissed_v2';
+var INSTALL_DISMISS_DAYS = 3;
 function isStandaloneMode() { return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true || document.referrer.indexOf('android-app://') === 0; }
-function isIOS() { const ua = navigator.userAgent || ''; const isIPad = /iPad/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); return /iPhone|iPod/i.test(ua) || isIPad; }
+function isIOS() { var ua = navigator.userAgent || ''; var isIPad = /iPad/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); return /iPhone|iPod/i.test(ua) || isIPad; }
 function isFirefox() { return /Firefox/i.test(navigator.userAgent); }
-function wasInstallDismissed() { try { const dismissed = parseInt(localStorage.getItem(INSTALL_DISMISS_KEY) || '0'); if (!dismissed) return false; return (Date.now() - dismissed) / (1000 * 60 * 60 * 24) < INSTALL_DISMISS_DAYS; } catch(e) { return false; } }
+function wasInstallDismissed() { try { var d = parseInt(localStorage.getItem(INSTALL_DISMISS_KEY) || '0'); if (!d) return false; return (Date.now() - d) / (1000 * 60 * 60 * 24) < INSTALL_DISMISS_DAYS; } catch(e) { return false; } }
 function markInstallDismissed() { try { localStorage.setItem(INSTALL_DISMISS_KEY, Date.now().toString()); } catch(e){} }
 function clearInstallDismissed() { try { localStorage.removeItem(INSTALL_DISMISS_KEY); } catch(e){} }
 function isAppInstalled() { return isStandaloneMode() || localStorage.getItem(KEYS.INSTALLED) === 'true'; }
-function showInstallButton() { const btn = document.getElementById('installButtonFloating'); if (!btn) return; btn.classList.remove('hidden'); requestAnimationFrame(() => btn.classList.add('show')); }
-function hideInstallButton() { const btn = document.getElementById('installButtonFloating'); if (!btn) return; btn.classList.remove('show'); setTimeout(() => btn.classList.add('hidden'), 350); }
-window.addEventListener('beforeinstallprompt', (e) => {
+function showInstallButton() { var btn = document.getElementById('installButtonFloating'); if (!btn) return; btn.classList.remove('hidden'); requestAnimationFrame(function () { btn.classList.add('show'); }); }
+function hideInstallButton() { var btn = document.getElementById('installButtonFloating'); if (!btn) return; btn.classList.remove('show'); setTimeout(function(){ btn.classList.add('hidden'); }, 350); }
+window.addEventListener('beforeinstallprompt', function (e) {
   e.preventDefault(); deferredPrompt = e;
   if (isStandaloneMode() || localStorage.getItem(KEYS.INSTALLED) === 'true' || wasInstallDismissed()) return;
   showInstallButton();
 });
-window.addEventListener('appinstalled', () => {
+window.addEventListener('appinstalled', function () {
   try { localStorage.setItem(KEYS.INSTALLED, 'true'); } catch(e){}
   clearInstallDismissed(); hideInstallButton(); deferredPrompt = null; showToast('✅ تم تثبيت التطبيق بنجاح!'); haptic('heavy');
 });
 function showIOSInstallInstructions() {
-  let modal = document.getElementById('iosInstallModal');
+  var modal = document.getElementById('iosInstallModal');
   if (!modal) {
-    modal = document.createElement('div'); modal.id = 'iosInstallModal'; modal.className = 'pwa-ios-modal'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true');
-    modal.innerHTML = `<div class="pwa-ios-overlay"></div><div class="pwa-ios-sheet"><div class="pwa-ios-handle"></div><h3 class="pwa-ios-title">📱 تثبيت التطبيق على iPhone</h3><p class="pwa-ios-desc">لتثبيت BranZar كتطبيق على جهازك، اتبع الخطوات التالية:</p><ol class="pwa-ios-steps"><li><span class="pwa-ios-step-num">1</span><div><strong>اضغط زر المشاركة</strong><span>في شريط Safari السفلي</span></div><span style="color:#007AFF;display:inline-flex;" id="iosIcon1"></span></li><li><span class="pwa-ios-step-num">2</span><div><strong>اختر "إضافة إلى الشاشة الرئيسية"</strong><span>Add to Home Screen</span></div><span style="color:#FF7A00;display:inline-flex;" id="iosIcon2"></span></li><li><span class="pwa-ios-step-num">3</span><div><strong>اضغط "إضافة"</strong><span>سيظهر التطبيق على شاشتك الرئيسية</span></div><span style="color:#10B981;display:inline-flex;" id="iosIcon3"></span></li></ol><button id="pwaIosCloseBtn" class="pwa-ios-close">فهمت، شكراً</button></div>`;
+    modal = document.createElement('div'); modal.id = 'iosInstallModal'; modal.className = 'pwa-ios-modal';
+    modal.innerHTML = '<div class="pwa-ios-overlay"></div><div class="pwa-ios-sheet"><h3 class="pwa-ios-title">📱 تثبيت التطبيق على iPhone</h3><ol class="pwa-ios-steps"><li><span class="pwa-ios-step-num">1</span><div><strong>اضغط زر المشاركة</strong><span>في شريط Safari السفلي</span></div></li><li><span class="pwa-ios-step-num">2</span><div><strong>اختر "إضافة إلى الشاشة الرئيسية"</strong></div></li><li><span class="pwa-ios-step-num">3</span><div><strong>اضغط "إضافة"</strong></div></li></ol><button id="pwaIosCloseBtn" class="pwa-ios-close">فهمت، شكراً</button></div>';
     document.body.appendChild(modal);
-    ['mi-share-square', 'mi-plus-square', 'mi-check-circle'].forEach((id, i) => { const el = modal.querySelector(`#iosIcon${i+1}`); if (el) el.appendChild(bzrSvgIcon(id, 'mi mi-sm')); });
     modal.querySelector('.pwa-ios-overlay').addEventListener('click', closeIOSInstructions);
     document.getElementById('pwaIosCloseBtn').addEventListener('click', closeIOSInstructions);
   }
   modal.classList.add('show'); document.body.style.overflow = 'hidden'; haptic('medium');
 }
-function closeIOSInstructions() { const modal = document.getElementById('iosInstallModal'); if (!modal) return; modal.classList.remove('show'); document.body.style.overflow = ''; markInstallDismissed(); hideInstallButton(); }
-document.getElementById('installButtonFloating')?.addEventListener('click', async () => {
+function closeIOSInstructions() { var modal = document.getElementById('iosInstallModal'); if (!modal) return; modal.classList.remove('show'); document.body.style.overflow = ''; markInstallDismissed(); hideInstallButton(); }
+document.getElementById('installButtonFloating')?.addEventListener('click', async function () {
   haptic('medium');
   if (isStandaloneMode()) { showToast('✅ التطبيق مثبت بالفعل'); hideInstallButton(); return; }
   if (isIOS() && !deferredPrompt) { showIOSInstallInstructions(); return; }
   if (deferredPrompt) {
     try {
-      deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') { try { localStorage.setItem(KEYS.INSTALLED, 'true'); } catch(e){} showToast('🎉 جاري تثبيت التطبيق...'); hideInstallButton(); }
-      else { markInstallDismissed(); hideInstallButton(); showToast('يمكنك التثبيت لاحقاً من القائمة'); }
+      deferredPrompt.prompt(); var choice = await deferredPrompt.userChoice;
+      if (choice.outcome === 'accepted') { try { localStorage.setItem(KEYS.INSTALLED, 'true'); } catch(e){} showToast('🎉 جاري تثبيت التطبيق...'); hideInstallButton(); }
+      else { markInstallDismissed(); hideInstallButton(); showToast('يمكنك التثبيت لاحقاً'); }
       deferredPrompt = null;
-    } catch(err) { showToast('تعذر بدء التثبيت، حاول مرة أخرى'); }
+    } catch(err) { showToast('تعذر بدء التثبيت'); }
     return;
   }
   if (isFirefox()) { showToast('لتثبيت التطبيق، استخدم Chrome أو Edge'); return; }
   showToast('التثبيت غير متاح على هذا المتصفح');
 });
-function maybeShowIOSButton() { if (isStandaloneMode() || !isIOS() || wasInstallDismissed() || localStorage.getItem(KEYS.INSTALLED) === 'true') return; setTimeout(() => { if (!isStandaloneMode()) showInstallButton(); }, 8000); }
-if (isStandaloneMode()) { try { localStorage.setItem(KEYS.INSTALLED, 'true'); } catch(e){} hideInstallButton(); }
 
-/* ═══ NOTIFICATIONS (FCM) ═══ */
-let messaging = null;
-const NOTIF_PROMPT_KEY = 'branzarNotifPromptShownAt';
-const NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
-const NOTIF_DELAY_DAYS = 7;
+/* ═══ NOTIFICATIONS ═══ */
+var messaging = null;
+var NOTIF_PROMPT_KEY = 'branzarNotifPromptShownAt';
+var NOTIF_DISMISS_KEY = 'branzarNotifDismissed';
+var NOTIF_DELAY_DAYS = 7;
 function isNotificationSupported() { return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window; }
 function getNotifLastActionTime() { try { return Math.max(Number(localStorage.getItem(NOTIF_PROMPT_KEY) || 0), Number(localStorage.getItem(NOTIF_DISMISS_KEY) || 0)); } catch (error) { return 0; } }
-function shouldShowNotifBanner() { if (!isNotificationSupported() || Notification.permission === 'granted' || Notification.permission === 'denied') return false; const lastAction = getNotifLastActionTime(); if (lastAction && Date.now() - lastAction < NOTIF_DELAY_DAYS * 24 * 60 * 60 * 1000) return false; return true; }
+function shouldShowNotifBanner() { if (!isNotificationSupported() || Notification.permission === 'granted' || Notification.permission === 'denied') return false; var lastAction = getNotifLastActionTime(); if (lastAction && Date.now() - lastAction < NOTIF_DELAY_DAYS * 24 * 60 * 60 * 1000) return false; return true; }
 function markNotifPromptShown() { try { localStorage.setItem(NOTIF_PROMPT_KEY, Date.now().toString()); } catch (error) {} }
 function markNotifDismissed() { try { localStorage.setItem(NOTIF_DISMISS_KEY, Date.now().toString()); } catch (error) {} }
-function showNotifBanner() { const banner = document.getElementById('notifPermissionBanner'); if (!banner) return; markNotifPromptShown(); banner.classList.remove('hidden'); requestAnimationFrame(() => { setTimeout(() => banner.classList.add('show'), 50); }); }
-function hideNotifBanner() { const banner = document.getElementById('notifPermissionBanner'); if (!banner) return; banner.classList.remove('show'); setTimeout(() => banner.classList.add('hidden'), 600); }
+function showNotifBanner() { var banner = document.getElementById('notifPermissionBanner'); if (!banner) return; markNotifPromptShown(); banner.classList.remove('hidden'); requestAnimationFrame(function(){ setTimeout(function(){ banner.classList.add('show'); }, 50); }); }
+function hideNotifBanner() { var banner = document.getElementById('notifPermissionBanner'); if (!banner) return; banner.classList.remove('show'); setTimeout(function(){ banner.classList.add('hidden'); }, 600); }
 async function registerFCMToken(reg) {
   try {
-    const token = await messaging.getToken({ vapidKey: CONFIG.VAPID, serviceWorkerRegistration: reg });
+    var token = await messaging.getToken({ vapidKey: CONFIG.VAPID, serviceWorkerRegistration: reg });
     if (!token) return null;
     localStorage.setItem(KEYS.FCM_TOKEN, token);
-    const previousToken = localStorage.getItem(KEYS.FCM_TOKEN + '_saved');
+    var previousToken = localStorage.getItem(KEYS.FCM_TOKEN + '_saved');
     if (previousToken !== token) {
-      await db.collection('fcm_tokens').doc(token).set({ token, createdAt: firebase.firestore.FieldValue.serverTimestamp(), lastSeen: firebase.firestore.FieldValue.serverTimestamp(), active: true }, { merge: true });
+      await db.collection('fcm_tokens').doc(token).set({ token: token, createdAt: firebase.firestore.FieldValue.serverTimestamp(), lastSeen: firebase.firestore.FieldValue.serverTimestamp(), active: true }, { merge: true });
       localStorage.setItem(KEYS.FCM_TOKEN + '_saved', token);
     }
     return token;
@@ -348,113 +314,117 @@ async function registerFCMToken(reg) {
 async function initFCM() {
   try {
     if (!isNotificationSupported()) return;
-    messaging = firebase.messaging(); const reg = await navigator.serviceWorker.ready;
-    messaging.onMessage((payload) => {
-      const title = payload.notification?.title || 'إشعار جديد'; const body = payload.notification?.body || 'لديك جديد في BranZar';
+    messaging = firebase.messaging(); var reg = await navigator.serviceWorker.ready;
+    messaging.onMessage(function (payload) {
+      var title = (payload.notification && payload.notification.title) || 'إشعار جديد';
+      var body = (payload.notification && payload.notification.body) || 'لديك جديد في BranZar';
       showPushToast(title, body);
-      if (Notification.permission === 'granted') {
-        try {
-          const notification = new Notification(title, { body, icon: payload.notification?.icon || CONFIG.DEFAULT_OG_IMAGE, dir: 'rtl', lang: 'ar', tag: payload.data?.tag || 'branzar-fg' });
-          notification.onclick = () => { window.focus(); window.location.href = payload.data?.url || 'https://branzar.vercel.app'; notification.close(); };
-        } catch (error) {}
-      }
     });
     if (Notification.permission === 'granted') await registerFCMToken(reg);
-    else if (shouldShowNotifBanner()) setTimeout(() => { if (shouldShowNotifBanner()) showNotifBanner(); }, 12000);
+    else if (shouldShowNotifBanner()) setTimeout(function(){ if (shouldShowNotifBanner()) showNotifBanner(); }, 12000);
   } catch (error) {}
 }
 function showPushToast(title, body) {
-  const toast = document.getElementById('pushToast'); if (!toast) return;
-  document.getElementById('pushToastTitle').textContent = title; document.getElementById('pushToastBody').textContent = body;
-  toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 5000);
+  var toast = document.getElementById('pushToast'); if (!toast) return;
+  var titleEl = document.getElementById('pushToastTitle'), bodyEl = document.getElementById('pushToastBody');
+  if (titleEl) titleEl.textContent = title; if (bodyEl) bodyEl.textContent = body;
+  toast.classList.add('show'); setTimeout(function(){ toast.classList.remove('show'); }, 5000);
 }
-document.getElementById('enableNotifBtn')?.addEventListener('click', async () => {
-  const button = document.getElementById('enableNotifBtn'); if (!button) return; button.disabled = true;
+document.getElementById('enableNotifBtn')?.addEventListener('click', async function () {
+  var button = document.getElementById('enableNotifBtn'); if (!button) return; button.disabled = true;
   try {
-    const permission = await Notification.requestPermission();
+    var permission = await Notification.requestPermission();
     if (permission === 'granted') { await registerFCMToken(await navigator.serviceWorker.ready); hideNotifBanner(); showToast('✅ تم تفعيل الإشعارات'); haptic('medium'); }
     else { markNotifDismissed(); hideNotifBanner(); }
   } catch (error) { markNotifDismissed(); hideNotifBanner(); } finally { button.disabled = false; }
 });
-document.getElementById('dismissNotifBtn')?.addEventListener('click', () => { markNotifDismissed(); hideNotifBanner(); });
+document.getElementById('dismissNotifBtn')?.addEventListener('click', function () { markNotifDismissed(); hideNotifBanner(); });
 
 /* ═══ SEARCH ═══ */
-const searchInput = document.getElementById('searchInput');
-const searchWrapper = document.getElementById('bzrSearchWrapper');
-const searchResults = document.getElementById('searchResults');
-const searchClearBtn = document.getElementById('searchClearBtn');
-const performSearchDebounced = debounce(performSearch, CONFIG.SEARCH_DEBOUNCE_MS);
+var searchInput = document.getElementById('searchInput');
+var searchWrapper = document.getElementById('bzrSearchWrapper');
+var searchResults = document.getElementById('searchResults');
+var searchClearBtn = document.getElementById('searchClearBtn');
+var performSearchDebounced = debounce(performSearch, CONFIG.SEARCH_DEBOUNCE_MS);
 
-searchInput?.addEventListener('input', (e) => { if (searchInput.value.trim()) searchWrapper.classList.add('has-value'); else searchWrapper.classList.remove('has-value'); performSearchDebounced(e.target.value); });
-searchInput?.addEventListener('focus', () => { if (searchInput.value.trim()) performSearch(searchInput.value); });
-searchClearBtn?.addEventListener('click', () => { searchInput.value = ''; searchWrapper.classList.remove('has-value'); searchResults.classList.remove('show'); searchInput.focus(); });
-document.addEventListener('click', (e) => { if (!searchResults.contains(e.target) && !searchWrapper.contains(e.target)) searchResults.classList.remove('show'); });
+searchInput?.addEventListener('input', function (e) {
+  if (searchInput.value.trim()) searchWrapper.classList.add('has-value'); else searchWrapper.classList.remove('has-value');
+  performSearchDebounced(e.target.value);
+});
+searchInput?.addEventListener('focus', function () { if (searchInput.value.trim()) performSearch(searchInput.value); });
+searchClearBtn?.addEventListener('click', function () { searchInput.value = ''; searchWrapper.classList.remove('has-value'); searchResults.classList.remove('show'); searchInput.focus(); });
+document.addEventListener('click', function (e) { if (!searchResults.contains(e.target) && !searchWrapper.contains(e.target)) searchResults.classList.remove('show'); });
 
 function performSearch(query) {
   query = (query || '').trim().toLowerCase().slice(0, 100); if (!query) { searchResults.classList.remove('show'); return; }
-  const searchPool = allProductsLocal.slice(0, CONFIG.SEARCH_CAP);
-  const matchedCats = categories.filter(c => c.toLowerCase().indexOf(query) > -1);
-  const matchedStores = stores.filter(s => (s.name || '').toLowerCase().indexOf(query) > -1 || (s.category || '').toLowerCase().indexOf(query) > -1);
-  const matchedProducts = searchPool.filter(p => (p.name || '').toLowerCase().indexOf(query) > -1 || (p.store_name || '').toLowerCase().indexOf(query) > -1).slice(0, 8);
+  var searchPool = allProductsLocal.slice(0, CONFIG.SEARCH_CAP);
+  var matchedCats = categories.filter(function(c){ return c.toLowerCase().indexOf(query) > -1; });
+  var matchedStores = stores.filter(function(s){ return (s.name || '').toLowerCase().indexOf(query) > -1 || (s.category || '').toLowerCase().indexOf(query) > -1; });
+  var matchedProducts = searchPool.filter(function(p){
+    var liveName = bzrResolveStoreName(p);
+    return (p.name || '').toLowerCase().indexOf(query) > -1 || liveName.toLowerCase().indexOf(query) > -1;
+  }).slice(0, 8);
   searchResults.innerHTML = '';
   if (!matchedCats.length && !matchedStores.length && !matchedProducts.length) {
-    searchResults.innerHTML = `<div style="text-align:center;padding:2rem 0;color:var(--c-text-soft);"><svg class="mi mi-lg" style="display:block;margin:0 auto 0.5rem;color:#CBD5E1;"><use href="#mi-search"/></svg><p style="font-weight:700;">لا توجد نتائج</p></div>`;
+    searchResults.innerHTML = '<div style="text-align:center;padding:2rem 0;color:var(--c-text-soft);"><p style="font-weight:700;">لا توجد نتائج</p></div>';
     searchResults.classList.add('show'); return;
   }
   if (matchedCats.length) {
     searchResults.appendChild(createSectionTitle('الفئات'));
-    const chips = document.createElement('div'); chips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;';
-    matchedCats.forEach(cat => {
-      const chip = document.createElement('button'); chip.className = 'chip'; chip.textContent = cat;
-      chip.addEventListener('click', () => { searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value'); goToCategory(cat); });
+    var chips = document.createElement('div'); chips.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;';
+    matchedCats.forEach(function(cat){
+      var chip = document.createElement('button'); chip.className = 'chip'; chip.textContent = cat;
+      chip.addEventListener('click', function(){ searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value'); goToCategory(cat); });
       chips.appendChild(chip);
     });
     searchResults.appendChild(chips);
   }
   if (matchedStores.length) {
-    searchResults.appendChild(createSectionTitle(`المتاجر (${matchedStores.length})`));
-    matchedStores.slice(0, 5).forEach(store => searchResults.appendChild(createSearchStoreRow(store)));
+    searchResults.appendChild(createSectionTitle('المتاجر (' + matchedStores.length + ')'));
+    matchedStores.slice(0, 5).forEach(function(store){ searchResults.appendChild(createSearchStoreRow(store)); });
   }
   if (matchedProducts.length) {
-    searchResults.appendChild(createSectionTitle(`المنتجات (${matchedProducts.length})`));
-    matchedProducts.forEach(p => searchResults.appendChild(createSearchProductRow(p)));
+    searchResults.appendChild(createSectionTitle('المنتجات (' + matchedProducts.length + ')'));
+    matchedProducts.forEach(function(p){ searchResults.appendChild(createSearchProductRow(p)); });
   }
   searchResults.classList.add('show');
 }
-function createSectionTitle(txt) { const p = document.createElement('p'); p.style.cssText = 'font-size:0.78rem;font-weight:800;color:var(--c-text-soft);margin:14px 0 10px;'; p.textContent = txt; return p; }
+function createSectionTitle(txt) { var p = document.createElement('p'); p.style.cssText = 'font-size:0.78rem;font-weight:800;color:var(--c-text-soft);margin:14px 0 10px;'; p.textContent = txt; return p; }
 
 function createSearchStoreRow(store) {
-  const row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;transition:background 0.2s;';
-  row.onmouseover = () => row.style.background = 'var(--c-surface-2)'; row.onmouseout = () => row.style.background = '';
-  const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--c-surface-2);flex-shrink:0;'; img.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
-  const info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
-  const nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);display:flex;align-items:center;gap:4px;';
-  if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nm.appendChild(v); }
-  const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nm.appendChild(nameText);
-  const meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:var(--c-text-soft);margin-top:2px;'; meta.textContent = (store.category || 'عام');
+  var row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;';
+  row.onmouseover = function(){ row.style.background = 'var(--c-surface-2)'; }; row.onmouseout = function(){ row.style.background = ''; };
+  var img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--c-surface-2);flex-shrink:0;'; img.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+  var info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
+  var nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);display:flex;align-items:center;gap:4px;';
+  if (store.is_verified) { var v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nm.appendChild(v); }
+  var nameText = document.createElement('span'); nameText.textContent = store.name || ''; nm.appendChild(nameText);
+  var meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:var(--c-text-soft);margin-top:2px;'; meta.textContent = (store.category || 'عام');
   info.appendChild(nm); info.appendChild(meta);
-  const arrow = document.createElement('span'); arrow.style.cssText = 'color:var(--c-text-soft);display:inline-flex;align-items:center;flex-shrink:0;'; arrow.appendChild(bzrSvgIcon('mi-chevron-left', 'mi mi-xs'));
+  var arrow = document.createElement('span'); arrow.style.cssText = 'color:var(--c-text-soft);display:inline-flex;align-items:center;flex-shrink:0;'; arrow.appendChild(bzrSvgIcon('mi-chevron-left', 'mi mi-xs'));
   row.appendChild(img); row.appendChild(info); row.appendChild(arrow);
-  row.addEventListener('click', () => { searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value'); openStoreModal(store); });
+  row.addEventListener('click', function(){ searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value'); openStoreModal(store); });
   return row;
 }
 function createSearchProductRow(product) {
-  const row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;';
-  row.onmouseover = () => row.style.background = 'var(--c-surface-2)'; row.onmouseout = () => row.style.background = '';
-  const img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:10px;object-fit:contain;background:var(--c-surface-2);padding:4px;flex-shrink:0;'; img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/100';
-  const info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
-  const nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'; nm.textContent = product.name || '';
-  const meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:#FF7A00;margin-top:2px;font-weight:800;'; meta.textContent = bzrSafeFormatPrice(parseFloat(product.price) || 0, bzrResolveProductCurrency(product).symbol);
+  var row = document.createElement('div'); row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer;';
+  row.onmouseover = function(){ row.style.background = 'var(--c-surface-2)'; }; row.onmouseout = function(){ row.style.background = ''; };
+  var img = document.createElement('img'); img.style.cssText = 'width:42px;height:42px;border-radius:10px;object-fit:contain;background:var(--c-surface-2);padding:4px;flex-shrink:0;'; img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/100';
+  var info = document.createElement('div'); info.style.cssText = 'flex:1;min-width:0;';
+  var nm = document.createElement('div'); nm.style.cssText = 'font-weight:800;font-size:0.88rem;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'; nm.textContent = product.name || '';
+  var meta = document.createElement('div'); meta.style.cssText = 'font-size:0.72rem;color:#FF7A00;margin-top:2px;font-weight:800;'; meta.textContent = bzrSafeFormatPrice(parseFloat(product.price) || 0, bzrResolveProductCurrency(product).symbol);
   info.appendChild(nm); info.appendChild(meta);
   row.appendChild(img); row.appendChild(info);
-  row.addEventListener('click', () => {
+  row.addEventListener('click', function () {
     searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value');
+    // 🆕 Use live store name
+    var liveName = bzrResolveStoreName(product);
     openProductModal({
       id: product.id, name: product.name, img_url: product.img_url,
       price: parseFloat(product.price) || 0,
       original_price: product.original_price ? parseFloat(product.original_price) : null,
       store_id: product.store_id,
-      store_name: product.store_name,
+      store_name: liveName,
       description: product.description || '',
       colors: product.colors || null,
       category: product.category || null,
@@ -465,62 +435,59 @@ function createSearchProductRow(product) {
 }
 function goToCategory(cat) {
   currentCategory = cat; filterStoresByCategory(cat);
-  const btns = Array.from(document.getElementById('categoriesContainer').querySelectorAll('button'));
-  const target = btns.find(b => b.textContent.trim() === cat); if (target) highlightCategory(target);
+  var btns = Array.from(document.getElementById('categoriesContainer').querySelectorAll('button'));
+  var target = btns.find(function(b){ return b.textContent.trim() === cat; }); if (target) highlightCategory(target);
   applyProductsFilter(cat);
-  const s = document.getElementById('stores'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  var s = document.getElementById('stores'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* ═══ RENDER STORES ═══ */
 function displayStores() {
-  const c = document.getElementById('storesScrollContainer'); c.innerHTML = '';
-  const frag = document.createDocumentFragment(); stores.forEach(s => frag.appendChild(createStoreCard(s))); c.appendChild(frag);
+  var c = document.getElementById('storesScrollContainer'); c.innerHTML = '';
+  var frag = document.createDocumentFragment(); stores.forEach(function(s){ frag.appendChild(createStoreCard(s)); }); c.appendChild(frag);
 }
 function createStoreCard(store) {
-  const storeId = getStoreId(store); const followed = isStoreFollowed(storeId);
-  const card = document.createElement('div'); card.className = 'store-card';
-  const cover = document.createElement('img'); cover.className = 'cover-image'; cover.loading = 'lazy'; cover.alt = store.name || ''; cover.src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; cover.onerror = function(){ this.src = 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover'; };
-  const logo = document.createElement('img'); logo.className = 'store-logo'; logo.loading = 'lazy'; logo.alt = ''; logo.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; logo.onerror = function(){ this.src = 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store'; };
-  const info = document.createElement('div'); info.className = 'store-info';
-  const nameRow = document.createElement('div'); nameRow.className = 'store-name';
-  if (store.is_verified) { const v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nameRow.appendChild(v); }
-  const nameText = document.createElement('span'); nameText.textContent = store.name || ''; nameRow.appendChild(nameText);
-  const catRow = document.createElement('div'); catRow.className = 'store-category'; catRow.textContent = store.category || 'عام';
-  const bottomRow = document.createElement('div'); bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;';
-  const followBtn = document.createElement('button'); followBtn.type = 'button'; followBtn.className = 'bzr-follow-btn'; followBtn.dataset.storeId = storeId; followBtn.setAttribute('aria-label', followed ? 'إلغاء المتابعة' : 'متابعة المتجر');
+  var storeId = getStoreId(store); var followed = isStoreFollowed(storeId);
+  var card = document.createElement('div'); card.className = 'store-card';
+  var cover = document.createElement('img'); cover.className = 'cover-image'; cover.loading = 'lazy'; cover.alt = store.name || ''; cover.src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
+  var logo = document.createElement('img'); logo.className = 'store-logo'; logo.loading = 'lazy'; logo.alt = ''; logo.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+  var info = document.createElement('div'); info.className = 'store-info';
+  var nameRow = document.createElement('div'); nameRow.className = 'store-name';
+  if (store.is_verified) { var v = document.createElement('span'); v.className = 'verified-icon'; v.innerHTML = VERIFIED_BADGE_SVG; nameRow.appendChild(v); }
+  var nameText = document.createElement('span'); nameText.textContent = store.name || ''; nameRow.appendChild(nameText);
+  var catRow = document.createElement('div'); catRow.className = 'store-category'; catRow.textContent = store.category || 'عام';
+  var bottomRow = document.createElement('div'); bottomRow.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;';
+  var followBtn = document.createElement('button'); followBtn.type = 'button'; followBtn.className = 'bzr-follow-btn'; followBtn.dataset.storeId = storeId;
   setCardFollowState(followBtn, followed);
-  followBtn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); haptic('light'); toggleFollowFromCard(store, followBtn); });
-  const shareBtn = document.createElement('button'); shareBtn.type = 'button'; shareBtn.className = 'bzr-card-share'; shareBtn.setAttribute('aria-label', 'مشاركة المتجر'); shareBtn.title = 'مشاركة المتجر';
-  shareBtn.style.cssText = 'width:34px;height:34px;border-radius:50%;background:var(--c-primary-soft,#FFF1E0);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all 0.25s;padding:0;flex-shrink:0;';
+  followBtn.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); haptic('light'); toggleFollowFromCard(store, followBtn); });
+  var shareBtn = document.createElement('button'); shareBtn.type = 'button'; shareBtn.className = 'bzr-card-share'; shareBtn.style.cssText = 'width:34px;height:34px;border-radius:50%;background:var(--c-primary-soft,#FFF1E0);color:#FF7A00;border:1.5px solid #FFE0BD;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;';
   shareBtn.appendChild(bzrSvgIcon('mi-share', 'mi mi-sm'));
-  shareBtn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); haptic('light'); shareStore(store); });
-  shareBtn.addEventListener('mouseenter', () => { shareBtn.style.background = '#FF7A00'; shareBtn.style.color = '#fff'; shareBtn.style.borderColor = '#FF7A00'; shareBtn.style.transform = 'scale(1.08)'; });
-  shareBtn.addEventListener('mouseleave', () => { shareBtn.style.background = 'var(--c-primary-soft,#FFF1E0)'; shareBtn.style.color = '#FF7A00'; shareBtn.style.borderColor = '#FFE0BD'; shareBtn.style.transform = ''; });
+  shareBtn.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); haptic('light'); shareStore(store); });
   bottomRow.appendChild(followBtn); bottomRow.appendChild(shareBtn);
   info.appendChild(nameRow); info.appendChild(catRow); info.appendChild(bottomRow);
   card.appendChild(cover); card.appendChild(logo); card.appendChild(info);
-  card.addEventListener('click', () => { haptic('light'); openStoreModal(store); });
+  card.addEventListener('click', function () { haptic('light'); openStoreModal(store); });
   return card;
 }
 function setCardFollowState(btn, following) {
   if (!btn) return; btn.classList.toggle('following', following);
   while (btn.firstChild) btn.removeChild(btn.firstChild);
   btn.appendChild(bzrSvgIcon(following ? 'mi-check' : 'mi-plus', 'mi mi-xs'));
-  const sp = document.createElement('span'); sp.textContent = following ? 'متابَع' : 'متابعة'; btn.appendChild(sp);
-  btn.style.cssText = 'background:#FF7A00;color:#fff;border:1.5px solid #FF7A00;border-radius:9999px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.25s;white-space:nowrap;flex-shrink:0;font-family:inherit;';
+  var sp = document.createElement('span'); sp.textContent = following ? 'متابَع' : 'متابعة'; btn.appendChild(sp);
+  btn.style.cssText = 'background:#FF7A00;color:#fff;border:1.5px solid #FF7A00;border-radius:9999px;padding:0.35rem 0.75rem;font-size:0.72rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;font-family:inherit;';
   if (following) { btn.style.background = 'transparent'; btn.style.color = '#FF7A00'; btn.style.borderColor = '#FF7A00'; }
 }
 async function toggleFollowFromCard(store, btn) {
-  const storeId = String(getStoreId(store)); if (btn.disabled) return;
-  const guardCheck = FollowGuard.canFollow(storeId);
-  if (!guardCheck.allowed) { haptic('heavy'); showToast(guardCheck.message); btn.classList.add('blocked-flash'); setTimeout(() => btn.classList.remove('blocked-flash'), 600); return; }
+  var storeId = String(getStoreId(store)); if (btn.disabled) return;
+  var guardCheck = FollowGuard.canFollow(storeId);
+  if (!guardCheck.allowed) { haptic('heavy'); showToast(guardCheck.message); return; }
   btn.disabled = true; haptic('light');
   try {
-    const result = await performFollowToggle(store); FollowGuard.recordAction(storeId);
-    const wasFollowing = (result.action === 'unfollowed');
+    var result = await performFollowToggle(store); FollowGuard.recordAction(storeId);
+    var wasFollowing = (result.action === 'unfollowed');
     if (wasFollowing) _followedFromServer.delete(storeId); else _followedFromServer.add(storeId);
-    const list = getFollowedStores();
-    if (wasFollowing) { const i = list.indexOf(storeId); if (i > -1) list.splice(i, 1); store.followers = Math.max(0, (parseInt(store.followers) || 0) - 1); }
+    var list = getFollowedStores();
+    if (wasFollowing) { var i = list.indexOf(storeId); if (i > -1) list.splice(i, 1); store.followers = Math.max(0, (parseInt(store.followers) || 0) - 1); }
     else { if (list.indexOf(storeId) === -1) list.push(storeId); store.followers = (parseInt(store.followers) || 0) + 1; }
     saveFollowedStores(list); updateCardFollowButtons(storeId); renderFollowedStores();
     if (currentStoreId === storeId) { isFollowing = !wasFollowing; currentFollowersCount = store.followers; updateFollowersDisplay(); updateFollowButtonUI(); }
@@ -528,118 +495,119 @@ async function toggleFollowFromCard(store, btn) {
   } catch(err) { showToast('حدث خطأ، حاول مرة أخرى'); } finally { btn.disabled = false; }
 }
 function updateCardFollowButtons(storeId) {
-  const following = isStoreFollowed(storeId);
-  document.querySelectorAll('.store-card .bzr-follow-btn').forEach(btn => { if (String(btn.dataset.storeId) === String(storeId)) setCardFollowState(btn, following); });
+  var following = isStoreFollowed(storeId);
+  document.querySelectorAll('.store-card .bzr-follow-btn').forEach(function(btn){ if (String(btn.dataset.storeId) === String(storeId)) setCardFollowState(btn, following); });
 }
 function renderFollowedStores() {
-  const section = document.getElementById('followedStoresSection'); const container = document.getElementById('followedStoresContainer'); const badge = document.getElementById('followedCountBadge');
-  const ids = getFollowedStores();
-  if (!ids.length) { section.classList.add('hidden'); container.innerHTML = ''; if (badge) badge.textContent = ''; return; }
-  const followed = ids.map(id => stores.find(s => getStoreId(s) === id)).filter(Boolean);
-  if (!followed.length) { section.classList.add('hidden'); container.innerHTML = ''; return; }
-  section.classList.remove('hidden'); if (badge) badge.textContent = followed.length + ' متجر'; container.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  followed.forEach(store => {
-    const item = document.createElement('div'); item.className = 'followed-store-item';
-    const avatar = document.createElement('div'); avatar.className = 'followed-store-avatar';
-    const img = document.createElement('img'); img.loading = 'lazy'; img.alt = ''; img.draggable = false; img.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+  var section = document.getElementById('followedStoresSection'); var container = document.getElementById('followedStoresContainer'); var badge = document.getElementById('followedCountBadge');
+  var ids = getFollowedStores();
+  if (!ids.length) { if (section) section.classList.add('hidden'); if (container) container.innerHTML = ''; if (badge) badge.textContent = ''; return; }
+  var followed = ids.map(function(id){ return stores.find(function(s){ return getStoreId(s) === id; }); }).filter(Boolean);
+  if (!followed.length) { if (section) section.classList.add('hidden'); if (container) container.innerHTML = ''; return; }
+  if (section) section.classList.remove('hidden'); if (badge) badge.textContent = followed.length + ' متجر'; if (container) container.innerHTML = '';
+  var frag = document.createDocumentFragment();
+  followed.forEach(function(store){
+    var item = document.createElement('div'); item.className = 'followed-store-item';
+    var avatar = document.createElement('div'); avatar.className = 'followed-store-avatar';
+    var img = document.createElement('img'); img.loading = 'lazy'; img.alt = ''; img.draggable = false; img.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
     avatar.appendChild(img);
-    const nm = document.createElement('div'); nm.className = 'followed-store-name'; nm.textContent = store.name || '';
+    var nm = document.createElement('div'); nm.className = 'followed-store-name'; nm.textContent = store.name || '';
     item.appendChild(avatar); item.appendChild(nm);
-    item.addEventListener('click', () => { haptic('light'); openStoreModal(store); });
+    item.addEventListener('click', function(){ haptic('light'); openStoreModal(store); });
     frag.appendChild(item);
   });
-  container.appendChild(frag);
+  if (container) container.appendChild(frag);
 }
 function filterStoresByCategory(cat) {
-  currentCategory = cat; const filtered = stores.filter(s => s.category === cat);
-  const c = document.getElementById('storesScrollContainer'); c.innerHTML = '';
+  currentCategory = cat; var filtered = stores.filter(function(s){ return s.category === cat; });
+  var c = document.getElementById('storesScrollContainer'); c.innerHTML = '';
   if (!filtered.length) c.innerHTML = '<div style="text-align:center;width:100%;padding:2.5rem 0;color:var(--c-text-soft);">لا توجد متاجر في هذه الفئة</div>';
-  else { const frag = document.createDocumentFragment(); filtered.forEach(s => frag.appendChild(createStoreCard(s))); c.appendChild(frag); }
+  else { var frag = document.createDocumentFragment(); filtered.forEach(function(s){ frag.appendChild(createStoreCard(s)); }); c.appendChild(frag); }
   lastStoresInteraction = Date.now(); startAutoScroll();
 }
 
 /* ═══ CATEGORIES ═══ */
 function displayCategories() {
-  const c = document.getElementById('categoriesContainer'); c.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  const allBtn = document.createElement('button'); allBtn.className = 'chip active'; allBtn.textContent = 'الكل';
-  allBtn.addEventListener('click', () => { haptic('light'); currentCategory = null; displayStores(); highlightCategory(allBtn); startAutoScroll(); applyProductsFilter(null); });
+  var c = document.getElementById('categoriesContainer'); c.innerHTML = '';
+  var frag = document.createDocumentFragment();
+  var allBtn = document.createElement('button'); allBtn.className = 'chip active'; allBtn.textContent = 'الكل';
+  allBtn.addEventListener('click', function(){ haptic('light'); currentCategory = null; displayStores(); highlightCategory(allBtn); startAutoScroll(); applyProductsFilter(null); });
   frag.appendChild(allBtn);
-  categories.forEach(cat => {
-    const btn = document.createElement('button'); btn.className = 'chip'; btn.textContent = cat;
-    btn.addEventListener('click', () => { haptic('light'); filterStoresByCategory(cat); highlightCategory(btn); applyProductsFilter(cat); });
+  categories.forEach(function(cat){
+    var btn = document.createElement('button'); btn.className = 'chip'; btn.textContent = cat;
+    btn.addEventListener('click', function(){ haptic('light'); filterStoresByCategory(cat); highlightCategory(btn); applyProductsFilter(cat); });
     frag.appendChild(btn);
   });
   c.appendChild(frag); startCategoriesAutoScroll();
 }
-function highlightCategory(active) { document.getElementById('categoriesContainer').querySelectorAll('button').forEach(b => b.classList.remove('active')); active.classList.add('active'); }
+function highlightCategory(active) { document.getElementById('categoriesContainer').querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); }); active.classList.add('active'); }
 
 /* ═══ STORE CATEGORIES TABS ═══ */
 function renderStoreCategoryTabs(store) {
-  const container = document.getElementById('storeCategoriesTabs'); if (!container) return; container.innerHTML = '';
-  const mainCat = (store.category && String(store.category).trim()) ? String(store.category).trim() : '';
-  const additional = Array.isArray(store.categories) ? store.categories.map(c => String(c || '').trim()).filter(c => c && c !== mainCat) : [];
-  const subscribed = store.is_subscribed === true;
+  var container = document.getElementById('storeCategoriesTabs'); if (!container) return; container.innerHTML = '';
+  var mainCat = (store.category && String(store.category).trim()) ? String(store.category).trim() : '';
+  var additional = Array.isArray(store.categories) ? store.categories.map(function(c){ return String(c || '').trim(); }).filter(function(c){ return c && c !== mainCat; }) : [];
+  var subscribed = store.is_subscribed === true;
   if (!mainCat && !additional.length) { container.style.display = 'none'; return; }
   container.style.display = 'flex';
   if (mainCat) {
-    const tab = document.createElement('button'); tab.type = 'button'; tab.className = 'store-cat-tab main-tab active'; tab.dataset.cat = mainCat; tab.setAttribute('role', 'tab'); tab.setAttribute('aria-selected', 'true');
-    tab.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); const sp = document.createElement('span'); sp.textContent = mainCat; tab.appendChild(sp);
-    tab.addEventListener('click', () => selectStoreCategoryTab(tab, mainCat)); container.appendChild(tab);
+    var tab = document.createElement('button'); tab.type = 'button'; tab.className = 'store-cat-tab main-tab active'; tab.dataset.cat = mainCat;
+    tab.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); var sp = document.createElement('span'); sp.textContent = mainCat; tab.appendChild(sp);
+    tab.addEventListener('click', function(){ selectStoreCategoryTab(tab, mainCat); }); container.appendChild(tab);
   }
-  additional.forEach(cat => {
-    const tab = document.createElement('button'); tab.type = 'button'; tab.className = 'store-cat-tab' + (subscribed ? '' : ' locked'); tab.dataset.cat = cat; tab.setAttribute('role', 'tab'); tab.setAttribute('aria-selected', 'false');
-    tab.appendChild(bzrSvgIcon(subscribed ? 'mi-tag' : 'mi-lock', 'mi mi-xs')); const sp = document.createElement('span'); sp.textContent = cat; tab.appendChild(sp);
-    if (!subscribed) tab.setAttribute('aria-label', cat + ' - مقفلة');
-    tab.addEventListener('click', () => { if (!subscribed) { haptic('medium'); showToast('🔒 هذه الفئة متاحة في النسخة المدفوعة فقط'); return; } selectStoreCategoryTab(tab, cat); });
+  additional.forEach(function(cat){
+    var tab = document.createElement('button'); tab.type = 'button'; tab.className = 'store-cat-tab' + (subscribed ? '' : ' locked'); tab.dataset.cat = cat;
+    tab.appendChild(bzrSvgIcon(subscribed ? 'mi-tag' : 'mi-lock', 'mi mi-xs')); var sp = document.createElement('span'); sp.textContent = cat; tab.appendChild(sp);
+    tab.addEventListener('click', function(){ if (!subscribed) { haptic('medium'); showToast('🔒 هذه الفئة متاحة في النسخة المدفوعة فقط'); return; } selectStoreCategoryTab(tab, cat); });
     container.appendChild(tab);
   });
 }
 function selectStoreCategoryTab(tab, category) {
-  const container = document.getElementById('storeCategoriesTabs');
-  if (container) container.querySelectorAll('.store-cat-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
-  tab.classList.add('active'); tab.setAttribute('aria-selected', 'true'); haptic('light');
+  var container = document.getElementById('storeCategoriesTabs');
+  if (container) container.querySelectorAll('.store-cat-tab').forEach(function(t){ t.classList.remove('active'); });
+  tab.classList.add('active'); haptic('light');
   currentStoreCategoryForProducts = category || null;
   if (currentStore) loadStoreProducts(currentStore.id, currentStoreCategoryForProducts);
 }
 async function refreshStoreDataOnOpen(storeId) {
   if (!storeId || !RateLimiter.canRequest('store_refresh')) return;
   try {
-    const doc = await db.collection('stores').doc(String(storeId)).get();
+    var doc = await db.collection('stores').doc(String(storeId)).get();
     if (!doc.exists || currentStoreId !== String(storeId)) return;
-    const fresh = { id: doc.id, ...doc.data() };
-    const oldMain = String(currentStore?.category || ''); const newMain = String(fresh.category || '');
-    const oldList = JSON.stringify(currentStore?.categories || []); const newList = JSON.stringify(fresh.categories || []);
-    const oldSub = currentStore?.is_subscribed === true; const newSub = fresh.is_subscribed === true;
-    const oldLoc = String(currentStore?.location || ''); const newLoc = String(fresh.location || '');
-    const nameChanged = currentStore?.name !== fresh.name;
-
+    var fresh = { id: doc.id, ...doc.data() };
+    var oldMain = String((currentStore && currentStore.category) || ''); var newMain = String(fresh.category || '');
+    var oldList = JSON.stringify((currentStore && currentStore.categories) || []); var newList = JSON.stringify(fresh.categories || []);
+    var oldSub = (currentStore && currentStore.is_subscribed) === true; var newSub = fresh.is_subscribed === true;
+    var oldLoc = String((currentStore && currentStore.location) || ''); var newLoc = String(fresh.location || '');
+    var nameChanged = (currentStore && currentStore.name) !== fresh.name;
     if (oldMain !== newMain || oldList !== newList || oldSub !== newSub || oldLoc !== newLoc || nameChanged) {
-      currentStore = { ...currentStore, ...fresh };
-      const activeCat = currentStoreCategoryForProducts;
-      const mainCat = (fresh.category && String(fresh.category).trim()) ? String(fresh.category).trim() : null;
-      const isExtra = Array.isArray(fresh.categories) && fresh.categories.indexOf(activeCat) > -1;
-      const locked = !newSub && isExtra;
+      currentStore = Object.assign({}, currentStore, fresh);
+      var activeCat = currentStoreCategoryForProducts;
+      var mainCat = (fresh.category && String(fresh.category).trim()) ? String(fresh.category).trim() : null;
+      var isExtra = Array.isArray(fresh.categories) && fresh.categories.indexOf(activeCat) > -1;
+      var locked = !newSub && isExtra;
       if (locked || (!mainCat && !isExtra)) currentStoreCategoryForProducts = mainCat;
       renderStoreCategoryTabs(fresh);
       loadStoreProducts(fresh.id, currentStoreCategoryForProducts);
-      const catVal = (fresh.category && String(fresh.category).trim()) ? fresh.category : 'عام';
-      const catEl = document.getElementById('storeCategory');
-      if (catEl) { catEl.innerHTML = ''; catEl.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); const sp = document.createElement('span'); sp.textContent = catVal; catEl.appendChild(sp); }
+      var catEl = document.getElementById('storeCategory');
+      if (catEl) { catEl.innerHTML = ''; catEl.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); var sp = document.createElement('span'); sp.textContent = (fresh.category && String(fresh.category).trim()) ? fresh.category : 'عام'; catEl.appendChild(sp); }
       if (nameChanged) {
-        const storeNameEl = document.getElementById('storeName');
-        if (fresh.is_verified) {
-          storeNameEl.innerHTML = ''; const badge = document.createElement('span'); badge.className = 'verified-icon'; badge.style.cssText = 'display:inline-flex;width:20px;height:20px;flex-shrink:0;'; badge.innerHTML = VERIFIED_BADGE_SVG; const nameTxt = document.createElement('span'); nameTxt.textContent = fresh.name; storeNameEl.appendChild(badge); storeNameEl.appendChild(nameTxt);
-        } else { document.getElementById('storeName').textContent = fresh.name; }
+        var storeNameEl = document.getElementById('storeName');
+        if (storeNameEl) {
+          if (fresh.is_verified) {
+            storeNameEl.innerHTML = '';
+            var badge = document.createElement('span'); badge.className = 'verified-icon'; badge.style.cssText = 'display:inline-flex;width:20px;height:20px;flex-shrink:0;'; badge.innerHTML = VERIFIED_BADGE_SVG;
+            var nameTxt = document.createElement('span'); nameTxt.textContent = fresh.name; storeNameEl.appendChild(badge); storeNameEl.appendChild(nameTxt);
+          } else { storeNameEl.textContent = fresh.name; }
+        }
       }
       renderStoreLocationInModal(fresh);
     }
-  } catch(e) { /* silent */ }
+  } catch(e) {}
 }
 function renderStoreLocationInModal(store) {
-  const row = document.getElementById('storeLocationRow'); const value = document.getElementById('storeLocationValue'); if (!row || !value) return;
-  const loc = (store && store.location && String(store.location).trim()) || '';
+  var row = document.getElementById('storeLocationRow'); var value = document.getElementById('storeLocationValue'); if (!row || !value) return;
+  var loc = (store && store.location && String(store.location).trim()) || '';
   if (loc) { value.textContent = loc; row.classList.add('visible'); } else { row.classList.remove('visible'); value.textContent = ''; }
 }
 
@@ -651,54 +619,56 @@ function openStoreModal(store) {
   document.getElementById('storeCoverImage').src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
   document.getElementById('storeLogo').src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   document.getElementById('storeDescription').textContent = store.description || 'متجر مميز';
-  const catVal = (store.category && String(store.category).trim()) ? store.category : 'عام';
-  const catEl = document.getElementById('storeCategory');
-  if (catEl) { catEl.innerHTML = ''; catEl.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); const sp = document.createElement('span'); sp.textContent = catVal; catEl.appendChild(sp); }
+  var catEl = document.getElementById('storeCategory');
+  if (catEl) { catEl.innerHTML = ''; catEl.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); var sp = document.createElement('span'); sp.textContent = (store.category && String(store.category).trim()) ? store.category : 'عام'; catEl.appendChild(sp); }
   renderStoreLocationInModal(store); updateFollowersDisplay(); updateFollowButtonUI();
-  if (store.is_verified) {
-    const storeNameEl = document.getElementById('storeName'); storeNameEl.innerHTML = '';
-    const badge = document.createElement('span'); badge.className = 'verified-icon'; badge.style.cssText = 'display:inline-flex;width:20px;height:20px;flex-shrink:0;'; badge.innerHTML = VERIFIED_BADGE_SVG;
-    const nameTxt = document.createElement('span'); nameTxt.textContent = store.name || ''; storeNameEl.appendChild(badge); storeNameEl.appendChild(nameTxt);
-  } else { document.getElementById('storeName').textContent = store.name || ''; }
-  const phone = store.phone_number || '', wa = store.whatsapp_number || '';
-  const callBtn = document.getElementById('storeCallButton'); const waBtn = document.getElementById('storeWhatsAppButton');
-  if (phone) { callBtn.href = 'tel:' + phone; callBtn.style.display = ''; } else callBtn.style.display = 'none';
-  if (wa) { waBtn.href = 'https://wa.me/' + wa.replace(/[^0-9]/g, ''); waBtn.style.display = ''; } else waBtn.style.display = 'none';
+  var storeNameEl = document.getElementById('storeName');
+  if (storeNameEl) {
+    if (store.is_verified) {
+      storeNameEl.innerHTML = '';
+      var badge = document.createElement('span'); badge.className = 'verified-icon'; badge.style.cssText = 'display:inline-flex;width:20px;height:20px;flex-shrink:0;'; badge.innerHTML = VERIFIED_BADGE_SVG;
+      var nameTxt = document.createElement('span'); nameTxt.textContent = store.name || ''; storeNameEl.appendChild(badge); storeNameEl.appendChild(nameTxt);
+    } else { storeNameEl.textContent = store.name || ''; }
+  }
+  var phone = store.phone_number || '', wa = store.whatsapp_number || '';
+  var callBtn = document.getElementById('storeCallButton'); var waBtn = document.getElementById('storeWhatsAppButton');
+  if (callBtn) { if (phone) { callBtn.href = 'tel:' + phone; callBtn.style.display = ''; } else callBtn.style.display = 'none'; }
+  if (waBtn) { if (wa) { waBtn.href = 'https://wa.me/' + wa.replace(/[^0-9]/g, ''); waBtn.style.display = ''; } else waBtn.style.display = 'none'; }
   renderStoreCategoryTabs(store);
   loadStoreProducts(store.id, currentStoreCategoryForProducts);
   document.getElementById('storeModal').classList.remove('hidden'); updateBodyScroll();
-  document.getElementById('storeModal').querySelector('.modal-content').scrollTop = 0; bzrPushModal();
+  var mc = document.getElementById('storeModal').querySelector('.modal-content'); if (mc) mc.scrollTop = 0; bzrPushModal();
   refreshStoreDataOnOpen(currentStoreId);
-  const storeIdSnapshot = currentStoreId;
-  checkFollowStatusFromServer(storeIdSnapshot).then(serverFollowing => {
+  var storeIdSnapshot = currentStoreId;
+  checkFollowStatusFromServer(storeIdSnapshot).then(function(serverFollowing){
     if (currentStoreId !== storeIdSnapshot) return;
     if (serverFollowing !== isFollowing) {
       isFollowing = serverFollowing;
       if (serverFollowing) _followedFromServer.add(storeIdSnapshot); else _followedFromServer.delete(storeIdSnapshot);
-      const list = getFollowedStores();
+      var list = getFollowedStores();
       if (serverFollowing && list.indexOf(storeIdSnapshot) === -1) { list.push(storeIdSnapshot); saveFollowedStores(list); }
-      else if (!serverFollowing) { const i = list.indexOf(storeIdSnapshot); if (i > -1) { list.splice(i, 1); saveFollowedStores(list); } }
+      else if (!serverFollowing) { var i = list.indexOf(storeIdSnapshot); if (i > -1) { list.splice(i, 1); saveFollowedStores(list); } }
       updateFollowButtonUI(); updateCardFollowButtons(storeIdSnapshot); renderFollowedStores();
     }
-  }).catch(() => {});
+  }).catch(function(){});
 }
 function closeStoreModalInternal() { document.getElementById('storeModal').classList.add('hidden'); updateBodyScroll(); currentStore = null; currentStoreId = null; currentStoreCategoryForProducts = null; }
 function closeStoreModal() { closeStoreModalInternal(); bzrCloseModalUI(); }
 document.getElementById('closeStoreModal')?.addEventListener('click', closeStoreModal);
-function updateFollowersDisplay() { document.getElementById('storeFollowers').textContent = currentFollowersCount.toLocaleString(); }
-function updateFollowButtonUI() { const btn = document.getElementById('storeFollowButton'); const txt = document.getElementById('storeFollowText'); if (!btn || !txt) return; if (isFollowing) { btn.classList.add('following'); txt.textContent = 'متابَع'; } else { btn.classList.remove('following'); txt.textContent = 'متابعة'; } }
-document.getElementById('storeFollowButton')?.addEventListener('click', async () => {
+function updateFollowersDisplay() { var el = document.getElementById('storeFollowers'); if (el) el.textContent = currentFollowersCount.toLocaleString(); }
+function updateFollowButtonUI() { var btn = document.getElementById('storeFollowButton'); var txt = document.getElementById('storeFollowText'); if (!btn || !txt) return; if (isFollowing) { btn.classList.add('following'); txt.textContent = 'متابَع'; } else { btn.classList.remove('following'); txt.textContent = 'متابعة'; } }
+document.getElementById('storeFollowButton')?.addEventListener('click', async function () {
   if (!currentStoreId || isUpdatingFollow || !currentStore) return;
-  const guardCheck = FollowGuard.canFollow(currentStoreId);
-  if (!guardCheck.allowed) { haptic('heavy'); showToast(guardCheck.message); const btn = document.getElementById('storeFollowButton'); if (btn) { btn.classList.add('blocked-flash'); setTimeout(() => btn.classList.remove('blocked-flash'), 600); } return; }
-  isUpdatingFollow = true; const btn = document.getElementById('storeFollowButton'); btn.disabled = true; const wasFollowing = isFollowing;
-  document.getElementById('storeFollowText').textContent = 'جاري...'; haptic('light');
+  var guardCheck = FollowGuard.canFollow(currentStoreId);
+  if (!guardCheck.allowed) { haptic('heavy'); showToast(guardCheck.message); return; }
+  isUpdatingFollow = true; var btn = document.getElementById('storeFollowButton'); btn.disabled = true; var wasFollowing = isFollowing;
+  var followTxt = document.getElementById('storeFollowText'); if (followTxt) followTxt.textContent = 'جاري...'; haptic('light');
   try {
-    const result = await performFollowToggle(currentStore); FollowGuard.recordAction(currentStoreId);
-    const nowFollowing = (result.action === 'followed'); isFollowing = nowFollowing;
+    var result = await performFollowToggle(currentStore); FollowGuard.recordAction(currentStoreId);
+    var nowFollowing = (result.action === 'followed'); isFollowing = nowFollowing;
     if (nowFollowing) _followedFromServer.add(currentStoreId); else _followedFromServer.delete(currentStoreId);
-    const list = getFollowedStores();
-    if (!nowFollowing) { const i = list.indexOf(currentStoreId); if (i > -1) list.splice(i, 1); currentFollowersCount = Math.max(0, currentFollowersCount - 1); }
+    var list = getFollowedStores();
+    if (!nowFollowing) { var i = list.indexOf(currentStoreId); if (i > -1) list.splice(i, 1); currentFollowersCount = Math.max(0, currentFollowersCount - 1); }
     else { if (list.indexOf(currentStoreId) === -1) list.push(currentStoreId); currentFollowersCount = currentFollowersCount + 1; }
     saveFollowedStores(list); updateFollowersDisplay(); updateFollowButtonUI(); updateCardFollowButtons(currentStoreId); renderFollowedStores();
     showToast(nowFollowing ? 'تمت المتابعة بنجاح!' : 'تم إلغاء المتابعة'); if (currentStore) currentStore.followers = currentFollowersCount;
@@ -710,26 +680,31 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async ()
 function filterStoreProductsByCategory(products, category) {
   if (!Array.isArray(products)) return [];
   if (!category) return products;
-  const mainCat = (currentStore && currentStore.category && String(currentStore.category).trim()) ? String(currentStore.category).trim() : null;
-  if (category === mainCat) { return products.filter(p => { const pc = String(p.category || '').trim(); return !pc || pc === mainCat; }); }
-  return products.filter(p => String(p.category || '').trim() === category);
+  var mainCat = (currentStore && currentStore.category && String(currentStore.category).trim()) ? String(currentStore.category).trim() : null;
+  if (category === mainCat) { return products.filter(function(p){ var pc = String(p.category || '').trim(); return !pc || pc === mainCat; }); }
+  return products.filter(function(p){ return String(p.category || '').trim() === category; });
 }
 
 async function loadStoreProducts(storeId, category) {
-  const grid = document.getElementById('storeProductsGrid');
-  const loadMoreBtn = document.getElementById('loadMoreStoreProductsBtn');
-  loadMoreBtn.classList.add('hidden'); loadMoreBtn.hidden = true; loadMoreBtn.disabled = false; loadMoreBtn.innerHTML = '';
-  const lbl = document.createElement('span'); lbl.textContent = 'عرض المزيد'; loadMoreBtn.appendChild(lbl); loadMoreBtn.appendChild(bzrSvgIcon('mi-chevron-down', 'mi mi-xs'));
-  grid.innerHTML = ''; const spin = bzrSvgIcon('mi-refresh', 'mi mi-spin'); spin.style.cssText = 'color:#FF7A00;width:32px;height:32px;'; const spinWrap = document.createElement('div'); spinWrap.style.cssText = 'grid-column:1/-1;text-align:center;padding:2rem 0;'; spinWrap.appendChild(spin); grid.appendChild(spinWrap);
-  
+  var grid = document.getElementById('storeProductsGrid');
+  var loadMoreBtn = document.getElementById('loadMoreStoreProductsBtn');
+  if (loadMoreBtn) {
+    loadMoreBtn.classList.add('hidden'); loadMoreBtn.hidden = true; loadMoreBtn.disabled = false; loadMoreBtn.innerHTML = '';
+    var lbl = document.createElement('span'); lbl.textContent = 'عرض المزيد'; loadMoreBtn.appendChild(lbl); loadMoreBtn.appendChild(bzrSvgIcon('mi-chevron-down', 'mi mi-xs'));
+  }
+  if (!grid) return;
+  grid.innerHTML = '';
+  var spin = bzrSvgIcon('mi-refresh', 'mi mi-spin'); spin.style.cssText = 'color:#FF7A00;width:32px;height:32px;';
+  var spinWrap = document.createElement('div'); spinWrap.style.cssText = 'grid-column:1/-1;text-align:center;padding:2rem 0;'; spinWrap.appendChild(spin); grid.appendChild(spinWrap);
+
   currentStoreNameForProducts = storeId;
   currentStoreCategoryForProducts = category || null;
   storeProductsLastDoc = null; storeProductsHasMore = false;
 
-  const cacheKey = 'store_products_page1_' + storeId + '_' + (category || 'main');
-  const cached = cacheManager.get(cacheKey);
+  var cacheKey = 'store_products_page1_' + storeId + '_' + (category || 'main');
+  var cached = cacheManager.get(cacheKey);
   if (cached && Array.isArray(cached.items)) {
-    const filtered = filterStoreProductsByCategory(cached.items, category);
+    var filtered = filterStoreProductsByCategory(cached.items, category);
     if (!filtered.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات في هذه الفئة</div>'; return; }
     renderStoreProducts(filtered);
     if (cached.hasMore === true) { storeProductsHasMore = true; loadMoreBtn.classList.remove('hidden'); loadMoreBtn.hidden = false; }
@@ -738,130 +713,136 @@ async function loadStoreProducts(storeId, category) {
 
   if (!RateLimiter.canRequest('store_products')) return;
   try {
-    let q = db.collection('products').where('store_id', '==', String(storeId)).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
+    var q = db.collection('products').where('store_id', '==', String(storeId)).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
-    let snap;
+    var snap;
     try { snap = await q.get(); } catch(innerErr) { snap = await db.collection('products').where('store_id', '==', String(storeId)).limit(CONFIG.STORE_PRODUCTS_PER_PAGE).get(); }
-    
-    let rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    
-    const displayName = currentStore ? currentStore.name : null;
-    if (displayName) { rawList.forEach(p => { p.store_name = displayName; }); }
+
+    var rawList = snap.docs.map(function(d){ return { id: d.id, ...d.data() }; });
+
+    // ✅ Live store name override
+    var displayName = bzrResolveStoreName({ store_id: storeId, store_name: currentStore ? currentStore.name : null });
+    if (displayName) { rawList.forEach(function(p){ p.store_name = displayName; }); }
 
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
     storeProductsHasMore = (snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE);
-    const filtered = filterStoreProductsByCategory(rawList, category);
-    
-    if (!filtered.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات في هذه الفئة</div>'; }
+    var filteredList = filterStoreProductsByCategory(rawList, category);
+
+    if (!filteredList.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">لا توجد منتجات في هذه الفئة</div>'; }
     else {
-      renderStoreProducts(filtered);
-      if (storeProductsHasMore) { loadMoreBtn.classList.remove('hidden'); loadMoreBtn.hidden = false; }
+      renderStoreProducts(filteredList);
+      if (storeProductsHasMore && loadMoreBtn) { loadMoreBtn.classList.remove('hidden'); loadMoreBtn.hidden = false; }
     }
     cacheManager.set(cacheKey, { items: rawList, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
   } catch(err) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">تعذر التحميل</div>'; }
 }
 
-document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async (e) => {
-  const btn = e.currentTarget; if (btn.disabled || btn.classList.contains('hidden') || btn.hidden === true || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
+document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async function (e) {
+  var btn = e.currentTarget;
+  if (btn.disabled || btn.classList.contains('hidden') || btn.hidden === true || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
   if (!RateLimiter.canRequest('store_products')) { showToast('⏳ يرجى المحاولة بعد قليل'); return; }
-  btn.disabled = true; const origHTML = btn.innerHTML;
-  btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-refresh', 'mi mi-xs mi-spin')); const l2 = document.createElement('span'); l2.textContent = 'جاري التحميل...'; btn.appendChild(l2);
+  btn.disabled = true; var origHTML = btn.innerHTML;
+  btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-refresh', 'mi mi-xs mi-spin')); var l2 = document.createElement('span'); l2.textContent = 'جاري التحميل...'; btn.appendChild(l2);
   haptic('light');
   try {
-    let q = db.collection('products').where('store_id', '==', String(currentStoreNameForProducts)).startAfter(storeProductsLastDoc).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
+    var q = db.collection('products').where('store_id', '==', String(currentStoreNameForProducts)).startAfter(storeProductsLastDoc).limit(CONFIG.STORE_PRODUCTS_PER_PAGE);
     try { q = q.orderBy('created_at', 'desc'); } catch(e){}
-    let snap;
+    var snap;
     try { snap = await q.get(); } catch(err) { snap = await db.collection('products').where('store_id', '==', String(currentStoreNameForProducts)).startAfter(storeProductsLastDoc).limit(CONFIG.STORE_PRODUCTS_PER_PAGE).get(); }
-    
-    let rawList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    
-    const displayName = currentStore ? currentStore.name : null;
-    if (displayName) rawList.forEach(p => { p.store_name = displayName; });
+
+    var rawList = snap.docs.map(function(d){ return { id: d.id, ...d.data() }; });
+    var displayName = bzrResolveStoreName({ store_id: currentStoreNameForProducts, store_name: currentStore ? currentStore.name : null });
+    if (displayName) rawList.forEach(function(p){ p.store_name = displayName; });
 
     if (snap.docs.length > 0) storeProductsLastDoc = snap.docs[snap.docs.length - 1];
     storeProductsHasMore = (snap.docs.length === CONFIG.STORE_PRODUCTS_PER_PAGE);
-    const filtered = filterStoreProductsByCategory(rawList, currentStoreCategoryForProducts);
+    var filtered = filterStoreProductsByCategory(rawList, currentStoreCategoryForProducts);
     if (filtered.length) renderStoreProducts(filtered, true);
-    
-    const cacheKey = 'store_products_page1_' + currentStoreNameForProducts + '_' + (currentStoreCategoryForProducts || 'main');
-    const cached = cacheManager.get(cacheKey);
-    const allItems = (cached && Array.isArray(cached.items)) ? cached.items.concat(rawList) : rawList;
+
+    var cacheKey = 'store_products_page1_' + currentStoreNameForProducts + '_' + (currentStoreCategoryForProducts || 'main');
+    var cached = cacheManager.get(cacheKey);
+    var allItems = (cached && Array.isArray(cached.items)) ? cached.items.concat(rawList) : rawList;
     cacheManager.set(cacheKey, { items: allItems, hasMore: storeProductsHasMore }, CONFIG.CACHE_TTL_PRODUCTS);
-    
+
     if (!storeProductsHasMore) { btn.classList.add('hidden'); btn.hidden = true; btn.disabled = true; showToast('✅ عرضت جميع المنتجات'); }
     else { btn.innerHTML = origHTML; btn.disabled = false; }
   } catch(err){ showToast('❌ تعذر تحميل المزيد'); btn.innerHTML = origHTML; btn.disabled = false; }
 });
 
-/* ═══ PRODUCT CARD & BATCH RENDER ═══ */
+/* ═══ PRODUCT CARD ═══ */
 function buildProductCard(product, showStoreName) {
-  const price = parseFloat(product.price) || 0;
-  const fav = isProductFav(product.id);
-  const _pCurr = bzrResolveProductCurrency(product);
+  var price = parseFloat(product.price) || 0;
+  var fav = isProductFav(product.id);
+  var _pCurr = bzrResolveProductCurrency(product);
 
-  const pm = {
+  var pm = {
     id: product.id, name: product.name, img_url: product.img_url,
-    price,
+    price: price,
     original_price: product.original_price ? parseFloat(product.original_price) : null,
     store_id: product.store_id,
-    store_name: product.store_name,
+    store_name: bzrResolveStoreName(product),   // 🆕 live
     description: product.description || '',
     colors: product.colors || null,
     category: product.category || null,
     currency: bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol
   };
 
-  const card = document.createElement('div');
+  var card = document.createElement('div');
   card.className = 'store-product-card';
   if (product.id) card.setAttribute('data-product-id', String(product.id));
 
-  const favBtn = document.createElement('button');
+  var favBtn = document.createElement('button');
   favBtn.className = 'store-product-fav' + (fav ? ' active' : '');
   favBtn.appendChild(bzrSvgIcon(fav ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs'));
-  favBtn.addEventListener('click', (e) => {
+  favBtn.addEventListener('click', function (e) {
     e.stopPropagation(); haptic('light');
-    const now = toggleProductFav(product.id);
+    var now = toggleProductFav(product.id);
     favBtn.classList.toggle('active', now);
     bzrSetIcon(favBtn, now ? 'mi-heart-filled' : 'mi-heart', 'mi mi-xs');
     showToast(now ? 'أُضيف للمفضلة' : 'أُزيل');
   });
 
-  const imgWrap = document.createElement('div'); imgWrap.className = 'store-product-img-wrap';
-  const img = document.createElement('img'); img.loading = 'lazy'; img.alt = product.name || ''; img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300'; img.onerror = function(){ this.src = 'https://via.placeholder.com/300'; }; imgWrap.appendChild(img);
+  var imgWrap = document.createElement('div'); imgWrap.className = 'store-product-img-wrap';
+  var img = document.createElement('img'); img.loading = 'lazy'; img.alt = product.name || ''; img.src = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/300'; imgWrap.appendChild(img);
 
-  const info = document.createElement('div'); info.className = 'store-product-info';
-  const nameEl = document.createElement('div'); nameEl.className = 'store-product-name'; nameEl.textContent = product.name || ''; info.appendChild(nameEl);
-  
-  const desc = (product.description && String(product.description).trim()) || '';
-  if (desc) { const descEl = document.createElement('div'); descEl.className = 'product-card-desc'; descEl.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX); info.appendChild(descEl); }
+  var info = document.createElement('div'); info.className = 'store-product-info';
+  var nameEl = document.createElement('div'); nameEl.className = 'store-product-name'; nameEl.textContent = product.name || ''; info.appendChild(nameEl);
 
-  if (showStoreName && product.store_name) {
-    const storeEl = document.createElement('div');
+  var desc = (product.description && String(product.description).trim()) || '';
+  if (desc) { var descEl = document.createElement('div'); descEl.className = 'product-card-desc'; descEl.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX); info.appendChild(descEl); }
+
+  // ✅ Live store name display
+  if (showStoreName && pm.store_name) {
+    var storeEl = document.createElement('div');
     storeEl.style.cssText = 'font-size:0.68rem;color:var(--c-text-soft);font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
-    storeEl.textContent = product.store_name;
+    storeEl.textContent = pm.store_name;
     info.appendChild(storeEl);
   }
 
-  const priceEl = document.createElement('div'); priceEl.className = 'store-product-price'; priceEl.textContent = bzrSafeFormatPrice(price, _pCurr.symbol); info.appendChild(priceEl);
+  var priceEl = document.createElement('div'); priceEl.className = 'store-product-price'; priceEl.textContent = bzrSafeFormatPrice(price, _pCurr.symbol); info.appendChild(priceEl);
 
-  const viewBtn = document.createElement('button'); viewBtn.className = 'store-product-btn ripple';
-  const vs = document.createElement('span'); vs.textContent = 'عرض'; viewBtn.appendChild(vs); viewBtn.appendChild(document.createTextNode(' ')); viewBtn.appendChild(bzrSvgIcon('mi-chevron-left', 'mi mi-xs'));
-  viewBtn.addEventListener('click', (e) => { e.stopPropagation(); haptic('light'); openProductModal(pm); }); info.appendChild(viewBtn);
+  var viewBtn = document.createElement('button'); viewBtn.className = 'store-product-btn ripple';
+  var vs = document.createElement('span'); vs.textContent = 'عرض'; viewBtn.appendChild(vs); viewBtn.appendChild(document.createTextNode(' ')); viewBtn.appendChild(bzrSvgIcon('mi-chevron-left', 'mi mi-xs'));
+  viewBtn.addEventListener('click', function (e) { e.stopPropagation(); haptic('light'); openProductModal(pm); }); info.appendChild(viewBtn);
 
   card.appendChild(favBtn); card.appendChild(imgWrap); card.appendChild(info);
-  card.addEventListener('click', () => { haptic('light'); openProductModal(pm); });
+  card.addEventListener('click', function () { haptic('light'); openProductModal(pm); });
   return card;
 }
 
 function renderProductsBatch(products, mode) {
-  const grid = document.getElementById('allProductsGrid'); if (!grid || !Array.isArray(products) || !products.length) return;
-  let operation = 'append';
-  if (mode === false || mode === 'replace') operation = 'replace'; else if (mode === true || mode === 'prepend') operation = 'prepend'; else if (mode === 'append') operation = 'append'; else operation = grid.children.length > 0 ? 'append' : 'replace';
+  var grid = document.getElementById('allProductsGrid'); if (!grid || !Array.isArray(products) || !products.length) return;
+  var operation = 'append';
+  if (mode === false || mode === 'replace') operation = 'replace';
+  else if (mode === true || mode === 'prepend') operation = 'prepend';
+  else if (mode === 'append') operation = 'append';
+  else operation = grid.children.length > 0 ? 'append' : 'replace';
   if (operation === 'replace') grid.innerHTML = '';
-  const existingIds = new Set(); if (operation !== 'replace') grid.querySelectorAll('[data-product-id]').forEach((el) => existingIds.add(el.getAttribute('data-product-id')));
-  const frag = document.createDocumentFragment(); const addedIds = new Set(); let addedCount = 0;
-  products.forEach((product) => {
-    const id = product && product.id ? String(product.id) : null;
+  var existingIds = new Set();
+  if (operation !== 'replace') grid.querySelectorAll('[data-product-id]').forEach(function(el){ existingIds.add(el.getAttribute('data-product-id')); });
+  var frag = document.createDocumentFragment(); var addedIds = new Set(); var addedCount = 0;
+  products.forEach(function(product){
+    var id = product && product.id ? String(product.id) : null;
     if (id) { if (existingIds.has(id) || addedIds.has(id)) return; addedIds.add(id); }
     frag.appendChild(buildProductCard(product, true)); addedCount++;
   });
@@ -869,41 +850,48 @@ function renderProductsBatch(products, mode) {
   if (operation === 'prepend') grid.insertBefore(frag, grid.firstChild); else grid.appendChild(frag);
 }
 function renderStoreProducts(products, append) {
-  const grid = document.getElementById('storeProductsGrid'); if (!append) grid.innerHTML = '';
-  const frag = document.createDocumentFragment(); products.forEach(product => frag.appendChild(buildProductCard(product, false))); grid.appendChild(frag);
+  var grid = document.getElementById('storeProductsGrid'); if (!grid) return;
+  if (!append) grid.innerHTML = '';
+  var frag = document.createDocumentFragment(); products.forEach(function(product){ frag.appendChild(buildProductCard(product, false)); }); grid.appendChild(frag);
 }
 
 /* ═══ PRODUCT MODAL ═══ */
-let currentModalProduct = null, selectedColorVariant = null;
+var currentModalProduct = null, selectedColorVariant = null;
 function openProductModal(product) {
   currentModalProduct = product; selectedColorVariant = null;
-  const defaultImg = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/600';
-  const imgEl = document.getElementById('productModalImage'); imgEl.src = defaultImg; imgEl.style.opacity = '1'; imgEl.onerror = function(){ this.src = 'https://via.placeholder.com/600'; };
-  document.getElementById('productModalName').textContent = product.name; document.getElementById('productModalStore').textContent = product.store_name || 'غير محدد';
-  const _pCurr = bzrResolveProductCurrency(product);
+  var defaultImg = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/600';
+  var imgEl = document.getElementById('productModalImage'); imgEl.src = defaultImg; imgEl.style.opacity = '1';
+  document.getElementById('productModalName').textContent = product.name;
+  // ✅ Live store name
+  var displayStoreName = bzrResolveStoreName(product) || 'غير محدد';
+  document.getElementById('productModalStore').textContent = displayStoreName;
+  var _pCurr = bzrResolveProductCurrency(product);
   document.getElementById('productModalPrice').textContent = bzrSafeFormatPrice(product.price || 0, _pCurr.symbol);
-  const origEl = document.getElementById('productModalOriginalPrice');
+  var origEl = document.getElementById('productModalOriginalPrice');
   if (product.original_price) { origEl.textContent = bzrSafeFormatPrice(product.original_price, _pCurr.symbol); origEl.classList.remove('hidden'); } else { origEl.textContent = ''; origEl.classList.add('hidden'); }
   renderProductDescriptionInModal(product);
-  const colorsContainer = document.getElementById('productColorsContainer'); const swatchesContainer = document.getElementById('productColorSwatches'); const selColorName = document.getElementById('selectedColorName'); swatchesContainer.innerHTML = '';
+
+  var colorsContainer = document.getElementById('productColorsContainer'); var swatchesContainer = document.getElementById('productColorSwatches'); var selColorName = document.getElementById('selectedColorName'); swatchesContainer.innerHTML = '';
   if (product.colors && Array.isArray(product.colors) && product.colors.length > 0) {
     colorsContainer.classList.remove('hidden'); colorsContainer.style.display = 'flex'; selColorName.textContent = 'الأصلي';
-    const frag = document.createDocumentFragment();
-    const originalBtn = document.createElement('div'); originalBtn.className = 'color-swatch active'; originalBtn.title = 'الصورة الأصلية'; originalBtn.style.cssText = 'background:linear-gradient(135deg,#FF7A00,#FFA64D);display:flex;align-items:center;justify-content:center;position:relative;';
-    const imgIco = bzrSvgIcon('mi-image', 'mi'); imgIco.style.color = '#fff'; imgIco.style.width = '16px'; imgIco.style.height = '16px'; imgIco.style.filter = 'drop-shadow(0 1px 2px rgba(0,0,0,0.35))'; originalBtn.appendChild(imgIco);
-    originalBtn.addEventListener('click', () => {
+    var frag = document.createDocumentFragment();
+    var originalBtn = document.createElement('div'); originalBtn.className = 'color-swatch active'; originalBtn.title = 'الصورة الأصلية'; originalBtn.style.cssText = 'background:linear-gradient(135deg,#FF7A00,#FFA64D);display:flex;align-items:center;justify-content:center;position:relative;';
+    var imgIco = bzrSvgIcon('mi-image', 'mi'); imgIco.style.cssText = 'color:#fff;width:16px;height:16px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.35))'; originalBtn.appendChild(imgIco);
+    originalBtn.addEventListener('click', function () {
       if (selectedColorVariant === null) return; haptic('light'); imgEl.style.opacity = '0';
-      setTimeout(() => { selectedColorVariant = null; imgEl.src = defaultImg; imgEl.onload = () => { imgEl.style.opacity = '1'; }; }, 200);
-      document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active')); originalBtn.classList.add('active'); selColorName.textContent = 'الأصلي'; updateModalActionButtons();
+      setTimeout(function(){ selectedColorVariant = null; imgEl.src = defaultImg; imgEl.onload = function(){ imgEl.style.opacity = '1'; }; }, 200);
+      document.querySelectorAll('.color-swatch').forEach(function(el){ el.classList.remove('active'); }); originalBtn.classList.add('active'); selColorName.textContent = 'الأصلي'; updateModalActionButtons();
     });
     frag.appendChild(originalBtn);
-    product.colors.forEach((color) => {
-      const swatch = document.createElement('div'); const hex = safeHex(color && color.hex) || getFallbackHex(color && color.name); const isLight = ['#ffffff','#fff','#f8f9fa','white'].indexOf(String(hex).toLowerCase()) > -1;
-      swatch.className = 'color-swatch ' + (isLight ? 'light-color' : ''); swatch.style.backgroundColor = hex; swatch.title = String(color && color.name || '');
-      swatch.addEventListener('click', () => {
+    product.colors.forEach(function(color){
+      var swatch = document.createElement('div');
+      var hex = safeHex(color && color.hex) || getFallbackHex(color && color.name);
+      var isLight = ['#ffffff','#fff','#f8f9fa','white'].indexOf(String(hex).toLowerCase()) > -1;
+      swatch.className = 'color-swatch ' + (isLight ? 'light-color' : ''); swatch.style.backgroundColor = hex; swatch.title = String((color && color.name) || '');
+      swatch.addEventListener('click', function () {
         if (selectedColorVariant && selectedColorVariant.name === color.name) return; haptic('light'); imgEl.style.opacity = '0';
-        setTimeout(() => { selectedColorVariant = color; imgEl.src = optimizeCloudinaryUrl(color.image) || defaultImg; imgEl.onload = () => { imgEl.style.opacity = '1'; }; }, 200);
-        document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active')); swatch.classList.add('active'); selColorName.textContent = color.name; updateModalActionButtons();
+        setTimeout(function(){ selectedColorVariant = color; imgEl.src = optimizeCloudinaryUrl(color.image) || defaultImg; imgEl.onload = function(){ imgEl.style.opacity = '1'; }; }, 200);
+        document.querySelectorAll('.color-swatch').forEach(function(el){ el.classList.remove('active'); }); swatch.classList.add('active'); selColorName.textContent = color.name; updateModalActionButtons();
       });
       frag.appendChild(swatch);
     });
@@ -912,224 +900,246 @@ function openProductModal(product) {
   document.getElementById('productModal').classList.remove('hidden'); updateBodyScroll(); updateModalActionButtons(); bzrPushModal();
 }
 function renderProductDescriptionInModal(product) {
-  const descBox = document.getElementById('productModalDesc'); const descText = document.getElementById('productModalDescText'); if (!descBox || !descText) return;
-  const desc = (product && product.description && String(product.description).trim()) || '';
-  if (desc) { descText.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX); descBox.classList.add('visible'); } else { descText.textContent = ''; descBox.classList.remove('visible'); }
+  var descBox = document.getElementById('productModalDesc'); var descText = document.getElementById('productModalDescText'); if (!descBox || !descText) return;
+  var desc = (product && product.description && String(product.description).trim()) || '';
+  if (desc) { descText.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX); descBox.classList.add('visible'); }
+  else { descText.textContent = ''; descBox.classList.remove('visible'); }
 }
 function closeProductModalInternal() { document.getElementById('productModal').classList.add('hidden'); updateBodyScroll(); }
 function closeProductModal() { closeProductModalInternal(); bzrCloseModalUI(); }
 function updateModalActionButtons() {
-  const p = { ...currentModalProduct }; if (selectedColorVariant) { p.selectedColor = selectedColorVariant.name; p.img_url = selectedColorVariant.image || currentModalProduct.img_url; }
-  const _c = bzrResolveProductCurrency(p); p.currency = bzrNormalizeCurrencySymbol(p.currency) || _c.symbol;
-  document.getElementById('addToCartFromModal').dataset.product = JSON.stringify(p); document.getElementById('buyNowFromModal').dataset.product = JSON.stringify(p);
+  var p = Object.assign({}, currentModalProduct);
+  if (selectedColorVariant) { p.selectedColor = selectedColorVariant.name; p.img_url = selectedColorVariant.image || currentModalProduct.img_url; }
+  var _c = bzrResolveProductCurrency(p); p.currency = bzrNormalizeCurrencySymbol(p.currency) || _c.symbol;
+  document.getElementById('addToCartFromModal').dataset.product = JSON.stringify(p);
+  document.getElementById('buyNowFromModal').dataset.product = JSON.stringify(p);
 }
 document.getElementById('closeProductModal')?.addEventListener('click', closeProductModal);
-document.getElementById('productModal')?.addEventListener('click', (e) => { if (e.target === document.getElementById('productModal')) closeProductModal(); });
-document.getElementById('addToCartFromModal')?.addEventListener('click', (e) => {
-  const btn = e.currentTarget; const p = JSON.parse(btn.dataset.product); addToCart(p); haptic('medium');
-  const origBg = btn.style.background; btn.style.background = 'linear-gradient(135deg,#10B981,#059669)'; btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-check', 'mi mi-xs')); btn.appendChild(document.createTextNode(' تمت الإضافة'));
-  setTimeout(() => { btn.style.background = origBg; btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-shopping-bag', 'mi mi-xs')); btn.appendChild(document.createTextNode(' أضف إلى السلة')); }, 1500);
+document.getElementById('productModal')?.addEventListener('click', function (e) { if (e.target === document.getElementById('productModal')) closeProductModal(); });
+document.getElementById('addToCartFromModal')?.addEventListener('click', function (e) {
+  var btn = e.currentTarget; var p = JSON.parse(btn.dataset.product); addToCart(p); haptic('medium');
+  var origBg = btn.style.background; btn.style.background = 'linear-gradient(135deg,#10B981,#059669)'; btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-check', 'mi mi-xs')); btn.appendChild(document.createTextNode(' تمت الإضافة'));
+  setTimeout(function(){ btn.style.background = origBg; btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-shopping-bag', 'mi mi-xs')); btn.appendChild(document.createTextNode(' أضف إلى السلة')); }, 1500);
 });
-document.getElementById('buyNowFromModal')?.addEventListener('click', (e) => {
-  const p = JSON.parse(e.currentTarget.dataset.product);
-  const store = stores.find(s => s.id === p.store_id || s.name === p.store_name);
-  let wa = store && store.whatsapp_number ? store.whatsapp_number : '';
+document.getElementById('buyNowFromModal')?.addEventListener('click', function (e) {
+  var p = JSON.parse(e.currentTarget.dataset.product);
+  var store = null;
+  if (p.store_id && Array.isArray(stores)) store = stores.find(function(s){ return String(s.id) === String(p.store_id); });
+  if (!store && p.store_name && Array.isArray(stores)) store = stores.find(function(s){ return s.name === p.store_name; });
+  var wa = store && store.whatsapp_number ? store.whatsapp_number : '';
   if (!wa) { showToast('رقم الواتساب غير متوفر'); return; } haptic('medium');
-  const _pCurr = bzrResolveProductCurrency(p); const priceStr = bzrSafeFormatPrice(p.price || 0, _pCurr.symbol);
-  const msg = 'مرحباً، أريد شراء:\n\n' + p.name + '\n' + (p.selectedColor ? 'اللون: ' + p.selectedColor + '\n' : '') + 'السعر: ' + priceStr + '\n' + (p.store_name ? 'من متجر: ' + p.store_name : '');
+  var _pCurr = bzrResolveProductCurrency(p); var priceStr = bzrSafeFormatPrice(p.price || 0, _pCurr.symbol);
+  var liveStoreName = bzrResolveStoreName(p);
+  var msg = 'مرحباً، أريد شراء:\n\n' + p.name + '\n' + (p.selectedColor ? 'اللون: ' + p.selectedColor + '\n' : '') + 'السعر: ' + priceStr + '\n' + (liveStoreName ? 'من متجر: ' + liveStoreName : '');
   window.open('https://wa.me/' + wa.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
 });
 
 /* ═══ CART ═══ */
 function addToCart(product) {
-  const store = stores.find(s => s.id === product.store_id || s.name === product.store_name);
-  const cartItemId = product.selectedColor ? product.id + '_' + product.selectedColor : product.id;
-  const _pCurr = bzrResolveProductCurrency(product); const finalSymbol = bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol;
-  const item = { ...product, cartItemId, currency: finalSymbol, quantity: 1, store_whatsapp: store?.whatsapp_number || '' };
-  const existing = cart.find(i => (i.cartItemId || i.id) === cartItemId);
+  var store = null;
+  if (product.store_id && Array.isArray(stores)) store = stores.find(function(s){ return String(s.id) === String(product.store_id); });
+  if (!store && product.store_name && Array.isArray(stores)) store = stores.find(function(s){ return s.name === product.store_name; });
+  var cartItemId = product.selectedColor ? product.id + '_' + product.selectedColor : product.id;
+  var _pCurr = bzrResolveProductCurrency(product); var finalSymbol = bzrNormalizeCurrencySymbol(product.currency) || _pCurr.symbol;
+  var item = Object.assign({}, product, { cartItemId: cartItemId, currency: finalSymbol, quantity: 1, store_whatsapp: (store && store.whatsapp_number) || '' });
+  var existing = cart.find(function(i){ return (i.cartItemId || i.id) === cartItemId; });
   if (existing) existing.quantity += 1; else cart.push(item);
   updateCartUI(); try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){}
   animateCartBounce(); showToast('تمت الإضافة إلى السلة');
 }
-function animateCartBounce() { const btn = document.getElementById('cartButton'); if (!btn) return; btn.classList.add('bounce'); setTimeout(() => btn.classList.remove('bounce'), 650); }
+function animateCartBounce() { var btn = document.getElementById('cartButton'); if (!btn) return; btn.classList.add('bounce'); setTimeout(function(){ btn.classList.remove('bounce'); }, 650); }
 function updateCartUI() {
-  const totalItems = cart.reduce((s,i) => s + i.quantity, 0); const cc = document.getElementById('cartCount');
+  var totalItems = cart.reduce(function(s,i){ return s + i.quantity; }, 0); var cc = document.getElementById('cartCount');
   if (cc) { if (totalItems > 0) { cc.textContent = totalItems > 99 ? '99+' : totalItems; cc.style.display = 'flex'; } else cc.style.display = 'none'; }
-  const items = document.getElementById('cartItems'); items.innerHTML = '';
+  var items = document.getElementById('cartItems'); items.innerHTML = '';
   if (cart.length === 0) {
-    const empty = document.createElement('div'); empty.style.cssText = 'text-align:center;color:var(--c-text-soft);padding:2.5rem 0;';
-    const bag = bzrSvgIcon('mi-shopping-bag', 'mi'); bag.style.width = '48px'; bag.style.height = '48px'; bag.style.color = '#CBD5E1'; bag.style.display = 'inline-block'; bag.style.marginBottom = '1rem'; empty.appendChild(bag);
-    const p = document.createElement('p'); p.style.fontWeight = '700'; p.textContent = 'السلة فارغة'; empty.appendChild(p); items.appendChild(empty);
+    var empty = document.createElement('div'); empty.style.cssText = 'text-align:center;color:var(--c-text-soft);padding:2.5rem 0;';
+    var bag = bzrSvgIcon('mi-shopping-bag', 'mi'); bag.style.cssText = 'width:48px;height:48px;color:#CBD5E1;display:inline-block;margin-bottom:1rem'; empty.appendChild(bag);
+    var p = document.createElement('p'); p.style.fontWeight = '700'; p.textContent = 'السلة فارغة'; empty.appendChild(p); items.appendChild(empty);
   } else {
-    const frag = document.createDocumentFragment();
-    cart.forEach(item => {
-      const normalizedSymbol = bzrNormalizeCurrencySymbol(item.currency) || _BZR_FALLBACK_CURRENCY.symbol; const itemCurr = (window.bzrGetCurrencyBySymbol ? (window.bzrGetCurrencyBySymbol(normalizedSymbol) || { symbol: normalizedSymbol }) : { symbol: normalizedSymbol }); const itemSym = itemCurr.symbol;
-      const lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1); const lineTotalStr = bzrSafeFormatPrice(lineTotal, itemSym);
-      const div = document.createElement('div'); div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--c-border);'; const itemId = item.cartItemId || item.id;
-      div.innerHTML = `<img src="${sanitizeHTML(optimizeCloudinaryUrl(item.img_url) || 'https://via.placeholder.com/80')}" class="cart-item-image" alt="" loading="lazy"><div style="flex:1;min-width:0;"><h5 style="font-weight:800;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text);margin:0;">${sanitizeHTML(item.name)}</h5>${item.store_name ? `<span style="font-size:0.72rem;color:#FF7A00;font-weight:800;display:block;">${sanitizeHTML(item.store_name)}</span>` : ''}${item.selectedColor ? `<span style="font-size:0.7rem;color:var(--c-text-soft);font-weight:700;background:var(--c-surface-2);padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px;">اللون: ${sanitizeHTML(item.selectedColor)}</span>` : ''}<div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><button class="decrease-btn" data-id="${itemId}" style="width:26px;height:26px;border-radius:50%;background:var(--c-surface-2);border:none;font-weight:800;cursor:pointer;color:var(--c-text);">−</button><span style="font-weight:800;color:var(--c-text);min-width:20px;text-align:center;">${item.quantity}</span><button class="increase-btn" data-id="${itemId}" style="width:26px;height:26px;border-radius:50%;background:var(--c-surface-2);border:none;font-weight:800;cursor:pointer;color:var(--c-text);">+</button></div></div><div style="text-align:left;flex-shrink:0;"><div style="font-weight:900;color:#FF7A00;white-space:nowrap;">${sanitizeHTML(lineTotalStr)}</div><button class="remove-btn" data-id="${itemId}" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;padding:0;display:inline-flex;"></button></div>`;
-      const rmBtn = div.querySelector('.remove-btn'); if (rmBtn) rmBtn.appendChild(bzrSvgIcon('mi-trash', 'mi mi-xs')); frag.appendChild(div);
+    var frag = document.createDocumentFragment();
+    cart.forEach(function(item){
+      var normalizedSymbol = bzrNormalizeCurrencySymbol(item.currency) || _BZR_FALLBACK_CURRENCY.symbol;
+      var itemCurr = (window.bzrGetCurrencyBySymbol ? (window.bzrGetCurrencyBySymbol(normalizedSymbol) || { symbol: normalizedSymbol }) : { symbol: normalizedSymbol });
+      var itemSym = itemCurr.symbol;
+      var lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
+      var lineTotalStr = bzrSafeFormatPrice(lineTotal, itemSym);
+      var liveName = bzrResolveStoreName(item);  // 🆕 live store name
+      var div = document.createElement('div'); div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--c-border);'; var itemId = item.cartItemId || item.id;
+      var colorBadge = item.selectedColor ? '<span style="font-size:0.7rem;color:var(--c-text-soft);font-weight:700;background:var(--c-surface-2);padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px;">اللون: ' + sanitizeHTML(item.selectedColor) + '</span>' : '';
+      var storeLine = liveName ? '<span style="font-size:0.72rem;color:#FF7A00;font-weight:800;display:block;">' + sanitizeHTML(liveName) + '</span>' : '';
+      div.innerHTML = '<img src="' + sanitizeHTML(optimizeCloudinaryUrl(item.img_url) || 'https://via.placeholder.com/80') + '" class="cart-item-image" alt="" loading="lazy"><div style="flex:1;min-width:0;"><h5 style="font-weight:800;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c-text);margin:0;">' + sanitizeHTML(item.name) + '</h5>' + storeLine + colorBadge + '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;"><button class="decrease-btn" data-id="' + itemId + '" style="width:26px;height:26px;border-radius:50%;background:var(--c-surface-2);border:none;font-weight:800;cursor:pointer;color:var(--c-text);">−</button><span style="font-weight:800;color:var(--c-text);min-width:20px;text-align:center;">' + item.quantity + '</span><button class="increase-btn" data-id="' + itemId + '" style="width:26px;height:26px;border-radius:50%;background:var(--c-surface-2);border:none;font-weight:800;cursor:pointer;color:var(--c-text);">+</button></div></div><div style="text-align:left;flex-shrink:0;"><div style="font-weight:900;color:#FF7A00;white-space:nowrap;">' + sanitizeHTML(lineTotalStr) + '</div><button class="remove-btn" data-id="' + itemId + '" style="color:#EF4444;margin-top:4px;background:none;border:none;cursor:pointer;padding:0;display:inline-flex;"></button></div>';
+      var rmBtn = div.querySelector('.remove-btn'); if (rmBtn) rmBtn.appendChild(bzrSvgIcon('mi-trash', 'mi mi-xs')); frag.appendChild(div);
     });
     items.appendChild(frag);
-    items.querySelectorAll('.decrease-btn').forEach(b => b.onclick = () => { haptic('light'); changeQuantity(b.dataset.id, -1); });
-    items.querySelectorAll('.increase-btn').forEach(b => b.onclick = () => { haptic('light'); changeQuantity(b.dataset.id, 1); });
-    items.querySelectorAll('.remove-btn').forEach(b => b.onclick = () => { haptic('light'); removeFromCart(b.dataset.id); });
+    items.querySelectorAll('.decrease-btn').forEach(function(b){ b.onclick = function(){ haptic('light'); changeQuantity(b.dataset.id, -1); }; });
+    items.querySelectorAll('.increase-btn').forEach(function(b){ b.onclick = function(){ haptic('light'); changeQuantity(b.dataset.id, 1); }; });
+    items.querySelectorAll('.remove-btn').forEach(function(b){ b.onclick = function(){ haptic('light'); removeFromCart(b.dataset.id); }; });
   }
-  if (typeof window.bzrRenderCartTotals === 'function') { const normalizedCart = cart.map(i => ({ ...i, currency: bzrNormalizeCurrencySymbol(i.currency) || _BZR_FALLBACK_CURRENCY.symbol })); window.bzrRenderCartTotals(normalizedCart); }
-  else { const total = cart.reduce((s,i) => s + (parseFloat(i.price)||0) * (i.quantity||0), 0); const el = document.getElementById('cartTotalAmount'); if (el) el.textContent = total.toLocaleString() + ' ' + _BZR_FALLBACK_CURRENCY.symbol; }
+  if (typeof window.bzrRenderCartTotals === 'function') {
+    var normalizedCart = cart.map(function(i){ return Object.assign({}, i, { currency: bzrNormalizeCurrencySymbol(i.currency) || _BZR_FALLBACK_CURRENCY.symbol }); });
+    window.bzrRenderCartTotals(normalizedCart);
+  } else {
+    var total = cart.reduce(function(s,i){ return s + (parseFloat(i.price)||0) * (i.quantity||0); }, 0);
+    var el = document.getElementById('cartTotalAmount'); if (el) el.textContent = total.toLocaleString() + ' ' + _BZR_FALLBACK_CURRENCY.symbol;
+  }
   updateBottomNavBadge();
 }
-function changeQuantity(id, delta) { const item = cart.find(i => (i.cartItemId || i.id) === id); if (!item) return; item.quantity = Math.max(1, item.quantity + delta); updateCartUI(); try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){} }
-function removeFromCart(id) { cart = cart.filter(i => (i.cartItemId || i.id) !== id); updateCartUI(); try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){} showToast('تمت الإزالة'); }
+function changeQuantity(id, delta) { var item = cart.find(function(i){ return (i.cartItemId || i.id) === id; }); if (!item) return; item.quantity = Math.max(1, item.quantity + delta); updateCartUI(); try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){} }
+function removeFromCart(id) { cart = cart.filter(function(i){ return (i.cartItemId || i.id) !== id; }); updateCartUI(); try { localStorage.setItem(KEYS.CART, JSON.stringify(cart)); } catch(e){} showToast('تمت الإزالة'); }
 function openCart() { document.getElementById('cartSidebar').classList.add('open'); updateBodyScroll(); setActiveNav('cart'); bzrPushModal(); }
 function closeCartInternal() { document.getElementById('cartSidebar').classList.remove('open'); updateBodyScroll(); setActiveNav('home'); }
 function closeCart() { closeCartInternal(); bzrCloseModalUI(); }
-document.getElementById('cartButton')?.addEventListener('click', () => { haptic('light'); openCart(); });
+document.getElementById('cartButton')?.addEventListener('click', function () { haptic('light'); openCart(); });
 document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
 
-/* ═══════════════════════════════════════════════════════════
-   ═══ WHATSAPP ORDER (v9.16.1 Smart Routing) ═══
-   ═══════════════════════════════════════════════════════════ */
-document.getElementById('whatsappOrder')?.addEventListener('click', () => {
+/* ═══ WHATSAPP ORDER (Smart Routing + Live Names) ═══ */
+document.getElementById('whatsappOrder')?.addEventListener('click', function () {
   if (cart.length === 0) { showToast('السلة فارغة'); return; } haptic('medium');
-  
-  let msg = '🛒 *طلب جديد من BranZar*\n\n📋 *تفاصيل الطلب:*\n━━━━━━━━━━━━━━\n';
-  cart.forEach((item, index) => {
-    const normalizedSymbol = bzrNormalizeCurrencySymbol(item.currency) || _BZR_FALLBACK_CURRENCY.symbol; const lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
-    msg += `${index + 1}. *${item.name}*\n   • الكمية: ${item.quantity}\n   • السعر: ${lineTotal.toLocaleString()} ${normalizedSymbol}\n`;
-    if (item.selectedColor) msg += `   • اللون: ${item.selectedColor}\n`;
-    if (item.store_name) msg += `   • المتجر: ${item.store_name}\n`;
+  var msg = '🛒 *طلب جديد من BranZar*\n\n📋 *تفاصيل الطلب:*\n━━━━━━━━━━━━━━\n';
+  cart.forEach(function(item, index){
+    var normalizedSymbol = bzrNormalizeCurrencySymbol(item.currency) || _BZR_FALLBACK_CURRENCY.symbol;
+    var lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
+    msg += (index + 1) + '. *' + item.name + '*\n   • الكمية: ' + item.quantity + '\n   • السعر: ' + lineTotal.toLocaleString() + ' ' + normalizedSymbol + '\n';
+    if (item.selectedColor) msg += '   • اللون: ' + item.selectedColor + '\n';
+    var liveStoreName = bzrResolveStoreName(item);
+    if (liveStoreName) msg += '   • المتجر: ' + liveStoreName + '\n';
     msg += '\n';
   });
   msg += '━━━━━━━━━━━━━━\n';
-  
-  let totalStr;
-  if (typeof window.bzrComputeCartTotals === 'function' && typeof window.bzrFormatCartTotals === 'function') { const normalizedCart = cart.map(i => ({ ...i, currency: bzrNormalizeCurrencySymbol(i.currency) || _BZR_FALLBACK_CURRENCY.symbol })); totalStr = window.bzrFormatCartTotals(window.bzrComputeCartTotals(normalizedCart)); }
-  else { const total = cart.reduce((s, i) => s + (parseFloat(i.price) || 0) * (i.quantity || 0), 0); totalStr = total.toLocaleString() + ' ' + _BZR_FALLBACK_CURRENCY.symbol; }
-  
-  const itemCount = cart.reduce((s, i) => s + (i.quantity || 0), 0);
-  msg += `💰 *المجموع الكلي:* ${totalStr}\n\n📦 عدد المنتجات: ${itemCount}\n\nشكراً لاستخدامكم BranZar 🌟`;
 
-  // ═══ 🆕 التوجيه الذكي للواتساب ═══
-  // 1. استخراج معرفات المتاجر الفريدة من السلة
-  const uniqueStoreIds = new Set(cart.map(item => item.store_id).filter(Boolean));
-  
-  // 2. الافتراضي: رقم المنصة
-  let targetWhatsapp = CONFIG.FIXED_WHATSAPP;
+  var totalStr;
+  if (typeof window.bzrComputeCartTotals === 'function' && typeof window.bzrFormatCartTotals === 'function') {
+    var normalizedCart = cart.map(function(i){ return Object.assign({}, i, { currency: bzrNormalizeCurrencySymbol(i.currency) || _BZR_FALLBACK_CURRENCY.symbol }); });
+    totalStr = window.bzrFormatCartTotals(window.bzrComputeCartTotals(normalizedCart));
+  } else {
+    var total = cart.reduce(function(s, i){ return s + (parseFloat(i.price) || 0) * (i.quantity || 0); }, 0);
+    totalStr = total.toLocaleString() + ' ' + _BZR_FALLBACK_CURRENCY.symbol;
+  }
 
-  // 3. إذا كانت السلة تحتوي على متجر واحد فقط
+  var itemCount = cart.reduce(function(s, i){ return s + (i.quantity || 0); }, 0);
+  msg += '💰 *المجموع الكلي:* ' + totalStr + '\n\n📦 عدد المنتجات: ' + itemCount + '\n\nشكراً لاستخدامكم BranZar 🌟';
+
+  // Smart routing
+  var uniqueStoreIds = new Set(cart.map(function(item){ return item.store_id; }).filter(Boolean));
+  var targetWhatsapp = CONFIG.FIXED_WHATSAPP;
   if (uniqueStoreIds.size === 1) {
-    const singleStoreId = Array.from(uniqueStoreIds)[0];
-    const storeObj = stores.find(s => String(s.id) === String(singleStoreId));
-    
-    let storeWa = storeObj ? storeObj.whatsapp_number : null;
-    
-    // احتياطي: البحث في بيانات السلة
+    var singleStoreId = Array.from(uniqueStoreIds)[0];
+    var storeObj = stores.find(function(s){ return String(s.id) === String(singleStoreId); });
+    var storeWa = storeObj ? storeObj.whatsapp_number : null;
     if (!storeWa) {
-      const cartItem = cart.find(i => String(i.store_id) === String(singleStoreId));
+      var cartItem = cart.find(function(i){ return String(i.store_id) === String(singleStoreId); });
       if (cartItem && cartItem.store_whatsapp) storeWa = cartItem.store_whatsapp;
     }
-    
-    // إذا وُجد رقم صاحب المتجر، نستخدمه
-    if (storeWa && String(storeWa).trim() !== '') {
-      targetWhatsapp = storeWa;
-    }
+    if (storeWa && String(storeWa).trim() !== '') targetWhatsapp = storeWa;
   }
-  
-  // تنظيف الرقم من أي رموز
   targetWhatsapp = String(targetWhatsapp).replace(/[^0-9]/g, '');
-
   window.open('https://wa.me/' + targetWhatsapp + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
 });
 
 /* ═══ SHARE STORE ═══ */
 function updateMetaTagsForStore(store) {
   if (!store) return;
-  const storeName = store.name || 'BranZar'; const storeDesc = (store.description && String(store.description).trim()) ? store.description : 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن🛒🛍️';
-  const storeImage = optimizeCloudinaryUrl(store.cover_url) || optimizeCloudinaryUrl(store.logo_url) || CONFIG.DEFAULT_OG_IMAGE;
-  const storeUrl = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(String(getStoreId(store)));
-  const ogTitle = document.querySelector('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', storeName + ' | BranZar');
-  const ogDesc = document.querySelector('meta[property="og:description"]'); if (ogDesc) ogDesc.setAttribute('content', storeDesc);
-  const ogImage = document.querySelector('meta[property="og:image"]'); if (ogImage) ogImage.setAttribute('content', storeImage);
-  const ogUrl = document.querySelector('meta[property="og:url"]'); if (ogUrl) ogUrl.setAttribute('content', storeUrl);
-  const twTitle = document.querySelector('meta[name="twitter:title"]'); if (twTitle) twTitle.setAttribute('content', storeName + ' | BranZar');
-  const twDesc = document.querySelector('meta[name="twitter:description"]'); if (twDesc) twDesc.setAttribute('content', storeDesc);
-  const twImage = document.querySelector('meta[name="twitter:image"]'); if (twImage) twImage.setAttribute('content', storeImage);
+  var storeName = store.name || 'BranZar';
+  var storeDesc = (store.description && String(store.description).trim()) ? store.description : 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد. تسوق الآن🛒🛍️';
+  var storeImage = optimizeCloudinaryUrl(store.cover_url) || optimizeCloudinaryUrl(store.logo_url) || CONFIG.DEFAULT_OG_IMAGE;
+  var storeUrl = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(String(getStoreId(store)));
+  var ogTitle = document.querySelector('meta[property="og:title"]'); if (ogTitle) ogTitle.setAttribute('content', storeName + ' | BranZar');
+  var ogDesc = document.querySelector('meta[property="og:description"]'); if (ogDesc) ogDesc.setAttribute('content', storeDesc);
+  var ogImage = document.querySelector('meta[property="og:image"]'); if (ogImage) ogImage.setAttribute('content', storeImage);
+  var ogUrl = document.querySelector('meta[property="og:url"]'); if (ogUrl) ogUrl.setAttribute('content', storeUrl);
+  var twTitle = document.querySelector('meta[name="twitter:title"]'); if (twTitle) twTitle.setAttribute('content', storeName + ' | BranZar');
+  var twDesc = document.querySelector('meta[name="twitter:description"]'); if (twDesc) twDesc.setAttribute('content', storeDesc);
+  var twImage = document.querySelector('meta[name="twitter:image"]'); if (twImage) twImage.setAttribute('content', storeImage);
   document.title = storeName + ' | BranZar';
 }
-document.getElementById('storeShareBtn')?.addEventListener('click', () => { if (currentStore) shareStore(currentStore); });
+document.getElementById('storeShareBtn')?.addEventListener('click', function () { if (currentStore) shareStore(currentStore); });
 async function shareStore(store) {
   if (!store) return;
   updateMetaTagsForStore(store);
-  const storeId = String(getStoreId(store));
-  const url = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(storeId);
-  const shareText = `اكتشف متجر ${store.name} على BranZar 🛒🛍️\n${store.description || 'أفضل المنتجات والبراندات في مكان واحد'}`;
-  if (navigator.share) { try { await navigator.share({ title: store.name + ' | BranZar', text: shareText, url }); haptic('medium'); return; } catch(err){ if (err && err.name === 'AbortError') return; } }
+  var storeId = String(getStoreId(store));
+  var url = window.location.origin + window.location.pathname + '?store=' + encodeURIComponent(storeId);
+  var shareText = 'اكتشف متجر ' + store.name + ' على BranZar 🛒🛍️\n' + (store.description || 'أفضل المنتجات والبراندات في مكان واحد');
+  if (navigator.share) { try { await navigator.share({ title: store.name + ' | BranZar', text: shareText, url: url }); haptic('medium'); return; } catch(err){ if (err && err.name === 'AbortError') return; } }
   try { if (navigator.clipboard) { await navigator.clipboard.writeText(url); showToast('✅ تم نسخ الرابط'); } } catch(err){ showToast('تعذر النسخ'); }
 }
 
-/* ═══ KEYBOARD & NAV CONTROLS & SW ═══ */
-document.addEventListener('keydown', (e) => {
+/* ═══ KEYBOARD & CONTROLS & SW ═══ */
+document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') { if (searchResults.classList.contains('show')) { searchResults.classList.remove('show'); return; } closeTopmostModal(); }
 });
-document.getElementById('categoriesContainer')?.addEventListener('wheel', (e) => { if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; } }, { passive: false });
-document.getElementById('prevStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: 300, behavior: 'smooth' }); });
-document.getElementById('nextStoresBtn')?.addEventListener('click', () => { const c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: -300, behavior: 'smooth' }); });
-document.getElementById('prevCategoriesBtn')?.addEventListener('click', () => { const c = document.getElementById('categoriesContainer'); lastCategoriesInteraction = Date.now(); c.scrollBy({ left: -200, behavior: 'smooth' }); });
-document.getElementById('nextCategoriesBtn')?.addEventListener('click', () => { const c = document.getElementById('categoriesContainer'); lastCategoriesInteraction = Date.now(); c.scrollBy({ left: 200, behavior: 'smooth' }); });
+document.getElementById('categoriesContainer')?.addEventListener('wheel', function (e) { if (e.deltaY !== 0) { e.preventDefault(); e.currentTarget.scrollLeft += e.deltaY; } }, { passive: false });
+document.getElementById('prevStoresBtn')?.addEventListener('click', function () { var c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: 300, behavior: 'smooth' }); });
+document.getElementById('nextStoresBtn')?.addEventListener('click', function () { var c = document.getElementById('storesScrollContainer'); lastStoresInteraction = Date.now(); c.scrollBy({ left: -300, behavior: 'smooth' }); });
+document.getElementById('prevCategoriesBtn')?.addEventListener('click', function () { var c = document.getElementById('categoriesContainer'); lastCategoriesInteraction = Date.now(); c.scrollBy({ left: -200, behavior: 'smooth' }); });
+document.getElementById('nextCategoriesBtn')?.addEventListener('click', function () { var c = document.getElementById('categoriesContainer'); lastCategoriesInteraction = Date.now(); c.scrollBy({ left: 200, behavior: 'smooth' }); });
 
-const storesContainer = document.getElementById('storesScrollContainer');
-if (storesContainer) { ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => { storesContainer.addEventListener(evt, () => { lastStoresInteraction = Date.now(); }, { passive: true }); }); storesContainer.addEventListener('mouseenter', () => { isHoveringStores = true; }, { passive: true }); storesContainer.addEventListener('mouseleave', () => { isHoveringStores = false; lastStoresInteraction = Date.now(); }, { passive: true }); }
-const categoriesScrollContainer = document.getElementById('categoriesContainer');
-if (categoriesScrollContainer) { ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(evt => { categoriesScrollContainer.addEventListener(evt, () => { lastCategoriesInteraction = Date.now(); }, { passive: true }); }); categoriesScrollContainer.addEventListener('mouseenter', () => { isHoveringCategories = true; }, { passive: true }); categoriesScrollContainer.addEventListener('mouseleave', () => { isHoveringCategories = false; lastCategoriesInteraction = Date.now(); }, { passive: true }); }
+var storesContainer = document.getElementById('storesScrollContainer');
+if (storesContainer) {
+  ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(function(evt){ storesContainer.addEventListener(evt, function(){ lastStoresInteraction = Date.now(); }, { passive: true }); });
+  storesContainer.addEventListener('mouseenter', function(){ isHoveringStores = true; }, { passive: true });
+  storesContainer.addEventListener('mouseleave', function(){ isHoveringStores = false; lastStoresInteraction = Date.now(); }, { passive: true });
+}
+var categoriesScrollContainer = document.getElementById('categoriesContainer');
+if (categoriesScrollContainer) {
+  ['pointerdown','pointerup','pointercancel','touchstart','touchend','touchcancel','wheel','mousedown','mouseup'].forEach(function(evt){ categoriesScrollContainer.addEventListener(evt, function(){ lastCategoriesInteraction = Date.now(); }, { passive: true }); });
+  categoriesScrollContainer.addEventListener('mouseenter', function(){ isHoveringCategories = true; }, { passive: true });
+  categoriesScrollContainer.addEventListener('mouseleave', function(){ isHoveringCategories = false; lastCategoriesInteraction = Date.now(); }, { passive: true });
+}
 
 /* ═══ SERVICE WORKER & UPDATES ═══ */
-let swRegistration = null; let isReloading = false; let updateCheckInterval = null; let _updateButtonShownThisLoad = false; let _lastUpdateCheck = 0;
-function getSWVersionFromWorker(worker) { return new Promise((resolve) => { if (!worker) return resolve(null); const timeout = setTimeout(() => resolve(null), 1500); try { const channel = new MessageChannel(); channel.port1.onmessage = (e) => { clearTimeout(timeout); const v = e.data && e.data.version; resolve(typeof v === 'string' ? v : null); }; worker.postMessage({ type: 'GET_VERSION' }, [channel.port2]); } catch(e) { clearTimeout(timeout); resolve(null); } }); }
-function showUpdateButton() { const btn = document.getElementById('updateAvailableBtn'); if (!btn || btn.classList.contains('show')) return; btn.classList.remove('hidden'); requestAnimationFrame(() => { setTimeout(() => { btn.classList.add('show'); try { haptic('medium'); } catch(e){} }, 50); }); }
-function triggerUpdate() { const btn = document.getElementById('updateAvailableBtn'); if (!btn || btn.disabled) return; btn.disabled = true; const iconWrap = btn.querySelector('.update-icon-wrap'); if (iconWrap) { iconWrap.innerHTML = ''; iconWrap.appendChild(bzrSvgIcon('mi-refresh', 'mi mi-sm mi-spin')); } const strongEl = btn.querySelector('.update-text-wrap strong'); if (strongEl) strongEl.textContent = '⏳ جاري التحديث...'; const spanEl = btn.querySelector('.update-text-wrap span'); if (spanEl) spanEl.textContent = 'لحظة من فضلك'; const reg = swRegistration; if (reg && reg.waiting) { reg.waiting.postMessage({ type: 'SKIP_WAITING' }); setTimeout(() => { if (!isReloading) { isReloading = true; window.location.reload(); } }, 2000); } else { window.location.reload(); } }
-async function maybeShowUpdate() { if (_updateButtonShownThisLoad) return; if (!swRegistration) return; const waiting = swRegistration.waiting; const active = navigator.serviceWorker.controller; if (!waiting || !active) return; try { const [newV, oldV] = await Promise.all([getSWVersionFromWorker(waiting), getSWVersionFromWorker(active)]); if (newV && oldV && newV === oldV) return; if (!newV) return; _updateButtonShownThisLoad = true; showUpdateButton(); try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){} } catch(e){} }
+var swRegistration = null, isReloading = false, updateCheckInterval = null, _updateButtonShownThisLoad = false, _lastUpdateCheck = 0;
+function getSWVersionFromWorker(worker) { return new Promise(function (resolve) { if (!worker) return resolve(null); var timeout = setTimeout(function(){ resolve(null); }, 1500); try { var channel = new MessageChannel(); channel.port1.onmessage = function (e) { clearTimeout(timeout); var v = e.data && e.data.version; resolve(typeof v === 'string' ? v : null); }; worker.postMessage({ type: 'GET_VERSION' }, [channel.port2]); } catch(e) { clearTimeout(timeout); resolve(null); } }); }
+function showUpdateButton() { var btn = document.getElementById('updateAvailableBtn'); if (!btn || btn.classList.contains('show')) return; btn.classList.remove('hidden'); requestAnimationFrame(function(){ setTimeout(function(){ btn.classList.add('show'); try { haptic('medium'); } catch(e){} }, 50); }); }
+function triggerUpdate() { var btn = document.getElementById('updateAvailableBtn'); if (!btn || btn.disabled) return; btn.disabled = true; var reg = swRegistration; if (reg && reg.waiting) { reg.waiting.postMessage({ type: 'SKIP_WAITING' }); setTimeout(function(){ if (!isReloading) { isReloading = true; window.location.reload(); } }, 2000); } else { window.location.reload(); } }
+async function maybeShowUpdate() { if (_updateButtonShownThisLoad) return; if (!swRegistration) return; var waiting = swRegistration.waiting; var active = navigator.serviceWorker.controller; if (!waiting || !active) return; try { var v = await Promise.all([getSWVersionFromWorker(waiting), getSWVersionFromWorker(active)]); var newV = v[0], oldV = v[1]; if (newV && oldV && newV === oldV) return; if (!newV) return; _updateButtonShownThisLoad = true; showUpdateButton(); try { showToast('🎉 تحديث جديد متوفر!'); } catch(e){} } catch(e){} }
 async function checkForUpdate() { if (!swRegistration || document.hidden) return; try { await swRegistration.update(); await maybeShowUpdate(); } catch(err){} }
-function throttledCheckForUpdate() { const now = Date.now(); if (now - _lastUpdateCheck < CONFIG.UPDATE_CHECK_THROTTLE_MS) return; _lastUpdateCheck = now; checkForUpdate(); }
+function throttledCheckForUpdate() { var now = Date.now(); if (now - _lastUpdateCheck < CONFIG.UPDATE_CHECK_THROTTLE_MS) return; _lastUpdateCheck = now; checkForUpdate(); }
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: './' }).then((reg) => {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function (reg) {
       swRegistration = reg; if (reg.waiting && navigator.serviceWorker.controller) maybeShowUpdate();
-      reg.addEventListener('updatefound', () => { const newWorker = reg.installing; if (!newWorker) return; newWorker.addEventListener('statechange', () => { if (newWorker.state === 'installed' && navigator.serviceWorker.controller) { setTimeout(() => maybeShowUpdate(), 500); } }); });
-      if (updateCheckInterval) clearInterval(updateCheckInterval); updateCheckInterval = setInterval(() => { if (!document.hidden) checkForUpdate(); }, CONFIG.UPDATE_CHECK_INTERVAL_MS);
-    }).catch((err) => console.warn('[BZR] SW registration failed:', err));
-    let hadControllerAtLoad = !!navigator.serviceWorker.controller;
-    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadControllerAtLoad) { hadControllerAtLoad = true; return; } if (isReloading) return; isReloading = true; window.location.reload(); });
-    navigator.serviceWorker.addEventListener('message', (event) => { const data = event.data || {}; if (data.type === 'SW_ACTIVATED') _updateButtonShownThisLoad = false; });
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) throttledCheckForUpdate(); });
+      reg.addEventListener('updatefound', function () { var nw = reg.installing; if (!nw) return; nw.addEventListener('statechange', function () { if (nw.state === 'installed' && navigator.serviceWorker.controller) { setTimeout(function(){ maybeShowUpdate(); }, 500); } }); });
+      if (updateCheckInterval) clearInterval(updateCheckInterval); updateCheckInterval = setInterval(function(){ if (!document.hidden) checkForUpdate(); }, CONFIG.UPDATE_CHECK_INTERVAL_MS);
+    }).catch(function (err) { console.warn('[BZR] SW registration failed:', err); });
+    var hadControllerAtLoad = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', function () { if (!hadControllerAtLoad) { hadControllerAtLoad = true; return; } if (isReloading) return; isReloading = true; window.location.reload(); });
+    navigator.serviceWorker.addEventListener('message', function (event) { var data = event.data || {}; if (data.type === 'SW_ACTIVATED') _updateButtonShownThisLoad = false; });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) throttledCheckForUpdate(); });
   });
 }
 document.getElementById('updateAvailableBtn')?.addEventListener('click', triggerUpdate);
 
 /* ═══ REFRESH BUTTON ═══ */
-document.getElementById('refreshProductsBtn')?.addEventListener('click', async (e) => {
-  const btn = e.currentTarget; const svgIcon = btn.querySelector('svg'); if (btn.disabled) return;
+document.getElementById('refreshProductsBtn')?.addEventListener('click', async function (e) {
+  var btn = e.currentTarget; var svgIcon = btn.querySelector('svg'); if (btn.disabled) return;
   btn.disabled = true; if (svgIcon) svgIcon.classList.add('mi-spin'); haptic('light');
   try {
     cacheManager.remove('all_products_page1'); cacheManager.remove('stores_list');
-    if (typeof dexieClearProducts === 'function') await dexieClearProducts(); if (typeof dexieClearStores === 'function') await dexieClearStores();
+    if (typeof dexieClearProducts === 'function') await dexieClearProducts();
+    if (typeof dexieClearStores === 'function') await dexieClearStores();
     await Promise.all([loadStores(true), loadAllProducts(true)]);
     showToast('✅ تم تحديث البيانات');
-  } catch(err) { showToast('تعذر التحديث، حاول مرة أخرى'); } finally { if (svgIcon) svgIcon.classList.remove('mi-spin'); btn.disabled = false; }
+  } catch(err) { showToast('تعذر التحديث، حاول مرة أخرى'); }
+  finally { if (svgIcon) svgIcon.classList.remove('mi-spin'); btn.disabled = false; }
 });
 
 /* ═══ SEARCH & ACCOUNT BUTTONS ═══ */
-document.addEventListener('DOMContentLoaded', () => {
-  const searchBtn = document.getElementById('openSearchBtn'); const searchOverlay = document.getElementById('bzrSearchOverlay'); const closeSearchBtn = document.getElementById('closeSearchBtn'); const searchInput = document.getElementById('searchInput');
-  if (searchBtn && searchOverlay) { searchBtn.addEventListener('click', (e) => { e.preventDefault(); searchOverlay.classList.remove('hidden'); searchOverlay.style.display = 'block'; setTimeout(() => searchInput?.focus(), 100); if (typeof updateBodyScroll === 'function') updateBodyScroll(); }); }
-  if (closeSearchBtn && searchOverlay) { closeSearchBtn.addEventListener('click', () => { searchOverlay.classList.add('hidden'); searchOverlay.style.display = 'none'; if (typeof updateBodyScroll === 'function') updateBodyScroll(); }); }
-  const appActions = document.querySelector('.bzr-app-actions');
+document.addEventListener('DOMContentLoaded', function () {
+  var searchBtn = document.getElementById('openSearchBtn');
+  var searchOverlay = document.getElementById('bzrSearchOverlay');
+  var closeSearchBtn = document.getElementById('closeSearchBtn');
+  var sInput = document.getElementById('searchInput');
+  if (searchBtn && searchOverlay) { searchBtn.addEventListener('click', function (e) { e.preventDefault(); searchOverlay.classList.remove('hidden'); searchOverlay.style.display = 'block'; setTimeout(function(){ if (sInput) sInput.focus(); }, 100); if (typeof updateBodyScroll === 'function') updateBodyScroll(); }); }
+  if (closeSearchBtn && searchOverlay) { closeSearchBtn.addEventListener('click', function () { searchOverlay.classList.add('hidden'); searchOverlay.style.display = 'none'; if (typeof updateBodyScroll === 'function') updateBodyScroll(); }); }
+  var appActions = document.querySelector('.bzr-app-actions');
   if (appActions && !document.querySelector('.bzr-account-btn')) {
-    const accBtn = document.createElement('button'); accBtn.className = 'bzr-account-btn'; accBtn.setAttribute('aria-label', 'حسابي'); accBtn.innerHTML = '<svg class="mi" aria-hidden="true"><use href="#mi-person"></use></svg>';
+    var accBtn = document.createElement('button'); accBtn.className = 'bzr-account-btn'; accBtn.setAttribute('aria-label', 'حسابي'); accBtn.innerHTML = '<svg class="mi" aria-hidden="true"><use href="#mi-person"></use></svg>';
     appActions.insertBefore(accBtn, appActions.firstChild);
-    accBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof openAccountModal === 'function') openAccountModal(); });
+    accBtn.addEventListener('click', function (e) { e.preventDefault(); if (typeof openAccountModal === 'function') openAccountModal(); });
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.16.1 — Smart WhatsApp Routing');
+console.log('[BZR] ui.js loaded ✅ v9.17.1 — Live store name resolution');
