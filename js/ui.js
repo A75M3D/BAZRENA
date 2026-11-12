@@ -227,7 +227,7 @@ document.getElementById('accountOverlay')?.addEventListener('click', closeAccoun
 document.getElementById('logoMenuBtn')?.addEventListener('click', function () { haptic('light'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 document.getElementById('accountShareAppBtn')?.addEventListener('click', async function () {
   haptic('medium');
-  var shareData = { title: 'BranZar - بران زار', text: 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد 🛒🛍️', url: window.location.origin };
+  var shareData = { title: 'BranZar - بران زار', text: 'اكتشف أفضل المتاجر والبراندات السودانية والعالمية في مكان واحد 🛒🛍️', url: 'https://branzar.vercel.app/download.html' };
   if (navigator.share) { try { await navigator.share(shareData); return; } catch (err) { if (err && err.name === 'AbortError') return; } }
   try {
     if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(shareData.url); showToast('✅ تم نسخ رابط التطبيق'); }
