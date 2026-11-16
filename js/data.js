@@ -236,6 +236,7 @@ function startProductsLiveListener() {
             if (bzrDB) { try { exists = !!(await bzrDB.products.get(c.doc.id)); } catch (e) {} }
             if (!exists) added.push({ id: c.doc.id, ...c.doc.data() });
           } else if (c.type === 'modified') {
+            // 🆕 Detect updates (e.g., store_name after rename, price changes)
             modified.push({ id: c.doc.id, ...c.doc.data() });
           }
         }
