@@ -141,6 +141,46 @@ function _bzrMillis(v) {
 }
 window._bzrMillis = _bzrMillis;
 
+/* Subscription entitlement is controlled by the platform admin only. */
+function bzrSubscriptionEndMillis(value) {
+  const millis = _bzrMillis(value);
+  if (millis > 0) return millis;
+  if (typeof value === 'string') {
+    const parsed = Date.parse(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+}
+function bzrIsStoreSubscriptionActive(store, now = Date.now()) {
+  if (!store || store.is_subscribed !== true) return false;
+  const status = String(store.subscriptionStatus || '').trim().toLowerCase();
+  if (status && status !== 'active' && status !== 'expiring') return false;
+  const endsAt = bzrSubscriptionEndMillis(store.subscriptionEndsAt);
+  return endsAt > now;
+}
+function bzrCanShowStoreCategory(store, category, now = Date.now()) {
+  const requested = String(category || '').trim().toLowerCase();
+  if (!requested) return true;
+  const main = String((store && store.category) || '').trim().toLowerCase();
+  return (!!main && requested === main) || bzrIsStoreSubscriptionActive(store, now);
+}
+function bzrCanDisplayProduct(product, storeList, activeStore, now = Date.now()) {
+  if (!product || !String(product.category || '').trim()) return true;
+  const id = String(product.store_id || '').trim();
+  const name = String(product.store_name || '').trim();
+  const list = Array.isArray(storeList) ? storeList : [];
+  let store = id ? list.find(item => item && String(item.id || '').trim() === id) : null;
+  if (!store && activeStore && ((id && String(activeStore.id || '').trim() === id) || (!id && name && String(activeStore.name || '').trim() === name))) store = activeStore;
+  if (!store && name) store = list.find(item => item && String(item.name || '').trim() === name);
+  // Fail closed when store metadata is unavailable: a categorized product
+  // cannot safely be distinguished from an unentitled additional-category item.
+  return !!store && bzrCanShowStoreCategory(store, product.category, now);
+}
+window.bzrSubscriptionEndMillis = bzrSubscriptionEndMillis;
+window.bzrIsStoreSubscriptionActive = bzrIsStoreSubscriptionActive;
+window.bzrCanShowStoreCategory = bzrCanShowStoreCategory;
+window.bzrCanDisplayProduct = bzrCanDisplayProduct;
+
 /* ═══ RATE LIMITER ═══ */
 const RateLimiter = {
   _counts: {}, _lastReset: Date.now(),
