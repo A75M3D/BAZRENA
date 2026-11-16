@@ -1,11 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.17.0 — data.js
+   BranZar v9.17.1 — data.js
    Layer 2: Data Loading + Smart Stores + Smart Products
-   ✅ v9.17.0: Store rename propagation
-                - startStoresLiveListener detects 'modified' (rename)
-                - Calls __bzrHandleStoreRename on live rename
-                - startProductsLiveListener handles 'modified' events
-                - sortStoresLikeOriginal uses _bzrMillis
+   ✅ v9.17.1: Subscription-based filtering
+                - isProductVisibleBySubscription
+                - filterProductsBySubscription
+                - Applied in fetch, live listener & category fetch
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -20,6 +19,43 @@ const SUPPORT_MESSAGES = Object.freeze({
   verify: 'السلام عليكم ورحمة الله 👋\nأرغب بتوثيق حساب متجري على BranZar.',
   subscribe: 'السلام عليكم ورحمة الله 👋\nأرغب بالاشتراك في إحدى باقات BranZar.\nشكراً لكم 🌸'
 });
+
+/* ═══════════════════════════════════════════════════════════
+   🛡️ SUBSCRIPTION FILTER HELPERS
+   ═══════════════════════════════════════════════════════════ */
+function getStoreById(storeId) {
+  return stores.find(function(store) {
+    return String(store.id) === String(storeId);
+  });
+}
+
+function isProductVisibleBySubscription(product) {
+  const store = getStoreById(product.store_id);
+  if (!store) return false; // If store is not loaded yet, hide until it loads
+
+  const productCategory = String(product.category || '').trim();
+  const mainCategory = String(store.category || '').trim();
+
+  // Main category is always visible
+  if (!productCategory || productCategory === mainCategory) {
+    return true;
+  }
+
+  // Additional categories are visible only if subscribed
+  const additionalCategories = Array.isArray(store.categories)
+    ? store.categories.map(c => String(c || '').trim())
+    : [];
+
+  if (additionalCategories.includes(productCategory)) {
+    return store.is_subscribed === true;
+  }
+
+  return true;
+}
+
+function filterProductsBySubscription(products) {
+  return products.filter(isProductVisibleBySubscription);
+}
 
 /* ═══════════════════════════════════════════════════════════
    🏪 SMART STORES SYSTEM
@@ -44,7 +80,6 @@ function sortStoresLikeOriginal(list) {
   return list.slice().sort((a, b) => {
     const followersA = Number(b.followers) || 0, followersB = Number(a.followers) || 0;
     if (followersA !== followersB) return followersB - followersA;
-    // ✅ v9.17.0: use _bzrMillis for stable secondary sort
     const tA = (typeof _bzrMillis === 'function') ? _bzrMillis(a.created_at) : 0;
     const tB = (typeof _bzrMillis === 'function') ? _bzrMillis(b.created_at) : 0;
     return tB - tA;
@@ -98,7 +133,6 @@ async function fetchInitialStores() {
   } catch (error) {}
 }
 
-/* ✅ v9.17.0 — Detects renames via 'modified' events */
 function startStoresLiveListener() {
   if (storesLiveUnsubscribe) return;
   try {
@@ -107,7 +141,6 @@ function startStoresLiveListener() {
         const isFirstSync = !_storesFirstSyncDone;
         const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        // 🆕 Detect renames BEFORE upserting (compare against old Dexie state)
         const renames = [];
         if (!isFirstSync && bzrDB) {
           for (const c of snapshot.docChanges()) {
@@ -137,13 +170,10 @@ function startStoresLiveListener() {
 
         await dexieBulkUpsertStores(docs);
 
-        // 🆕 Apply renames — updates products Dexie + clears caches
         for (const r of renames) {
           if (typeof window.__bzrHandleStoreRename === 'function') {
             await window.__bzrHandleStoreRename(r.id, r.newName);
             console.log('[BZR] Store rename synced:', r.oldName, '→', r.newName);
-          } else {
-            console.warn('[BZR] ⚠️ __bzrHandleStoreRename missing — Dexie products may show stale names');
           }
         }
 
@@ -171,7 +201,7 @@ function showNewStoreToast(storeName) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   📦 SMART PRODUCTS SYSTEM (v9.17.0)
+   📦 SMART PRODUCTS SYSTEM
    ═══════════════════════════════════════════════════════════ */
 const PRODUCTS_LIVE_WINDOW = 20;
 const PRODUCTS_INITIAL_FETCH = 100;
@@ -189,6 +219,9 @@ async function loadAllProducts(force) {
   try {
     let local = force ? [] : await dexieGetRecentProducts(PRODUCTS_INITIAL_FETCH);
     if (local && local.length > 0) {
+      // ✅ Apply subscription filter on cached products
+      local = filterProductsBySubscription(local);
+      
       const firstPage = local.slice(0, CONFIG.PRODUCTS_PER_PAGE);
       allProductsLocal = firstPage; hasMoreProducts = local.length > CONFIG.PRODUCTS_PER_PAGE;
       renderProductsBatch(firstPage, false);
@@ -209,7 +242,12 @@ async function fetchInitialProducts() {
     let snapshot;
     try { snapshot = await db.collection('products').orderBy('created_at', 'desc').limit(PRODUCTS_INITIAL_FETCH).get(); }
     catch (err) { snapshot = await db.collection('products').limit(PRODUCTS_INITIAL_FETCH).get(); }
-    const initial = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    
+    // ✅ Apply subscription filter on fetched products
+    const initial = filterProductsBySubscription(
+      snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+    );
+    
     await dexieBulkUpsertProducts(initial);
     const firstPage = initial.slice(0, CONFIG.PRODUCTS_PER_PAGE);
     allProductsLocal = firstPage;
@@ -221,23 +259,31 @@ async function fetchInitialProducts() {
   } catch (error) {}
 }
 
-/* ✅ v9.17.0 — handles both 'added' and 'modified' */
 function startProductsLiveListener() {
   if (productsLiveUnsubscribe) return;
   try {
     productsLiveUnsubscribe = db.collection('products').orderBy('created_at', 'desc').limit(PRODUCTS_LIVE_WINDOW)
       .onSnapshot({ includeMetadataChanges: false }, async (snapshot) => {
         const isFirstSync = !_productsFirstSyncDone;
-        const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        // ✅ Apply subscription filter on synced products
+        const docs = filterProductsBySubscription(
+          snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+        );
+        
         let added = [], modified = [];
         for (const c of snapshot.docChanges()) {
+          const pData = { id: c.doc.id, ...c.doc.data() };
+          
+          // ✅ Skip hidden products from being added/modified in UI
+          if (!isProductVisibleBySubscription(pData)) continue;
+
           if (c.type === 'added') {
             let exists = false;
             if (bzrDB) { try { exists = !!(await bzrDB.products.get(c.doc.id)); } catch (e) {} }
-            if (!exists) added.push({ id: c.doc.id, ...c.doc.data() });
+            if (!exists) added.push(pData);
           } else if (c.type === 'modified') {
-            // 🆕 Detect updates (e.g., store_name after rename, price changes)
-            modified.push({ id: c.doc.id, ...c.doc.data() });
+            modified.push(pData);
           }
         }
         await dexieBulkUpsertProducts(docs);
@@ -281,7 +327,12 @@ async function fetchProductsPage(cursorDoc, silent) {
   const usableDocs = snapshot.docs.slice(skipCount);
   if (snapshot.docs.length > 0) lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
   hasMoreProducts = usableDocs.length >= CONFIG.PRODUCTS_PER_PAGE;
-  const fresh = usableDocs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
+  // ✅ Apply subscription filter
+  const fresh = filterProductsBySubscription(
+    usableDocs.map(doc => ({ id: doc.id, ...doc.data() }))
+  );
+  
   await dexieBulkUpsertProducts(fresh);
   const existingIds = new Set(allProductsLocal.map(p => p.id));
   const newItems = fresh.filter(p => !existingIds.has(p.id));
@@ -311,7 +362,11 @@ async function applyProductsFilter(category) {
     if (grid) grid.innerHTML = ''; allProductsLocal = []; lastVisibleDoc = null; hasMoreProducts = true;
     loadButton?.classList.add('hidden'); emptyElement?.classList.add('hidden');
     try {
-      const recent = await dexieGetRecentProducts(PRODUCTS_INITIAL_FETCH);
+      let recent = await dexieGetRecentProducts(PRODUCTS_INITIAL_FETCH);
+      
+      // ✅ Apply subscription filter on cached data
+      recent = filterProductsBySubscription(recent);
+      
       if (recent && recent.length > 0) {
         const firstPage = recent.slice(0, CONFIG.PRODUCTS_PER_PAGE);
         allProductsLocal = firstPage; hasMoreProducts = recent.length > CONFIG.PRODUCTS_PER_PAGE;
@@ -332,7 +387,32 @@ async function fetchProductsByCategoryPage(cursorDoc, silent) {
   const category = currentCategory;
   if (!category) return;
   if (!RateLimiter.canRequest('products_cat')) { if (!silent) throw new Error('rate_limit'); return; }
-  const storeIds = stores.filter((store) => store.category === category).map((store) => String(store.id)).filter(Boolean);
+  
+  // ✅ Filter stores by subscription status for the given category
+  const storeIds = stores
+    .filter(function(store) {
+      const isMainCategory =
+        String(store.category || '').trim() === String(category || '').trim();
+
+      const isAdditionalCategory =
+        Array.isArray(store.categories) &&
+        store.categories
+          .map(c => String(c || '').trim())
+          .includes(String(category || '').trim());
+
+      // Main category is visible to all
+      if (isMainCategory) return true;
+
+      // Additional categories are visible to subscribers only
+      if (isAdditionalCategory) {
+        return store.is_subscribed === true;
+      }
+
+      return false;
+    })
+    .map(store => String(store.id))
+    .filter(Boolean);
+
   if (!storeIds.length) {
     if (!silent) document.getElementById('allProductsGrid').innerHTML = '';
     document.getElementById('allProductsEmpty').classList.remove('hidden');
@@ -450,4 +530,4 @@ function getProductDescription(product) { return ((product?.description && Strin
 function hasProductDescription(product) { return getProductDescription(product).length > 0; }
 function openSupportWhatsApp(context) { window.open(`https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(SUPPORT_MESSAGES[context] || SUPPORT_MESSAGES.general)}`, '_blank'); }
 
-console.log('[BZR] data.js loaded ✅ v9.17.0 — store rename propagation enabled');
+console.log('[BZR] data.js loaded ✅ v9.17.1 — subscription filter applied');
