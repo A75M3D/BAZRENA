@@ -24,7 +24,6 @@ const SUPPORT_MESSAGES = Object.freeze({
 /* ═══════════════════════════════════════════════════════════
    🏪 SMART STORES SYSTEM
    ═══════════════════════════════════════════════════════════ */
-const LIVE_WINDOW = 10;
 const INITIAL_FETCH_LIMIT = 100;
 let storesLiveUnsubscribe = null;
 let _storesFirstSyncDone = false;
@@ -65,6 +64,7 @@ function renderStoresFromMemory() {
   displayStores();
   startAutoScroll();
   renderFollowedStores();
+  if (typeof window.__bzrStoreListUpdated === 'function') window.__bzrStoreListUpdated(stores);
   localStorage.setItem(KEYS.VISITED, 'true');
 }
 
@@ -78,7 +78,6 @@ async function loadStores(force) {
   try {
     let local = force ? [] : await dexieGetAllStores();
     if (local && local.length > 0) { stores = sortStoresLikeOriginal(local); renderStoresFromMemory(); loader?.classList.add('hidden'); }
-    if (!local || local.length === 0) await fetchInitialStores();
     startStoresLiveListener();
   } catch (error) {
     console.error('[BZR] loadStores failed:', error);
@@ -86,25 +85,14 @@ async function loadStores(force) {
   } finally { loader?.classList.add('hidden'); _isLoadingStores = false; }
 }
 
-async function fetchInitialStores() {
-  try {
-    let snapshot;
-    try { snapshot = await db.collection('stores').orderBy('created_at', 'desc').limit(INITIAL_FETCH_LIMIT).get(); }
-    catch (err) { snapshot = await db.collection('stores').limit(INITIAL_FETCH_LIMIT).get(); }
-    const initial = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    await dexieBulkUpsertStores(initial);
-    stores = sortStoresLikeOriginal(initial);
-    renderStoresFromMemory();
-  } catch (error) {}
-}
-
 /* ✅ v9.17.0 — Detects renames via 'modified' events */
 function startStoresLiveListener() {
   if (storesLiveUnsubscribe) return;
   try {
-    storesLiveUnsubscribe = db.collection('stores').orderBy('created_at', 'desc').limit(LIVE_WINDOW)
+    storesLiveUnsubscribe = db.collection('stores')
       .onSnapshot({ includeMetadataChanges: false }, async (snapshot) => {
         const isFirstSync = !_storesFirstSyncDone;
+        const oldStoreMap = new Map(stores.map(store => [String(store.id), store]));
         const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
         // 🆕 Detect renames BEFORE upserting (compare against old Dexie state)
@@ -124,13 +112,15 @@ function startStoresLiveListener() {
           }
         }
 
-        let added = [];
+        let added = [], modifiedStores = [];
         if (!isFirstSync) {
           for (const c of snapshot.docChanges()) {
             if (c.type === 'added') {
               let exists = false;
               if (bzrDB) { try { exists = !!(await bzrDB.stores.get(c.doc.id)); } catch (e) {} }
               if (!exists) added.push({ id: c.doc.id, ...c.doc.data() });
+            } else if (c.type === 'modified') {
+              modifiedStores.push({ previous: oldStoreMap.get(String(c.doc.id)) || null, current: { id: c.doc.id, ...c.doc.data() } });
             }
           }
         }
@@ -149,7 +139,21 @@ function startStoresLiveListener() {
 
         let all = await dexieGetAllStores();
         stores = sortStoresLikeOriginal(all.length ? all : docs);
-        if (!isFirstSync || stores.length > 0) renderStoresFromMemory();
+        const mainCategoryChanged = modifiedStores.some(change => change.previous && String(change.previous.category || '') !== String(change.current.category || ''));
+        if (isFirstSync || added.length > 0 || mainCategoryChanged) renderStoresFromMemory();
+        else {
+          if (typeof window.__bzrStoreCardsUpdated === 'function' && modifiedStores.length) window.__bzrStoreCardsUpdated(modifiedStores.map(change => change.current));
+          const productGridNeedsRefresh = modifiedStores.some(change => {
+            if (!change.previous) return false;
+            const old = change.previous, fresh = change.current;
+            return String(old.name || '') !== String(fresh.name || '') ||
+              String(old.category || '') !== String(fresh.category || '') ||
+              old.is_subscribed !== fresh.is_subscribed ||
+              String(old.subscriptionStatus || '') !== String(fresh.subscriptionStatus || '') ||
+              String(old.subscriptionEndsAt || '') !== String(fresh.subscriptionEndsAt || '');
+          });
+          if (typeof window.__bzrStoreListUpdated === 'function') window.__bzrStoreListUpdated(productGridNeedsRefresh);
+        }
         if (!isFirstSync && added.length > 0) { const names = added.map(s => s.name).filter(Boolean); showNewStoreToast(names.join(' • ')); }
         if (isFirstSync) _storesFirstSyncDone = true;
       }, (error) => { storesLiveUnsubscribe = null; setTimeout(startStoresLiveListener, 5000); });
