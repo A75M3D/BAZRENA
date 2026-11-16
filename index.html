@@ -444,6 +444,65 @@ body.theme-dark .currency-badge {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   🔒 STORE SUBSCRIPTION FILTER — Expired Stores
+   ═══════════════════════════════════════════════════════════════ */
+
+/* بطاقة متجر منتهي — تظهر مغلقة/باهتة */
+.bzr-store-expired {
+  position: relative !important;
+  filter: grayscale(0.55) !important;
+  opacity: 0.7 !important;
+  overflow: hidden !important;
+}
+.bzr-store-expired::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(255,255,255,0.35) !important;
+  z-index: 4 !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+}
+.bzr-store-expired .bzr-expired-badge {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background: linear-gradient(135deg, #991B1B, #DC2626) !important;
+  color: #fff !important;
+  padding: 7px 16px !important;
+  border-radius: 999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+  z-index: 10 !important;
+  box-shadow: 0 8px 20px -4px rgba(153,27,27,0.55) !important;
+  font-family: 'Cairo', sans-serif !important;
+  pointer-events: none !important;
+}
+
+/* منتج متجر منتهي — يُخفى تماماً */
+.bzr-product-expired {
+  display: none !important;
+}
+
+/* بانر "المتجر مغلق" داخل مودال المتجر */
+.bzr-store-closed-banner {
+  background: linear-gradient(135deg, #FEF2F2, #FEE2E2) !important;
+  border: 1.5px solid #FECACA !important;
+  color: #991B1B !important;
+  padding: 1rem 1.15rem !important;
+  border-radius: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 1rem !important;
+  font-family: 'Cairo', sans-serif !important;
+  font-size: 0.85rem !important;
+  line-height: 1.6 !important;
+}
 </style>
 </head>
 <body class="font-cairo">
@@ -1173,7 +1232,6 @@ body.theme-dark .currency-badge {
 
 <!-- ═══════════════════════════════════════════════════════════════
      🔥 CINEMATIC IGNITION SCRIPT — 5s Sequence
-     (Wrapped in a global function, triggered manually by app.js)
      ═══════════════════════════════════════════════════════════════ -->
 <script>
 window.__bzrPlayCinematic = function() {
@@ -1192,40 +1250,340 @@ window.__bzrPlayCinematic = function() {
       return;
     }
 
-    // Reset any previous state
     igniteOverlay.style.display = '';
     igniteFlash.style.display = '';
     logoReveal.style.display = '';
 
-    setTimeout(function () {
-      igniteOverlay.classList.add('active');
-    }, 300);
-
-    setTimeout(function () {
-      igniteFlash.classList.add('active');
-    }, 600);
-
-    setTimeout(function () {
-      logoReveal.classList.add('active');
-    }, 1100);
-
+    setTimeout(function () { igniteOverlay.classList.add('active'); }, 300);
+    setTimeout(function () { igniteFlash.classList.add('active'); }, 600);
+    setTimeout(function () { logoReveal.classList.add('active'); }, 1100);
     setTimeout(function () {
       igniteOverlay.classList.remove('active');
       igniteFlash.classList.remove('active');
     }, 3500);
-
-    setTimeout(function () {
-      logoReveal.classList.remove('active');
-    }, 4200);
-
+    setTimeout(function () { logoReveal.classList.remove('active'); }, 4200);
     setTimeout(function () {
       logoReveal.style.display = 'none';
       igniteOverlay.style.display = 'none';
       igniteFlash.style.display = 'none';
     }, 5000);
-
   } catch (e) {}
 };
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     🔒 STORE SUBSCRIPTION FILTER
+     - يحمّل حالة اشتراك كل متجر مرة واحدة (read-only)
+     - يخفي/يُغلق المتاجر المنتهية في:
+       • #storesScrollContainer
+       • #followedStoresContainer
+       • #allProductsGrid (منتجاتها)
+       • #storeModal (عند الفتح)
+     - يوفر API عام: window.bzrStoreSub
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  const STORES_COLLECTION = 'stores';
+
+  const state = {
+    loaded: false,
+    storesById: new Map(),
+    storesByName: new Map(),
+    loadPromise: null,
+    observer: null,
+    applyScheduled: false,
+    expiredStoreIds: new Set()
+  };
+
+  function toDate(val) {
+    if (!val) return null;
+    if (val instanceof Date) return val;
+    if (typeof val === 'number') return new Date(val);
+    if (val.toDate) return val.toDate();
+    if (val.seconds) return new Date(val.seconds * 1000);
+    return new Date(val);
+  }
+
+  function computeStatus(data) {
+    const s = data.subscriptionStatus || '';
+    const endsAt = toDate(data.subscriptionEndsAt);
+
+    if (s === 'cancelled') return { active: false, status: 'cancelled', endsAt };
+    if (s === 'pending_payment') return { active: false, status: 'pending_payment', endsAt };
+    if (endsAt) {
+      if (endsAt.getTime() < Date.now()) return { active: false, status: 'expired', endsAt };
+      return { active: true, status: 'active', endsAt };
+    }
+    if (data.is_subscribed === true) return { active: true, status: 'legacy', endsAt: null };
+    return { active: false, status: 'none', endsAt: null };
+  }
+
+  function normalizeName(name) {
+    return String(name || '').trim().toLowerCase();
+  }
+
+  function loadStores() {
+    if (state.loadPromise) return state.loadPromise;
+    state.loadPromise = (async () => {
+      try {
+        if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+          console.warn('[bzr-sub] Firebase not initialized — skip');
+          state.loaded = true;
+          return;
+        }
+        const db = firebase.firestore();
+        const snap = await db.collection(STORES_COLLECTION).get();
+        snap.forEach(doc => {
+          const data = doc.data();
+          const info = computeStatus(data);
+          state.storesById.set(doc.id, { ...info, id: doc.id, name: data.name || '' });
+          if (!info.active) state.expiredStoreIds.add(doc.id);
+          if (data.name) state.storesByName.set(normalizeName(data.name), doc.id);
+        });
+        state.loaded = true;
+        console.log('[bzr-sub] Loaded', state.storesById.size, 'stores •', state.expiredStoreIds.size, 'expired');
+        scheduleApply();
+      } catch (err) {
+        console.warn('[bzr-sub] Failed to load stores:', err);
+        state.loaded = true;
+      }
+    })();
+    return state.loadPromise;
+  }
+
+  function isStoreActive(storeId) {
+    if (!state.loaded) return true;
+    const info = state.storesById.get(String(storeId));
+    if (!info) return true;
+    return info.active;
+  }
+  function isStoreActiveByName(name) {
+    if (!state.loaded) return true;
+    const id = state.storesByName.get(normalizeName(name));
+    if (!id) return true;
+    return state.storesById.get(id).active;
+  }
+  function getStoreStatus(storeId) { return state.storesById.get(String(storeId)) || null; }
+  function getStoreStatusByName(name) {
+    const id = state.storesByName.get(normalizeName(name));
+    return id ? state.storesById.get(id) : null;
+  }
+
+  window.bzrStoreSub = {
+    load: loadStores,
+    ready: () => state.loaded,
+    isActive: isStoreActive,
+    isActiveByName: isStoreActiveByName,
+    getStatus: getStoreStatus,
+    getStatusByName: getStoreStatusByName,
+    expiredIds: () => Array.from(state.expiredStoreIds),
+    refresh: async () => {
+      state.loaded = false;
+      state.storesById.clear();
+      state.storesByName.clear();
+      state.expiredStoreIds.clear();
+      state.loadPromise = null;
+      return loadStores();
+    }
+  };
+
+  function identifyStoreFromCard(card) {
+    if (card.dataset.storeId) {
+      const info = getStoreStatus(card.dataset.storeId);
+      if (info) return info;
+    }
+    if (card.dataset.storeName) {
+      const info = getStoreStatusByName(card.dataset.storeName);
+      if (info) return info;
+    }
+    const nameSelectors = ['[class*="store-name"]','[class*="storeName"]','.store-title','.store-card-name','h3','h4','strong'];
+    for (const sel of nameSelectors) {
+      const el = card.querySelector(sel);
+      if (el) {
+        const info = getStoreStatusByName(el.textContent.trim());
+        if (info) return info;
+      }
+    }
+    const cardText = normalizeName(card.textContent);
+    for (const [name, id] of state.storesByName) {
+      if (name && name.length >= 3 && cardText.includes(name)) {
+        const info = state.storesById.get(id);
+        if (info) return info;
+      }
+    }
+    return null;
+  }
+
+  function markStoreCard(card, info) {
+    if (card.dataset.bzrSubMarked === '1') return;
+    card.dataset.bzrSubMarked = '1';
+    card.classList.add('bzr-store-expired');
+    if (!card.querySelector('.bzr-expired-badge')) {
+      const badge = document.createElement('div');
+      badge.className = 'bzr-expired-badge';
+      badge.textContent = info.status === 'expired' ? '⏸️ الاشتراك منتهي' : '⏸️ المتجر مغلق';
+      card.appendChild(badge);
+    }
+  }
+
+  function applyStoreCards() {
+    const containers = [
+      document.getElementById('storesScrollContainer'),
+      document.getElementById('followedStoresContainer')
+    ].filter(Boolean);
+    containers.forEach(container => {
+      Array.from(container.children).forEach(card => {
+        if (!card || card.nodeType !== 1) return;
+        if (card.dataset.bzrSubMarked === '1') return;
+        const info = identifyStoreFromCard(card);
+        if (info && !info.active) markStoreCard(card, info);
+      });
+    });
+  }
+
+  function applyProductCards() {
+    const containers = [document.getElementById('allProductsGrid')].filter(Boolean);
+    containers.forEach(container => {
+      Array.from(container.children).forEach(card => {
+        if (!card || card.nodeType !== 1) return;
+        if (card.dataset.bzrProdMarked === '1') return;
+        card.dataset.bzrProdMarked = '1';
+
+        let info = null;
+        if (card.dataset.storeId) info = getStoreStatus(card.dataset.storeId);
+        if (!info && card.dataset.storeName) info = getStoreStatusByName(card.dataset.storeName);
+        if (!info) {
+          const storeEl = card.querySelector('[class*="store"], .product-store, .product-store-name');
+          if (storeEl) info = getStoreStatusByName(storeEl.textContent.trim());
+        }
+        if (!info) {
+          const cardText = normalizeName(card.textContent);
+          for (const [name, id] of state.storesByName) {
+            if (name && name.length >= 3 && cardText.includes(name)) {
+              info = state.storesById.get(id);
+              if (info) break;
+            }
+          }
+        }
+        if (info && !info.active) card.classList.add('bzr-product-expired');
+      });
+    });
+  }
+
+  function applyStoreModal() {
+    const modal = document.getElementById('storeModal');
+    if (!modal) return;
+    const isOpen = !modal.classList.contains('hidden');
+    if (!isOpen) return;
+
+    const nameEl = document.getElementById('storeName');
+    if (!nameEl) return;
+    const storeName = nameEl.textContent.trim();
+    const info = getStoreStatusByName(storeName);
+    const existingBanner = modal.querySelector('.bzr-store-closed-banner');
+
+    if (info && !info.active) {
+      if (!existingBanner) {
+        const banner = document.createElement('div');
+        banner.className = 'bzr-store-closed-banner';
+        banner.innerHTML =
+          '<div style="font-size:1.6rem;line-height:1;">🔒</div>' +
+          '<div style="flex:1;">' +
+            '<div style="font-weight:900;margin-bottom:2px;">هذا المتجر مغلق مؤقتاً</div>' +
+            '<div style="font-size:0.8rem;opacity:0.85;">' +
+              (info.status === 'expired'
+                ? 'انتهى اشتراك المتجر. سيُعاد فتحه عند التجديد.'
+                : 'اشتراك المتجر غير فعّال.') +
+            '</div>' +
+          '</div>';
+        const infoCard = modal.querySelector('.store-info-card');
+        if (infoCard && infoCard.parentNode) {
+          infoCard.parentNode.insertBefore(banner, infoCard.nextSibling);
+        } else {
+          modal.querySelector('.modal-content')?.prepend(banner);
+        }
+      }
+      const productsSection = modal.querySelector('.store-products-section');
+      if (productsSection) productsSection.style.display = 'none';
+      modal.querySelectorAll('.store-actions-grid button, .store-actions-grid a').forEach(b => {
+        if (!b.classList.contains('static')) {
+          b.style.opacity = '0.5';
+          b.style.pointerEvents = 'none';
+        }
+      });
+    } else {
+      if (existingBanner) existingBanner.remove();
+      const productsSection = modal.querySelector('.store-products-section');
+      if (productsSection) productsSection.style.display = '';
+      modal.querySelectorAll('.store-actions-grid button, .store-actions-grid a').forEach(b => {
+        b.style.opacity = '';
+        b.style.pointerEvents = '';
+      });
+    }
+  }
+
+  function applyToDOM() {
+    if (!state.loaded) return;
+    applyStoreCards();
+    applyProductCards();
+    applyStoreModal();
+  }
+
+  function scheduleApply() {
+    if (state.applyScheduled) return;
+    state.applyScheduled = true;
+    requestAnimationFrame(() => {
+      state.applyScheduled = false;
+      applyToDOM();
+    });
+  }
+
+  function setupObservers() {
+    if (state.observer) return;
+    state.observer = new MutationObserver(scheduleApply);
+
+    const watchIds = ['storesScrollContainer','followedStoresContainer','allProductsGrid','storeProductsGrid','storeModal'];
+    watchIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.dataset.bzrSubWatched = '1';
+        state.observer.observe(el, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+      }
+    });
+
+    const lateObserver = new MutationObserver(() => {
+      watchIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.dataset.bzrSubWatched) {
+          el.dataset.bzrSubWatched = '1';
+          state.observer.observe(el, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+        }
+      });
+    });
+    lateObserver.observe(document.body, { childList: true, subtree: true });
+  }
+
+  function start() {
+    if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+      setTimeout(start, 100);
+      return;
+    }
+    loadStores().then(() => {
+      setupObservers();
+      applyToDOM();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(start, 30));
+  } else {
+    start();
+  }
+
+  setInterval(() => { if (state.loaded) applyToDOM(); }, 30000);
+})();
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════
