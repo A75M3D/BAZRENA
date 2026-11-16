@@ -1,9 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   BranZar v9.17.2 — ui.js
+   BranZar v9.17.1 — ui.js
    Layer 3: UI + Theme + View + Search + Render + Modals + Cart + PWA + SW
-   ✅ v9.17.2: Subscription guard on additional categories
-                - loadStoreProducts blocks extra-category products when
-                  store.is_subscribed !== true (even from cache)
+   ✅ v9.17.1: Live store name resolution
+                - Product card shows live store name (by store_id lookup)
+                - Product modal shows live store name
+                - WhatsApp cart message uses live store name per item
    ═══════════════════════════════════════════════════════════ */
 'use strict';
 
@@ -76,7 +77,7 @@ window.bzrResolveProductCurrency = bzrResolveProductCurrency;
 window.bzrSafeFormatPrice = bzrSafeFormatPrice;
 window.bzrNormalizeCurrencySymbol = bzrNormalizeCurrencySymbol;
 
-/* Live store name resolver */
+/* 🆕 v9.17.1 — Live store name resolver */
 function bzrResolveStoreName(product) {
   if (!product) return '';
   try {
@@ -234,7 +235,7 @@ document.getElementById('accountShareAppBtn')?.addEventListener('click', async f
   } catch (e) { showToast('تعذر نسخ الرابط'); }
 });
 
-/* ═══ PWA ═══ */
+/* ═══ PWA (shortened) ═══ */
 var deferredPrompt = null;
 var INSTALL_DISMISS_KEY = 'branzar_install_dismissed_v2';
 var INSTALL_DISMISS_DAYS = 3;
@@ -416,6 +417,7 @@ function createSearchProductRow(product) {
   row.appendChild(img); row.appendChild(info);
   row.addEventListener('click', function () {
     searchResults.classList.remove('show'); searchInput.value = ''; searchWrapper.classList.remove('has-value');
+    // 🆕 Use live store name
     var liveName = bzrResolveStoreName(product);
     openProductModal({
       id: product.id, name: product.name, img_url: product.img_url,
@@ -692,33 +694,6 @@ async function loadStoreProducts(storeId, category) {
   }
   if (!grid) return;
   grid.innerHTML = '';
-
-  /* ═══════════════════════════════════════════════════════════
-     🛡️ SUBSCRIPTION GUARD
-     — Main category: always visible
-     — Additional categories: only if store.is_subscribed === true
-     — Applies to cache AND live fetch (blocks both)
-     ═══════════════════════════════════════════════════════════ */
-  var store = stores.find(function(s) { return String(s.id) === String(storeId); });
-  var mainCategory = String((store && store.category) || '').trim();
-  var isAdditionalCategory =
-    !!category &&
-    category !== mainCategory &&
-    Array.isArray(store && store.categories) &&
-    store.categories
-      .map(function(c) { return String(c || '').trim(); })
-      .includes(String(category).trim());
-
-  if (isAdditionalCategory && (!store || store.is_subscribed !== true)) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);font-weight:700;">🔒 هذه الفئة متاحة للمشتركين فقط</div>';
-    currentStoreNameForProducts = storeId;
-    currentStoreCategoryForProducts = category || null;
-    storeProductsLastDoc = null;
-    storeProductsHasMore = false;
-    return;
-  }
-  /* ═══════════════════════════════════════════════════════════ */
-
   var spin = bzrSvgIcon('mi-refresh', 'mi mi-spin'); spin.style.cssText = 'color:#FF7A00;width:32px;height:32px;';
   var spinWrap = document.createElement('div'); spinWrap.style.cssText = 'grid-column:1/-1;text-align:center;padding:2rem 0;'; spinWrap.appendChild(spin); grid.appendChild(spinWrap);
 
@@ -745,22 +720,7 @@ async function loadStoreProducts(storeId, category) {
 
     var rawList = snap.docs.map(function(d){ return { id: d.id, ...d.data() }; });
 
-    /* 🛡️ Redundant guard for safety (should already be handled above) */
-    var guardStore = stores.find(function(s) { return String(s.id) === String(storeId); });
-    var guardMainCat = String((guardStore && guardStore.category) || '').trim();
-    var guardIsExtra =
-      !!category &&
-      category !== guardMainCat &&
-      Array.isArray(guardStore && guardStore.categories) &&
-      guardStore.categories
-        .map(function(c) { return String(c || '').trim(); })
-        .includes(String(category).trim());
-
-    if (guardIsExtra && (!guardStore || guardStore.is_subscribed !== true)) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);font-weight:700;">🔒 هذه الفئة متاحة للمشتركين فقط</div>';
-      return;
-    }
-
+    // ✅ Live store name override
     var displayName = bzrResolveStoreName({ store_id: storeId, store_name: currentStore ? currentStore.name : null });
     if (displayName) { rawList.forEach(function(p){ p.store_name = displayName; }); }
 
@@ -780,23 +740,6 @@ async function loadStoreProducts(storeId, category) {
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async function (e) {
   var btn = e.currentTarget;
   if (btn.disabled || btn.classList.contains('hidden') || btn.hidden === true || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
-
-  /* 🛡️ Guard: block "load more" for locked additional categories */
-  var lmStore = stores.find(function(s) { return String(s.id) === String(currentStoreNameForProducts); });
-  var lmMainCat = String((lmStore && lmStore.category) || '').trim();
-  var lmIsExtra =
-    !!currentStoreCategoryForProducts &&
-    currentStoreCategoryForProducts !== lmMainCat &&
-    Array.isArray(lmStore && lmStore.categories) &&
-    lmStore.categories
-      .map(function(c) { return String(c || '').trim(); })
-      .includes(String(currentStoreCategoryForProducts).trim());
-
-  if (lmIsExtra && (!lmStore || lmStore.is_subscribed !== true)) {
-    btn.classList.add('hidden'); btn.hidden = true;
-    return;
-  }
-
   if (!RateLimiter.canRequest('store_products')) { showToast('⏳ يرجى المحاولة بعد قليل'); return; }
   btn.disabled = true; var origHTML = btn.innerHTML;
   btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-refresh', 'mi mi-xs mi-spin')); var l2 = document.createElement('span'); l2.textContent = 'جاري التحميل...'; btn.appendChild(l2);
@@ -837,7 +780,7 @@ function buildProductCard(product, showStoreName) {
     price: price,
     original_price: product.original_price ? parseFloat(product.original_price) : null,
     store_id: product.store_id,
-    store_name: bzrResolveStoreName(product),
+    store_name: bzrResolveStoreName(product),   // 🆕 live
     description: product.description || '',
     colors: product.colors || null,
     category: product.category || null,
@@ -868,6 +811,7 @@ function buildProductCard(product, showStoreName) {
   var desc = (product.description && String(product.description).trim()) || '';
   if (desc) { var descEl = document.createElement('div'); descEl.className = 'product-card-desc'; descEl.textContent = truncateText(desc, CONFIG.PRODUCT_DESCRIPTION_MAX); info.appendChild(descEl); }
 
+  // ✅ Live store name display
   if (showStoreName && pm.store_name) {
     var storeEl = document.createElement('div');
     storeEl.style.cssText = 'font-size:0.68rem;color:var(--c-text-soft);font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
@@ -918,6 +862,7 @@ function openProductModal(product) {
   var defaultImg = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/600';
   var imgEl = document.getElementById('productModalImage'); imgEl.src = defaultImg; imgEl.style.opacity = '1';
   document.getElementById('productModalName').textContent = product.name;
+  // ✅ Live store name
   var displayStoreName = bzrResolveStoreName(product) || 'غير محدد';
   document.getElementById('productModalStore').textContent = displayStoreName;
   var _pCurr = bzrResolveProductCurrency(product);
@@ -1019,7 +964,7 @@ function updateCartUI() {
       var itemSym = itemCurr.symbol;
       var lineTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
       var lineTotalStr = bzrSafeFormatPrice(lineTotal, itemSym);
-      var liveName = bzrResolveStoreName(item);
+      var liveName = bzrResolveStoreName(item);  // 🆕 live store name
       var div = document.createElement('div'); div.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--c-border);'; var itemId = item.cartItemId || item.id;
       var colorBadge = item.selectedColor ? '<span style="font-size:0.7rem;color:var(--c-text-soft);font-weight:700;background:var(--c-surface-2);padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px;">اللون: ' + sanitizeHTML(item.selectedColor) + '</span>' : '';
       var storeLine = liveName ? '<span style="font-size:0.72rem;color:#FF7A00;font-weight:800;display:block;">' + sanitizeHTML(liveName) + '</span>' : '';
@@ -1050,7 +995,7 @@ document.getElementById('closeCart')?.addEventListener('click', closeCart);
 document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
 document.getElementById('continueShopping')?.addEventListener('click', closeCart);
 
-/* ═══ WHATSAPP ORDER ═══ */
+/* ═══ WHATSAPP ORDER (Smart Routing + Live Names) ═══ */
 document.getElementById('whatsappOrder')?.addEventListener('click', function () {
   if (cart.length === 0) { showToast('السلة فارغة'); return; } haptic('medium');
   var msg = '🛒 *طلب جديد من BranZar*\n\n📋 *تفاصيل الطلب:*\n━━━━━━━━━━━━━━\n';
@@ -1077,6 +1022,7 @@ document.getElementById('whatsappOrder')?.addEventListener('click', function () 
   var itemCount = cart.reduce(function(s, i){ return s + (i.quantity || 0); }, 0);
   msg += '💰 *المجموع الكلي:* ' + totalStr + '\n\n📦 عدد المنتجات: ' + itemCount + '\n\nشكراً لاستخدامكم BranZar 🌟';
 
+  // Smart routing
   var uniqueStoreIds = new Set(cart.map(function(item){ return item.store_id; }).filter(Boolean));
   var targetWhatsapp = CONFIG.FIXED_WHATSAPP;
   if (uniqueStoreIds.size === 1) {
@@ -1196,4 +1142,4 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-console.log('[BZR] ui.js loaded ✅ v9.17.2 — Subscription guard on additional categories');
+console.log('[BZR] ui.js loaded ✅ v9.17.1 — Live store name resolution');
