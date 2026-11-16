@@ -92,13 +92,6 @@ body{background:#F5F7FA;direction:rtl;margin:0;padding:0;min-height:100vh;-webki
 .sub-details-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed rgba(0,0,0,0.1)}
 .sub-details-actions .sub-banner-btn{font-size:.78rem;padding:.55rem 1rem}
 
-.locked-overlay{position:absolute;inset:0;background:rgba(255,255,255,0.93);backdrop-filter:blur(3px);border-radius:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;text-align:center;z-index:10;gap:14px}
-.locked-overlay-icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#FEF2F2,#FEE2E2);color:#EF4444;display:flex;align-items:center;justify-content:center;font-size:1.9rem;border:2px solid #FECACA}
-.locked-overlay-title{font-size:1.05rem;font-weight:900;color:#991B1B;line-height:1.5}
-.locked-overlay-sub{font-size:0.82rem;font-weight:700;color:#6B7280;line-height:1.6;max-width:340px}
-.locked-overlay-btn{padding:.75rem 1.25rem;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:.85rem;font-weight:900;font-size:0.88rem;cursor:pointer;font-family:'Cairo',sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:0 12px 24px -8px rgba(37,211,102,0.6)}
-.product-form-wrap{position:relative}
-
 .tabs-wrap{background:#fff;border-radius:1.25rem;padding:0.45rem;display:flex;gap:0.35rem;box-shadow:0 12px 28px -10px rgba(0,0,0,0.12);margin-bottom:1.25rem}
 .tab-item{flex:1;padding:0.75rem;border-radius:0.95rem;font-weight:800;font-size:0.85rem;border:none;background:transparent;color:#6B7280;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;font-family:'Cairo',sans-serif}
 .tab-item.active{background:linear-gradient(135deg,#FF7A00 0%,#FFA64D 100%);color:#fff;box-shadow:0 8px 20px -6px rgba(255,122,0,0.6)}
@@ -319,13 +312,7 @@ textarea.form-input{resize:vertical;min-height:80px;line-height:1.6}
       <div id="productsSection" class="tab-content hidden">
         <div id="categoryLimitsInfo" style="margin-bottom:1rem;"></div>
         <div class="products-layout">
-          <div class="card product-form-wrap"><div class="card-body">
-            <div id="productFormLocked" class="locked-overlay hidden">
-              <div class="locked-overlay-icon"><i class="fas fa-lock"></i></div>
-              <div class="locked-overlay-title">لا يمكنك إضافة أو تعديل المنتجات</div>
-              <div class="locked-overlay-sub" id="productFormLockedMsg">اشتراكك منتهٍ. جدّد اشتراكك للعودة لإدارة منتجاتك.</div>
-              <button type="button" class="locked-overlay-btn" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تجديد الاشتراك</button>
-            </div>
+          <div class="card"><div class="card-body">
             <div class="card-title"><div class="card-title-icon"><i class="fas fa-plus"></i></div><span id="productFormTitle">إضافة منتج جديد</span></div>
             <form id="productForm">
               <input type="hidden" id="product_id">
@@ -434,8 +421,6 @@ function isSubscriptionActive(){return getSubscriptionState(currentStore).allowe
 function formatDateAr(val){const d=toDate(val);if(!d)return'—';return d.toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});}
 function formatPriceAr(price,currency){const p=parseFloat(price)||0;const sym=CURRENCY_SYMBOLS[currency]||currency||'';return`${p.toLocaleString('ar-EG')} ${sym}`;}
 
-function playIgnitionSequence(){/* noop for auth flow */}
-
 async function playIgnitionSequenceReal(){if(hasPlayedIgnition)return;hasPlayedIgnition=true;const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduced){$('loginOverlay').style.display='none';$('dashboard').classList.remove('hidden');return;}$('loginOverlay').style.display='none';$('dashboard').classList.remove('hidden');}
 function showToast(msg,type='success'){
   const t=$('toast');if(!t)return;
@@ -451,7 +436,7 @@ function hideMsg(id){const el=$(id);if(el)el.classList.remove('show');}
 function mapFbError(err){
   const c=err&&err.code?String(err.code):'';
   const m={
-    'auth/email-already-in-use':'البريد الإلكتروني مستخدم بالفعل','auth/invalid-email':'البريد الإلكتروني غير صحيح','auth/weak-password':'كلمة المرور ضعيفة','auth/wrong-password':'البريد أو كلمة المرور غير صحيحة','auth/invalid-credential':'البريد أو كلمة المرور غير صحيحة','auth/user-not-found':'البريد أو كلمة المرور غير صحيحة','auth/user-disabled':'هذا الحساب معطّل','auth/too-many-requests':'محاولات كثيرة، حاول لاحقاً','auth/network-request-failed':'تعذر الاتصال بالشبكة','permission-denied':'لا تملك صلاحية تنفيذ هذه العملية — قد يكون اشتراكك منتهياً','unavailable':'الخدمة غير متاحة مؤقتاً — تحقق من اتصالك بالإنترنت','deadline-exceeded':'انتهت مهلة الاتصال بالخادم','not-found':'العنصر المطلوب غير موجود','resource-exhausted':'تم استنفاد حصة الخدمة — حاول لاحقاً'
+    'auth/email-already-in-use':'البريد الإلكتروني مستخدم بالفعل','auth/invalid-email':'البريد الإلكتروني غير صحيح','auth/weak-password':'كلمة المرور ضعيفة','auth/wrong-password':'البريد أو كلمة المرور غير صحيحة','auth/invalid-credential':'البريد أو كلمة المرور غير صحيحة','auth/user-not-found':'البريد أو كلمة المرور غير صحيحة','auth/user-disabled':'هذا الحساب معطّل','auth/too-many-requests':'محاولات كثيرة، حاول لاحقاً','auth/network-request-failed':'تعذر الاتصال بالشبكة','permission-denied':'لا تملك صلاحية تنفيذ هذه العملية','unavailable':'الخدمة غير متاحة مؤقتاً — تحقق من اتصالك بالإنترنت','deadline-exceeded':'انتهت مهلة الاتصال بالخادم','not-found':'العنصر المطلوب غير موجود','resource-exhausted':'تم استنفاد حصة الخدمة — حاول لاحقاً'
   };
   return m[c]||(err&&err.message)||'حدث خطأ غير متوقع';
 }
@@ -472,7 +457,6 @@ function renderSubscriptionUI(){
   const state=getSubscriptionState(currentStore);
   renderSubscriptionBanner(state);
   renderSubscriptionDetails(state);
-  applySubscriptionLock(state);
 }
 
 function renderSubscriptionBanner(state){
@@ -505,16 +489,15 @@ function renderSubscriptionBanner(state){
           ${hasInvoice?`<button type="button" class="sub-banner-btn invoice" onclick="downloadSubscriptionInvoice()"><i class="fas fa-file-pdf"></i> الفاتورة</button>`:''}
         </div>`;
     } else {
-      // legacy
       el.className='sub-banner warning';
       el.innerHTML=`
         <div class="sub-banner-icon"><i class="fas fa-info-circle"></i></div>
         <div class="sub-banner-content">
           <div class="sub-banner-title">اشتراكك يعمل بالنظام القديم</div>
-          <div class="sub-banner-sub">يُفضّل ترقية اشتراكك لنظام الاشتراكات الجديد لتجنب أي توقف مفاجئ.</div>
+          <div class="sub-banner-sub">الفئات الإضافية مفتوحة حاليًا. يُفضّل الترقية للنظام الجديد.</div>
         </div>
         <div class="sub-banner-actions">
-          <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> ترقية الاشتراك</button>
+          <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> ترقية</button>
         </div>`;
     }
   } else if(state.status==='expired'){
@@ -523,7 +506,7 @@ function renderSubscriptionBanner(state){
       <div class="sub-banner-icon"><i class="fas fa-times-circle"></i></div>
       <div class="sub-banner-content">
         <div class="sub-banner-title"><i class="fas fa-ban"></i> اشتراكك منتهٍ</div>
-        <div class="sub-banner-sub">انتهى في ${formatDateAr(state.endsAt)} — لا يمكنك إضافة أو تعديل المنتجات حتى التجديد.</div>
+        <div class="sub-banner-sub">انتهى في ${formatDateAr(state.endsAt)} — الفئات الإضافية مقفلة، لكن الفئة الرئيسية تعمل طبيعيًا.</div>
       </div>
       <div class="sub-banner-actions">
         <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تجديد الاشتراك</button>
@@ -535,7 +518,7 @@ function renderSubscriptionBanner(state){
       <div class="sub-banner-icon"><i class="fas fa-ban"></i></div>
       <div class="sub-banner-content">
         <div class="sub-banner-title">تم إلغاء اشتراكك</div>
-        <div class="sub-banner-sub">تواصل مع الإدارة لإعادة التفعيل.</div>
+        <div class="sub-banner-sub">الفئات الإضافية مقفلة. تواصل مع الإدارة لإعادة التفعيل.</div>
       </div>
       <div class="sub-banner-actions">
         <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تواصل معنا</button>
@@ -546,15 +529,15 @@ function renderSubscriptionBanner(state){
       <div class="sub-banner-icon"><i class="fas fa-hourglass-half"></i></div>
       <div class="sub-banner-content">
         <div class="sub-banner-title">اشتراكك بانتظار تأكيد الدفع</div>
-        <div class="sub-banner-sub">سيتم التفعيل فور تأكيد الدفع من الإدارة.</div>
+        <div class="sub-banner-sub">سيتم فتح الفئات الإضافية فور تأكيد الدفع من الإدارة.</div>
       </div>`;
   } else {
     el.className='sub-banner expired';
     el.innerHTML=`
-      <div class="sub-banner-icon"><i class="fas fa-crown"></i></div>
+      <div class="sub-banner-icon"><i class="fas fa-info-circle"></i></div>
       <div class="sub-banner-content">
         <div class="sub-banner-title">لا يوجد اشتراك فعّال</div>
-        <div class="sub-banner-sub">اشترك الآن لتتمكن من إدارة منتجاتك.</div>
+        <div class="sub-banner-sub">الفئة الرئيسية تعمل، لكن الفئات الإضافية تحتاج اشتراكًا.</div>
       </div>
       <div class="sub-banner-actions">
         <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> اشترك الآن</button>
@@ -615,30 +598,11 @@ function renderSubscriptionDetails(state){
     el.className='sub-details-box none';
     el.innerHTML=`
       <div class="sub-details-row"><i class="fas fa-info-circle"></i><span>الحالة</span><strong>بدون اشتراك</strong></div>
-      <div class="sub-details-row"><i class="fas fa-lock"></i><span>الصلاحيات</span><strong>مقيدة</strong></div>
+      <div class="sub-details-row"><i class="fas fa-tag"></i><span>الفئة الرئيسية</span><strong style="color:#059669;">✓ تعمل</strong></div>
+      <div class="sub-details-row"><i class="fas fa-layer-group"></i><span>الفئات الإضافية</span><strong style="color:#B91C1C;">✗ تحتاج اشتراكًا</strong></div>
       <div class="sub-details-actions">
         <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> اشترك الآن</button>
       </div>`;
-  }
-}
-
-function applySubscriptionLock(state){
-  const overlay=$('productFormLocked');
-  if(!overlay)return;
-  const msgEl=$('productFormLockedMsg');
-  if(!state.allowed){
-    let msg='اشتراكك منتهٍ. جدّد اشتراكك للعودة لإدارة منتجاتك.';
-    if(state.status==='cancelled')msg='تم إلغاء اشتراكك. تواصل مع الإدارة لإعادة التفعيل.';
-    else if(state.status==='pending_payment')msg='اشتراكك بانتظار تأكيد الدفع.';
-    else if(state.status==='none')msg='لا يوجد اشتراك فعّال. اشترك الآن لتتمكن من إضافة منتجاتك.';
-    else if(state.status==='expired')msg='اشتراكك منتهٍ منذ '+formatDateAr(state.endsAt)+'. جدّد الآن.';
-    if(msgEl)msgEl.textContent=msg;
-    overlay.classList.remove('hidden');
-    // تعطيل أزرار التعديل/الحذف في قائمة المنتجات
-    document.querySelectorAll('#productsList .icon-btn-edit, #productsList .icon-btn-delete').forEach(b=>{b.disabled=true;b.title='الاشتراك منتهٍ';});
-  } else {
-    overlay.classList.add('hidden');
-    document.querySelectorAll('#productsList .icon-btn-edit, #productsList .icon-btn-delete').forEach(b=>{b.disabled=false;b.title='';});
   }
 }
 
@@ -695,7 +659,7 @@ function generateSubscriptionInvoiceHTML(store){
     <div style="background:#F8FAFC;border:1px dashed #CBD5E1;border-radius:10px;padding:14px;font-size:12px;color:#475569;font-weight:600;line-height:1.7;margin-bottom:30px;">
       <strong style="color:#1A1A1A;">ملاحظات:</strong><br>
       • هذه الفاتورة صادرة إلكترونياً من منصة <strong>BranZar</strong> ولا تحتاج إلى ختم.<br>
-      • الاشتراك يمنح المتجر صلاحية إدارة المنتجات والفئات خلال فترة الاشتراك فقط.<br>
+      • الاشتراك يفتح الفئات الإضافية للمتجر خلال فترة الاشتراك فقط. الفئة الرئيسية تعمل دائمًا.<br>
       • الأسعار بـ ${escapeHtml(currencyName)} (${escapeHtml(currency)}).
     </div>
     <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:2px solid #F3F4F6;">
@@ -809,8 +773,8 @@ function setupStoreListener(){
       renderSubscriptionUI();
       if(subChanged){
         const newState=getSubscriptionState(fresh);
-        if(newState.allowed)showToast('🎉 تم تفعيل/تجديد اشتراكك!','success');
-        else showToast('⚠️ تم إيقاف/انتهاء اشتراكك','warning');
+        if(newState.allowed)showToast('🎉 تم تفعيل/تجديد اشتراكك — الفئات الإضافية مفتوحة','success');
+        else showToast('⚠️ تم إيقاف اشتراكك — الفئات الإضافية مقفلة','warning');
       }
     } else {
       renderSubscriptionUI();
@@ -827,7 +791,7 @@ function getMainProductsCount(){if(!currentStore||!productsData.length)return 0;
 function populateProductCategories(preserve){const sel=$('product_category');if(!sel||!currentStore)return;const cur=preserve!==undefined?preserve:sel.value;const main=getMainCat(),extras=getExtraCats(),sub=isSubscribed();sel.innerHTML='';if(!main&&extras.length===0){const o=document.createElement('option');o.value='';o.textContent='⚠️ لا توجد فئات';sel.appendChild(o);sel.disabled=true;return;}sel.disabled=false;const ph=document.createElement('option');ph.value='';ph.textContent='— اختر الفئة —';ph.disabled=true;sel.appendChild(ph);if(main){const o=document.createElement('option');o.value=main;o.textContent='🟢 '+main+' (رئيسية)';sel.appendChild(o);}extras.forEach(c=>{const o=document.createElement('option');o.value=c;if(sub)o.textContent='⭐ '+c;else{o.textContent='🔒 '+c;o.disabled=true;}sel.appendChild(o);});if(cur&&Array.from(sel.options).some(o=>o.value===cur&&!o.disabled))sel.value=cur;else sel.value=main||'';}
 async function loadMyProducts(){if(!currentStore)return;try{const snap=await db.collection(PRODUCTS).where('store_id','==',currentStore.id).get();productsData=snap.docs.map(d=>({id:d.id,...d.data()}));productsData.sort((a,b)=>(b.created_at?.seconds||0)-(a.created_at?.seconds||0));updateProductsUI();setupProductsListener();}catch(err){console.error('[Products]',err);$('productsList').innerHTML='<div class="empty-state"><div class="empty-state-title" style="color:#EF4444;">تعذر تحميل المنتجات: '+escapeHtml(mapFbError(err))+'</div></div>';}}
 function setupProductsListener(){if(!currentStore)return;if(productsUnsubscribe){productsUnsubscribe();productsUnsubscribe=null;}productsUnsubscribe=db.collection(PRODUCTS).where('store_id','==',currentStore.id).onSnapshot((snap)=>{const fresh=snap.docs.map(d=>({id:d.id,...d.data()}));fresh.sort((a,b)=>(b.created_at?.seconds||0)-(a.created_at?.seconds||0));const fp=getFp(fresh);if(fp===lastProductsFingerprint)return;lastProductsFingerprint=fp;productsData=fresh;updateProductsUI();},(err)=>console.warn('Products listener:',err));}
-function updateProductsUI(){$('productsCount').textContent=productsData.length;$('productsCountBadge').textContent=productsData.length;$('ro_products_count').textContent=productsData.length;updateLimitsUI();renderProductsList();applySubscriptionLock(getSubscriptionState(currentStore));}
+function updateProductsUI(){$('productsCount').textContent=productsData.length;$('productsCountBadge').textContent=productsData.length;$('ro_products_count').textContent=productsData.length;updateLimitsUI();renderProductsList();}
 function updateLimitsUI(){
   const c=$('categoryLimitsInfo');if(!c||!currentStore)return;
   const main=getMainCat();const cnt=getMainProductsCount();const lim=PRODUCT_LIMITS.MAIN_CATEGORY_MAX;
@@ -846,7 +810,7 @@ function updateLimitsUI(){
     else{warning.classList.remove('show');}
   }
 }
-function renderProductsList(){if(productsData.length===0){$('productsList').innerHTML='<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-box-open"></i></div><div class="empty-state-title">لا توجد منتجات</div><div class="empty-state-text">ابدأ بإضافة أول منتج</div></div>';return;}const main=getMainCat();const locked=!isSubscriptionActive();let html='';productsData.forEach(p=>{const price=parseFloat(p.price||0);const curr=getProductCurrency(p);const hasImg=p.img_url&&String(p.img_url).trim();const thumb=hasImg?'<img src="'+escapeHtml(p.img_url)+'" class="product-thumb" alt="" loading="lazy">':'<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>';const isMain=!p.category||String(p.category).trim()===main;const catBadge=isMain?'<span class="product-category-badge" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);color:#059669;border-color:#A7F3D0;"><i class="fas fa-star" style="font-size:.6rem;"></i> '+escapeHtml(main||'رئيسية')+'</span>':(p.category?'<span class="product-category-badge"><i class="fas fa-tag" style="font-size:.6rem;"></i> '+escapeHtml(p.category)+'</span>':'');const dis=locked?'disabled title="الاشتراك منتهٍ"':'';html+='<div class="product-row">'+thumb+'<div class="product-info"><div class="product-name">'+escapeHtml(p.name)+'</div>'+(p.description?'<div class="product-description">'+escapeHtml(p.description)+'</div>':'')+'<div class="product-meta"><span class="product-price">'+price.toLocaleString()+' '+escapeHtml(curr.symbol)+'</span>'+catBadge+'</div></div><div class="product-actions"><button type="button" class="icon-btn icon-btn-edit" '+dis+' onclick="editProduct(\''+p.id+'\')"><i class="fas fa-pen"></i></button><button type="button" class="icon-btn icon-btn-delete" '+dis+' onclick="deleteProduct(\''+p.id+'\')"><i class="fas fa-trash"></i></button></div></div>';});$('productsList').innerHTML=html;setTimeout(setupImageFallbacks,50);}
+function renderProductsList(){if(productsData.length===0){$('productsList').innerHTML='<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-box-open"></i></div><div class="empty-state-title">لا توجد منتجات</div><div class="empty-state-text">ابدأ بإضافة أول منتج</div></div>';return;}const main=getMainCat();let html='';productsData.forEach(p=>{const price=parseFloat(p.price||0);const curr=getProductCurrency(p);const hasImg=p.img_url&&String(p.img_url).trim();const thumb=hasImg?'<img src="'+escapeHtml(p.img_url)+'" class="product-thumb" alt="" loading="lazy">':'<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>';const isMain=!p.category||String(p.category).trim()===main;const catBadge=isMain?'<span class="product-category-badge" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);color:#059669;border-color:#A7F3D0;"><i class="fas fa-star" style="font-size:.6rem;"></i> '+escapeHtml(main||'رئيسية')+'</span>':(p.category?'<span class="product-category-badge"><i class="fas fa-tag" style="font-size:.6rem;"></i> '+escapeHtml(p.category)+'</span>':'');html+='<div class="product-row">'+thumb+'<div class="product-info"><div class="product-name">'+escapeHtml(p.name)+'</div>'+(p.description?'<div class="product-description">'+escapeHtml(p.description)+'</div>':'')+'<div class="product-meta"><span class="product-price">'+price.toLocaleString()+' '+escapeHtml(curr.symbol)+'</span>'+catBadge+'</div></div><div class="product-actions"><button type="button" class="icon-btn icon-btn-edit" onclick="editProduct(\''+p.id+'\')"><i class="fas fa-pen"></i></button><button type="button" class="icon-btn icon-btn-delete" onclick="deleteProduct(\''+p.id+'\')"><i class="fas fa-trash"></i></button></div></div>';});$('productsList').innerHTML=html;setTimeout(setupImageFallbacks,50);}
 function addColorRow(name,image){const c=$('productColorsContainer');if(!c)return;const row=document.createElement('div');row.className='color-row';const uid='ci_'+Date.now()+'_'+Math.floor(Math.random()*9999);row.innerHTML='<div class="color-row-top"><div class="color-dot-preview"></div><input type="text" class="color-name" list="colorList" placeholder="اسم اللون" value="'+(name||'')+'"><button type="button" class="remove-color-btn"><i class="fas fa-trash"></i></button></div><div class="color-image-upload-wrap"><input type="hidden" id="'+uid+'" class="color-image" value="'+(image||'')+'"><button type="button" class="color-upload-btn" data-upload-target="'+uid+'"><i class="fas fa-cloud-arrow-up"></i><span>رفع صورة اللون</span></button><div class="product-img-preview-wrapper hidden"><img class="product-img-preview" alt=""><button type="button" class="remove-img-btn"><i class="fas fa-times"></i></button></div></div>';const nameInput=row.querySelector('.color-name');const dotPreview=row.querySelector('.color-dot-preview');const im=row.querySelector('.color-image');const wrapper=row.querySelector('.product-img-preview-wrapper');const previewImg=row.querySelector('.product-img-preview');const removeImgBtn=row.querySelector('.remove-img-btn');const removeRowBtn=row.querySelector('.remove-color-btn');const updateDotColor=()=>{const colorHex=getColorHex(nameInput.value);dotPreview.style.background=colorHex;};const updateImagePreview=()=>{const url=(im.value||'').trim();if(url){previewImg.src=url;wrapper.classList.remove('hidden');}else{wrapper.classList.add('hidden');previewImg.removeAttribute('src');}};nameInput.addEventListener('input',updateDotColor);im.addEventListener('input',updateImagePreview);removeImgBtn.addEventListener('click',()=>{im.value='';updateImagePreview();});removeRowBtn.addEventListener('click',()=>row.remove());c.appendChild(row);updateDotColor();updateImagePreview();}
 const prodImgInput=$('product_img_url');const prodImgWrapper=$('product_img_preview_wrapper');const prodImgPreview=$('product_img_preview');const removeProdImgBtn=$('removeProductImgBtn');
 function updateMainImgPreview(){if(!prodImgInput||!prodImgWrapper||!prodImgPreview)return;const val=prodImgInput.value.trim();if(val){prodImgPreview.src=val;prodImgWrapper.classList.remove('hidden');}else{prodImgWrapper.classList.add('hidden');prodImgPreview.removeAttribute('src');}}
@@ -857,22 +821,13 @@ if($('product_description')){$('product_description').addEventListener('input',(
 if($('product_category')){$('product_category').addEventListener('change',()=>{if(!isSavingProduct)updateLimitsUI();});}
 
 /* ═══════════════════════════════════════════════════════════
-   🔒 PRODUCT SAVE (with subscription gate)
+   🔓 PRODUCT SAVE — بدون أي بوابة اشتراك
    ═══════════════════════════════════════════════════════════ */
 $('productForm').addEventListener('submit',async(e)=>{
   e.preventDefault();
 
   if(!currentUser){showToast('❌ انتهت جلستك. يرجى تسجيل الدخول مرة أخرى','error');return;}
   if(!currentStore){showToast('❌ تعذر تحميل بيانات المتجر. يرجى إعادة تحميل الصفحة','error');return;}
-
-  // ═══ SUBSCRIPTION GATE ═══
-  if(!isSubscriptionActive()){
-    const st=getSubscriptionState(currentStore);
-    showToast('🔒 لا يمكنك إضافة أو تعديل المنتجات — اشتراكك '+(st.status==='expired'?'منتهٍ':st.status==='cancelled'?'ملغى':st.status==='pending_payment'?'بانتظار الدفع':'غير مفعّل'),'error');
-    return;
-  }
-  // ═════════════════════════
-
   if(isSavingProduct){showToast('⏳ يتم حفظ منتج آخر حالياً، يرجى الانتظار...','warning');return;}
 
   const id=$('product_id').value;
@@ -930,7 +885,7 @@ $('productForm').addEventListener('submit',async(e)=>{
   }catch(err){
     console.error('[Product save]',err);
     let msg='❌ فشل الحفظ';
-    if(err&&err.code==='permission-denied')msg='❌ لا تملك صلاحية — قد يكون اشتراكك منتهياً';
+    if(err&&err.code==='permission-denied')msg='❌ لا تملك صلاحية — قد تكون الفئة الإضافية تحتاج اشتراكًا';
     else if(err&&err.code==='unavailable')msg='❌ تعذر الاتصال بالخدمة';
     else if(err&&err.code==='unauthenticated')msg='❌ انتهت جلستك. سجّل الدخول من جديد';
     else if(err&&err.message)msg='❌ '+err.message;
@@ -959,11 +914,9 @@ function resetProductForm(){
 }
 if($('cancelEditProduct'))$('cancelEditProduct').addEventListener('click',resetProductForm);
 window.editProduct=async(id)=>{
-  if(!isSubscriptionActive()){showToast('🔒 لا يمكنك تعديل المنتجات — اشتراكك منتهٍ','error');return;}
   try{const s=await db.collection(PRODUCTS).doc(id).get();if(!s.exists||s.data().store_id!==currentStore.id)throw new Error('no_permission');const d={id:s.id,...s.data()};$('product_id').value=d.id;$('product_name').value=d.name||'';$('product_description').value=d.description||'';$('product_price').value=d.price||0;$('product_img_url').value=d.img_url||'';$('productDescCounter').textContent=(d.description||'').length+' / '+PRODUCT_DESC_MAX;populateProductCategories(d.category||'');const prodCurr=getProductCurrency(d);updateProductCurrencyDisplay(prodCurr);updateMainImgPreview();$('productColorsContainer').innerHTML='';if(Array.isArray(d.colors))d.colors.forEach(x=>addColorRow(x.name,x.image));$('productFormTitle').textContent='تعديل: '+d.name;$('cancelEditProduct').classList.remove('hidden');$('productForm').scrollIntoView({behavior:'smooth',block:'start'});updateLimitsUI();}catch(err){showToast('فشل: '+mapFbError(err),'error');}
 };
 window.deleteProduct=async(id)=>{
-  if(!isSubscriptionActive()){showToast('🔒 لا يمكنك حذف المنتجات — اشتراكك منتهٍ','error');return;}
   if(!confirm('هل أنت متأكد من حذف هذا المنتج؟'))return;
   try{const s=await db.collection(PRODUCTS).doc(id).get();if(!s.exists||s.data().store_id!==currentStore.id)throw new Error('no_permission');await db.collection(PRODUCTS).doc(id).delete();showToast('🗑️ تم حذف المنتج بنجاح');}catch(err){showToast('فشل: '+mapFbError(err),'error');}
 };
@@ -972,7 +925,7 @@ $('tabProducts').addEventListener('click',()=>{$('tabProducts').classList.add('a
 ['store_logo','store_cover'].forEach((id)=>{const inp=$(id);if(!inp)return;inp.addEventListener('input',(e)=>{const p=$(id+'_preview');if(!p)return;if(e.target.value){p.src=e.target.value;p.classList.remove('hidden');}else p.classList.add('hidden');});});
 document.addEventListener('click',(e)=>{const btn=e.target.closest('[data-upload-target]');if(!btn)return;e.preventDefault();const targetId=btn.getAttribute('data-upload-target');const target=document.getElementById(targetId);if(!target)return;const fi=document.createElement('input');fi.type='file';fi.accept='image/*';fi.style.display='none';fi.addEventListener('change',async()=>{const file=fi.files&&fi.files[0];if(!file){fi.remove();return;}if(!file.type.startsWith('image/')){showToast('❌ يجب اختيار صورة','error');fi.remove();return;}if(file.size>8*1024*1024){showToast('❌ الحجم أكبر من 8 ميجا','error');fi.remove();return;}const origHTML=btn.innerHTML;btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>';try{const fd=new FormData();fd.append('file',file);fd.append('upload_preset',CLOUDINARY_UPLOAD_PRESET);fd.append('folder','branzar/stores');const res=await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD_NAME+'/image/upload',{method:'POST',body:fd});if(!res.ok)throw new Error('upload_failed');const data=await res.json();if(!data.secure_url)throw new Error('no_url');target.value=data.secure_url;target.dispatchEvent(new Event('input',{bubbles:true}));showToast('✅ تم رفع الصورة');}catch(err){console.error('[Upload]',err);showToast('❌ فشل رفع الصورة','error');}finally{btn.disabled=false;btn.innerHTML=origHTML;fi.remove();}});document.body.appendChild(fi);fi.click();});
 if($('supportFloat'))$('supportFloat').addEventListener('click',()=>openSupportChat('general'));
-console.log('%c🔥 BranZar v12.0 — subscription system integrated ✅','color:#FF7A00;font-weight:bold;font-size:14px');
+console.log('%c🔥 BranZar v12.1 — subscription controls extra categories only ✅','color:#FF7A00;font-weight:bold;font-size:14px');
 </script>
 </body>
 </html>
