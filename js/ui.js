@@ -89,6 +89,7 @@ function bzrResolveStoreName(product) {
   return product.store_name || '';
 }
 window.bzrResolveStoreName = bzrResolveStoreName;
+var storeDetailUnsubscribe = null, storeExpiryTimeout = null;
 
 (function migrateLegacyCartCurrencies() {
   try {
@@ -361,6 +362,7 @@ function performSearch(query) {
   var matchedCats = categories.filter(function(c){ return c.toLowerCase().indexOf(query) > -1; });
   var matchedStores = stores.filter(function(s){ return (s.name || '').toLowerCase().indexOf(query) > -1 || (s.category || '').toLowerCase().indexOf(query) > -1; });
   var matchedProducts = searchPool.filter(function(p){
+    if (typeof window.bzrCanDisplayProduct === 'function' && !window.bzrCanDisplayProduct(p, stores, currentStore)) return false;
     var liveName = bzrResolveStoreName(p);
     return (p.name || '').toLowerCase().indexOf(query) > -1 || liveName.toLowerCase().indexOf(query) > -1;
   }).slice(0, 8);
@@ -449,6 +451,7 @@ function displayStores() {
 function createStoreCard(store) {
   var storeId = getStoreId(store); var followed = isStoreFollowed(storeId);
   var card = document.createElement('div'); card.className = 'store-card';
+  card.dataset.storeId = String(storeId);
   var cover = document.createElement('img'); cover.className = 'cover-image'; cover.loading = 'lazy'; cover.alt = store.name || ''; cover.src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/600x300/FF7A00/FFFFFF?text=Cover';
   var logo = document.createElement('img'); logo.className = 'store-logo'; logo.loading = 'lazy'; logo.alt = ''; logo.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
   var info = document.createElement('div'); info.className = 'store-info';
@@ -547,7 +550,7 @@ function renderStoreCategoryTabs(store) {
   var container = document.getElementById('storeCategoriesTabs'); if (!container) return; container.innerHTML = '';
   var mainCat = (store.category && String(store.category).trim()) ? String(store.category).trim() : '';
   var additional = Array.isArray(store.categories) ? store.categories.map(function(c){ return String(c || '').trim(); }).filter(function(c){ return c && c !== mainCat; }) : [];
-  var subscribed = store.is_subscribed === true;
+  var subscribed = typeof window.bzrIsStoreSubscriptionActive === 'function' && window.bzrIsStoreSubscriptionActive(store);
   if (!mainCat && !additional.length) { container.style.display = 'none'; return; }
   container.style.display = 'flex';
   if (mainCat) {
@@ -569,42 +572,116 @@ function selectStoreCategoryTab(tab, category) {
   currentStoreCategoryForProducts = category || null;
   if (currentStore) loadStoreProducts(currentStore.id, currentStoreCategoryForProducts);
 }
-async function refreshStoreDataOnOpen(storeId) {
-  if (!storeId || !RateLimiter.canRequest('store_refresh')) return;
-  try {
-    var doc = await db.collection('stores').doc(String(storeId)).get();
-    if (!doc.exists || currentStoreId !== String(storeId)) return;
-    var fresh = { id: doc.id, ...doc.data() };
-    var oldMain = String((currentStore && currentStore.category) || ''); var newMain = String(fresh.category || '');
-    var oldList = JSON.stringify((currentStore && currentStore.categories) || []); var newList = JSON.stringify(fresh.categories || []);
-    var oldSub = (currentStore && currentStore.is_subscribed) === true; var newSub = fresh.is_subscribed === true;
-    var oldLoc = String((currentStore && currentStore.location) || ''); var newLoc = String(fresh.location || '');
-    var nameChanged = (currentStore && currentStore.name) !== fresh.name;
-    if (oldMain !== newMain || oldList !== newList || oldSub !== newSub || oldLoc !== newLoc || nameChanged) {
-      currentStore = Object.assign({}, currentStore, fresh);
-      var activeCat = currentStoreCategoryForProducts;
-      var mainCat = (fresh.category && String(fresh.category).trim()) ? String(fresh.category).trim() : null;
-      var isExtra = Array.isArray(fresh.categories) && fresh.categories.indexOf(activeCat) > -1;
-      var locked = !newSub && isExtra;
-      if (locked || (!mainCat && !isExtra)) currentStoreCategoryForProducts = mainCat;
-      renderStoreCategoryTabs(fresh);
-      loadStoreProducts(fresh.id, currentStoreCategoryForProducts);
-      var catEl = document.getElementById('storeCategory');
-      if (catEl) { catEl.innerHTML = ''; catEl.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); var sp = document.createElement('span'); sp.textContent = (fresh.category && String(fresh.category).trim()) ? fresh.category : 'عام'; catEl.appendChild(sp); }
-      if (nameChanged) {
-        var storeNameEl = document.getElementById('storeName');
-        if (storeNameEl) {
-          if (fresh.is_verified) {
-            storeNameEl.innerHTML = '';
-            var badge = document.createElement('span'); badge.className = 'verified-icon'; badge.style.cssText = 'display:inline-flex;width:20px;height:20px;flex-shrink:0;'; badge.innerHTML = VERIFIED_BADGE_SVG;
-            var nameTxt = document.createElement('span'); nameTxt.textContent = fresh.name; storeNameEl.appendChild(badge); storeNameEl.appendChild(nameTxt);
-          } else { storeNameEl.textContent = fresh.name; }
-        }
-      }
-      renderStoreLocationInModal(fresh);
-    }
-  } catch(e) {}
+function refreshGlobalProductVisibility() {
+  var source = Array.isArray(allProductsLocal) ? allProductsLocal : [];
+  var visible = source.filter(function(product){ return window.bzrCanDisplayProduct(product, stores, currentStore); });
+  var grid = document.getElementById('allProductsGrid');
+  if (grid) {
+    grid.innerHTML = '';
+    if (visible.length) renderProductsBatch(visible, 'replace');
+  }
+  var empty = document.getElementById('allProductsEmpty');
+  if (empty && source.length) empty.classList.toggle('hidden', visible.length > 0);
+  if (typeof currentModalProduct !== 'undefined' && currentModalProduct && !window.bzrCanDisplayProduct(currentModalProduct, stores, currentStore)) closeProductModalInternal();
 }
+function scheduleStoreExpiryRefresh() {
+  if (storeExpiryTimeout) clearTimeout(storeExpiryTimeout);
+  storeExpiryTimeout = null;
+  var now = Date.now();
+  var candidates = (Array.isArray(stores) ? stores : []).concat(currentStore ? [currentStore] : []);
+  var nextExpiry = candidates.reduce(function(next, store){
+    if (!store || store.is_subscribed !== true) return next;
+    var expiry = window.bzrSubscriptionEndMillis(store.subscriptionEndsAt);
+    return expiry > now && (!next || expiry < next) ? expiry : next;
+  }, 0);
+  if (!nextExpiry) return;
+  storeExpiryTimeout = setTimeout(function(){
+    if (currentStore) applyCurrentStoreSnapshot(currentStore, true);
+    refreshGlobalProductVisibility();
+    scheduleStoreExpiryRefresh();
+  }, Math.min(Math.max(25, nextExpiry - now + 25), 2147483647));
+}
+function updateStoreModalDetails(store) {
+  var cover = document.getElementById('storeCoverImage');
+  var logo = document.getElementById('storeLogo');
+  if (cover) cover.src = optimizeCloudinaryUrl(store.cover_url) || 'https://via.placeholder.com/1200x600/FF7A00/FFFFFF?text=Cover';
+  if (logo) logo.src = optimizeCloudinaryUrl(store.logo_url) || 'https://via.placeholder.com/150/FF7A00/FFFFFF?text=Store';
+  var description = document.getElementById('storeDescription');
+  if (description) description.textContent = store.description || 'متجر مميز';
+  var name = document.getElementById('storeName');
+  if (name) {
+    name.innerHTML = '';
+    if (store.is_verified) {
+      var badge = document.createElement('span'); badge.className = 'verified-icon'; badge.style.cssText = 'display:inline-flex;width:20px;height:20px;flex-shrink:0;'; badge.innerHTML = VERIFIED_BADGE_SVG; name.appendChild(badge);
+    }
+    var nameText = document.createElement('span'); nameText.textContent = store.name || ''; name.appendChild(nameText);
+  }
+  var category = document.getElementById('storeCategory');
+  if (category) { category.innerHTML = ''; category.appendChild(bzrSvgIcon('mi-tag', 'mi mi-xs')); var text = document.createElement('span'); text.textContent = (store.category && String(store.category).trim()) ? store.category : 'عام'; category.appendChild(text); }
+  var phone = store.phone_number || '', whatsapp = store.whatsapp_number || '';
+  var call = document.getElementById('storeCallButton'), wa = document.getElementById('storeWhatsAppButton');
+  if (call) { if (phone) { call.href = 'tel:' + phone; call.style.display = ''; } else call.style.display = 'none'; }
+  if (wa) { if (whatsapp) { wa.href = 'https://wa.me/' + whatsapp.replace(/[^0-9]/g, ''); wa.style.display = ''; } else wa.style.display = 'none'; }
+  renderStoreLocationInModal(store);
+  currentFollowersCount = parseInt(store.followers) || 0; updateFollowersDisplay();
+}
+function updateVisibleStoreCards(store) {
+  if (!store) return;
+  document.querySelectorAll('.store-card[data-store-id]').forEach(function(card){
+    if (String(card.dataset.storeId) === String(store.id)) card.replaceWith(createStoreCard(store));
+  });
+  var followed = document.getElementById('followedStoresContainer');
+  var oldScrollLeft = followed ? followed.scrollLeft : 0;
+  renderFollowedStores();
+  if (followed) followed.scrollLeft = oldScrollLeft;
+}
+function applyCurrentStoreSnapshot(fresh, forceEntitlementRefresh) {
+  if (!fresh || !currentStoreId || String(fresh.id) !== String(currentStoreId)) return;
+  var previous = currentStore || {};
+  var oldCategoryState = JSON.stringify([previous.category || '', previous.categories || []]);
+  var oldSubscriptionState = [previous.is_subscribed, previous.subscriptionStatus, window.bzrSubscriptionEndMillis(previous.subscriptionEndsAt)];
+  currentStore = Object.assign({}, fresh);
+  var index = stores.findIndex(function(store){ return String(store.id) === String(currentStoreId); });
+  if (index >= 0) stores[index] = Object.assign({}, stores[index], currentStore); else stores.push(currentStore);
+  if (typeof dexieBulkUpsertStores === 'function') dexieBulkUpsertStores([currentStore]).catch(function(){});
+  updateStoreModalDetails(currentStore);
+
+  var main = String(currentStore.category || '').trim();
+  var extras = Array.isArray(currentStore.categories) ? currentStore.categories.map(function(value){ return String(value || '').trim().toLowerCase(); }) : [];
+  var selected = String(currentStoreCategoryForProducts || '').trim();
+  var isMain = !selected || (main && selected.toLowerCase() === main.toLowerCase());
+  var selectedExists = isMain || extras.indexOf(selected.toLowerCase()) > -1;
+  var canAccessSelected = !selected || window.bzrCanShowStoreCategory(currentStore, selected);
+  var categoryChanged = oldCategoryState !== JSON.stringify([currentStore.category || '', currentStore.categories || []]);
+  var newSubscriptionState = [currentStore.is_subscribed, currentStore.subscriptionStatus, window.bzrSubscriptionEndMillis(currentStore.subscriptionEndsAt)];
+  var subscriptionChanged = !!forceEntitlementRefresh || JSON.stringify(oldSubscriptionState) !== JSON.stringify(newSubscriptionState);
+  var reloadProducts = categoryChanged || subscriptionChanged;
+  if (!selectedExists || !canAccessSelected) {
+    currentStoreCategoryForProducts = main || null;
+    reloadProducts = true;
+  }
+  if (categoryChanged || subscriptionChanged || reloadProducts) {
+    renderStoreCategoryTabs(currentStore);
+    var tabs = document.getElementById('storeCategoriesTabs');
+    if (tabs) tabs.querySelectorAll('.store-cat-tab').forEach(function(tab){ tab.classList.toggle('active', String(tab.dataset.cat || '').toLowerCase() === String(currentStoreCategoryForProducts || '').toLowerCase()); });
+  }
+  if (reloadProducts) loadStoreProducts(currentStore.id, currentStoreCategoryForProducts);
+
+  updateVisibleStoreCards(currentStore);
+  if (categoryChanged || subscriptionChanged || String(previous.name || '') !== String(currentStore.name || '')) refreshGlobalProductVisibility();
+  scheduleStoreExpiryRefresh();
+}
+function setupStoreDataListener(storeId) {
+  if (!storeId) return;
+  if (storeDetailUnsubscribe) { try { storeDetailUnsubscribe(); } catch(e){} storeDetailUnsubscribe = null; }
+  var id = String(storeId);
+  storeDetailUnsubscribe = db.collection('stores').doc(id).onSnapshot(function(doc){
+    if (!doc.exists || String(currentStoreId) !== id) return;
+    applyCurrentStoreSnapshot(Object.assign({ id: doc.id }, doc.data()));
+  }, function(error){ console.warn('Store detail listener:', error); storeDetailUnsubscribe = null; });
+}
+window.__bzrStoreListUpdated = function(refreshProducts){ if (refreshProducts !== false) refreshGlobalProductVisibility(); scheduleStoreExpiryRefresh(); };
+window.__bzrStoreCardsUpdated = function(updatedStores){ (Array.isArray(updatedStores) ? updatedStores : []).forEach(updateVisibleStoreCards); };
 function renderStoreLocationInModal(store) {
   var row = document.getElementById('storeLocationRow'); var value = document.getElementById('storeLocationValue'); if (!row || !value) return;
   var loc = (store && store.location && String(store.location).trim()) || '';
@@ -638,7 +715,7 @@ function openStoreModal(store) {
   loadStoreProducts(store.id, currentStoreCategoryForProducts);
   document.getElementById('storeModal').classList.remove('hidden'); updateBodyScroll();
   var mc = document.getElementById('storeModal').querySelector('.modal-content'); if (mc) mc.scrollTop = 0; bzrPushModal();
-  refreshStoreDataOnOpen(currentStoreId);
+  setupStoreDataListener(currentStoreId);
   var storeIdSnapshot = currentStoreId;
   checkFollowStatusFromServer(storeIdSnapshot).then(function(serverFollowing){
     if (currentStoreId !== storeIdSnapshot) return;
@@ -652,7 +729,7 @@ function openStoreModal(store) {
     }
   }).catch(function(){});
 }
-function closeStoreModalInternal() { document.getElementById('storeModal').classList.add('hidden'); updateBodyScroll(); currentStore = null; currentStoreId = null; currentStoreCategoryForProducts = null; }
+function closeStoreModalInternal() { if (storeDetailUnsubscribe) { try { storeDetailUnsubscribe(); } catch(e){} storeDetailUnsubscribe = null; } if (storeExpiryTimeout) { clearTimeout(storeExpiryTimeout); storeExpiryTimeout = null; } document.getElementById('storeModal').classList.add('hidden'); updateBodyScroll(); currentStore = null; currentStoreId = null; currentStoreCategoryForProducts = null; scheduleStoreExpiryRefresh(); }
 function closeStoreModal() { closeStoreModalInternal(); bzrCloseModalUI(); }
 document.getElementById('closeStoreModal')?.addEventListener('click', closeStoreModal);
 function updateFollowersDisplay() { var el = document.getElementById('storeFollowers'); if (el) el.textContent = currentFollowersCount.toLocaleString(); }
@@ -679,10 +756,15 @@ document.getElementById('storeFollowButton')?.addEventListener('click', async fu
 /* ═══ STORE PRODUCTS (By Store ID) ═══ */
 function filterStoreProductsByCategory(products, category) {
   if (!Array.isArray(products)) return [];
-  if (!category) return products;
-  var mainCat = (currentStore && currentStore.category && String(currentStore.category).trim()) ? String(currentStore.category).trim() : null;
-  if (category === mainCat) { return products.filter(function(p){ var pc = String(p.category || '').trim(); return !pc || pc === mainCat; }); }
-  return products.filter(function(p){ return String(p.category || '').trim() === category; });
+  var requested = String(category || '').trim().toLowerCase();
+  var mainCat = String((currentStore && currentStore.category) || '').trim().toLowerCase();
+  return products.filter(function(product){
+    var productCategory = String(product.category || '').trim();
+    if (!window.bzrCanShowStoreCategory(currentStore, productCategory)) return false;
+    if (!requested) return true;
+    if (requested === mainCat) return !productCategory || productCategory.toLowerCase() === mainCat;
+    return productCategory.toLowerCase() === requested;
+  });
 }
 
 async function loadStoreProducts(storeId, category) {
@@ -700,6 +782,13 @@ async function loadStoreProducts(storeId, category) {
   currentStoreNameForProducts = storeId;
   currentStoreCategoryForProducts = category || null;
   storeProductsLastDoc = null; storeProductsHasMore = false;
+
+  if (category && !window.bzrCanShowStoreCategory(currentStore, category)) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1.5rem 0;color:var(--c-text-soft);">الفئة الإضافية مقفلة حتى تجديد الاشتراك</div>';
+    if (loadMoreBtn) { loadMoreBtn.classList.add('hidden'); loadMoreBtn.hidden = true; }
+    cacheManager.remove('store_products_page1_' + storeId + '_' + category);
+    return;
+  }
 
   var cacheKey = 'store_products_page1_' + storeId + '_' + (category || 'main');
   var cached = cacheManager.get(cacheKey);
@@ -740,6 +829,7 @@ async function loadStoreProducts(storeId, category) {
 document.getElementById('loadMoreStoreProductsBtn')?.addEventListener('click', async function (e) {
   var btn = e.currentTarget;
   if (btn.disabled || btn.classList.contains('hidden') || btn.hidden === true || !storeProductsHasMore || !currentStoreNameForProducts || !storeProductsLastDoc) return;
+  if (currentStoreCategoryForProducts && !window.bzrCanShowStoreCategory(currentStore, currentStoreCategoryForProducts)) { loadStoreProducts(currentStore && currentStore.id, currentStore && currentStore.category); return; }
   if (!RateLimiter.canRequest('store_products')) { showToast('⏳ يرجى المحاولة بعد قليل'); return; }
   btn.disabled = true; var origHTML = btn.innerHTML;
   btn.innerHTML = ''; btn.appendChild(bzrSvgIcon('mi-refresh', 'mi mi-xs mi-spin')); var l2 = document.createElement('span'); l2.textContent = 'جاري التحميل...'; btn.appendChild(l2);
@@ -831,17 +921,19 @@ function buildProductCard(product, showStoreName) {
 }
 
 function renderProductsBatch(products, mode) {
-  var grid = document.getElementById('allProductsGrid'); if (!grid || !Array.isArray(products) || !products.length) return;
+  var grid = document.getElementById('allProductsGrid'); if (!grid || !Array.isArray(products)) return;
+  var visibleProducts = products.filter(function(product){ return window.bzrCanDisplayProduct(product, stores, currentStore); });
   var operation = 'append';
   if (mode === false || mode === 'replace') operation = 'replace';
   else if (mode === true || mode === 'prepend') operation = 'prepend';
   else if (mode === 'append') operation = 'append';
   else operation = grid.children.length > 0 ? 'append' : 'replace';
   if (operation === 'replace') grid.innerHTML = '';
+  if (!visibleProducts.length) return;
   var existingIds = new Set();
   if (operation !== 'replace') grid.querySelectorAll('[data-product-id]').forEach(function(el){ existingIds.add(el.getAttribute('data-product-id')); });
   var frag = document.createDocumentFragment(); var addedIds = new Set(); var addedCount = 0;
-  products.forEach(function(product){
+  visibleProducts.forEach(function(product){
     var id = product && product.id ? String(product.id) : null;
     if (id) { if (existingIds.has(id) || addedIds.has(id)) return; addedIds.add(id); }
     frag.appendChild(buildProductCard(product, true)); addedCount++;
@@ -852,12 +944,14 @@ function renderProductsBatch(products, mode) {
 function renderStoreProducts(products, append) {
   var grid = document.getElementById('storeProductsGrid'); if (!grid) return;
   if (!append) grid.innerHTML = '';
-  var frag = document.createDocumentFragment(); products.forEach(function(product){ frag.appendChild(buildProductCard(product, false)); }); grid.appendChild(frag);
+  var visible = (Array.isArray(products) ? products : []).filter(function(product){ return window.bzrCanShowStoreCategory(currentStore, product.category); });
+  var frag = document.createDocumentFragment(); visible.forEach(function(product){ frag.appendChild(buildProductCard(product, false)); }); grid.appendChild(frag);
 }
 
 /* ═══ PRODUCT MODAL ═══ */
 var currentModalProduct = null, selectedColorVariant = null;
 function openProductModal(product) {
+  if (!window.bzrCanDisplayProduct(product, stores, currentStore)) { showToast('هذا المنتج غير متاح قبل تجديد اشتراك المتجر'); return; }
   currentModalProduct = product; selectedColorVariant = null;
   var defaultImg = optimizeCloudinaryUrl(product.img_url) || 'https://via.placeholder.com/600';
   var imgEl = document.getElementById('productModalImage'); imgEl.src = defaultImg; imgEl.style.opacity = '1';
