@@ -2,7 +2,7 @@
    BranZar Service Worker v9.15.0
    ✅ v9.15.0: Dexie added to precache, store-limits removed
    ═══════════════════════════════════════════════════════════ */
-const SW_VERSION = '9.15.1';
+const SW_VERSION = '9.15.0';
 const CACHE_NAME = `branzar-${SW_VERSION}`;
 const STATIC_CACHE = `${CACHE_NAME}-static`;
 const RUNTIME_CACHE = `${CACHE_NAME}-runtime`;
