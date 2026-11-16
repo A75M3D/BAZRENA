@@ -541,6 +541,7 @@ body.theme-dark .currency-badge {
   <div class="bzr-splash-title">بران زار <span>- BranZar</span></div>
   <div class="bzr-splash-subtitle">أكبر سوق إلكتروني للبراندات</div>
   
+  <!-- اللودر الاحترافي الجديد -->
   <div class="bzr-modern-loader-wrap">
     <div class="bzr-modern-loader">
       <svg class="bzr-loader-svg" viewBox="0 0 50 50">
@@ -1171,7 +1172,8 @@ body.theme-dark .currency-badge {
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     🔥 CINEMATIC IGNITION SCRIPT
+     🔥 CINEMATIC IGNITION SCRIPT — 5s Sequence
+     (Wrapped in a global function, triggered manually by app.js)
      ═══════════════════════════════════════════════════════════════ -->
 <script>
 window.__bzrPlayCinematic = function() {
@@ -1190,23 +1192,38 @@ window.__bzrPlayCinematic = function() {
       return;
     }
 
+    // Reset any previous state
     igniteOverlay.style.display = '';
     igniteFlash.style.display = '';
     logoReveal.style.display = '';
 
-    setTimeout(function () { igniteOverlay.classList.add('active'); }, 300);
-    setTimeout(function () { igniteFlash.classList.add('active'); }, 600);
-    setTimeout(function () { logoReveal.classList.add('active'); }, 1100);
+    setTimeout(function () {
+      igniteOverlay.classList.add('active');
+    }, 300);
+
+    setTimeout(function () {
+      igniteFlash.classList.add('active');
+    }, 600);
+
+    setTimeout(function () {
+      logoReveal.classList.add('active');
+    }, 1100);
+
     setTimeout(function () {
       igniteOverlay.classList.remove('active');
       igniteFlash.classList.remove('active');
     }, 3500);
-    setTimeout(function () { logoReveal.classList.remove('active'); }, 4200);
+
+    setTimeout(function () {
+      logoReveal.classList.remove('active');
+    }, 4200);
+
     setTimeout(function () {
       logoReveal.style.display = 'none';
       igniteOverlay.style.display = 'none';
       igniteFlash.style.display = 'none';
     }, 5000);
+
   } catch (e) {}
 };
 </script>
