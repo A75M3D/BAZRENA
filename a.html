@@ -60,6 +60,45 @@ body{background:#F5F7FA;direction:rtl;margin:0;padding:0;min-height:100vh;-webki
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .main-content{margin-top:-2.25rem;padding:0 1rem;position:relative;z-index:3}
 @media(min-width:640px){.main-content{padding:0 1.5rem;margin-top:-2.5rem}}
+
+/* ═══ SUBSCRIPTION STYLES ═══ */
+.sub-banner{padding:1rem 1.15rem;border-radius:1.35rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;font-family:'Cairo',sans-serif;box-shadow:0 8px 22px -12px rgba(0,0,0,0.15);animation:fadeSlideIn .4s ease}
+.sub-banner.active{background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border:1.5px solid #A7F3D0;color:#065F46}
+.sub-banner.warning{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1.5px solid #FCD34D;color:#92400E}
+.sub-banner.expired{background:linear-gradient(135deg,#FEF2F2,#FEE2E2);border:1.5px solid #FECACA;color:#991B1B}
+.sub-banner.cancelled{background:linear-gradient(135deg,#F3F4F6,#E5E7EB);border:1.5px solid #D1D5DB;color:#4B5563}
+.sub-banner.pending{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1.5px solid #FCD34D;color:#92400E}
+.sub-banner-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;flex-shrink:0;background:rgba(255,255,255,0.55)}
+.sub-banner-content{flex:1;min-width:0}
+.sub-banner-title{font-weight:900;font-size:0.95rem;margin-bottom:0.2rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sub-banner-sub{font-size:0.78rem;font-weight:700;opacity:0.9;line-height:1.5}
+.sub-banner-actions{display:flex;gap:8px;flex-direction:column;flex-shrink:0}
+.sub-banner-btn{padding:0.55rem 1rem;border-radius:0.7rem;font-weight:800;font-size:0.78rem;cursor:pointer;border:none;font-family:'Cairo',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;text-decoration:none;transition:all .2s}
+.sub-banner-btn.whatsapp{background:#25D366;color:white}
+.sub-banner-btn.whatsapp:hover{background:#128C7E}
+.sub-banner-btn.invoice{background:rgba(0,0,0,0.08);color:inherit}
+.sub-banner-btn.invoice:hover{background:rgba(0,0,0,0.18)}
+@media(max-width:480px){.sub-banner{flex-wrap:wrap}.sub-banner-actions{width:100%;flex-direction:row}.sub-banner-btn{flex:1}}
+
+.sub-details-box{background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:.9rem;padding:1rem;font-family:'Cairo',sans-serif;font-size:0.85rem;font-weight:700;color:#475569;line-height:1.8}
+.sub-details-box.active{background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border-color:#A7F3D0;color:#065F46}
+.sub-details-box.expired{background:linear-gradient(135deg,#FEF2F2,#FEE2E2);border-color:#FECACA;color:#991B1B}
+.sub-details-box.none{background:#F8FAFC;border-color:#E2E8F0;color:#475569}
+.sub-details-box.cancelled{background:#F3F4F6;border-color:#D1D5DB;color:#4B5563}
+.sub-details-row{display:flex;align-items:center;gap:8px;padding:.35rem 0;border-bottom:1px dashed rgba(0,0,0,0.06)}
+.sub-details-row:last-child{border-bottom:none}
+.sub-details-row i{width:18px;text-align:center;flex-shrink:0;opacity:.85}
+.sub-details-row strong{margin-right:auto}
+.sub-details-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed rgba(0,0,0,0.1)}
+.sub-details-actions .sub-banner-btn{font-size:.78rem;padding:.55rem 1rem}
+
+.locked-overlay{position:absolute;inset:0;background:rgba(255,255,255,0.93);backdrop-filter:blur(3px);border-radius:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;text-align:center;z-index:10;gap:14px}
+.locked-overlay-icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#FEF2F2,#FEE2E2);color:#EF4444;display:flex;align-items:center;justify-content:center;font-size:1.9rem;border:2px solid #FECACA}
+.locked-overlay-title{font-size:1.05rem;font-weight:900;color:#991B1B;line-height:1.5}
+.locked-overlay-sub{font-size:0.82rem;font-weight:700;color:#6B7280;line-height:1.6;max-width:340px}
+.locked-overlay-btn{padding:.75rem 1.25rem;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:.85rem;font-weight:900;font-size:0.88rem;cursor:pointer;font-family:'Cairo',sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:0 12px 24px -8px rgba(37,211,102,0.6)}
+.product-form-wrap{position:relative}
+
 .tabs-wrap{background:#fff;border-radius:1.25rem;padding:0.45rem;display:flex;gap:0.35rem;box-shadow:0 12px 28px -10px rgba(0,0,0,0.12);margin-bottom:1.25rem}
 .tab-item{flex:1;padding:0.75rem;border-radius:0.95rem;font-weight:800;font-size:0.85rem;border:none;background:transparent;color:#6B7280;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;font-family:'Cairo',sans-serif}
 .tab-item.active{background:linear-gradient(135deg,#FF7A00 0%,#FFA64D 100%);color:#fff;box-shadow:0 8px 20px -6px rgba(255,122,0,0.6)}
@@ -118,6 +157,7 @@ textarea.form-input{resize:vertical;min-height:80px;line-height:1.6}
 .product-category-badge{display:inline-flex;align-items:center;gap:3px;background:linear-gradient(135deg,#EFF6FF 0%,#DBEAFE 100%);color:#1E40AF;padding:0.15rem 0.55rem;border-radius:9999px;font-size:0.68rem;font-weight:800;border:1px solid #BFDBFE;white-space:nowrap}
 .product-actions{display:flex;gap:0.4rem;flex-shrink:0}
 .icon-btn{width:36px;height:36px;border-radius:0.7rem;border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.82rem}
+.icon-btn:disabled{opacity:0.35;cursor:not-allowed}
 .icon-btn-edit{background:#EFF6FF;color:#3B82F6}
 .icon-btn-delete{background:#FEF2F2;color:#EF4444}
 .empty-state{text-align:center;padding:2.5rem 1rem}
@@ -227,6 +267,7 @@ textarea.form-input{resize:vertical;min-height:80px;line-height:1.6}
       </div>
     </div>
     <div class="main-content">
+      <div id="subscriptionBanner" class="sub-banner hidden"></div>
       <div class="tabs-wrap">
         <button id="tabStore" class="tab-item active"><i class="fas fa-store"></i><span>متجري</span></button>
         <button id="tabProducts" class="tab-item"><i class="fas fa-box"></i><span>منتجاتي</span><span id="productsCountBadge" class="count-badge">0</span></button>
@@ -245,6 +286,13 @@ textarea.form-input{resize:vertical;min-height:80px;line-height:1.6}
           <div class="stat-box"><div class="stat-box-icon"><i class="fas fa-box"></i></div><div class="stat-box-value" id="ro_products_count">0</div><div class="stat-box-label">منتج</div></div>
           <div class="stat-box"><div class="stat-box-icon"><i class="fas fa-check-circle"></i></div><div class="stat-box-value" id="ro_verified" style="font-size:0.85rem;">—</div><div class="stat-box-label">التوثيق</div></div>
         </div>
+
+        <!-- ═══ SUBSCRIPTION DETAILS CARD ═══ -->
+        <div class="card"><div class="card-body">
+          <div class="card-title"><div class="card-title-icon" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);"><i class="fas fa-crown"></i></div><span>تفاصيل اشتراكي</span></div>
+          <div id="subscriptionDetails"></div>
+        </div></div>
+
         <div class="card"><div class="card-body">
           <div class="card-title"><div class="card-title-icon"><i class="fas fa-store"></i></div><span>معلومات المتجر</span></div>
           <form id="storeForm">
@@ -271,7 +319,13 @@ textarea.form-input{resize:vertical;min-height:80px;line-height:1.6}
       <div id="productsSection" class="tab-content hidden">
         <div id="categoryLimitsInfo" style="margin-bottom:1rem;"></div>
         <div class="products-layout">
-          <div class="card"><div class="card-body">
+          <div class="card product-form-wrap"><div class="card-body">
+            <div id="productFormLocked" class="locked-overlay hidden">
+              <div class="locked-overlay-icon"><i class="fas fa-lock"></i></div>
+              <div class="locked-overlay-title">لا يمكنك إضافة أو تعديل المنتجات</div>
+              <div class="locked-overlay-sub" id="productFormLockedMsg">اشتراكك منتهٍ. جدّد اشتراكك للعودة لإدارة منتجاتك.</div>
+              <button type="button" class="locked-overlay-btn" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تجديد الاشتراك</button>
+            </div>
             <div class="card-title"><div class="card-title-icon"><i class="fas fa-plus"></i></div><span id="productFormTitle">إضافة منتج جديد</span></div>
             <form id="productForm">
               <input type="hidden" id="product_id">
@@ -306,6 +360,7 @@ textarea.form-input{resize:vertical;min-height:80px;line-height:1.6}
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 'use strict';
 const FALLBACK_LOGO='https://branzar.vercel.app/b.webp';
@@ -327,6 +382,9 @@ const FIXED_CATEGORIES=['إلكترونيات وتقنية','أزياء وموض
 const CURRENCIES={SDG:{code:'SDG',name:'جنيه سوداني',symbol:'SDG',flag:'🇸🇩'},USD:{code:'USD',name:'دولار أمريكي',symbol:'USD',flag:'🇺🇸'}};
 const DEFAULT_CURRENCY_CODE='SDG';
 const LEGACY_CURRENCY_SYMBOLS={'ج.س':'SDG','ج.س.':'SDG','جنيه':'SDG','جنية':'SDG'};
+const SUBSCRIPTION_PLANS={monthly:{label:'شهري',months:1},quarterly:{label:'ربع سنوي',months:3},semi_annual:{label:'نصف سنوي',months:6},annual:{label:'سنوي',months:12}};
+const CURRENCY_NAMES={SDG:'جنيه سوداني',SAR:'ريال سعودي',AED:'درهم إماراتي',USD:'دولار أمريكي',EGP:'جنيه مصري'};
+const CURRENCY_SYMBOLS={SDG:'ج.س',SAR:'ر.س',AED:'د.إ',USD:'$',EGP:'ج.م'};
 function normalizeCurrencySymbol(sym){if(!sym)return null;const s=String(sym).trim();if(LEGACY_CURRENCY_SYMBOLS[s])return LEGACY_CURRENCY_SYMBOLS[s];return s;}
 function getCurrencyByCode(code){if(!code)return CURRENCIES[DEFAULT_CURRENCY_CODE];return CURRENCIES[String(code).toUpperCase()]||CURRENCIES[DEFAULT_CURRENCY_CODE];}
 function getCurrencyBySymbol(sym){if(!sym)return null;const s=normalizeCurrencySymbol(sym);for(const c of Object.values(CURRENCIES)){if(c.symbol===s||c.code===s)return c;}return null;}
@@ -344,7 +402,41 @@ const escapeHtml=s=>{if(s==null)return'';const d=document.createElement('div');d
 const sanitize=s=>!s?'':String(s).replace(/<[^>]*>/g,'').trim();
 const toNumber=(v,d=0)=>{const n=parseFloat(v);return isNaN(n)?d:n;};
 const getFp=ps=>ps.map(p=>{const c=Array.isArray(p.colors)?p.colors.map(x=>`${x.name||''}~${x.image||''}`).join(','):'';return[p.id,p.name||'',p.price||0,p.currency||'',p.category||'',p.img_url||'',p.description||'',c].join('~');}).join('§');
-async function playIgnitionSequence(){if(hasPlayedIgnition)return;hasPlayedIgnition=true;const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduced){$('loginOverlay').style.display='none';$('dashboard').classList.remove('hidden');return;}$('loginOverlay').style.display='none';$('dashboard').classList.remove('hidden');}
+
+/* ═══════════════════════════════════════════════════════════
+   👑 SUBSCRIPTION STATE HELPERS
+   ═══════════════════════════════════════════════════════════ */
+function toDate(val){
+  if(!val)return null;
+  if(val instanceof Date)return val;
+  if(typeof val==='number')return new Date(val);
+  if(val.toDate)return val.toDate();
+  if(val.seconds)return new Date(val.seconds*1000);
+  return new Date(val);
+}
+function getSubscriptionState(store){
+  if(!store)return{status:'none',allowed:false,daysLeft:0,endsAt:null,plan:null,price:null,currency:null,invoiceId:null};
+  const s=store.subscriptionStatus||'';
+  const endsAt=toDate(store.subscriptionEndsAt);
+  const plan=SUBSCRIPTION_PLANS[store.subscriptionPlan]||null;
+  const base={endsAt,plan,price:store.subscriptionPrice,currency:store.subscriptionCurrency,invoiceId:store.subscriptionInvoiceId||null,startedAt:toDate(store.subscriptionStartedAt)};
+  if(s==='cancelled')return{...base,status:'cancelled',allowed:false,daysLeft:0};
+  if(s==='pending_payment')return{...base,status:'pending_payment',allowed:false,daysLeft:0};
+  if(endsAt){
+    const daysLeft=Math.max(0,Math.ceil((endsAt.getTime()-Date.now())/86400000));
+    if(endsAt.getTime()<Date.now())return{...base,status:'expired',allowed:false,daysLeft:0};
+    return{...base,status:'active',allowed:true,daysLeft};
+  }
+  if(store.is_subscribed===true)return{...base,status:'legacy',allowed:true,daysLeft:null};
+  return{...base,status:'none',allowed:false,daysLeft:0};
+}
+function isSubscriptionActive(){return getSubscriptionState(currentStore).allowed;}
+function formatDateAr(val){const d=toDate(val);if(!d)return'—';return d.toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});}
+function formatPriceAr(price,currency){const p=parseFloat(price)||0;const sym=CURRENCY_SYMBOLS[currency]||currency||'';return`${p.toLocaleString('ar-EG')} ${sym}`;}
+
+function playIgnitionSequence(){/* noop for auth flow */}
+
+async function playIgnitionSequenceReal(){if(hasPlayedIgnition)return;hasPlayedIgnition=true;const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduced){$('loginOverlay').style.display='none';$('dashboard').classList.remove('hidden');return;}$('loginOverlay').style.display='none';$('dashboard').classList.remove('hidden');}
 function showToast(msg,type='success'){
   const t=$('toast');if(!t)return;
   t.textContent=msg;t.className='toast show';
@@ -359,20 +451,7 @@ function hideMsg(id){const el=$(id);if(el)el.classList.remove('show');}
 function mapFbError(err){
   const c=err&&err.code?String(err.code):'';
   const m={
-    'auth/email-already-in-use':'البريد الإلكتروني مستخدم بالفعل',
-    'auth/invalid-email':'البريد الإلكتروني غير صحيح',
-    'auth/weak-password':'كلمة المرور ضعيفة',
-    'auth/wrong-password':'البريد أو كلمة المرور غير صحيحة',
-    'auth/invalid-credential':'البريد أو كلمة المرور غير صحيحة',
-    'auth/user-not-found':'البريد أو كلمة المرور غير صحيحة',
-    'auth/user-disabled':'هذا الحساب معطّل',
-    'auth/too-many-requests':'محاولات كثيرة، حاول لاحقاً',
-    'auth/network-request-failed':'تعذر الاتصال بالشبكة',
-    'permission-denied':'لا تملك صلاحية تنفيذ هذه العملية',
-    'unavailable':'الخدمة غير متاحة مؤقتاً — تحقق من اتصالك بالإنترنت',
-    'deadline-exceeded':'انتهت مهلة الاتصال بالخادم',
-    'not-found':'العنصر المطلوب غير موجود',
-    'resource-exhausted':'تم استنفاد حصة الخدمة — حاول لاحقاً'
+    'auth/email-already-in-use':'البريد الإلكتروني مستخدم بالفعل','auth/invalid-email':'البريد الإلكتروني غير صحيح','auth/weak-password':'كلمة المرور ضعيفة','auth/wrong-password':'البريد أو كلمة المرور غير صحيحة','auth/invalid-credential':'البريد أو كلمة المرور غير صحيحة','auth/user-not-found':'البريد أو كلمة المرور غير صحيحة','auth/user-disabled':'هذا الحساب معطّل','auth/too-many-requests':'محاولات كثيرة، حاول لاحقاً','auth/network-request-failed':'تعذر الاتصال بالشبكة','permission-denied':'لا تملك صلاحية تنفيذ هذه العملية — قد يكون اشتراكك منتهياً','unavailable':'الخدمة غير متاحة مؤقتاً — تحقق من اتصالك بالإنترنت','deadline-exceeded':'انتهت مهلة الاتصال بالخادم','not-found':'العنصر المطلوب غير موجود','resource-exhausted':'تم استنفاد حصة الخدمة — حاول لاحقاً'
   };
   return m[c]||(err&&err.message)||'حدث خطأ غير متوقع';
 }
@@ -381,9 +460,282 @@ function getCooldownStatus(){const now=Date.now();const last_name=currentStore&&
 function updateCooldownUI(){if(!currentStore)return;const status=getCooldownStatus();const nameNotice=$('nameCooldownNotice'),nameInput=$('store_name');if(nameNotice){if(!status.canUpdateName){nameNotice.classList.add('show');nameNotice.innerHTML='<i class="fas fa-clock"></i><div>لا يمكن تغيير اسم المتجر إلا بعد: <strong>'+formatDuration(status.nameRemaining)+'</strong></div>';}else{nameNotice.classList.remove('show');nameNotice.innerHTML='';}}if(nameInput)nameInput.classList.toggle('locked',!status.canUpdateName);const dataNotice=$('dataCooldownNotice');if(dataNotice){if(!status.canUpdateData){dataNotice.classList.add('show');dataNotice.innerHTML='<i class="fas fa-clock"></i><div>لا يمكن تعديل بيانات المتجر إلا بعد: <strong>'+formatDuration(status.dataRemaining)+'</strong></div>';}else{dataNotice.classList.remove('show');dataNotice.innerHTML='';}}const submitBtn=$('storeSubmitBtn');if(submitBtn&&!status.canUpdateName&&!status.canUpdateData){submitBtn.disabled=true;submitBtn.innerHTML='<i class="fas fa-lock"></i><span>التعديل مقفل مؤقتاً</span>';}else if(submitBtn&&!submitBtn.dataset.saving){submitBtn.disabled=false;submitBtn.innerHTML='<i class="fas fa-save"></i><span>حفظ التعديلات</span>';}}
 if(_cooldownTicker)clearInterval(_cooldownTicker);
 _cooldownTicker=setInterval(updateCooldownUI,60000);
-function openSupportChat(ctx){const msgs={general:'السلام عليكم ورحمة الله 👋\nأرغب بالتواصل مع خدمة عملاء BranZar.'};window.open('https://wa.me/'+WHATSAPP_SUPPORT+'?text='+encodeURIComponent(msgs[ctx]||msgs.general),'_blank','noopener,noreferrer');}
+function openSupportChat(ctx){const msgs={general:'السلام عليكم ورحمة الله 👋\nأرغب بالتواصل مع خدمة عملاء BranZar.',renewal:'السلام عليكم 👋\nأرغب بتجديد اشتراك متجري على منصة BranZar.\nاسم المتجر: '+(currentStore?currentStore.name:'')};window.open('https://wa.me/'+WHATSAPP_SUPPORT+'?text='+encodeURIComponent(msgs[ctx]||msgs.general),'_blank','noopener,noreferrer');}
+window.contactRenewal=function(){openSupportChat('renewal');};
 window.openInvoiceApp=function(){try{window.open(INVOICE_APP_URL,'_blank','noopener,noreferrer');}catch(e){window.location.href=INVOICE_APP_URL;}};
+
+/* ═══════════════════════════════════════════════════════════
+   👑 SUBSCRIPTION UI RENDERING
+   ═══════════════════════════════════════════════════════════ */
+function renderSubscriptionUI(){
+  if(!currentStore)return;
+  const state=getSubscriptionState(currentStore);
+  renderSubscriptionBanner(state);
+  renderSubscriptionDetails(state);
+  applySubscriptionLock(state);
+}
+
+function renderSubscriptionBanner(state){
+  const el=$('subscriptionBanner');
+  if(!el)return;
+  const planLabel=state.plan?state.plan.label:'—';
+  const hasInvoice=!!state.invoiceId;
+
+  if(state.status==='active'||state.status==='legacy'){
+    if(state.status==='active'&&state.daysLeft!==null&&state.daysLeft<=7){
+      el.className='sub-banner warning';
+      el.innerHTML=`
+        <div class="sub-banner-icon"><i class="fas fa-hourglass-half"></i></div>
+        <div class="sub-banner-content">
+          <div class="sub-banner-title"><i class="fas fa-exclamation-triangle"></i> اشتراكك على وشك الانتهاء</div>
+          <div class="sub-banner-sub">متبقٍ فقط <strong>${state.daysLeft} يوم</strong> على انتهاء باقة "${escapeHtml(planLabel)}" — ينتهي في ${formatDateAr(state.endsAt)}</div>
+        </div>
+        <div class="sub-banner-actions">
+          <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تجديد الآن</button>
+        </div>`;
+    } else if(state.status==='active'){
+      el.className='sub-banner active';
+      el.innerHTML=`
+        <div class="sub-banner-icon"><i class="fas fa-crown"></i></div>
+        <div class="sub-banner-content">
+          <div class="sub-banner-title"><i class="fas fa-check-circle"></i> اشتراكك فعّال</div>
+          <div class="sub-banner-sub">باقة "<strong>${escapeHtml(planLabel)}</strong>" — متبقٍ <strong>${state.daysLeft} يوم</strong> • ينتهي في ${formatDateAr(state.endsAt)}</div>
+        </div>
+        <div class="sub-banner-actions">
+          ${hasInvoice?`<button type="button" class="sub-banner-btn invoice" onclick="downloadSubscriptionInvoice()"><i class="fas fa-file-pdf"></i> الفاتورة</button>`:''}
+        </div>`;
+    } else {
+      // legacy
+      el.className='sub-banner warning';
+      el.innerHTML=`
+        <div class="sub-banner-icon"><i class="fas fa-info-circle"></i></div>
+        <div class="sub-banner-content">
+          <div class="sub-banner-title">اشتراكك يعمل بالنظام القديم</div>
+          <div class="sub-banner-sub">يُفضّل ترقية اشتراكك لنظام الاشتراكات الجديد لتجنب أي توقف مفاجئ.</div>
+        </div>
+        <div class="sub-banner-actions">
+          <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> ترقية الاشتراك</button>
+        </div>`;
+    }
+  } else if(state.status==='expired'){
+    el.className='sub-banner expired';
+    el.innerHTML=`
+      <div class="sub-banner-icon"><i class="fas fa-times-circle"></i></div>
+      <div class="sub-banner-content">
+        <div class="sub-banner-title"><i class="fas fa-ban"></i> اشتراكك منتهٍ</div>
+        <div class="sub-banner-sub">انتهى في ${formatDateAr(state.endsAt)} — لا يمكنك إضافة أو تعديل المنتجات حتى التجديد.</div>
+      </div>
+      <div class="sub-banner-actions">
+        <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تجديد الاشتراك</button>
+        ${hasInvoice?`<button type="button" class="sub-banner-btn invoice" onclick="downloadSubscriptionInvoice()"><i class="fas fa-file-pdf"></i> الفاتورة</button>`:''}
+      </div>`;
+  } else if(state.status==='cancelled'){
+    el.className='sub-banner cancelled';
+    el.innerHTML=`
+      <div class="sub-banner-icon"><i class="fas fa-ban"></i></div>
+      <div class="sub-banner-content">
+        <div class="sub-banner-title">تم إلغاء اشتراكك</div>
+        <div class="sub-banner-sub">تواصل مع الإدارة لإعادة التفعيل.</div>
+      </div>
+      <div class="sub-banner-actions">
+        <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تواصل معنا</button>
+      </div>`;
+  } else if(state.status==='pending_payment'){
+    el.className='sub-banner pending';
+    el.innerHTML=`
+      <div class="sub-banner-icon"><i class="fas fa-hourglass-half"></i></div>
+      <div class="sub-banner-content">
+        <div class="sub-banner-title">اشتراكك بانتظار تأكيد الدفع</div>
+        <div class="sub-banner-sub">سيتم التفعيل فور تأكيد الدفع من الإدارة.</div>
+      </div>`;
+  } else {
+    el.className='sub-banner expired';
+    el.innerHTML=`
+      <div class="sub-banner-icon"><i class="fas fa-crown"></i></div>
+      <div class="sub-banner-content">
+        <div class="sub-banner-title">لا يوجد اشتراك فعّال</div>
+        <div class="sub-banner-sub">اشترك الآن لتتمكن من إدارة منتجاتك.</div>
+      </div>
+      <div class="sub-banner-actions">
+        <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> اشترك الآن</button>
+      </div>`;
+  }
+  el.classList.remove('hidden');
+}
+
+function renderSubscriptionDetails(state){
+  const el=$('subscriptionDetails');
+  if(!el)return;
+  const planLabel=state.plan?state.plan.label:(currentStore.subscriptionPlanLabel||'—');
+  const price=parseFloat(state.price)||0;
+  const currency=state.currency||'SDG';
+  const hasInvoice=!!state.invoiceId;
+  const paymentMethod={
+    cash:'نقداً',bank_transfer:'تحويل بنكي',mobile_money:'محفظة إلكترونية',card:'بطاقة',other:'أخرى'
+  }[currentStore.subscriptionPaymentMethod]||'—';
+
+  if(state.status==='active'){
+    el.className='sub-details-box active';
+    el.innerHTML=`
+      <div class="sub-details-row"><i class="fas fa-crown"></i><span>الباقة</span><strong>${escapeHtml(planLabel)}</strong></div>
+      <div class="sub-details-row"><i class="fas fa-money-bill"></i><span>السعر</span><strong>${formatPriceAr(price,currency)}</strong></div>
+      <div class="sub-details-row"><i class="fas fa-calendar-plus"></i><span>تاريخ التفعيل</span><strong>${formatDateAr(state.startedAt)}</strong></div>
+      <div class="sub-details-row"><i class="fas fa-calendar-times"></i><span>تاريخ الانتهاء</span><strong>${formatDateAr(state.endsAt)}</strong></div>
+      <div class="sub-details-row"><i class="fas fa-hourglass-half"></i><span>الأيام المتبقية</span><strong style="color:${state.daysLeft<=7?'#B45309':'#059669'};">${state.daysLeft} يوم</strong></div>
+      <div class="sub-details-row"><i class="fas fa-credit-card"></i><span>طريقة الدفع</span><strong>${escapeHtml(paymentMethod)}</strong></div>
+      <div class="sub-details-actions">
+        ${hasInvoice?`<button type="button" class="sub-banner-btn invoice" onclick="downloadSubscriptionInvoice()"><i class="fas fa-file-pdf"></i> تحميل الفاتورة PDF</button>`:''}
+        <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تجديد مبكر</button>
+      </div>`;
+  } else if(state.status==='legacy'){
+    el.className='sub-details-box none';
+    el.innerHTML=`
+      <div class="sub-details-row"><i class="fas fa-info-circle"></i><span>النظام</span><strong>اشتراك قديم</strong></div>
+      <div class="sub-details-row"><i class="fas fa-calendar"></i><span>تاريخ الانتهاء</span><strong>— غير محدد —</strong></div>
+      <div class="sub-details-actions">
+        <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> ترقية لاشتراك بتاريخ</button>
+      </div>`;
+  } else if(state.status==='expired'){
+    el.className='sub-details-box expired';
+    el.innerHTML=`
+      <div class="sub-details-row"><i class="fas fa-clock"></i><span>انتهى في</span><strong>${formatDateAr(state.endsAt)}</strong></div>
+      ${state.plan?`<div class="sub-details-row"><i class="fas fa-crown"></i><span>كانت الباقة</span><strong>${escapeHtml(planLabel)}</strong></div>`:''}
+      <div class="sub-details-actions">
+        <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تجديد الاشتراك</button>
+        ${hasInvoice?`<button type="button" class="sub-banner-btn invoice" onclick="downloadSubscriptionInvoice()"><i class="fas fa-file-pdf"></i> الفاتورة</button>`:''}
+      </div>`;
+  } else if(state.status==='cancelled'){
+    el.className='sub-details-box cancelled';
+    el.innerHTML=`
+      <div class="sub-details-row"><i class="fas fa-ban"></i><span>الحالة</span><strong>ملغى</strong></div>
+      <div class="sub-details-actions">
+        <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> تواصل مع الإدارة</button>
+      </div>`;
+  } else {
+    el.className='sub-details-box none';
+    el.innerHTML=`
+      <div class="sub-details-row"><i class="fas fa-info-circle"></i><span>الحالة</span><strong>بدون اشتراك</strong></div>
+      <div class="sub-details-row"><i class="fas fa-lock"></i><span>الصلاحيات</span><strong>مقيدة</strong></div>
+      <div class="sub-details-actions">
+        <button type="button" class="sub-banner-btn whatsapp" onclick="contactRenewal()"><i class="fab fa-whatsapp"></i> اشترك الآن</button>
+      </div>`;
+  }
+}
+
+function applySubscriptionLock(state){
+  const overlay=$('productFormLocked');
+  if(!overlay)return;
+  const msgEl=$('productFormLockedMsg');
+  if(!state.allowed){
+    let msg='اشتراكك منتهٍ. جدّد اشتراكك للعودة لإدارة منتجاتك.';
+    if(state.status==='cancelled')msg='تم إلغاء اشتراكك. تواصل مع الإدارة لإعادة التفعيل.';
+    else if(state.status==='pending_payment')msg='اشتراكك بانتظار تأكيد الدفع.';
+    else if(state.status==='none')msg='لا يوجد اشتراك فعّال. اشترك الآن لتتمكن من إضافة منتجاتك.';
+    else if(state.status==='expired')msg='اشتراكك منتهٍ منذ '+formatDateAr(state.endsAt)+'. جدّد الآن.';
+    if(msgEl)msgEl.textContent=msg;
+    overlay.classList.remove('hidden');
+    // تعطيل أزرار التعديل/الحذف في قائمة المنتجات
+    document.querySelectorAll('#productsList .icon-btn-edit, #productsList .icon-btn-delete').forEach(b=>{b.disabled=true;b.title='الاشتراك منتهٍ';});
+  } else {
+    overlay.classList.add('hidden');
+    document.querySelectorAll('#productsList .icon-btn-edit, #productsList .icon-btn-delete').forEach(b=>{b.disabled=false;b.title='';});
+  }
+}
+
+function isSubscribed(){return isSubscriptionActive();}
+
+/* ═══════════════════════════════════════════════════════════
+   🧾 SUBSCRIPTION INVOICE PDF
+   ═══════════════════════════════════════════════════════════ */
+function generateSubscriptionInvoiceHTML(store){
+  const state=getSubscriptionState(store);
+  const planLabel=state.plan?state.plan.label:(store.subscriptionPlanLabel||'—');
+  const price=parseFloat(store.subscriptionPrice)||0;
+  const currency=store.subscriptionCurrency||'SDG';
+  const currencyName=CURRENCY_NAMES[currency]||currency;
+  const invoiceId=store.subscriptionInvoiceId||'—';
+  const paymentMethod={cash:'نقداً',bank_transfer:'تحويل بنكي',mobile_money:'محفظة إلكترونية',card:'بطاقة',other:'أخرى'}[store.subscriptionPaymentMethod]||'—';
+  const paymentStatus=state.status==='active'?'مدفوع':state.status==='expired'?'منتهي':state.status==='cancelled'?'ملغى':'بانتظار الدفع';
+  const paymentColor=state.status==='active'?'#059669':state.status==='expired'?'#B91C1C':'#92400E';
+
+  return `
+  <div style="width:210mm;min-height:297mm;padding:15mm;background:#fff;font-family:'Cairo',sans-serif;direction:rtl;color:#1A1A1A;box-sizing:border-box;">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid #FF7A00;padding-bottom:20px;margin-bottom:30px;">
+      <div>
+        <div style="font-size:42px;font-weight:900;color:#FF7A00;line-height:1;">BranZar</div>
+        <div style="font-size:13px;color:#6B7280;font-weight:700;margin-top:6px;">منصة المتاجر الإلكترونية</div>
+        <div style="font-size:12px;color:#9CA3AF;margin-top:2px;">branzar.vercel.app</div>
+      </div>
+      <div style="text-align:left;">
+        <div style="font-size:32px;font-weight:900;color:#1A1A1A;line-height:1;">فاتورة اشتراك</div>
+        <div style="font-size:12px;color:#6B7280;font-weight:700;margin-top:6px;letter-spacing:1px;">SUBSCRIPTION INVOICE</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;gap:20px;margin-bottom:30px;">
+      <div style="flex:1;"><div style="font-size:11px;color:#9CA3AF;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">رقم الفاتورة</div><div style="font-size:18px;font-weight:900;color:#1A1A1A;font-family:monospace;">${escapeHtml(invoiceId)}</div></div>
+      <div style="flex:1;"><div style="font-size:11px;color:#9CA3AF;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">تاريخ الإصدار</div><div style="font-size:15px;font-weight:800;color:#1A1A1A;">${formatDateAr(Date.now())}</div></div>
+      <div style="flex:1;"><div style="font-size:11px;color:#9CA3AF;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">حالة الدفع</div><div style="font-size:15px;font-weight:900;color:${paymentColor};">${paymentStatus}</div></div>
+    </div>
+    <div style="background:linear-gradient(135deg,#FFF7ED,#FFEDD5);border:2px solid #FFE0BD;border-radius:12px;padding:20px;margin-bottom:30px;">
+      <div style="font-size:12px;color:#92400E;font-weight:800;margin-bottom:6px;">مُوجَّه إلى</div>
+      <div style="font-size:22px;font-weight:900;color:#1A1A1A;">${escapeHtml(store.name||'—')}</div>
+      ${store.location?`<div style="font-size:13px;color:#6B7280;font-weight:700;margin-top:4px;">📍 ${escapeHtml(store.location)}</div>`:''}
+      ${store.whatsapp_number?`<div style="font-size:13px;color:#6B7280;font-weight:700;margin-top:2px;">📱 ${escapeHtml(store.whatsapp_number)}</div>`:''}
+    </div>
+    <div style="margin-bottom:30px;">
+      <div style="font-size:14px;font-weight:900;color:#1A1A1A;margin-bottom:12px;border-right:4px solid #FF7A00;padding-right:10px;">تفاصيل الاشتراك</div>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <tr style="background:#F9FAFB;"><td style="padding:14px;font-weight:800;color:#4B5563;width:40%;border-bottom:1px solid #E5E7EB;">نوع الباقة</td><td style="padding:14px;font-weight:900;color:#1A1A1A;border-bottom:1px solid #E5E7EB;">${escapeHtml(planLabel)}</td></tr>
+        <tr><td style="padding:14px;font-weight:800;color:#4B5563;border-bottom:1px solid #E5E7EB;">تاريخ التفعيل</td><td style="padding:14px;font-weight:900;color:#1A1A1A;border-bottom:1px solid #E5E7EB;">${formatDateAr(store.subscriptionStartedAt)}</td></tr>
+        <tr style="background:#F9FAFB;"><td style="padding:14px;font-weight:800;color:#4B5563;border-bottom:1px solid #E5E7EB;">تاريخ الانتهاء</td><td style="padding:14px;font-weight:900;color:#1A1A1A;border-bottom:1px solid #E5E7EB;">${formatDateAr(store.subscriptionEndsAt)}</td></tr>
+        <tr><td style="padding:14px;font-weight:800;color:#4B5563;border-bottom:1px solid #E5E7EB;">طريقة الدفع</td><td style="padding:14px;font-weight:900;color:#1A1A1A;border-bottom:1px solid #E5E7EB;">${escapeHtml(paymentMethod)}</td></tr>
+        <tr style="background:linear-gradient(135deg,#1a1a1a,#2d2d2d);"><td style="padding:18px;font-weight:900;color:#FF7A00;font-size:15px;">المبلغ الإجمالي</td><td style="padding:18px;font-weight:900;color:#FFFFFF;font-size:22px;">${formatPriceAr(price,currency)}</td></tr>
+      </table>
+    </div>
+    <div style="background:#F8FAFC;border:1px dashed #CBD5E1;border-radius:10px;padding:14px;font-size:12px;color:#475569;font-weight:600;line-height:1.7;margin-bottom:30px;">
+      <strong style="color:#1A1A1A;">ملاحظات:</strong><br>
+      • هذه الفاتورة صادرة إلكترونياً من منصة <strong>BranZar</strong> ولا تحتاج إلى ختم.<br>
+      • الاشتراك يمنح المتجر صلاحية إدارة المنتجات والفئات خلال فترة الاشتراك فقط.<br>
+      • الأسعار بـ ${escapeHtml(currencyName)} (${escapeHtml(currency)}).
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:2px solid #F3F4F6;">
+      <div style="font-size:11px;color:#9CA3AF;font-weight:700;">منصة BranZar — نظام اشتراكات المتاجر<br>جميع الحقوق محفوظة © ${new Date().getFullYear()}</div>
+      <div style="text-align:left;font-size:11px;color:#9CA3AF;font-weight:700;">تم التفعيل بواسطة: <strong style="color:#4B5563;">${escapeHtml(store.subscriptionActivatedBy||'admin')}</strong><br>معرّف المتجر: <span style="font-family:monospace;">${escapeHtml(store.id||'').slice(0,12)}</span></div>
+    </div>
+  </div>`;
+}
+
+async function downloadSubscriptionInvoice(){
+  if(!currentStore)return;
+  if(!currentStore.subscriptionInvoiceId){showToast('لا توجد فاتورة اشتراك متاحة','error');return;}
+  if(typeof html2pdf==='undefined'){showToast('مكتبة PDF غير محمّلة، حدّث الصفحة','error');return;}
+  showToast('⏳ جارٍ إنشاء الفاتورة...','info');
+  try{
+    const html=generateSubscriptionInvoiceHTML(currentStore);
+    const wrapper=document.createElement('div');
+    wrapper.innerHTML=html;
+    wrapper.style.position='fixed';
+    wrapper.style.left='-9999px';
+    wrapper.style.top='0';
+    document.body.appendChild(wrapper);
+    await html2pdf().set({margin:0,filename:`BranZar-Subscription-${currentStore.subscriptionInvoiceId}.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#FFFFFF'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(wrapper.firstElementChild).save();
+    document.body.removeChild(wrapper);
+    showToast('✅ تم تحميل الفاتورة');
+  }catch(err){
+    console.error('[Invoice PDF]',err);
+    showToast('❌ فشل إنشاء الفاتورة','error');
+  }
+}
+window.downloadSubscriptionInvoice=downloadSubscriptionInvoice;
+
+/* ═══════════════════════════════════════════════════════════
+   🔑 PASSWORD TOGGLE
+   ═══════════════════════════════════════════════════════════ */
 (function setupPasswordToggle(){const i=$('loginPassword'),b=$('loginPasswordToggle'),ic=$('loginPasswordToggleIcon');if(!i||!b||!ic)return;b.addEventListener('click',()=>{const isPwd=i.type==='password';i.type=isPwd?'text':'password';ic.classList.toggle('fa-eye',!isPwd);ic.classList.toggle('fa-eye-slash',isPwd);});})();
+
+/* ═══════════════════════════════════════════════════════════
+   🔐 LOGIN
+   ═══════════════════════════════════════════════════════════ */
 $('loginForm').addEventListener('submit',async(e)=>{e.preventDefault();hideMsg('loginError');hideMsg('loginSuccess');const email=sanitize($('loginEmail').value).toLowerCase();const password=String($('loginPassword').value);if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){showMsg('loginError','⚠️ البريد الإلكتروني غير صحيح');return;}if(!password||password.length<6){showMsg('loginError','⚠️ كلمة المرور غير صحيحة');return;}isExplicitLoginAttempt=true;lastLoginAttemptAt=Date.now();hasPlayedIgnition=false;setBtnLoad($('loginSubmitBtn'),true,'جارٍ التحقق...','<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');try{const cred=await auth.signInWithEmailAndPassword(email,password);if(!cred.user.emailVerified){try{await cred.user.sendEmailVerification();}catch(e){}showMsg('loginError','⚠️ يجب تأكيد بريدك الإلكتروني أولاً');await auth.signOut();isExplicitLoginAttempt=false;}}catch(err){console.error('[Login]',err);isExplicitLoginAttempt=false;let msg='❌ البريد أو كلمة المرور غير صحيحة';if(err.code==='auth/too-many-requests')msg='🔒 طلبات كثيرة — حاول لاحقاً';if(err.code==='auth/network-request-failed')msg='⚠️ تحقق من اتصالك بالإنترنت';showMsg('loginError',msg);$('loginPassword').value='';}finally{setBtnLoad($('loginSubmitBtn'),false,'','<i class="fas fa-sign-in-alt"></i> <span>تسجيل الدخول</span>');}});
 $('logoutBtn').addEventListener('click',async()=>{if(!confirm('هل أنت متأكد من تسجيل الخروج؟'))return;if(productsUnsubscribe){productsUnsubscribe();productsUnsubscribe=null;}if(storeUnsubscribe){storeUnsubscribe();storeUnsubscribe=null;}try{await auth.signOut();}catch(e){}hasPlayedIgnition=false;$('loginOverlay').style.display='';$('dashboard').classList.add('hidden');});
 async function findStoreByUid(uid){const snap=await db.collection(STORES).where('owner_uid','==',uid).limit(1).get();if(snap.empty)return null;return{id:snap.docs[0].id,...snap.docs[0].data()};}
@@ -414,27 +766,68 @@ auth.onAuthStateChanged(async(user)=>{
     isExplicitLoginAttempt=false;
     currentStore=store;
     await enterDashboard();
-    if(wasExplicitLogin){await playIgnitionSequence();}else{$('loginOverlay').style.display='none';$('dashboard').classList.remove('hidden');}
+    if(wasExplicitLogin){await playIgnitionSequenceReal();}else{$('loginOverlay').style.display='none';$('dashboard').classList.remove('hidden');}
   }catch(err){
     console.error('[AuthState]',err);isExplicitLoginAttempt=false;
     showToast('تعذر تحميل المتجر: '+mapFbError(err),'error');
     try{await auth.signOut();}catch(e){}
   }
 });
-async function enterDashboard(){$('welcomeStoreName').textContent=currentStore.name||'—';updateHeaderLogo(currentStore);populateCategorySelect();fillStoreForm(currentStore);$('product_store_name').value=currentStore.name||'';$('product_store_name_display').value=currentStore.name||'';setupStoreListener();await loadMyProducts();setConn(true,currentStore.name);updateCooldownUI();updateProductCurrencyDisplay(getStoreCurrency());setTimeout(setupImageFallbacks,200);}
+async function enterDashboard(){
+  $('welcomeStoreName').textContent=currentStore.name||'—';
+  updateHeaderLogo(currentStore);
+  populateCategorySelect();
+  fillStoreForm(currentStore);
+  $('product_store_name').value=currentStore.name||'';
+  $('product_store_name_display').value=currentStore.name||'';
+  setupStoreListener();
+  await loadMyProducts();
+  setConn(true,currentStore.name);
+  updateCooldownUI();
+  updateProductCurrencyDisplay(getStoreCurrency());
+  renderSubscriptionUI();
+  setTimeout(setupImageFallbacks,200);
+}
 function updateHeaderLogo(store){const im=$('headerStoreLogo');if(!im)return;const url=store&&store.logo_url?String(store.logo_url).trim():'';delete im.dataset.fallbackApplied;if(url){im.src=url;im.onerror=()=>{if(im.dataset.fallbackApplied==='1')return;im.dataset.fallbackApplied='1';im.src=FALLBACK_LOGO;im.onerror=null;};}else{im.src=FALLBACK_LOGO;im.onerror=null;}}
 function populateCategorySelect(){const sel=$('store_category');if(!sel)return;const current=currentStore&&currentStore.category?String(currentStore.category).trim():'';sel.innerHTML='<option value="">— اختر الفئة —</option>';const set=new Set(FIXED_CATEGORIES);if(current)set.add(current);Array.from(set).sort((a,b)=>a.localeCompare(b,'ar')).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});if(current)sel.value=current;}
-function setupStoreListener(){if(!currentStore||storeUnsubscribe)return;storeUnsubscribe=db.collection(STORES).doc(currentStore.id).onSnapshot((doc)=>{if(!doc.exists)return;const fresh={...doc.data(),id:doc.id};const subChanged=(fresh.is_subscribed===true)!==(currentStore.is_subscribed===true);const verChanged=(fresh.is_verified===true)!==(currentStore.is_verified===true);const catChanged=(fresh.category||'')!==(currentStore.category||'');const nameChanged=(fresh.name||'')!==(currentStore.name||'');currentStore=fresh;if(catChanged||subChanged||verChanged||nameChanged){populateCategorySelect();fillStoreForm(currentStore);if(subChanged)showToast(fresh.is_subscribed?'🎉 تم تفعيل اشتراكك!':'⚠️ تم إيقاف اشتراكك',fresh.is_subscribed?'success':'warning');}updateCooldownUI();},(err)=>console.warn('Store listener:',err));}
+function setupStoreListener(){
+  if(!currentStore||storeUnsubscribe)return;
+  storeUnsubscribe=db.collection(STORES).doc(currentStore.id).onSnapshot((doc)=>{
+    if(!doc.exists)return;
+    const fresh={...doc.data(),id:doc.id};
+    const subChanged=(fresh.subscriptionStatus||'')!==(currentStore.subscriptionStatus||'')||
+                     String(fresh.subscriptionEndsAt||'')!==String(currentStore.subscriptionEndsAt||'')||
+                     (fresh.is_subscribed===true)!==(currentStore.is_subscribed===true);
+    const verChanged=(fresh.is_verified===true)!==(currentStore.is_verified===true);
+    const catChanged=(fresh.category||'')!==(currentStore.category||'');
+    const nameChanged=(fresh.name||'')!==(currentStore.name||'');
+    currentStore=fresh;
+    if(catChanged||subChanged||verChanged||nameChanged){
+      populateCategorySelect();
+      fillStoreForm(currentStore);
+      populateProductCategories();
+      renderSubscriptionUI();
+      if(subChanged){
+        const newState=getSubscriptionState(fresh);
+        if(newState.allowed)showToast('🎉 تم تفعيل/تجديد اشتراكك!','success');
+        else showToast('⚠️ تم إيقاف/انتهاء اشتراكك','warning');
+      }
+    } else {
+      renderSubscriptionUI();
+    }
+    updateCooldownUI();
+  },(err)=>console.warn('Store listener:',err));
+}
 function fillStoreForm(store){if(!store)return;$('store_id').value=store.id||'';$('store_name').value=store.name||'';$('store_category').value=store.category||'';$('store_description').value=store.description||'';$('store_location').value=store.location||'';$('store_whatsapp').value=store.whatsapp_number||'';$('store_phone').value=store.phone_number||'';$('store_logo').value=store.logo_url||'';$('store_cover').value=store.cover_url||'';$('welcomeStoreName').textContent=store.name||'—';$('product_store_name').value=store.name||'';$('product_store_name_display').value=store.name||'';$('ro_followers').textContent=(parseInt(store.followers)||0).toLocaleString();$('ro_products_count').textContent=parseInt(store.products_count)||0;$('ro_verified').innerHTML=store.is_verified?'<i class="fas fa-check-circle" style="color:#10B981;"></i> موثّق':'<i class="fas fa-circle-xmark" style="color:#9CA3AF;"></i> غير موثّق';const lp=$('store_logo_preview');if(store.logo_url){lp.src=store.logo_url;lp.classList.remove('hidden');lp.onerror=()=>{lp.src=FALLBACK_ICON_SVG;lp.onerror=null;};}else lp.classList.add('hidden');const cp=$('store_cover_preview');if(store.cover_url){cp.src=store.cover_url;cp.classList.remove('hidden');cp.onerror=()=>{cp.src=FALLBACK_ICON_SVG;cp.onerror=null;};}else cp.classList.add('hidden');updateHeaderLogo(store);updateCooldownUI();setTimeout(setupImageFallbacks,100);}
 $('storeForm').addEventListener('submit',async(e)=>{e.preventDefault();if(!currentStore||!currentUser){showToast('يجب تسجيل الدخول','error');return;}const newName=sanitize($('store_name').value);const newCategory=sanitize($('store_category').value);const newDescription=sanitize($('store_description').value).slice(0,500);const newLocation=sanitize($('store_location').value).slice(0,100);const newWhatsapp=sanitize($('store_whatsapp').value).replace(/[^\d+]/g,'');const newPhone=sanitize($('store_phone').value).replace(/[^\d+]/g,'');const newLogo=sanitize($('store_logo').value);const newCover=sanitize($('store_cover').value);if(newName.length<3||newName.length>60){showToast('اسم المتجر بين 3 و 60 حرف','error');return;}if(!newCategory){showToast('اختر فئة صحيحة','error');return;}if(newWhatsapp.replace(/\D/g,'').length<9){showToast('رقم الواتساب غير صحيح','error');return;}const nameChanged=newName!==(currentStore.name||'');const otherChanged=newCategory!==(currentStore.category||'')||newDescription!==(currentStore.description||'')||newLocation!==(currentStore.location||'')||newWhatsapp!==(currentStore.whatsapp_number||'')||newPhone!==(currentStore.phone_number||'')||newLogo!==(currentStore.logo_url||'')||newCover!==(currentStore.cover_url||'');if(!nameChanged&&!otherChanged){showToast('لم يتم إجراء أي تغيير','info');return;}const status=getCooldownStatus();if(nameChanged&&!status.canUpdateName){showToast('⏱️ لا يمكن تغيير اسم المتجر إلا بعد '+formatDuration(status.nameRemaining),'error');return;}if(otherChanged&&!status.canUpdateData){showToast('⏱️ لا يمكن تعديل بيانات المتجر إلا بعد '+formatDuration(status.dataRemaining),'error');return;}const updates={};if(nameChanged)updates.name=newName;if(newCategory!==(currentStore.category||''))updates.category=newCategory;if(newDescription!==(currentStore.description||''))updates.description=newDescription;if(newLocation!==(currentStore.location||''))updates.location=newLocation;if(newWhatsapp!==(currentStore.whatsapp_number||''))updates.whatsapp_number=newWhatsapp;if(newPhone!==(currentStore.phone_number||''))updates.phone_number=newPhone;if(newLogo!==(currentStore.logo_url||''))updates.logo_url=newLogo;if(newCover!==(currentStore.cover_url||''))updates.cover_url=newCover;const now=Date.now();if(nameChanged)updates.last_name_update=now;if(otherChanged)updates.last_data_update=now;const submitBtn=$('storeSubmitBtn');submitBtn.dataset.saving='1';setBtnLoad(submitBtn,true,'جارٍ الحفظ...','<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');try{let updatedProductsCount=0;if(nameChanged){const productsSnap=await db.collection(PRODUCTS).where('store_id','==',currentStore.id).get();const productDocs=productsSnap.docs;updatedProductsCount=productDocs.length;const firstChunkSize=Math.min(FIRESTORE_BATCH_LIMIT-1,productDocs.length);const batch1=db.batch();batch1.update(db.collection(STORES).doc(currentStore.id),updates);for(let i=0;i<firstChunkSize;i++){batch1.update(productDocs[i].ref,{store_name:newName});}await batch1.commit();for(let i=firstChunkSize;i<productDocs.length;i+=FIRESTORE_BATCH_LIMIT){const batch=db.batch();const end=Math.min(i+FIRESTORE_BATCH_LIMIT,productDocs.length);for(let j=i;j<end;j++){batch.update(productDocs[j].ref,{store_name:newName});}await batch.commit();}}else{await db.collection(STORES).doc(currentStore.id).update(updates);}currentStore={...currentStore,...updates};updateHeaderLogo(currentStore);$('welcomeStoreName').textContent=currentStore.name||'—';$('product_store_name').value=currentStore.name||'';$('product_store_name_display').value=currentStore.name||'';if(nameChanged){productsData=productsData.map(p=>({...p,store_name:newName}));updateProductsUI();showToast('✅ تم تحديث الاسم و'+updatedProductsCount+' منتج بنجاح');}else{showToast('✅ تم حفظ التعديلات بنجاح');}updateCooldownUI();}catch(err){console.error('[Save]',err);showToast('فشل الحفظ: '+mapFbError(err),'error');}finally{submitBtn.dataset.saving='';setBtnLoad(submitBtn,false,'','<i class="fas fa-save"></i> <span>حفظ التعديلات</span>');updateCooldownUI();}});
+
 function getMainCat(){return currentStore&&currentStore.category?String(currentStore.category).trim():'';}
-function isSubscribed(){return!!(currentStore&&currentStore.is_subscribed===true);}
 function getExtraCats(){if(!currentStore)return[];const main=getMainCat();const arr=Array.isArray(currentStore.categories)?currentStore.categories:[];return arr.map(c=>String(c||'').trim()).filter(c=>c&&c.toLowerCase()!==main.toLowerCase());}
 function getMainProductsCount(){if(!currentStore||!productsData.length)return 0;const main=getMainCat();if(!main)return 0;return productsData.filter(p=>{const c=String(p.category||'').trim();return!c||c===main;}).length;}
 function populateProductCategories(preserve){const sel=$('product_category');if(!sel||!currentStore)return;const cur=preserve!==undefined?preserve:sel.value;const main=getMainCat(),extras=getExtraCats(),sub=isSubscribed();sel.innerHTML='';if(!main&&extras.length===0){const o=document.createElement('option');o.value='';o.textContent='⚠️ لا توجد فئات';sel.appendChild(o);sel.disabled=true;return;}sel.disabled=false;const ph=document.createElement('option');ph.value='';ph.textContent='— اختر الفئة —';ph.disabled=true;sel.appendChild(ph);if(main){const o=document.createElement('option');o.value=main;o.textContent='🟢 '+main+' (رئيسية)';sel.appendChild(o);}extras.forEach(c=>{const o=document.createElement('option');o.value=c;if(sub)o.textContent='⭐ '+c;else{o.textContent='🔒 '+c;o.disabled=true;}sel.appendChild(o);});if(cur&&Array.from(sel.options).some(o=>o.value===cur&&!o.disabled))sel.value=cur;else sel.value=main||'';}
 async function loadMyProducts(){if(!currentStore)return;try{const snap=await db.collection(PRODUCTS).where('store_id','==',currentStore.id).get();productsData=snap.docs.map(d=>({id:d.id,...d.data()}));productsData.sort((a,b)=>(b.created_at?.seconds||0)-(a.created_at?.seconds||0));updateProductsUI();setupProductsListener();}catch(err){console.error('[Products]',err);$('productsList').innerHTML='<div class="empty-state"><div class="empty-state-title" style="color:#EF4444;">تعذر تحميل المنتجات: '+escapeHtml(mapFbError(err))+'</div></div>';}}
 function setupProductsListener(){if(!currentStore)return;if(productsUnsubscribe){productsUnsubscribe();productsUnsubscribe=null;}productsUnsubscribe=db.collection(PRODUCTS).where('store_id','==',currentStore.id).onSnapshot((snap)=>{const fresh=snap.docs.map(d=>({id:d.id,...d.data()}));fresh.sort((a,b)=>(b.created_at?.seconds||0)-(a.created_at?.seconds||0));const fp=getFp(fresh);if(fp===lastProductsFingerprint)return;lastProductsFingerprint=fp;productsData=fresh;updateProductsUI();},(err)=>console.warn('Products listener:',err));}
-function updateProductsUI(){$('productsCount').textContent=productsData.length;$('productsCountBadge').textContent=productsData.length;$('ro_products_count').textContent=productsData.length;updateLimitsUI();renderProductsList();}
+function updateProductsUI(){$('productsCount').textContent=productsData.length;$('productsCountBadge').textContent=productsData.length;$('ro_products_count').textContent=productsData.length;updateLimitsUI();renderProductsList();applySubscriptionLock(getSubscriptionState(currentStore));}
 function updateLimitsUI(){
   const c=$('categoryLimitsInfo');if(!c||!currentStore)return;
   const main=getMainCat();const cnt=getMainProductsCount();const lim=PRODUCT_LIMITS.MAIN_CATEGORY_MAX;
@@ -443,23 +836,17 @@ function updateLimitsUI(){
   c.innerHTML='<div style="background:#fff;border:1.5px solid '+(cnt>=lim?'#FECACA':'#E5E7EB')+';border-radius:.9rem;padding:.85rem;margin-bottom:.75rem;"><div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong style="font-size:.85rem;">'+escapeHtml(main||'الفئة الرئيسية')+'</strong><span style="font-size:.78rem;font-weight:900;color:'+color+';">'+cnt+' / '+lim+'</span></div><div style="background:#F3F4F6;height:6px;border-radius:6px;overflow:hidden;"><div style="background:'+color+';height:100%;width:'+pct+'%;border-radius:6px;"></div></div></div>';
   const b=$('mainLimitBadge'),t=$('mainLimitText');
   if(b&&t&&main){t.textContent=cnt+'/'+lim;b.style.display='inline-flex';}
-  // ← إظهار تحذير بدل تعطيل الزر
   const warning=$('productLimitWarning');
   const isEditing=!!(document.getElementById('product_id')&&document.getElementById('product_id').value);
   const selectedCat=document.getElementById('product_category')?document.getElementById('product_category').value:'';
   const atLimit=main&&cnt>=lim;
   const isAddingToMain=!isEditing&&selectedCat===main;
   if(warning){
-    if(atLimit&&isAddingToMain){
-      warning.classList.add('show');
-      const inner=warning.querySelector('div');
-      if(inner)inner.innerHTML='وصلت للحد الأقصى <strong>'+lim+'</strong> منتج في الفئة الرئيسية. احذف منتجاً أو اختر فئة أخرى (للمشتركين).';
-    } else {
-      warning.classList.remove('show');
-    }
+    if(atLimit&&isAddingToMain){warning.classList.add('show');const inner=warning.querySelector('div');if(inner)inner.innerHTML='وصلت للحد الأقصى <strong>'+lim+'</strong> منتج في الفئة الرئيسية. احذف منتجاً أو اختر فئة أخرى (للمشتركين).';}
+    else{warning.classList.remove('show');}
   }
 }
-function renderProductsList(){if(productsData.length===0){$('productsList').innerHTML='<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-box-open"></i></div><div class="empty-state-title">لا توجد منتجات</div><div class="empty-state-text">ابدأ بإضافة أول منتج</div></div>';return;}const main=getMainCat();let html='';productsData.forEach(p=>{const price=parseFloat(p.price||0);const curr=getProductCurrency(p);const hasImg=p.img_url&&String(p.img_url).trim();const thumb=hasImg?'<img src="'+escapeHtml(p.img_url)+'" class="product-thumb" alt="" loading="lazy">':'<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>';const isMain=!p.category||String(p.category).trim()===main;const catBadge=isMain?'<span class="product-category-badge" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);color:#059669;border-color:#A7F3D0;"><i class="fas fa-star" style="font-size:.6rem;"></i> '+escapeHtml(main||'رئيسية')+'</span>':(p.category?'<span class="product-category-badge"><i class="fas fa-tag" style="font-size:.6rem;"></i> '+escapeHtml(p.category)+'</span>':'');html+='<div class="product-row">'+thumb+'<div class="product-info"><div class="product-name">'+escapeHtml(p.name)+'</div>'+(p.description?'<div class="product-description">'+escapeHtml(p.description)+'</div>':'')+'<div class="product-meta"><span class="product-price">'+price.toLocaleString()+' '+escapeHtml(curr.symbol)+'</span>'+catBadge+'</div></div><div class="product-actions"><button type="button" class="icon-btn icon-btn-edit" onclick="editProduct(\''+p.id+'\')"><i class="fas fa-pen"></i></button><button type="button" class="icon-btn icon-btn-delete" onclick="deleteProduct(\''+p.id+'\')"><i class="fas fa-trash"></i></button></div></div>';});$('productsList').innerHTML=html;setTimeout(setupImageFallbacks,50);}
+function renderProductsList(){if(productsData.length===0){$('productsList').innerHTML='<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-box-open"></i></div><div class="empty-state-title">لا توجد منتجات</div><div class="empty-state-text">ابدأ بإضافة أول منتج</div></div>';return;}const main=getMainCat();const locked=!isSubscriptionActive();let html='';productsData.forEach(p=>{const price=parseFloat(p.price||0);const curr=getProductCurrency(p);const hasImg=p.img_url&&String(p.img_url).trim();const thumb=hasImg?'<img src="'+escapeHtml(p.img_url)+'" class="product-thumb" alt="" loading="lazy">':'<div class="product-thumb product-thumb-placeholder"><i class="fas fa-box"></i></div>';const isMain=!p.category||String(p.category).trim()===main;const catBadge=isMain?'<span class="product-category-badge" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);color:#059669;border-color:#A7F3D0;"><i class="fas fa-star" style="font-size:.6rem;"></i> '+escapeHtml(main||'رئيسية')+'</span>':(p.category?'<span class="product-category-badge"><i class="fas fa-tag" style="font-size:.6rem;"></i> '+escapeHtml(p.category)+'</span>':'');const dis=locked?'disabled title="الاشتراك منتهٍ"':'';html+='<div class="product-row">'+thumb+'<div class="product-info"><div class="product-name">'+escapeHtml(p.name)+'</div>'+(p.description?'<div class="product-description">'+escapeHtml(p.description)+'</div>':'')+'<div class="product-meta"><span class="product-price">'+price.toLocaleString()+' '+escapeHtml(curr.symbol)+'</span>'+catBadge+'</div></div><div class="product-actions"><button type="button" class="icon-btn icon-btn-edit" '+dis+' onclick="editProduct(\''+p.id+'\')"><i class="fas fa-pen"></i></button><button type="button" class="icon-btn icon-btn-delete" '+dis+' onclick="deleteProduct(\''+p.id+'\')"><i class="fas fa-trash"></i></button></div></div>';});$('productsList').innerHTML=html;setTimeout(setupImageFallbacks,50);}
 function addColorRow(name,image){const c=$('productColorsContainer');if(!c)return;const row=document.createElement('div');row.className='color-row';const uid='ci_'+Date.now()+'_'+Math.floor(Math.random()*9999);row.innerHTML='<div class="color-row-top"><div class="color-dot-preview"></div><input type="text" class="color-name" list="colorList" placeholder="اسم اللون" value="'+(name||'')+'"><button type="button" class="remove-color-btn"><i class="fas fa-trash"></i></button></div><div class="color-image-upload-wrap"><input type="hidden" id="'+uid+'" class="color-image" value="'+(image||'')+'"><button type="button" class="color-upload-btn" data-upload-target="'+uid+'"><i class="fas fa-cloud-arrow-up"></i><span>رفع صورة اللون</span></button><div class="product-img-preview-wrapper hidden"><img class="product-img-preview" alt=""><button type="button" class="remove-img-btn"><i class="fas fa-times"></i></button></div></div>';const nameInput=row.querySelector('.color-name');const dotPreview=row.querySelector('.color-dot-preview');const im=row.querySelector('.color-image');const wrapper=row.querySelector('.product-img-preview-wrapper');const previewImg=row.querySelector('.product-img-preview');const removeImgBtn=row.querySelector('.remove-img-btn');const removeRowBtn=row.querySelector('.remove-color-btn');const updateDotColor=()=>{const colorHex=getColorHex(nameInput.value);dotPreview.style.background=colorHex;};const updateImagePreview=()=>{const url=(im.value||'').trim();if(url){previewImg.src=url;wrapper.classList.remove('hidden');}else{wrapper.classList.add('hidden');previewImg.removeAttribute('src');}};nameInput.addEventListener('input',updateDotColor);im.addEventListener('input',updateImagePreview);removeImgBtn.addEventListener('click',()=>{im.value='';updateImagePreview();});removeRowBtn.addEventListener('click',()=>row.remove());c.appendChild(row);updateDotColor();updateImagePreview();}
 const prodImgInput=$('product_img_url');const prodImgWrapper=$('product_img_preview_wrapper');const prodImgPreview=$('product_img_preview');const removeProdImgBtn=$('removeProductImgBtn');
 function updateMainImgPreview(){if(!prodImgInput||!prodImgWrapper||!prodImgPreview)return;const val=prodImgInput.value.trim();if(val){prodImgPreview.src=val;prodImgWrapper.classList.remove('hidden');}else{prodImgWrapper.classList.add('hidden');prodImgPreview.removeAttribute('src');}}
@@ -469,27 +856,25 @@ if($('addColorBtn'))$('addColorBtn').addEventListener('click',()=>addColorRow())
 if($('product_description')){$('product_description').addEventListener('input',(e)=>{$('productDescCounter').textContent=e.target.value.length+' / '+PRODUCT_DESC_MAX;});}
 if($('product_category')){$('product_category').addEventListener('change',()=>{if(!isSavingProduct)updateLimitsUI();});}
 
-// ═══════════════════════════════════════════════════════════════
-// 🔧 معالج حفظ المنتج — مُصلح بالكامل
-// ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
+   🔒 PRODUCT SAVE (with subscription gate)
+   ═══════════════════════════════════════════════════════════ */
 $('productForm').addEventListener('submit',async(e)=>{
   e.preventDefault();
 
-  // ─── حراسة صريحة مع رسائل واضحة بدل العودة الصامتة ───
-  if(isSavingProduct){
-    showToast('⏳ يتم حفظ منتج آخر حالياً، يرجى الانتظار...','warning');
-    return;
-  }
-  if(!currentUser){
-    showToast('❌ انتهت جلستك. يرجى تسجيل الدخول مرة أخرى','error');
-    return;
-  }
-  if(!currentStore){
-    showToast('❌ تعذر تحميل بيانات المتجر. يرجى إعادة تحميل الصفحة','error');
-    return;
-  }
+  if(!currentUser){showToast('❌ انتهت جلستك. يرجى تسجيل الدخول مرة أخرى','error');return;}
+  if(!currentStore){showToast('❌ تعذر تحميل بيانات المتجر. يرجى إعادة تحميل الصفحة','error');return;}
 
-  // ─── قراءة البيانات ───
+  // ═══ SUBSCRIPTION GATE ═══
+  if(!isSubscriptionActive()){
+    const st=getSubscriptionState(currentStore);
+    showToast('🔒 لا يمكنك إضافة أو تعديل المنتجات — اشتراكك '+(st.status==='expired'?'منتهٍ':st.status==='cancelled'?'ملغى':st.status==='pending_payment'?'بانتظار الدفع':'غير مفعّل'),'error');
+    return;
+  }
+  // ═════════════════════════
+
+  if(isSavingProduct){showToast('⏳ يتم حفظ منتج آخر حالياً، يرجى الانتظار...','warning');return;}
+
   const id=$('product_id').value;
   const name=sanitize($('product_name').value);
   const description=sanitize($('product_description').value).slice(0,PRODUCT_DESC_MAX);
@@ -498,28 +883,11 @@ $('productForm').addEventListener('submit',async(e)=>{
   const rawCurrencySymbol=sanitize($('product_currency').value)||getStoreCurrency().symbol;
   const currencySymbol=normalizeCurrencySymbol(rawCurrencySymbol)||getStoreCurrency().symbol;
 
-  // ─── تحقق مع رسائل مفصلة ───
-  if(!name){
-    showToast('⚠️ اسم المنتج مطلوب','error');
-    $('product_name').focus();
-    return;
-  }
-  if(name.length>150){
-    showToast('⚠️ اسم المنتج طويل جداً (الحد 150 حرف)','error');
-    return;
-  }
-  if(!category){
-    showToast('⚠️ يجب اختيار فئة المنتج','error');
-    $('product_category').focus();
-    return;
-  }
-  if(price<=0||!isFinite(price)){
-    showToast('⚠️ السعر يجب أن يكون رقماً أكبر من صفر','error');
-    $('product_price').focus();
-    return;
-  }
+  if(!name){showToast('⚠️ اسم المنتج مطلوب','error');$('product_name').focus();return;}
+  if(name.length>150){showToast('⚠️ اسم المنتج طويل جداً (الحد 150 حرف)','error');return;}
+  if(!category){showToast('⚠️ يجب اختيار فئة المنتج','error');$('product_category').focus();return;}
+  if(price<=0||!isFinite(price)){showToast('⚠️ السعر يجب أن يكون رقماً أكبر من صفر','error');$('product_price').focus();return;}
 
-  // ─── تحقق من حد الفئة الرئيسية ───
   const mainCat=getMainCat();
   if(mainCat&&category===mainCat){
     const mainCount=getMainProductsCount();
@@ -531,13 +899,9 @@ $('productForm').addEventListener('submit',async(e)=>{
     }else{
       wouldExceed=mainCount>=PRODUCT_LIMITS.MAIN_CATEGORY_MAX;
     }
-    if(wouldExceed){
-      showToast('⚠️ وصلت للحد الأقصى '+PRODUCT_LIMITS.MAIN_CATEGORY_MAX+' منتج في الفئة الرئيسية. احذف منتجاً أو اختر فئة أخرى','error');
-      return;
-    }
+    if(wouldExceed){showToast('⚠️ وصلت للحد الأقصى '+PRODUCT_LIMITS.MAIN_CATEGORY_MAX+' منتج في الفئة الرئيسية','error');return;}
   }
 
-  // ─── جمع الألوان ───
   const colors=[];
   document.querySelectorAll('#productColorsContainer .color-row').forEach((r)=>{
     const cn=sanitize(r.querySelector('.color-name').value);
@@ -545,34 +909,19 @@ $('productForm').addEventListener('submit',async(e)=>{
     if(cn)colors.push({name:cn,image:ci});
   });
 
-  // ─── بناء البيانات ───
-  const data={
-    name,
-    description,
-    category,
-    store_name:currentStore.name,
-    store_id:currentStore.id,
-    owner_uid:currentUser.uid,
-    price,
-    currency:currencySymbol,
-    img_url:sanitize($('product_img_url').value),
-    colors:colors.length>0?colors:null
-  };
+  const data={name,description,category,store_name:currentStore.name,store_id:currentStore.id,owner_uid:currentUser.uid,price,currency:currencySymbol,img_url:sanitize($('product_img_url').value),colors:colors.length>0?colors:null};
 
-  // ─── الحفظ ───
   isSavingProduct=true;
   setBtnLoad($('productSubmitBtn'),true,id?'جارٍ التعديل...':'جارٍ الحفظ...','<i class="fas fa-save"></i> <span>حفظ</span>');
 
   try{
     if(id){
-      // تعديل
       const ex=await db.collection(PRODUCTS).doc(id).get();
       if(!ex.exists)throw new Error('المنتج غير موجود');
       if(ex.data().store_id!==currentStore.id)throw new Error('لا تملك صلاحية تعديل هذا المنتج');
       await db.collection(PRODUCTS).doc(id).update(data);
       showToast('✅ تم تعديل المنتج «'+name+'» بنجاح');
     }else{
-      // إضافة جديدة
       data.created_at=firebase.firestore.FieldValue.serverTimestamp();
       await db.collection(PRODUCTS).add(data);
       showToast('✅ تمت إضافة المنتج «'+name+'» بنجاح');
@@ -581,8 +930,8 @@ $('productForm').addEventListener('submit',async(e)=>{
   }catch(err){
     console.error('[Product save]',err);
     let msg='❌ فشل الحفظ';
-    if(err&&err.code==='permission-denied')msg='❌ لا تملك صلاحية. يرجى إعادة تسجيل الدخول';
-    else if(err&&err.code==='unavailable')msg='❌ تعذر الاتصال بالخدمة. تحقق من الإنترنت';
+    if(err&&err.code==='permission-denied')msg='❌ لا تملك صلاحية — قد يكون اشتراكك منتهياً';
+    else if(err&&err.code==='unavailable')msg='❌ تعذر الاتصال بالخدمة';
     else if(err&&err.code==='unauthenticated')msg='❌ انتهت جلستك. سجّل الدخول من جديد';
     else if(err&&err.message)msg='❌ '+err.message;
     else msg='❌ '+mapFbError(err);
@@ -609,14 +958,21 @@ function resetProductForm(){
   updateLimitsUI();
 }
 if($('cancelEditProduct'))$('cancelEditProduct').addEventListener('click',resetProductForm);
-window.editProduct=async(id)=>{try{const s=await db.collection(PRODUCTS).doc(id).get();if(!s.exists||s.data().store_id!==currentStore.id)throw new Error('no_permission');const d={id:s.id,...s.data()};$('product_id').value=d.id;$('product_name').value=d.name||'';$('product_description').value=d.description||'';$('product_price').value=d.price||0;$('product_img_url').value=d.img_url||'';$('productDescCounter').textContent=(d.description||'').length+' / '+PRODUCT_DESC_MAX;populateProductCategories(d.category||'');const prodCurr=getProductCurrency(d);updateProductCurrencyDisplay(prodCurr);updateMainImgPreview();$('productColorsContainer').innerHTML='';if(Array.isArray(d.colors))d.colors.forEach(x=>addColorRow(x.name,x.image));$('productFormTitle').textContent='تعديل: '+d.name;$('cancelEditProduct').classList.remove('hidden');$('productForm').scrollIntoView({behavior:'smooth',block:'start'});updateLimitsUI();}catch(err){showToast('فشل: '+mapFbError(err),'error');}};
-window.deleteProduct=async(id)=>{if(!confirm('هل أنت متأكد من حذف هذا المنتج؟'))return;try{const s=await db.collection(PRODUCTS).doc(id).get();if(!s.exists||s.data().store_id!==currentStore.id)throw new Error('no_permission');await db.collection(PRODUCTS).doc(id).delete();showToast('🗑️ تم حذف المنتج بنجاح');}catch(err){showToast('فشل: '+mapFbError(err),'error');}};
+window.editProduct=async(id)=>{
+  if(!isSubscriptionActive()){showToast('🔒 لا يمكنك تعديل المنتجات — اشتراكك منتهٍ','error');return;}
+  try{const s=await db.collection(PRODUCTS).doc(id).get();if(!s.exists||s.data().store_id!==currentStore.id)throw new Error('no_permission');const d={id:s.id,...s.data()};$('product_id').value=d.id;$('product_name').value=d.name||'';$('product_description').value=d.description||'';$('product_price').value=d.price||0;$('product_img_url').value=d.img_url||'';$('productDescCounter').textContent=(d.description||'').length+' / '+PRODUCT_DESC_MAX;populateProductCategories(d.category||'');const prodCurr=getProductCurrency(d);updateProductCurrencyDisplay(prodCurr);updateMainImgPreview();$('productColorsContainer').innerHTML='';if(Array.isArray(d.colors))d.colors.forEach(x=>addColorRow(x.name,x.image));$('productFormTitle').textContent='تعديل: '+d.name;$('cancelEditProduct').classList.remove('hidden');$('productForm').scrollIntoView({behavior:'smooth',block:'start'});updateLimitsUI();}catch(err){showToast('فشل: '+mapFbError(err),'error');}
+};
+window.deleteProduct=async(id)=>{
+  if(!isSubscriptionActive()){showToast('🔒 لا يمكنك حذف المنتجات — اشتراكك منتهٍ','error');return;}
+  if(!confirm('هل أنت متأكد من حذف هذا المنتج؟'))return;
+  try{const s=await db.collection(PRODUCTS).doc(id).get();if(!s.exists||s.data().store_id!==currentStore.id)throw new Error('no_permission');await db.collection(PRODUCTS).doc(id).delete();showToast('🗑️ تم حذف المنتج بنجاح');}catch(err){showToast('فشل: '+mapFbError(err),'error');}
+};
 $('tabStore').addEventListener('click',()=>{$('tabStore').classList.add('active');$('tabProducts').classList.remove('active');$('storeSection').classList.remove('hidden');$('productsSection').classList.add('hidden');});
 $('tabProducts').addEventListener('click',()=>{$('tabProducts').classList.add('active');$('tabStore').classList.remove('active');$('productsSection').classList.remove('hidden');$('storeSection').classList.add('hidden');populateProductCategories();loadMyProducts();updateLimitsUI();});
 ['store_logo','store_cover'].forEach((id)=>{const inp=$(id);if(!inp)return;inp.addEventListener('input',(e)=>{const p=$(id+'_preview');if(!p)return;if(e.target.value){p.src=e.target.value;p.classList.remove('hidden');}else p.classList.add('hidden');});});
 document.addEventListener('click',(e)=>{const btn=e.target.closest('[data-upload-target]');if(!btn)return;e.preventDefault();const targetId=btn.getAttribute('data-upload-target');const target=document.getElementById(targetId);if(!target)return;const fi=document.createElement('input');fi.type='file';fi.accept='image/*';fi.style.display='none';fi.addEventListener('change',async()=>{const file=fi.files&&fi.files[0];if(!file){fi.remove();return;}if(!file.type.startsWith('image/')){showToast('❌ يجب اختيار صورة','error');fi.remove();return;}if(file.size>8*1024*1024){showToast('❌ الحجم أكبر من 8 ميجا','error');fi.remove();return;}const origHTML=btn.innerHTML;btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i>';try{const fd=new FormData();fd.append('file',file);fd.append('upload_preset',CLOUDINARY_UPLOAD_PRESET);fd.append('folder','branzar/stores');const res=await fetch('https://api.cloudinary.com/v1_1/'+CLOUDINARY_CLOUD_NAME+'/image/upload',{method:'POST',body:fd});if(!res.ok)throw new Error('upload_failed');const data=await res.json();if(!data.secure_url)throw new Error('no_url');target.value=data.secure_url;target.dispatchEvent(new Event('input',{bubbles:true}));showToast('✅ تم رفع الصورة');}catch(err){console.error('[Upload]',err);showToast('❌ فشل رفع الصورة','error');}finally{btn.disabled=false;btn.innerHTML=origHTML;fi.remove();}});document.body.appendChild(fi);fi.click();});
 if($('supportFloat'))$('supportFloat').addEventListener('click',()=>openSupportChat('general'));
-console.log('%c🔥 BranZar v11.3 — Product save fixed (no silent disable)','color:#FF7A00;font-weight:bold;font-size:14px');
+console.log('%c🔥 BranZar v12.0 — subscription system integrated ✅','color:#FF7A00;font-weight:bold;font-size:14px');
 </script>
 </body>
 </html>
